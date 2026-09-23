@@ -115,3 +115,5 @@ The macOS bundle now rebuilds the Qt 6.11.2 Cocoa plugin with a temporary assist
 Added `.deb`/Windows ZIP packaging and separate-runtime checks: [ADR-007 and commands](ADR-007-PACKAGING.md). [CI `32655b0` passed, six jobs](https://github.com/Matte2599/WebFence/actions/runs/35877356234); development packages, not supported releases.
 
 macOS packaging also requires Python 3.9+ to collect provenance/notices before signing: [materials and known gaps](M0-PACKAGING.md). The check rejects unmatched or ambiguous native libraries.
+
+Optional source-archive and notice collection from a macOS inventory: [procedure, requirements and tests](M0-SOURCE-MATERIALS.md). Not automatically run by the product build.

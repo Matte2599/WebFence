@@ -1,0 +1,820 @@
+{
+  "schema": 1,
+  "distribution_ready": false,
+  "webfence_build": {
+    "CGO_CXXFLAGS": "-O2 -g -std=c++17",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "vcs.revision": "8d3053fbe90c6101bb336493c149c9cc91f31cf0",
+    "vcs.time": "2026-09-23T16:02:22Z",
+    "vcs.modified": "false"
+  },
+  "scope": "Mach-O origin matching by name/arm64/UUID and installed notices; not a complete product SBOM or distribution approval",
+  "hash_stage": "before final bundle signing; UUID is a provenance hint, not an integrity proof",
+  "files": [
+    {
+      "path": "Contents/Frameworks/QtCore.framework/Versions/A/QtCore",
+      "uuid": "A4D0AE4C-74E2-31A5-B1D5-B272CDD50E0E",
+      "sha256_before_final_signing": "737b54fd05678eb3d04dd1035c299d2e6c33fa339202d8e838b12e4927814bd4",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "lib/QtCore.framework/Versions/A/QtCore",
+      "source_sha256": "18b2ae3d156edb958f3313d79417deb867a72be450525bd75eb7aa18ff3e1237"
+    },
+    {
+      "path": "Contents/Frameworks/QtDBus.framework/Versions/A/QtDBus",
+      "uuid": "A0E43A8A-263F-3711-8709-D8D853213531",
+      "sha256_before_final_signing": "231d13a555686de4a5cd1325048baff5c855baa7d403a2a8162d930fc2346801",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "lib/QtDBus.framework/Versions/A/QtDBus",
+      "source_sha256": "f031f8326ed80f3933fa9b21d8cc32d3b79c55eeaa70b232628690aceec3830e"
+    },
+    {
+      "path": "Contents/Frameworks/QtGui.framework/Versions/A/QtGui",
+      "uuid": "17670FC6-34A6-3D29-BE41-842D69C5CE36",
+      "sha256_before_final_signing": "cf396cbfcb50e0d6f849108d4bf3d9ab6a8366ae05bf980c95180d3a12cfbc20",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "lib/QtGui.framework/Versions/A/QtGui",
+      "source_sha256": "0676038121ab4abc2768e1c13716027b974902c9e8d9046e93ecab495327c222"
+    },
+    {
+      "path": "Contents/Frameworks/QtWidgets.framework/Versions/A/QtWidgets",
+      "uuid": "5F82B031-ABA3-33CB-8364-9E0BE41FD49F",
+      "sha256_before_final_signing": "f817802eb9004dcc800c9bb463ac6e6a4489d9fba40be65293b860895b973d68",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "lib/QtWidgets.framework/Versions/A/QtWidgets",
+      "source_sha256": "61a5809d60c8a8f676581f1acff884655800c9ab835fddde766f97059a7f8662"
+    },
+    {
+      "path": "Contents/Frameworks/libb2.1.dylib",
+      "uuid": "CDB9743E-4399-33D0-A9AF-8667F7F00478",
+      "sha256_before_final_signing": "c0a89723baeac8824cf92077aa13bd0abdaa53e46f3e6e5daebd9000c8d65916",
+      "origin": "homebrew",
+      "package": "libb2@0.98.1",
+      "source_path": "lib/libb2.1.dylib",
+      "source_sha256": "3b47cc062d3b2547159844fe700b96c9a3c912e5eeb39101af9a1b5d4b83b4e2"
+    },
+    {
+      "path": "Contents/Frameworks/libdbus-1.3.dylib",
+      "uuid": "D67BD0E2-713D-3B96-8916-513463708577",
+      "sha256_before_final_signing": "a235b9af607fbdc12b39ab4a858ab639c1adf36b1b5a15d38601209d973e3280",
+      "origin": "homebrew",
+      "package": "dbus@1.16.2_1",
+      "source_path": "lib/libdbus-1.3.dylib",
+      "source_sha256": "ec34e6babcba777ac7379a70aef3e90022bf4219c99da11feeb23c209642548c"
+    },
+    {
+      "path": "Contents/Frameworks/libdouble-conversion.3.dylib",
+      "uuid": "A37DDDD2-A19D-363B-B32A-90DA247139E4",
+      "sha256_before_final_signing": "16db49301b0cb52dc5381c70b560008dcbf74e471c0bff6e1879178edad519f7",
+      "origin": "homebrew",
+      "package": "double-conversion@3.4.0",
+      "source_path": "lib/libdouble-conversion.3.4.0.dylib",
+      "source_sha256": "9bcb7d1c3f0fa2605c330a3034f087798951f18ab3429128a230832ad9c34d83"
+    },
+    {
+      "path": "Contents/Frameworks/libfreetype.6.dylib",
+      "uuid": "0A7E6C59-803B-3A5A-8F9B-240D7B3025CA",
+      "sha256_before_final_signing": "5c5741c1c704a2a179ba5b9d1663daf57fe22d2c62d667d1ebe17e65d540b81d",
+      "origin": "homebrew",
+      "package": "freetype@2.14.3",
+      "source_path": "lib/libfreetype.6.dylib",
+      "source_sha256": "e4b41d886673fd1c282764a3113224d83b09bd705d12db7c36366fb04b7592dc"
+    },
+    {
+      "path": "Contents/Frameworks/libglib-2.0.0.dylib",
+      "uuid": "0C5D9F8A-59EC-3D2F-86BE-39BD6D6E6E14",
+      "sha256_before_final_signing": "6c766acf01458faa6e2757bd25e06f357a703a4320a4e2824699e2aac8af45eb",
+      "origin": "homebrew",
+      "package": "glib@2.90.0",
+      "source_path": "lib/libglib-2.0.0.dylib",
+      "source_sha256": "e23a6acee2d81c533320953756b9d5151201b762d6fd12a332b1bd8acc110d14"
+    },
+    {
+      "path": "Contents/Frameworks/libgraphite2.3.dylib",
+      "uuid": "6A793C2F-5759-3012-8CCC-7DC558236EAF",
+      "sha256_before_final_signing": "da9508197fc7f5172c9f5c4fb88059a83d8b7ea30aaf8f708b1f1e7f2335a820",
+      "origin": "homebrew",
+      "package": "graphite2@1.3.15",
+      "source_path": "lib/libgraphite2.3.3.1.dylib",
+      "source_sha256": "fc59eeb61994433d7dcd349848db14951be1fac332349872ad03f86361473153"
+    },
+    {
+      "path": "Contents/Frameworks/libgthread-2.0.0.dylib",
+      "uuid": "D5C85655-4558-39C2-BF84-9A81509EFC97",
+      "sha256_before_final_signing": "935a44eedc2dc9fb672beed0499623ad343387c52ecee53a51e615c8f6b8b0c2",
+      "origin": "homebrew",
+      "package": "glib@2.90.0",
+      "source_path": "lib/libgthread-2.0.0.dylib",
+      "source_sha256": "f239eb82a4d0ec3679c03578b825b7af71ee77719a04a8f2eaf306e10a742695"
+    },
+    {
+      "path": "Contents/Frameworks/libharfbuzz.0.dylib",
+      "uuid": "44EF5F7E-BBE2-3010-BF70-D2F20F994477",
+      "sha256_before_final_signing": "1fc27c4bed03b00891153f748390517d8fd4130ab37e1ba1f6dc3650b77a7e12",
+      "origin": "homebrew",
+      "package": "harfbuzz@14.5.0",
+      "source_path": "lib/libharfbuzz.0.dylib",
+      "source_sha256": "6b9751b1edf515e346410d30aad89921203b6eca871bbc718299c73122e41f5c"
+    },
+    {
+      "path": "Contents/Frameworks/libicudata.78.dylib",
+      "uuid": "405A29E4-230E-3E63-8CA7-2F482D507E59",
+      "sha256_before_final_signing": "cf300df7a626011c57097b17d4714d0b7d0f234aaac50fa60a070268a550cc50",
+      "origin": "homebrew",
+      "package": "icu4c@78@78.3",
+      "source_path": "lib/libicudata.78.3.dylib",
+      "source_sha256": "e7dafc3fe6613326daa30d1c930aa66219ab5524fe576b0e7b3039451652b6bf"
+    },
+    {
+      "path": "Contents/Frameworks/libicui18n.78.dylib",
+      "uuid": "6D9ABF1A-5E38-3103-A0EC-F1C0868F6FCA",
+      "sha256_before_final_signing": "12567fbfeebd82d036c9c7231891f26d516e2b53a49b970d5b389f5e15f3df49",
+      "origin": "homebrew",
+      "package": "icu4c@78@78.3",
+      "source_path": "lib/libicui18n.78.3.dylib",
+      "source_sha256": "f319e50c965a1a0065d2cc5595d8553ff60b0e78a2e76bc3173774fd112de9ed"
+    },
+    {
+      "path": "Contents/Frameworks/libicuuc.78.dylib",
+      "uuid": "EC934797-EFF8-36BA-BA4D-A1EFD318018A",
+      "sha256_before_final_signing": "aa574b6a868fb3f289bdfa5b4c6ae4dc9acbe2d4ab2331af387f5eac8e05192a",
+      "origin": "homebrew",
+      "package": "icu4c@78@78.3",
+      "source_path": "lib/libicuuc.78.3.dylib",
+      "source_sha256": "177dab8ae0bf0b1357d7ec6404a1e145bcc3d927aa15c3064171d23b2a1fd263"
+    },
+    {
+      "path": "Contents/Frameworks/libintl.8.dylib",
+      "uuid": "9EF58F71-571D-352E-BB98-6E9754D6B30B",
+      "sha256_before_final_signing": "61dc283ec7aa7f6cb7d4c393af55ea22ed122b4a475a060b28b65a435c77883d",
+      "origin": "homebrew",
+      "package": "gettext@1.0",
+      "source_path": "lib/libintl.8.dylib",
+      "source_sha256": "0c6d618e75fea85cc3d631e164a71766fba9341d19ce1f723300c52e63037c51"
+    },
+    {
+      "path": "Contents/Frameworks/libjpeg.8.dylib",
+      "uuid": "8A556CB1-F63C-35A2-9417-3657A66AB758",
+      "sha256_before_final_signing": "74b2f126ed005de8b2bfd894190487ca85e63b42e89a220f1aaf3402acce5770",
+      "origin": "homebrew",
+      "package": "jpeg-turbo@3.2.0",
+      "source_path": "lib/libjpeg.8.3.2.dylib",
+      "source_sha256": "e6585d0aee1969a63f288f97bbe3ef100ac787bc25ebcc4e6487b82b96cdbcae"
+    },
+    {
+      "path": "Contents/Frameworks/libmd4c.0.dylib",
+      "uuid": "DCC7DA10-6B70-39A5-BC61-C8C1EC420348",
+      "sha256_before_final_signing": "bc0ec36771e2a3be4844bcc52cb4a201287e07dcb1730be97b44bd9bc4702919",
+      "origin": "homebrew",
+      "package": "md4c@0.6.0",
+      "source_path": "lib/libmd4c.0.6.0.dylib",
+      "source_sha256": "ed57c14b5540e007e3657b4b5e9bb4a173367e8f8bda2b761c90c2253e551e05"
+    },
+    {
+      "path": "Contents/Frameworks/libpcre2-16.0.dylib",
+      "uuid": "CF2B7BC3-0705-3D27-AAA0-2D0699C7302C",
+      "sha256_before_final_signing": "24c6499459ead42c492787e0ed6b0d40838b5057adb19beabb5048e4e63e9911",
+      "origin": "homebrew",
+      "package": "pcre2@10.48",
+      "source_path": "lib/libpcre2-16.0.dylib",
+      "source_sha256": "91f681c6755bda152bef3b343ea278ec92054b95cbdf2c66589f4921ca03adf5"
+    },
+    {
+      "path": "Contents/Frameworks/libpcre2-8.0.dylib",
+      "uuid": "C0441B62-B4E2-30CF-AFE5-2FF172C2B0BF",
+      "sha256_before_final_signing": "d8d493fa3060644683846ae0aedab4fe70e2749e6c9b7582e1489d7d015c38a0",
+      "origin": "homebrew",
+      "package": "pcre2@10.48",
+      "source_path": "lib/libpcre2-8.0.dylib",
+      "source_sha256": "6b698ffc744550e149829d94045912448b8ac4b692cb267dce9fc2f3ed60659d"
+    },
+    {
+      "path": "Contents/Frameworks/libpng16.16.dylib",
+      "uuid": "68CBDB4A-D121-3925-A2AB-FA1A7598B757",
+      "sha256_before_final_signing": "e9b614de013e19f6acf6f6df7959662654d85fae2ae76e8c4bd3428ff7b33c7f",
+      "origin": "homebrew",
+      "package": "libpng@1.6.58",
+      "source_path": "lib/libpng16.16.dylib",
+      "source_sha256": "0af10df88b17d1c23769d3669786dc35b6e09d45a0122889f769aec29f52dc33"
+    },
+    {
+      "path": "Contents/Frameworks/libzstd.1.dylib",
+      "uuid": "1CE1197A-4A2B-3036-984E-95599210332B",
+      "sha256_before_final_signing": "0f917511c2873917457a41d4aa284f1759fafdc425093fa8c8d50ff4e29da878",
+      "origin": "homebrew",
+      "package": "zstd@1.5.7_1",
+      "source_path": "lib/libzstd.1.5.7.dylib",
+      "source_sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab"
+    },
+    {
+      "path": "Contents/MacOS/webfence",
+      "uuid": "92454F54-66EE-3C32-8759-4D890D5675B3",
+      "sha256_before_final_signing": "795aef447cc52108316a029c055b223465eeb093837700754f30959e007b706e",
+      "origin": "webfence-go-build"
+    },
+    {
+      "path": "Contents/PlugIns/imageformats/libqgif.dylib",
+      "uuid": "53770666-8357-321E-88B7-D3BA1DF7051F",
+      "sha256_before_final_signing": "b4c88c4b0ca51cba028b7afa6c54f06189a411a2c09ddaa1ad4e5ae26c5f33f5",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "share/qt/plugins/imageformats/libqgif.dylib",
+      "source_sha256": "2923b88f4c7eafeedb8f38b86355e8ba40f7669afcafd1f4b1ba1459eee49d80"
+    },
+    {
+      "path": "Contents/PlugIns/imageformats/libqico.dylib",
+      "uuid": "D18DDBA0-7E23-356C-892C-4F02674E513A",
+      "sha256_before_final_signing": "d3fba017460932ef913b64f406a829d3304507fc1b87e418e12b3d8c03102d12",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "share/qt/plugins/imageformats/libqico.dylib",
+      "source_sha256": "1856314f7db3dd876c4a9830acdd8f3dfb5670f12d5ffe346423ce7d25895432"
+    },
+    {
+      "path": "Contents/PlugIns/imageformats/libqjpeg.dylib",
+      "uuid": "D3C638CF-33C4-3177-A929-55A40AE0F441",
+      "sha256_before_final_signing": "55e74a0ba901f32cd7d2de3e8f7d27eb31a2bba2412c67e5fd8768d4e64d7f41",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "share/qt/plugins/imageformats/libqjpeg.dylib",
+      "source_sha256": "26bb5b52fbefad2f90bc2738bb03387ce1e844fa348495ca3f06fcc6d1c9353d"
+    },
+    {
+      "path": "Contents/PlugIns/platforms/libqcocoa.dylib",
+      "uuid": "5F03CCBE-836E-3932-A3DF-6A5D6BCDB40D",
+      "sha256_before_final_signing": "c76b858274c405f2e7b6024aac9678024c77402798bae6768214e86c86adfc3a",
+      "origin": "rebuilt-qt-cocoa",
+      "materials": "Contents/Resources/notices/scripts/qt-cocoa"
+    },
+    {
+      "path": "Contents/PlugIns/styles/libqmacstyle.dylib",
+      "uuid": "2FE1AE43-3E56-30F6-BDD9-6353AC332294",
+      "sha256_before_final_signing": "0d7d293b4f9bb470fa95c37cf651ba70361286122cb2b31971bfa03743fc45e7",
+      "origin": "homebrew",
+      "package": "qtbase@6.11.2",
+      "source_path": "share/qt/plugins/styles/libqmacstyle.dylib",
+      "source_sha256": "34ddb605d88dcda57c6654a296de451487758689f28632630862f2f806d90641"
+    }
+  ],
+  "packages": {
+    "qtbase@6.11.2": {
+      "formula": "qtbase",
+      "version": "6.11.2",
+      "notice_files": [
+        "lib/cmake/Qt6/3rdparty/extra-cmake-modules/COPYING-CMAKE-SCRIPTS",
+        "lib/cmake/Qt6/3rdparty/kwin/COPYING-CMAKE-SCRIPTS"
+      ],
+      "metadata_files": [
+        ".brew/qtbase.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json",
+        "share/qt/sbom/qtbase-6.11.2.spdx"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-qtbase-src",
+          "name": "qtbase",
+          "versionInfo": "6.11.2",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-08-13T07:40:40Z",
+          "licenseConcluded": "(LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only) AND (GPL-3.0-only WITH Qt-GPL-exception-1.0) AND BSD-3-Clause AND GFDL-1.3-no-invariants-only",
+          "downloadLocation": "https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtbase-everywhere-src-6.11.2.tar.xz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [
+            {
+              "referenceCategory": "PACKAGE-MANAGER",
+              "referenceLocator": "pkg:brew/homebrew/core/qtbase@6.11.2",
+              "referenceType": "purl"
+            }
+          ],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "libb2@0.98.1": {
+      "formula": "libb2",
+      "version": "0.98.1",
+      "notice_files": [
+        "COPYING"
+      ],
+      "metadata_files": [
+        ".brew/libb2.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-libb2-src",
+          "name": "libb2",
+          "versionInfo": "0.98.1",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2019-03-10 15:36:31 UTC",
+          "licenseConcluded": "CC0-1.0",
+          "downloadLocation": "https://github.com/BLAKE2/libb2/releases/download/v0.98.1/libb2-0.98.1.tar.gz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "53626fddce753c454a3fea581cbbc7fe9bbcf0bc70416d48fdbbf5d87ef6c72e"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "dbus@1.16.2_1": {
+      "formula": "dbus",
+      "version": "1.16.2_1",
+      "notice_files": [
+        "COPYING"
+      ],
+      "metadata_files": [
+        ".brew/dbus.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-dbus-src",
+          "name": "dbus",
+          "versionInfo": "1.16.2",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2025-02-27 16:29:06 UTC",
+          "licenseConcluded": "AFL-2.1 OR GPL-2.0-or-later",
+          "downloadLocation": "https://dbus.freedesktop.org/releases/dbus/dbus-1.16.2.tar.xz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "0ba2a1a4b16afe7bceb2c07e9ce99a8c2c3508e5dec290dbb643384bd6beb7e2"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "double-conversion@3.4.0": {
+      "formula": "double-conversion",
+      "version": "3.4.0",
+      "notice_files": [
+        "COPYING",
+        "LICENSE"
+      ],
+      "metadata_files": [
+        ".brew/double-conversion.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-double-conversion-src",
+          "name": "double-conversion",
+          "versionInfo": "3.4.0",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2025-12-08 09:34:52 UTC",
+          "licenseConcluded": "BSD-3-Clause",
+          "downloadLocation": "https://github.com/google/double-conversion/archive/refs/tags/v3.4.0.tar.gz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "42fd4d980ea86426e457b24bdfa835a6f5ad9517ddb01cdb42b99ab9c8dd5dc9"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "freetype@2.14.3": {
+      "formula": "freetype",
+      "version": "2.14.3",
+      "notice_files": [
+        "LICENSE.TXT"
+      ],
+      "metadata_files": [
+        ".brew/freetype.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-freetype-src",
+          "name": "freetype",
+          "versionInfo": "2.14.3",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-03-22T15:10:54Z",
+          "licenseConcluded": "FTL",
+          "downloadLocation": "https://downloads.sourceforge.net/project/freetype/freetype2/2.14.3/freetype-2.14.3.tar.xz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "glib@2.90.0": {
+      "formula": "glib",
+      "version": "2.90.0",
+      "notice_files": [],
+      "metadata_files": [
+        ".brew/glib.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "no_installed_notices",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-glib-src",
+          "name": "glib",
+          "versionInfo": "2.90.0",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-09-09T13:40:59Z",
+          "licenseConcluded": "LGPL-2.1-or-later",
+          "downloadLocation": "https://download.gnome.org/sources/glib/2.90/glib-2.90.0.tar.xz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [
+            {
+              "referenceCategory": "PACKAGE-MANAGER",
+              "referenceLocator": "pkg:brew/homebrew/core/glib@2.90.0",
+              "referenceType": "purl"
+            }
+          ],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "17d15cac2af80a33271127408e0abc2748eb297c595c2a26409e81e14e7d1b8f"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "graphite2@1.3.15": {
+      "formula": "graphite2",
+      "version": "1.3.15",
+      "notice_files": [
+        "COPYING",
+        "LICENSE"
+      ],
+      "metadata_files": [
+        ".brew/graphite2.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-graphite2-src",
+          "name": "graphite2",
+          "versionInfo": "1.3.15",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-05-31T21:03:26Z",
+          "licenseConcluded": "GPL-2.0-or-later OR LGPL-2.1-or-later OR MPL-1.1+",
+          "downloadLocation": "https://github.com/silnrsi/graphite/releases/download/1.3.15/graphite2-1.3.15.tgz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "c6bc8b4252724665297f7cad0c55897285c673f9b8e6db3522ace833593fe0b1"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "harfbuzz@14.5.0": {
+      "formula": "harfbuzz",
+      "version": "14.5.0",
+      "notice_files": [
+        "COPYING"
+      ],
+      "metadata_files": [
+        ".brew/harfbuzz.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-harfbuzz-src",
+          "name": "harfbuzz",
+          "versionInfo": "14.5.0",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-09-20T21:41:07Z",
+          "licenseConcluded": "MIT",
+          "downloadLocation": "https://github.com/harfbuzz/harfbuzz/releases/download/14.5.0/harfbuzz-14.5.0.tar.xz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [
+            {
+              "referenceCategory": "PACKAGE-MANAGER",
+              "referenceLocator": "pkg:brew/homebrew/core/harfbuzz@14.5.0",
+              "referenceType": "purl"
+            }
+          ],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "b7132e148358a45185c9feafd049dbaf243649d3c44414b3534d9c95d18592b9"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "icu4c@78@78.3": {
+      "formula": "icu4c@78",
+      "version": "78.3",
+      "notice_files": [
+        "LICENSE",
+        "license.html",
+        "share/icu/78.3/LICENSE"
+      ],
+      "metadata_files": [
+        ".brew/icu4c@78.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-icu4c@78-src",
+          "name": "icu4c@78",
+          "versionInfo": "78.3",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-03-17 17:44:54 UTC",
+          "licenseConcluded": "ICU",
+          "downloadLocation": "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "3a2e7a47604ba702f345878308e6fefeca612ee895cf4a5f222e7955fabfe0c0"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "gettext@1.0": {
+      "formula": "gettext",
+      "version": "1.0",
+      "notice_files": [
+        "COPYING"
+      ],
+      "metadata_files": [
+        ".brew/gettext.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-gettext-src",
+          "name": "gettext",
+          "versionInfo": "1.0",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-01-28T23:54:42Z",
+          "licenseConcluded": "GPL-3.0-or-later AND LGPL-2.1-or-later",
+          "downloadLocation": "https://ftpmirror.gnu.org/gnu/gettext/gettext-1.0.tar.gz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "85d99b79c981a404874c02e0342176cf75c7698e2b51fe41031cf6526d974f1a"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "jpeg-turbo@3.2.0": {
+      "formula": "jpeg-turbo",
+      "version": "3.2.0",
+      "notice_files": [
+        "LICENSE.md",
+        "share/doc/libjpeg-turbo/LICENSE.md"
+      ],
+      "metadata_files": [
+        ".brew/jpeg-turbo.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-jpeg-turbo-src",
+          "name": "jpeg-turbo",
+          "versionInfo": "3.2.0",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-06-30T17:25:43Z",
+          "licenseConcluded": "IJG AND Zlib AND BSD-3-Clause",
+          "downloadLocation": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "md4c@0.6.0": {
+      "formula": "md4c",
+      "version": "0.6.0",
+      "notice_files": [
+        "LICENSE.md"
+      ],
+      "metadata_files": [
+        ".brew/md4c.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-md4c-src",
+          "name": "md4c",
+          "versionInfo": "0.6.0",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-09-17T16:29:41Z",
+          "licenseConcluded": "MIT",
+          "downloadLocation": "https://github.com/mity/md4c/archive/refs/tags/v0.6.0.tar.gz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [
+            {
+              "referenceCategory": "PACKAGE-MANAGER",
+              "referenceLocator": "pkg:brew/homebrew/core/md4c@0.6.0",
+              "referenceType": "purl"
+            }
+          ],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "4d151298125a81da3b2efa2e0eed8bdb7a9318569804e4fa4d7a2375ab83ef70"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "pcre2@10.48": {
+      "formula": "pcre2",
+      "version": "10.48",
+      "notice_files": [
+        "COPYING",
+        "LICENCE.md",
+        "share/doc/pcre2/COPYING",
+        "share/doc/pcre2/LICENCE.md"
+      ],
+      "metadata_files": [
+        ".brew/pcre2.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-pcre2-src",
+          "name": "pcre2",
+          "versionInfo": "10.48",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-08-31T13:49:05Z",
+          "licenseConcluded": "BSD-3-Clause",
+          "downloadLocation": "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.48/pcre2-10.48.tar.bz2",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [
+            {
+              "referenceCategory": "PACKAGE-MANAGER",
+              "referenceLocator": "pkg:brew/homebrew/core/pcre2@10.48",
+              "referenceType": "purl"
+            }
+          ],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "b6c68fdf6f3ac31388b50aa89ff0fc49c00c987c16e7b5146491d12003f2c8ed"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "libpng@1.6.58": {
+      "formula": "libpng",
+      "version": "1.6.58",
+      "notice_files": [
+        "LICENSE"
+      ],
+      "metadata_files": [
+        ".brew/libpng.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-libpng-src",
+          "name": "libpng",
+          "versionInfo": "1.6.58",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2026-04-15T17:23:26Z",
+          "licenseConcluded": "libpng-2.0",
+          "downloadLocation": "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.58/libpng-1.6.58.tar.xz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    },
+    "zstd@1.5.7_1": {
+      "formula": "zstd",
+      "version": "1.5.7_1",
+      "notice_files": [
+        "COPYING",
+        "LICENSE"
+      ],
+      "metadata_files": [
+        ".brew/zstd.rb",
+        "INSTALL_RECEIPT.json",
+        "sbom.spdx.json"
+      ],
+      "notice_status": "installed_only_requires_review",
+      "upstream_archives": [
+        {
+          "SPDXID": "SPDXRef-Archive-zstd-src",
+          "name": "zstd",
+          "versionInfo": "1.5.7",
+          "filesAnalyzed": false,
+          "licenseDeclared": "NOASSERTION",
+          "builtDate": "2025-02-19 00:04:24 UTC",
+          "licenseConcluded": "(BSD-3-Clause OR GPL-2.0-only) AND BSD-2-Clause AND MIT",
+          "downloadLocation": "https://github.com/facebook/zstd/archive/refs/tags/v1.5.7.tar.gz",
+          "copyrightText": "NOASSERTION",
+          "externalRefs": [],
+          "checksums": [
+            {
+              "algorithm": "SHA256",
+              "checksumValue": "37d7284556b20954e56e1ca85b80226768902e2edabd3b649e9e72c0c9012ee3"
+            }
+          ]
+        }
+      ],
+      "review": "installed notices only; upstream/embedded components and corresponding sources require review"
+    }
+  },
+  "open_items": [
+    "Complete embedded-component attribution",
+    "Qt and GLib upstream notices beyond installed build-tool notices",
+    "Corresponding source archives, patches and replacement/rebuild materials",
+    "Qualified legal review and clean-machine trials"
+  ]
+}

@@ -75,6 +75,8 @@ On Apple Silicon macOS, create a local bundle with `sh scripts/package-macos.sh`
 
 Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and derivatives on x86-64/ARM64. Actual support depends on the [M0 matrix](DOCS/en/QT-DESKTOP.md). The [UX direction](DOCS/en/UX.md) calls for a restrained, traditional desktop, guided workflow and progressively available advanced tools.
 
+Dependency materials: [source and notice collector](DOCS/en/M0-SOURCE-MATERIALS.md) verified against 15 upstream archives. Distribution review remains open.
+
 ## License and author
 
 Author and project owner: **Matteo Luigi Feroldi** — [Matte2599](https://github.com/Matte2599).

@@ -56,6 +56,8 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 - Nuova prova Cocoa 30 minuti su `8d3053f` pulito, patch 772484, avviata 2026-09-23 16:04:37 UTC. App `/tmp/webfence-stability-8d3053f/WebFence Stability Current.app`, log `/tmp/webfence-soak-macos-8d3053f-30m/`, sessione exec 82112, raccoglitore PID 12905, figlio 12910. Lettura AX CUA eseguita. Prima di continuare verificare processi/eventi: non riavviare per assenza di output. Esito ancora aperto.
 
+- [Materiali sorgente](DOCS/it/M0-SOURCE-MATERIALS.md): raccoglitore Python separato, input native-build fidato, HTTPS/curl 8.4+, SHA-256, budget e lettura tar senza estrazione generale o link. Verificati 15 archivi/170.920.531 byte e 247 file di avvisi; Qt/GLib e riferimenti FreeType inclusi. Output `/tmp/webfence-native-sources-8d3053f-reviewed/`, manifest/input in DOCS/evidence; archivi fuori da Git. Sette regressioni sintetiche locali superate, aggiunte a CI; esito remoto da verificare. Non integrato automaticamente nel bundle; corresponding_sources_complete=false, patch/risorse Homebrew e mappatura degli incorporati ancora aperte.
+
 ### Prossimo lavoro e confini
 
 1. Completare M0 secondo la [matrice](DOCS/it/M0-VALIDATION.md), con prove e collaudo complessivo finale, docs IT/EN, commit/push e CI verificata. Non chiudere per i soli test automatizzati.
@@ -119,6 +121,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 - CI `6d711e5`, run 35884948483: five jobs passed, Cocoa viewport still 59 instead of 60 points. Update now reacts to header geometriesChanged using actual height. Taller-header regression fails before and passes after (offscreen). Subsequent correction verified in CI `8d3053f`, run 35885936443, six passing jobs.
 
 - New 30-minute Cocoa trial on clean `8d3053f`, patch 772484, started 2026-09-23 16:04:37 UTC. App `/tmp/webfence-stability-8d3053f/WebFence Stability Current.app`, logs `/tmp/webfence-soak-macos-8d3053f-30m/`, exec session 82112, collector PID 12905, child 12910. CUA AX read performed. Before continuing inspect processes/events: do not restart for missing output. Outcome still open.
+
+- [Source materials](DOCS/en/M0-SOURCE-MATERIALS.md): separate Python collector, trusted native-build input, HTTPS/curl 8.4+, SHA-256, budgets and tar reading without general extraction or links. Verified 15 archives/170,920,531 bytes and 247 notice files; Qt/GLib and FreeType references included. Output `/tmp/webfence-native-sources-8d3053f-reviewed/`, manifest/input in DOCS/evidence; archives outside Git. Seven local synthetic regressions passed, added to CI; remote outcome to verify. Not automatically integrated into the bundle; corresponding_sources_complete=false, Homebrew patches/resources and embedded mapping still open.
 
 ### Next work and boundaries
 
