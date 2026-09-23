@@ -139,6 +139,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	w.table.SetSelectionMode(qt.QAbstractItemView__SingleSelection)
 	w.table.SetEditTriggers(qt.QAbstractItemView__NoEditTriggers)
 	w.table.SetAlternatingRowColors(true)
+	w.table.SetTabKeyNavigation(false) // Arrows navigate rows; Tab leaves the table.
 	for i, size := range []int{130, 170, 490, 130} {
 		w.table.SetColumnWidth(i, size)
 	}
@@ -149,9 +150,11 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	w.summary.SetTextFormat(qt.PlainText)
 	w.summary.SetWordWrap(true)
 	w.summary.SetTextInteractionFlags(qt.TextSelectableByMouse | qt.TextSelectableByKeyboard)
+	w.summary.SetFocusPolicy(qt.StrongFocus)
 	detailLayout.AddWidget(w.summary.QWidget)
 	w.evidence = qt.NewQPlainTextEdit2()
 	w.evidence.SetReadOnly(true)
+	w.evidence.SetTabChangesFocus(true)
 	detailLayout.AddWidget(w.evidence.QWidget)
 	w.copy = qt.NewQPushButton2()
 	detailLayout.AddWidget(w.copy.QWidget)

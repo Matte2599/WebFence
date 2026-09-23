@@ -19,6 +19,7 @@ func selfTest(w *workspace) int {
 	wasActive := qt.QAccessible_IsActive()
 	qt.QAccessible_SetActive(true)
 	defer qt.QAccessible_SetActive(wasActive)
+	fmt.Printf("qt_accessibility_active=%t\n", qt.QAccessible_IsActive())
 	failures := 0
 	check := func(ok bool, name string) {
 		if !ok {
@@ -26,6 +27,19 @@ func selfTest(w *workspace) int {
 			failures++
 		} else {
 			fmt.Println("PASS", name)
+		}
+	}
+	pressTab := func(backward bool) {
+		key, modifiers := qt.Key_Tab, qt.NoModifier
+		if backward {
+			key, modifiers = qt.Key_Backtab, qt.ShiftModifier
+		}
+		for _, kind := range []qt.QEvent__Type{qt.QEvent__KeyPress, qt.QEvent__KeyRelease} {
+			if focused := qt.QApplication_FocusWidget(); focused != nil {
+				event := qt.NewQKeyEvent(kind, int(key), modifiers)
+				qt.QCoreApplication_SendEvent(focused.QObject, event.QEvent)
+				event.Delete()
+			}
 		}
 	}
 	// These are Qt interfaces, not the OS accessibility bridge or a screen reader.
@@ -37,6 +51,15 @@ func selfTest(w *workspace) int {
 			return
 		}
 		table := iface.TableInterface()
+		if !qt.QAccessible_IsActive() {
+			// Qt 6.4 offscreen has no active platform bridge: SetActive only
+			// notifies observers. Exercise current interface data with an explicit
+			// cache reset, never claim to test automatic OS notifications here.
+			event := qt.NewQAccessibleTableModelChangeEvent(w.table.QObject, qt.QAccessibleTableModelChangeEvent__ModelReset)
+			table.ModelChange(event)
+			event.Delete()
+			fmt.Println("NOTE explicit accessible cache reset (no active bridge):", stage)
+		}
 		check(table.RowCount() == len(w.visible) && table.ColumnCount() == 4, "Qt accessible dimensions: "+stage)
 		if len(w.visible) > 0 {
 			row := len(w.visible) - 1
@@ -127,6 +150,20 @@ func selfTest(w *workspace) int {
 	w.resultsAction.Trigger()
 	check(w.selectedID == "DEMO-00001", "results action selects first row when none selected")
 	checkAccessible("restored")
+	pressTab(false)
+	check(w.summary.HasFocus(), "Tab leaves results for summary")
+	pressTab(false)
+	check(w.evidence.HasFocus(), "Tab reaches visible evidence")
+	pressTab(false)
+	check(w.copy.HasFocus(), "Tab leaves evidence for copy")
+	pressTab(true)
+	check(w.evidence.HasFocus(), "Shift+Tab returns to evidence")
+	w.advancedAction.Trigger()
+	check(w.advanced.HasFocus() && !w.evidence.IsVisible(), "hide details after keyboard navigation")
+	w.resultsAction.Trigger()
+	pressTab(false)
+	pressTab(false)
+	check(w.load.HasFocus(), "Tab skips hidden evidence and copy")
 	long := strings.Repeat(demo.Records()[0].Evidence(), 2048)
 	w.evidence.SetPlainText(long)
 	qt.QCoreApplication_ProcessEvents()

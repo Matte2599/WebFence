@@ -26,7 +26,7 @@ Packaging reuses the build’s C++ flags, avoiding a second binding compilation.
 
 ## Keyboard and accessibility checks — 2026-09-23
 
-The **View** menu provides direct access to search, results and evidence; File precedes View and Language. Search and severity have visible labels associated with their controls. Tab order follows commands → filters → table → summary → evidence/copy when visible. Hiding details while evidence or its copy button owns focus returns focus to “Advanced details”.
+The **View** menu provides direct access to search, results and evidence; File precedes View and Language. Search and severity have visible labels associated with their controls. Tab leaves the table (arrows navigate rows) and the evidence text; Shift+Tab moves backward. Tab order follows commands → filters → table → summary → evidence/copy when visible. Hiding details while evidence or its copy button owns focus returns focus to “Advanced details”.
 
 | Action | Windows/Linux | macOS |
 | --- | --- | --- |
@@ -37,7 +37,7 @@ The **View** menu provides direct access to search, results and evidence; File p
 
 Language changes emit data/header notifications without resetting the model. They preserve the current row and evidence text selection. Filters that change rows still use Qt’s model reset.
 
-The self-test checks action focus, menu/checkbox synchronization, stale-data prevention, text selection and `QAccessibleTableInterface` (dimensions and last-cell ID after loading, translation, filtering, restoring and clearing). In offscreen mode it explicitly activates Qt accessibility for the test only: without an active reader, Qt may not invalidate its cell cache on resets. The normal GUI retains system-managed activation. These checks do not measure the macOS bridge or VoiceOver announcements.
+The self-test checks action focus, menu/checkbox synchronization, stale-data prevention, text selection and `QAccessibleTableInterface` (dimensions and last-cell ID after loading, translation, filtering, restoring and clearing). In offscreen mode it requests Qt accessibility activation for the test only: without an active reader, Qt may not invalidate its cell cache on resets. With Qt 6.4 offscreen, `SetActive` notifies observers but does not activate the bridge: the test logs `qt_accessibility_active=false` and explicitly resets the interface cache before reading it. In that case it checks data and dimensions, not automatic event delivery. Activation was true on local Qt 6.11.2. The normal GUI retains system-managed activation. The test also sends Tab/Shift+Tab events to Qt widgets to check leaving the table, summary, evidence, copy and skipping hidden controls. These checks do not measure the macOS bridge or VoiceOver announcements.
 
 The missing table node after filtering was reproduced through macOS AX inspection before this change. The new keyboard workflow and internal Qt checks are insufficient to declare that limitation resolved. To close the gate, repeat with VoiceOver, NVDA and Orca: load → filter → read headers/row → open evidence → change language → remove filter → clear; verify announcements, focus, original text and absence of stale cells. Record OS/Qt/reader versions, DPI and results per platform.
 

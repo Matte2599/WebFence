@@ -26,7 +26,7 @@ Il packaging riusa gli stessi flag C++ della build, evitando una seconda compila
 
 ## Tastiera e verifica accessibilità — 2026-09-23
 
-Il menu **Visualizza** offre accesso diretto a ricerca, risultati ed evidenze; File precede Visualizza e Lingua. Ricerca e gravità hanno etichette visibili associate ai controlli. L’ordine Tab segue barra comandi → filtri → tabella → riepilogo → evidenze/copia quando visibili. Nascondere i dettagli mentre il focus è nelle evidenze o sul pulsante copia riporta il focus a «Dettagli avanzati».
+Il menu **Visualizza** offre accesso diretto a ricerca, risultati ed evidenze; File precede Visualizza e Lingua. Ricerca e gravità hanno etichette visibili associate ai controlli. Tab esce dalla tabella (le frecce navigano le righe) e dal testo delle evidenze; Shift+Tab torna indietro. L’ordine Tab segue barra comandi → filtri → tabella → riepilogo → evidenze/copia quando visibili. Nascondere i dettagli mentre il focus è nelle evidenze o sul pulsante copia riporta il focus a «Dettagli avanzati».
 
 | Azione | Windows/Linux | macOS |
 | --- | --- | --- |
@@ -37,7 +37,7 @@ Il menu **Visualizza** offre accesso diretto a ricerca, risultati ed evidenze; F
 
 Il cambio lingua invia notifiche di dati/intestazioni modificate, senza reset del modello. Conserva la riga corrente e la selezione del testo nelle evidenze. I filtri che cambiano le righe continuano a usare il reset previsto da Qt.
 
-Il self-test verifica focus delle azioni, sincronizzazione menu/checkbox, assenza di dati obsoleti, selezione del testo e interfaccia `QAccessibleTableInterface` (dimensioni e ID dell’ultima cella dopo caricamento, traduzione, filtri, ripristino e svuotamento). In modalità offscreen attiva esplicitamente l’accessibilità Qt solo per il test: senza un lettore attivo, Qt può non invalidare la cache delle celle sui reset. La GUI normale conserva l’attivazione gestita dal sistema. Queste prove non misurano il bridge macOS né ciò che viene annunciato da VoiceOver.
+Il self-test verifica focus delle azioni, sincronizzazione menu/checkbox, assenza di dati obsoleti, selezione del testo e interfaccia `QAccessibleTableInterface` (dimensioni e ID dell’ultima cella dopo caricamento, traduzione, filtri, ripristino e svuotamento). In modalità offscreen richiede l’attivazione dell’accessibilità Qt solo per il test: senza un lettore attivo, Qt può non invalidare la cache delle celle sui reset. Su Qt 6.4 offscreen `SetActive` notifica gli osservatori ma non attiva il bridge: il test registra `qt_accessibility_active=false` e invia un reset esplicito alla cache dell’interfaccia prima delle letture. In quel caso verifica dati e dimensioni, non la consegna automatica degli eventi. Su Qt 6.11.2 locale l’attivazione è risultata vera. La GUI normale conserva l’attivazione gestita dal sistema. Il test invia inoltre eventi Tab/Shift+Tab ai widget Qt per controllare uscita dalla tabella, riepilogo, evidenze, copia e salto dei controlli nascosti. Queste prove non misurano il bridge macOS né ciò che viene annunciato da VoiceOver.
 
 Il nodo tabella assente dopo un filtro è stato riprodotto nell’ispezione AX macOS prima della modifica. Il nuovo percorso da tastiera e le prove interne Qt non bastano a dichiarare risolto quel limite. Per chiudere il gate occorre ripetere con VoiceOver, NVDA e Orca: carica → filtra → leggi intestazioni/riga → apri evidenze → cambia lingua → elimina il filtro → svuota; verificare annunci, focus, testo originale e assenza di celle obsolete. Registrare versioni OS/Qt/lettore, DPI e risultati per piattaforma.
 
