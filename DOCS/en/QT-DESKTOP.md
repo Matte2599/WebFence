@@ -20,7 +20,9 @@ No scanner, target networking, CVE, AI, database or signed reports introduced. T
 - Main build, C++17-enabled `go vet ./...` and module verification passed on macOS ARM64.
 - Qt offscreen self-test passed: 10,000 rows, selection identity, filters, empty state, persistent language actions, long text, intercepted copying and recoverable error warning. Uses a temporary directory rather than user preferences; does not alter the clipboard.
 - Main Qt bundle generated, plist and local ad hoc signature verified. GUI opened: 10,000 rows, last-row filter, selection and advanced evidence; Cmd+2 switches to English preserving evidence, closing/reopening restores English, Cmd+1 restores Italian and Cmd+O loads examples. No Developer ID signature/notarization.
-- CI replaced with builds, pure tests and Qt self-tests on macOS ARM64, Ubuntu x86-64/ARM64 and Windows Server x86-64 through MSYS2 UCRT64. Initial run [35851005927](https://github.com/Matte2599/WebFence/actions/runs/35851005927), code `d41aba5`: build, vet and self-test passed on all four targets; Windows and Linux jobs completed. macOS packaging unnecessarily repeated compilation by duplicating the C++17 flag: script corrected, local dry run confirms binding reuse; final run to be recorded. A workflow’s presence does not prove success.
+- **Final CI passed:** [run 35853356437](https://github.com/Matte2599/WebFence/actions/runs/35853356437), code `fa8bd32`. All four jobs completed: build, race-enabled Go tests, vet and Qt self-test; macOS bundle also passed. macOS 15 ARM64 uses Qt 6.11.2, Windows Server 2022 x86-64 uses MSYS2 UCRT64/Qt 6.11.2-2, Ubuntu 24.04 x86-64 and ARM64 use Qt 6.4.2. These outcomes do not establish assistive GUI use on Windows 10/11 or Debian desktop.
+
+Packaging reuses the build’s C++ flags, avoiding a second binding compilation. macOS CI uses `-O0 -g0`; cold compilation remains lengthy (about 11 minutes in the final run), while subsequent packaging finished in about 40 seconds. These are observations from this run, not product benchmarks. The default local `-O2 -g` build was checked separately.
 
 ## Open gates
 
