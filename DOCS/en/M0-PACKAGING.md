@@ -53,3 +53,5 @@ Verified rejection of an unrelated Mach-O component and preservation of an exist
 ## Collected source materials
 
 The [separate collector](M0-SOURCE-MATERIALS.md) verified 15 upstream archives (about 163 MiB) and collected 247 notice/attribution files, including Qt, GLib and FreeType references. Archives remain outside Git; manifests and hashes are retained. Packaging patches/resources, component mapping, integration into distribution materials and legal review remain open.
+
+Optional attachment is now implemented with `WEBFENCE_NATIVE_SOURCE_MATERIALS`: [procedure](M0-SOURCE-MATERIALS.md). Regenerates notices from reverified archives and includes them before signing; full archives remain separate. Local bundle with 247 notices, signature and Cocoa self-test verified. Supplement assembly and distribution review remain open.

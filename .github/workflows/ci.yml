@@ -51,7 +51,7 @@ jobs:
         if: runner.os == 'macOS'
         run: echo 'CGO_CXXFLAGS=-O0 -g0 -std=c++17' >> "$GITHUB_ENV"
       - run: test "$(go env GOARCH)" = "${{ matrix.arch }}"
-      - name: Source material collector regressions
+      - name: Source collection and attachment regressions
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - run: test -z "$(gofmt -l cmd internal)"
       - run: go mod download && go mod verify
@@ -106,7 +106,7 @@ jobs:
             mingw-w64-ucrt-x86_64-qt6-base
             mingw-w64-ucrt-x86_64-python
       - run: test "$(go env GOARCH)" = amd64
-      - name: Source material collector regressions
+      - name: Source collection and attachment regressions
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - run: go mod download && go mod verify
       - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials

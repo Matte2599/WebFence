@@ -117,3 +117,5 @@ Added `.deb`/Windows ZIP packaging and separate-runtime checks: [ADR-007 and com
 macOS packaging also requires Python 3.9+ to collect provenance/notices before signing: [materials and known gaps](M0-PACKAGING.md). The check rejects unmatched or ambiguous native libraries.
 
 Optional source-archive and notice collection from a macOS inventory: [procedure, requirements and tests](M0-SOURCE-MATERIALS.md). Not automatically run by the product build.
+
+Set `WEBFENCE_NATIVE_SOURCE_MATERIALS` to a completed collection directory to attach reverified source notices before macOS signing; see the same procedure. Archives remain separate.

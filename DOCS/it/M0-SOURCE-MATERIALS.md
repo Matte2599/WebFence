@@ -36,7 +36,7 @@ Verificati indipendentemente tutti gli hash di archivi e avvisi. Trasferimento G
 
 Il manifest mantiene **`distribution_ready: false` e `corresponding_sources_complete: false`**. Sono sorgenti upstream delle librerie identificate, non ancora tutti i sorgenti corrispondenti della distribuzione: servono patch/risorse dei package manager, ambiente e istruzioni di ricompilazione/sostituzione. Il supplemento GLib descritto sotto copre una parte di questi materiali; il resto della chiusura deve ancora essere verificato e assemblato.
 
-Gli avvisi dell’intero albero sorgente possono includere componenti non distribuiti; occorre mapparli ai binari reali e scegliere/verificare i termini applicabili. Le ricette, le SBOM e la patch Cocoa restano nel bundle originale identificato dall’inventario. La directory raccolta non è incorporata automaticamente nel pacchetto né pubblicata come release. Revisione legale, minimi OS, prove desktop pulite e materiali Windows restano parte di M0-02/M0-06; raccogliere file non li approva.
+Gli avvisi dell’intero albero sorgente possono includere componenti non distribuiti; occorre mapparli ai binari reali e scegliere/verificare i termini applicabili. Le ricette, le SBOM e la patch Cocoa restano nel bundle originale identificato dall’inventario. Gli avvisi possono ora essere inclusi esplicitamente prima della firma, con la procedura seguente; gli archivi restano separati e nessuna release è pubblicata. Revisione legale, minimi OS, prove desktop pulite e materiali Windows restano parte di M0-02/M0-06; raccogliere file non li approva.
 
 ## Supplemento GLib identificato
 
@@ -45,3 +45,22 @@ La [ricetta Homebrew alla revisione 550d1a4](https://github.com/Homebrew/homebre
 [Provenienza e hash](../evidence/macos-sources-2026-09-23/glib-supplement.json) conservati; materiali in `/tmp/webfence-glib-materials-550d1a4/`, separati dall’output automatico. Il confronto identifica i materiali della ricetta, senza dimostrare una ricostruzione binaria identica della bottle. L’integrazione nel pacchetto completo e la verifica delle altre ricette restano aperte.
 
 Anche la patch configure Big Sur di libb2 0.98.1 è stata acquisita dall’URL fissato nella ricetta, verificata per SHA-256 e provata con dry-run senza fuzz: [ledger](../evidence/macos-sources-2026-09-23/libb2-supplement.json), file locale `/tmp/webfence-libb2-materials/configure-big_sur.diff`. La patch D-Bus è già incorporata nella ricetta conservata. Altre ricette contengono sostituzioni testuali e risorse di test (font/immagini): non equipararle automaticamente a contenuti distribuiti; conservare le ricette e verificare il ruolo di ciascun materiale durante l’assemblaggio.
+
+## Includere gli avvisi verificati nel bundle di sviluppo
+
+Dopo la raccolta dei sorgenti, ricompilare con la directory di input facoltativa:
+
+```sh
+WEBFENCE_NATIVE_SOURCE_MATERIALS=/tmp/webfence-source-materials \
+  sh scripts/package-macos.sh
+```
+
+`scripts/attach-native-sources.py` confronta identità dei pacchetti, URL sorgente e SHA-256 con il nuovo inventario del bundle. Ricontrolla ogni archivio sorgente e rigenera gli avvisi direttamente dall’archivio, confrontandoli con il manifest della raccolta. I file di avvisi sciolti eventualmente modificati vengono ignorati. Raccolte incomplete, versioni diverse delle dipendenze, archivi corrotti, metadati degli avvisi discordanti, symlink nei materiali di input e superamento dei budget della raccolta bloccano l’inclusione. Le directory di avvisi esistenti sono preservate; l’output temporaneo viene rimosso in caso di errore. Gli input sono artefatti di build fidati in una directory controllata dal costruttore; modifiche concorrenti non sono supportate.
+
+L’output è `Contents/Resources/notices/upstream-source`, incluso prima della firma ad hoc finale. `attachment.json` collega l’hash dell’inventario corrente separatamente dai metadati di acquisizione: il commit WebFence della raccolta originaria non viene presentato come commit del nuovo eseguibile. Per le dipendenze locali correnti si possono includere tutti i 247 avvisi dell’albero sorgente. Gli archivi completi restano nella directory separata di raccolta; i percorsi archivio nel manifest copiato si riferiscono a quella directory, non all’app. Conservare entrambi i materiali nella preparazione di una futura distribuzione. Patch/risorse Homebrew supplementari richiedono ancora assemblaggio.
+
+Questa opzione non effettua download. Senza la variabile, il packaging di sviluppo mantiene avvisi installati e inventario esistenti. Entrambi i manifest conservano `distribution_ready=false`; gli avvisi sorgente copiati possono includere componenti non distribuiti e richiedono mappatura/revisione. Non usare il solo helper per modificare un bundle già firmato: usare l’entry point di packaging, che firma le risorse e impedisce a uno staging fallito di sostituire l’app precedente.
+
+Verifica locale: 12 regressioni Python superate (sette raccolta, cinque inclusione), estrazione effettiva da 15 archivi e ricontrollo indipendente dei 247 hash. Bundle da `0fd78f0` con modifiche dichiarate: firma ad hoc, collegamento all’inventario corrente e self-test Cocoa superati. La CI precedente `0fd78f0`, run 35897426940, ha completato tutti e sei i job; la CI delle nuove modifiche è da verificare dopo il push.
+
+Iniezione di errore nel packaging completo: raccolta sintetica con `INCOMPLETE` rifiutata; hash dell’eseguibile e dell’allegato precedenti invariati, firma ad hoc precedente ancora valida.

@@ -36,7 +36,7 @@ Independently checked every archive and notice hash. A fresh GLib transfer with 
 
 The manifest retains **`distribution_ready: false` and `corresponding_sources_complete: false`**. These are upstream sources of identified libraries, not yet all corresponding sources of the distribution: package-manager patches/resources, build environment and rebuild/replacement instructions are needed. The GLib supplement below covers part of these materials; the rest of the closure still requires verification and assembly.
 
-Whole-source-tree notices can cover unshipped components; map them to actual binaries and choose/verify applicable terms. Recipes, SBOMs and the Cocoa patch remain in the original bundle identified by the inventory. Collected files are not automatically incorporated into the package or published as a release. Legal review, minimum OS versions, clean desktop trials and Windows materials remain part of M0-02/M0-06; collecting files does not approve them.
+Whole-source-tree notices can cover unshipped components; map them to actual binaries and choose/verify applicable terms. Recipes, SBOMs and the Cocoa patch remain in the original bundle identified by the inventory. Notices can now be attached explicitly before signing, using the procedure below; archives remain separate and no release is published. Legal review, minimum OS versions, clean desktop trials and Windows materials remain part of M0-02/M0-06; collecting files does not approve them.
 
 ## Identified GLib supplement
 
@@ -45,3 +45,22 @@ The [Homebrew recipe at revision 550d1a4](https://github.com/Homebrew/homebrew-c
 [Provenance and hashes](../evidence/macos-sources-2026-09-23/glib-supplement.json) retained; materials in `/tmp/webfence-glib-materials-550d1a4/`, separate from automated output. Matching identifies recipe materials without proving a bit-identical bottle rebuild. Integration into the complete package and verification of other recipes remain open.
 
 The libb2 0.98.1 Big Sur configure patch was also acquired from the recipe’s pinned URL, SHA-256 checked and tested with a no-fuzz dry-run: [ledger](../evidence/macos-sources-2026-09-23/libb2-supplement.json), local file `/tmp/webfence-libb2-materials/configure-big_sur.diff`. The D-Bus patch is already embedded in its retained recipe. Other recipes contain textual substitutions and test resources (fonts/images): do not automatically equate them with shipped content; retain recipes and verify each material’s role during assembly.
+
+## Attach verified notices to a development bundle
+
+After collecting sources, rebuild with the optional input directory:
+
+```sh
+WEBFENCE_NATIVE_SOURCE_MATERIALS=/tmp/webfence-source-materials \
+  sh scripts/package-macos.sh
+```
+
+`scripts/attach-native-sources.py` compares package identities, source URLs and SHA-256 hashes against the new bundle inventory. It rechecks every source archive and regenerates notices directly from the archive, comparing them with the collection manifest. Modified loose notice files are ignored. Incomplete collections, different dependency versions, corrupted archives, mismatched notice metadata, symlinks in input materials and exceeded collection budgets fail before attachment. Existing attachment directories are preserved; temporary output is removed on failure. Inputs are trusted build artifacts in a directory owned by the builder; concurrent modification is unsupported.
+
+Output is `Contents/Resources/notices/upstream-source`, included before final ad hoc signing. `attachment.json` binds the current inventory hash separately from acquisition metadata: the collection's original WebFence commit is not presented as the new executable's commit. All 247 source-tree notices can be included for the current local dependencies. Full archives remain in the separate collection directory; archive paths in the copied manifest refer to that directory, not the app. Keep both materials when preparing a future distribution. Supplementary Homebrew patches/resources still require assembly.
+
+This option performs no downloads. Without the variable, development packaging retains its existing installed notices and inventory. Both manifests retain `distribution_ready=false`; copied source-tree notices can include unshipped components and require mapping/review. The helper alone must not be used to alter an already signed bundle: use the packaging entry point so resources are signed and failed staging cannot replace the previous app.
+
+Local verification: 12 Python regressions passed (seven collection, five attachment), actual extraction from 15 archives and independent recheck of all 247 hashes. Bundle from `0fd78f0` with declared modifications: ad hoc signature, current-inventory binding and Cocoa self-test passed. Previous CI `0fd78f0`, run 35897426940, completed all six jobs; CI for the new changes must be checked after push.
+
+Full-packaging failure injection: a synthetic collection with `INCOMPLETE` was rejected; previous executable and attachment hashes unchanged, previous ad hoc signature still valid.

@@ -53,3 +53,5 @@ Verificati rifiuto di un componente Mach-O estraneo e conservazione di inventari
 ## Materiali sorgente raccolti
 
 Il [raccoglitore separato](M0-SOURCE-MATERIALS.md) ha verificato 15 archivi upstream (circa 163 MiB) e raccolto 247 file di avvisi/attribuzione, inclusi Qt, GLib e riferimenti FreeType. Archivi fuori da Git; manifest e hash conservati. Restano patch/risorse di packaging, mappatura dei componenti, integrazione dei materiali nella distribuzione e revisione legale.
+
+Inclusione facoltativa ora implementata con `WEBFENCE_NATIVE_SOURCE_MATERIALS`: [procedura](M0-SOURCE-MATERIALS.md). Rigenera gli avvisi dagli archivi nuovamente verificati e li aggiunge prima della firma; gli archivi completi restano separati. Bundle locale con 247 avvisi, firma e self-test Cocoa verificati. L’integrazione dei supplementi e la revisione della distribuzione restano aperte.

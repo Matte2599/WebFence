@@ -50,6 +50,12 @@ qt_prefix=$(brew --prefix qtbase)
 "$qt_prefix/bin/macdeployqt" "$bundle" -always-overwrite
 sh scripts/build-qt-cocoa.sh "$qt_prefix" "$bundle/Contents/PlugIns/platforms/libqcocoa.dylib"
 python3 scripts/package-macos-notices.py "$bundle" "$qt_prefix"
+if [ -n "${WEBFENCE_NATIVE_SOURCE_MATERIALS:-}" ]; then
+  python3 scripts/attach-native-sources.py \
+    "$bundle/Contents/Resources/notices/native-build.json" \
+    "$WEBFENCE_NATIVE_SOURCE_MATERIALS" \
+    "$bundle/Contents/Resources/notices/upstream-source"
+fi
 codesign --force --deep --sign - "$bundle"
 codesign --verify --deep --strict "$bundle"
 mkdir -p dist
