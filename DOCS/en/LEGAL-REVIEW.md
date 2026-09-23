@@ -12,6 +12,7 @@ Status: technical preparation, **no professional legal opinion obtained**. This 
 - [Inventory and packaging](M0-PACKAGING.md), [macOS native source package](M0-SOURCE-MATERIALS.md#macos-source-package-accompanying-the-bundle) and [Windows sources](M0-WINDOWS-SOURCES.md): verified materials available with explicit limitations and provenance.
 - [Cocoa rebuilding and replacement](M0-QT-REPLACEMENT.md), tested locally and in CI; covers the plugin only, not every library.
 - [Review of 15 macOS recipes](../evidence/homebrew-recipe-review-2026-09-23.md), distinguishing build patches/resources from test fixtures and Linux branches.
+- [Mapping of nine macOS Qt binaries and upstream attributions](../evidence/qt-component-review-2026-09-23.md): verified technical associations, not a complete embedded inventory or legal approval.
 - [Reporting](REPORTING.md): operator signatures, no security certification, template rights separate from user data.
 
 Author requirements to preserve: free individual/independent professional use including paid engagements; companies require authorization, including internal use; commercial/company distribution requires agreement; delivery of reports to clients allowed; optional negotiated royalties, never automatic. The product is source-available, not OSI open source.

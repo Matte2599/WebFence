@@ -12,6 +12,7 @@ Stato: preparazione tecnica, **nessun parere legale professionale acquisito**. Q
 - [Inventario e packaging](M0-PACKAGING.md), [pacchetto sorgenti nativi macOS](M0-SOURCE-MATERIALS.md#pacchetto-sorgenti-macos-affiancabile-al-bundle) e [sorgenti Windows](M0-WINDOWS-SOURCES.md): materiali verificati disponibili, con limiti e provenienza dichiarati.
 - [Ricompilazione e sostituzione Cocoa](M0-QT-REPLACEMENT.md), provata localmente e in CI; riguarda il solo plugin, non tutte le librerie.
 - [Esame delle 15 ricette macOS](../evidence/homebrew-recipe-review-2026-09-23.md), che distingue patch/risorse della build da fixture dei test e rami Linux.
+- [Mappatura dei nove binari Qt macOS e attribuzioni upstream](../evidence/qt-component-review-2026-09-23.md): associazioni tecniche verificate, non inventario completo degli incorporati o approvazione legale.
 - [Report](REPORTING.md): firma dell'operatore, nessuna certificazione della sicurezza, diritti su template distinti dai dati dell'utente.
 
 Requisiti dell'autore da preservare: individui e professionisti indipendenti ammessi gratuitamente anche per incarichi retribuiti; aziende soggette ad autorizzazione, anche per uso interno; distribuzione commerciale o alle aziende soggetta ad accordo; report ai clienti ammessi; royalties eventuali negoziate, non automatiche. Il prodotto è source-available, non open source OSI.

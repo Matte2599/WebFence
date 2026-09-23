@@ -1,0 +1,1422 @@
+{
+  "schema": 1,
+  "date": "2026-09-23",
+  "scope": "Technical path/relationship mapping for this macOS bundle; upstream declarations, not legal conclusions or complete embedded-code inventory.",
+  "distribution_ready": false,
+  "embedded_mapping_complete": false,
+  "native_inventory_sha256": "70c949869c1914ba06a3f259fb010e0ed80819b05083102bcefd8ca4a3015b01",
+  "webfence_build": {
+    "CGO_CXXFLAGS": "-O2 -g -std=c++17",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "vcs.revision": "3598b5fc70a8e337d4ed81bf8b354104e775dbc9",
+    "vcs.time": "2026-09-23T20:44:17Z",
+    "vcs.modified": "true"
+  },
+  "source_package_sha256": "505e05c33fe7bf18c45623d94cb508637bffafd8ceb41207535d60f9e751d3ef",
+  "qt_source_archive_sha256": "5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22",
+  "sbom": {
+    "path": "homebrew/qtbase@6.11.2/share/qt/sbom/qtbase-6.11.2.spdx",
+    "sha256": "dcd4ad251e17d60c2e8c83171686e230b8b331c3a4ddc458363a3a3a6a0bd1c9",
+    "namespace": "https://qt.io/spdxdocs/qtbase-6.11.2-host-darwin-arm64-target-macos-arm64-f3f8a924-79c8-5ae2-bfb5-09856955d1d7"
+  },
+  "counts": {
+    "qt_binaries": 9,
+    "reachable_packages": 62,
+    "reachable_attribution_nodes": 32,
+    "other_reachable_packages": 30
+  },
+  "qt_binaries": [
+    {
+      "bundle_path": "Contents/Frameworks/QtCore.framework/Versions/A/QtCore",
+      "bundle_sha256": "2ba1be1a475a042dbfcc249e3d0ceb6ed531bc04c17917fa1219e592c038817e",
+      "component": "Core",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-module-Core-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-module-Core-ff4b1e1aaec2",
+      "upstream_file_name": "lib/QtCore.framework/Versions/A/QtCore",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: 6c98278c60f3971aa562a46d9e619668a8f25fa9"
+      ],
+      "installed_sha256": "18b2ae3d156edb958f3313d79417deb867a72be450525bd75eb7aa18ff3e1237",
+      "installed_sha1": "6d6bc7a6c150cc1e9998d7081fe8a561a7b1d07e",
+      "upstream_sha1_matches_installed": false
+    },
+    {
+      "bundle_path": "Contents/Frameworks/QtDBus.framework/Versions/A/QtDBus",
+      "bundle_sha256": "f7277a7fe86e5090967399f3495192d6e941a1e0290be3258d8cd87ec7f06363",
+      "component": "DBus",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-module-DBus-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-module-DBus-ff4b1e1aaec2",
+      "upstream_file_name": "lib/QtDBus.framework/Versions/A/QtDBus",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: 1ece60d41cc7c1fd552f814a23714456b68166cc"
+      ],
+      "installed_sha256": "f031f8326ed80f3933fa9b21d8cc32d3b79c55eeaa70b232628690aceec3830e",
+      "installed_sha1": "72cfb5c9cddabcf8cacbca67ab579098d0354ff2",
+      "upstream_sha1_matches_installed": false
+    },
+    {
+      "bundle_path": "Contents/Frameworks/QtGui.framework/Versions/A/QtGui",
+      "bundle_sha256": "5d6facf02bbdcb26b63c9424f633bea5ec08dbaa42aca9cd0b275f5ecd8e0043",
+      "component": "Gui",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-module-Gui-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-module-Gui-ff4b1e1aaec2",
+      "upstream_file_name": "lib/QtGui.framework/Versions/A/QtGui",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: 160d944713babb0640f63b663cd10c0aaef431a2"
+      ],
+      "installed_sha256": "0676038121ab4abc2768e1c13716027b974902c9e8d9046e93ecab495327c222",
+      "installed_sha1": "d5803e67db7abdaa773017a6580528d44fdda069",
+      "upstream_sha1_matches_installed": false
+    },
+    {
+      "bundle_path": "Contents/Frameworks/QtWidgets.framework/Versions/A/QtWidgets",
+      "bundle_sha256": "f9d3c4a863974d98e6e6715772a3b8081d8742b63cd269e846526d1f7d3523ff",
+      "component": "Widgets",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-module-Widgets-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-module-Widgets-ff4b1e1aaec2",
+      "upstream_file_name": "lib/QtWidgets.framework/Versions/A/QtWidgets",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: e4f50323f61099f75f772c54c9ea845122ae164a"
+      ],
+      "installed_sha256": "61a5809d60c8a8f676581f1acff884655800c9ab835fddde766f97059a7f8662",
+      "installed_sha1": "8e88d5743e7ac93345481056b6a8801e2d262280",
+      "upstream_sha1_matches_installed": false
+    },
+    {
+      "bundle_path": "Contents/PlugIns/imageformats/libqgif.dylib",
+      "bundle_sha256": "b4c88c4b0ca51cba028b7afa6c54f06189a411a2c09ddaa1ad4e5ae26c5f33f5",
+      "component": "QGifPlugin",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QGifPlugin-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-plugin-QGifPlugin-ff4b1e1aaec2",
+      "upstream_file_name": "share/qt/plugins/imageformats/libqgif.dylib",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: e1b2f5d04f62190a98989f32b2967604e61b400e"
+      ],
+      "installed_sha256": "2923b88f4c7eafeedb8f38b86355e8ba40f7669afcafd1f4b1ba1459eee49d80",
+      "installed_sha1": "e1b2f5d04f62190a98989f32b2967604e61b400e",
+      "upstream_sha1_matches_installed": true
+    },
+    {
+      "bundle_path": "Contents/PlugIns/imageformats/libqico.dylib",
+      "bundle_sha256": "d3fba017460932ef913b64f406a829d3304507fc1b87e418e12b3d8c03102d12",
+      "component": "QICOPlugin",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QICOPlugin-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-plugin-QICOPlugin-ff4b1e1aaec2",
+      "upstream_file_name": "share/qt/plugins/imageformats/libqico.dylib",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: 4986481c8ef0e54a3b68c5ce2131f833942401c9"
+      ],
+      "installed_sha256": "1856314f7db3dd876c4a9830acdd8f3dfb5670f12d5ffe346423ce7d25895432",
+      "installed_sha1": "4986481c8ef0e54a3b68c5ce2131f833942401c9",
+      "upstream_sha1_matches_installed": true
+    },
+    {
+      "bundle_path": "Contents/PlugIns/imageformats/libqjpeg.dylib",
+      "bundle_sha256": "55e74a0ba901f32cd7d2de3e8f7d27eb31a2bba2412c67e5fd8768d4e64d7f41",
+      "component": "QJpegPlugin",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QJpegPlugin-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-plugin-QJpegPlugin-ff4b1e1aaec2",
+      "upstream_file_name": "share/qt/plugins/imageformats/libqjpeg.dylib",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: d9f737af488db0991f24c25adf6ca1b748d667a2"
+      ],
+      "installed_sha256": "26bb5b52fbefad2f90bc2738bb03387ce1e844fa348495ca3f06fcc6d1c9353d",
+      "installed_sha1": "22c777a6e4048d8b98113a04038f3065f74dad48",
+      "upstream_sha1_matches_installed": false
+    },
+    {
+      "bundle_path": "Contents/PlugIns/platforms/libqcocoa.dylib",
+      "bundle_sha256": "c76b858274c405f2e7b6024aac9678024c77402798bae6768214e86c86adfc3a",
+      "component": "QCocoaIntegrationPlugin",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QCocoaIntegrationPlugin-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-plugin-QCocoaIntegrationPlugin-ff4b1e1aaec2",
+      "upstream_file_name": "share/qt/plugins/platforms/libqcocoa.dylib",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "upstream baseline only; WebFence rebuild with Cocoa patch",
+      "upstream_file_checksums": [
+        "SHA1: df037233f0c5dc4c098aff72ec90786a46d6d41e"
+      ]
+    },
+    {
+      "bundle_path": "Contents/PlugIns/styles/libqmacstyle.dylib",
+      "bundle_sha256": "0d7d293b4f9bb470fa95c37cf651ba70361286122cb2b31971bfa03743fc45e7",
+      "component": "QMacStylePlugin",
+      "package_spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QMacStylePlugin-ff4b1e1aaec2",
+      "upstream_file_spdx_id": "SPDXRef-PackagedFile-qt-plugin-QMacStylePlugin-ff4b1e1aaec2",
+      "upstream_file_name": "share/qt/plugins/styles/libqmacstyle.dylib",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "mapping_basis": "inventory source path to upstream CONTAINS owner; not SBOM checksum identity",
+      "upstream_file_checksums": [
+        "SHA1: a6e61f88404e9b3ca04f34ade67c87c8b12d3bf6"
+      ],
+      "installed_sha256": "34ddb605d88dcda57c6654a296de451487758689f28632630862f2f806d90641",
+      "installed_sha1": "a6e61f88404e9b3ca04f34ade67c87c8b12d3bf6",
+      "upstream_sha1_matches_installed": true
+    }
+  ],
+  "attribution_nodes": [
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-blake2-ff4b1e1aaec2",
+      "name": "Core_Attribution_blake2",
+      "upstream_license_concluded": "CC0-1.0 OR Apache-2.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/blake2/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_blake2\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/blake2/qt_attribution.json\n    Entry index: 0\n    Id: blake2\n    Name: BLAKE2 (reference implementation)\n    Description: BLAKE2 is a cryptographic hash function faster than MD5, SHA-1, SHA-2, and SHA-3, yet is at least as secure as the latest standard SHA-3.\n    Qt usage: Used in Qt Core (QCryptographicHash).\n    License: Creative Commons Zero v1.0 Universal or Apache License 2.0\n    License file: COPYING\n",
+      "attribution_id": "blake2",
+      "metadata_sha256": "bab552307bdd03ed9a4cf7f8f1397c3d18d4dbee19ee576033284104785245be",
+      "source_license_id": "CC0-1.0 OR Apache-2.0",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/blake2/COPYING",
+          "notice_sha256": "4103f471877ed0bae500752c5fcd7ecca409d4a4a8dc2ad40437daba60f1a2bc"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-easing-ff4b1e1aaec2",
+      "name": "Core_Attribution_easing",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/easing/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_easing\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/easing/qt_attribution.json\n    Entry index: 0\n    Id: easing\n    Name: Easing Equations by Robert Penner\n    Qt usage: Used in Qt Core (QEasingCurve).\n    License: BSD 3-clause \"New\" or \"Revised\" License\n    License file: LICENSE\n",
+      "attribution_id": "easing",
+      "metadata_sha256": "77d67a1db5882bb0b9a1278b014885bee45a4c059d1da9f835b6da5bc4b9c93d",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/easing/LICENSE",
+          "notice_sha256": "92fac99458f1754b73edf50f9c9983e0efaa06ad96e2afd5e538c79f45b4b191"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-forkfd-ff4b1e1aaec2",
+      "name": "Core_Attribution_forkfd",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/forkfd/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_forkfd\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/forkfd/qt_attribution.json\n    Entry index: 0\n    Id: forkfd\n    Name: forkfd\n    Qt usage: Used on most Unix platforms in Qt Core.\n    License: MIT License\n    License file: LICENSE\n",
+      "attribution_id": "forkfd",
+      "metadata_sha256": "525fd890017a3966f542da42a9ff0ca2a0d71bc45f80a4871de3e0bd0f612612",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/forkfd/LICENSE",
+          "notice_sha256": "d0d683ae18e78fbef90eb41168fb781920da2d12bf80704490f0882915c18ae0"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-md4-ff4b1e1aaec2",
+      "name": "Core_Attribution_md4",
+      "upstream_license_concluded": "CC0-1.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/md4/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_md4\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/md4/qt_attribution.json\n    Entry index: 0\n    Id: md4\n    Name: MD4\n    Description: An OpenSSL-compatible implementation of the RSA Data Security, Inc. MD4 Message-Digest Algorithm.\n    Qt usage: Used in Qt Core (QCryptographicHash).\n    License: Public Domain\n",
+      "attribution_id": "md4",
+      "metadata_sha256": "34bda63a2fcc23c83f2e5364ccd394553b4baa505b1f79ded9cc2161c56a9b4c",
+      "source_license_id": "CC0-1.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-md5-ff4b1e1aaec2",
+      "name": "Core_Attribution_md5",
+      "upstream_license_concluded": "CC0-1.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/md5/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_md5\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/md5/qt_attribution.json\n    Entry index: 0\n    Id: md5\n    Name: MD5\n    Description: MD5 message-digest algorithm.\n    Qt usage: Used in Qt Core (QCryptographicHash).\n    License: Public Domain\n",
+      "attribution_id": "md5",
+      "metadata_sha256": "20b0f1b17ccd1bd5e8d763b1cdca4b095b8f0c037644b5ee18154536b7d8425e",
+      "source_license_id": "CC0-1.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-qeventdispatcher-cf-ff4b1e1aaec2",
+      "name": "Core_Attribution_qeventdispatcher_cf",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/corelib/kernel/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_qeventdispatcher_cf\n    Information extracted from:\n     /src_dir/qtbase/src/corelib/kernel/qt_attribution.json\n    Entry index: 0\n    Id: qeventdispatcher_cf\n    Name: QEventDispatcher on macOS\n    Description: Implementation of QAbstractEventDispatcher for macOS.\n    Qt usage: Used in Qt Core on macOS.\n    License: BSD 3-clause \"New\" or \"Revised\" License\n    License file: LICENSE.QEVENTDISPATCHER_CF.txt\n",
+      "attribution_id": "qeventdispatcher_cf",
+      "metadata_sha256": "27bb1f28d336f1f8f6d44689f28cb650f0844cc82672e36ae168d0716783fad5",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/corelib/kernel/LICENSE.QEVENTDISPATCHER_CF.txt",
+          "notice_sha256": "e9e5b9f66d21c0e88a4179525ab39cd8d7eac9af78a8404f322c32b0874783d5"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-rfc6234-ff4b1e1aaec2",
+      "name": "Core_Attribution_rfc6234",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/rfc6234/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_rfc6234\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/rfc6234/qt_attribution.json\n    Entry index: 0\n    Id: rfc6234\n    Name: Secure Hash Algorithms SHA-384 and SHA-512\n    Description: Implements the Secure Hash Algorithms SHA 384 and SHA-521\n    Qt usage: Used in Qt Core (QCryptographicHash and QMessageAuthenticationCode)\n    License: BSD 3-clause \"New\" or \"Revised\" License\n    License file: LICENSE\n",
+      "attribution_id": "rfc6234",
+      "metadata_sha256": "fa24413bdc5015fc7fc84297fa17d4c8a598f8f7c76b9495a6e6b26a77b4a324",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/rfc6234/LICENSE",
+          "notice_sha256": "7ccebd514aaabc86192f957d773cebf06577c12fe9f25ecd419c6cac5da7a14c"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-sha1-ff4b1e1aaec2",
+      "name": "Core_Attribution_sha1",
+      "upstream_license_concluded": "LicenseRef-SHA1-Public-Domain",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/sha1/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_sha1\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/sha1/qt_attribution.json\n    Entry index: 0\n    Id: sha1\n    Name: Secure Hash Algorithm SHA-1\n    Description: Implements the Secure Hash Algorithms SHA 1\n    Qt usage: Used in Qt Core (QCryptographicHash).\n    License: Public Domain\n",
+      "attribution_id": "sha1",
+      "metadata_sha256": "53cab2c771f7f7ffbf6a58ff759e5846b746e91d98dfe467d5145edf8cd7d306",
+      "source_license_id": "LicenseRef-SHA1-Public-Domain",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-sha3-endian-ff4b1e1aaec2",
+      "name": "Core_Attribution_sha3_endian",
+      "upstream_license_concluded": "BSD-2-Clause",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/sha3/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_sha3_endian\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/sha3/qt_attribution.json\n    Entry index: 0\n    Id: sha3_endian\n    Name: Secure Hash Algorithm SHA-3 - brg_endian\n    Description: SHA-3, originally known as Keccak, is a cryptographic hash function.\n    Qt usage: Used in Qt Core (QCryptographicHash).\n    License: BSD 2-clause \"Simplified\" License\n    License file: BRG_ENDIAN_LICENSE\n",
+      "attribution_id": "sha3_endian",
+      "metadata_sha256": "d904a6c21c150d9cac693c0806a469480306cb4e5879cc13c994fbadba71a56e",
+      "source_license_id": "BSD-2-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/BRG_ENDIAN_LICENSE",
+          "notice_sha256": "2fed6f252ca4a7e813811de3cd3cd08183edd4138bdee909410ef6eee394e82c"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-sha3-keccak-ff4b1e1aaec2",
+      "name": "Core_Attribution_sha3_keccak",
+      "upstream_license_concluded": "CC0-1.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/sha3/qt_attribution.json",
+      "entry_index": 1,
+      "upstream_comment": "\nCMake target name: Core_Attribution_sha3_keccak\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/sha3/qt_attribution.json\n    Entry index: 1\n    Id: sha3_keccak\n    Name: Secure Hash Algorithm SHA-3 - Keccak\n    Description: SHA-3, originally known as Keccak, is a cryptographic hash function.\n    Qt usage: Used in Qt Core (QCryptographicHash).\n    License: Creative Commons Zero v1.0 Universal\n    License file: CC0_LICENSE\n",
+      "attribution_id": "sha3_keccak",
+      "metadata_sha256": "d904a6c21c150d9cac693c0806a469480306cb4e5879cc13c994fbadba71a56e",
+      "source_license_id": "CC0-1.0",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/CC0_LICENSE",
+          "notice_sha256": "1f2786e2c5befeb4dcba6638db6528bf96ef5d2cf24bc85ab5a81ef00abef59d"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-siphash-ff4b1e1aaec2",
+      "name": "Core_Attribution_siphash",
+      "upstream_license_concluded": "CC0-1.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/siphash/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_siphash\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/siphash/qt_attribution.json\n    Entry index: 0\n    Id: siphash\n    Name: SipHash Algorithm\n    Description: Implements the SipHash algorithm.\n    Qt usage: Used in Qt Core (QHash)\n    License: Creative Commons Zero v1.0 Universal\n",
+      "attribution_id": "siphash",
+      "metadata_sha256": "8614947dfc0ca1d21aad2f88b4400598262ab8c08aa87c4f7acc0c2de6e5619e",
+      "source_license_id": "CC0-1.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-tika-mimetypes-ff4b1e1aaec2",
+      "name": "Core_Attribution_tika-mimetypes",
+      "upstream_license_concluded": "Apache-2.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/corelib/mimetypes/3rdparty/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_tika-mimetypes\n    Information extracted from:\n     /src_dir/qtbase/src/corelib/mimetypes/3rdparty/qt_attribution.json\n    Entry index: 0\n    Id: tika-mimetypes\n    Name: Apache Tika MimeType Definitions\n    Description: The Apache Tika MimeTypes list many known MIME types and how to match files (using globs and/or 'magic' rules for the file contents)\n    Qt usage: Qt Core uses a copy of the Apache Tika MimeType Definitions if shared-mime-info isn't installed on the system.\n    License: Apache License 2.0\n",
+      "attribution_id": "tika-mimetypes",
+      "metadata_sha256": "329652c93e6b47663115543cfd746cb56b96a98d774d540d58e64614bd9739eb",
+      "source_license_id": "Apache-2.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-tinycbor-ff4b1e1aaec2",
+      "name": "Core_Attribution_tinycbor",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/tinycbor/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_tinycbor\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/tinycbor/qt_attribution.json\n    Entry index: 0\n    Id: tinycbor\n    Name: TinyCBOR\n    Description: Concise Binary Object Representation (CBOR) Library\n    Qt usage: Used for QCborStreamReader and QCborStreamWriter.\n    License: MIT License\n    License file: LICENSE\n",
+      "attribution_id": "tinycbor",
+      "metadata_sha256": "788408509fb7967042640f24ba78b263712e816d886303ba1733f49753d33863",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/tinycbor/LICENSE",
+          "notice_sha256": "3c6ba0b5bfa7830505301ffb336a17b0748e0d61c4d34216e9dc98f10e40395e"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-tlexpected-ff4b1e1aaec2",
+      "name": "Core_Attribution_tlexpected",
+      "upstream_license_concluded": "CC0-1.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/corelib/global/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_tlexpected\n    Information extracted from:\n     /src_dir/qtbase/src/corelib/global/qt_attribution.json\n    Entry index: 0\n    Id: tlexpected\n    Name: tl::expected\n    Description: Single header implementation of std::expected with functional-style extensions.\n    Qt usage: Available as a private type in all Qt modules\n    License: Creative Commons Zero v1.0 Universal\n",
+      "attribution_id": "tlexpected",
+      "metadata_sha256": "64698063a65a1502b986bd61163b5eb9c6bde87f93feb28e4eab43ff07a4f10a",
+      "source_license_id": "CC0-1.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-unicode-character-database-ff4b1e1aaec2",
+      "name": "Core_Attribution_unicode-character-database",
+      "upstream_license_concluded": "Unicode-3.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/corelib/text/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Core_Attribution_unicode-character-database\n    Information extracted from:\n     /src_dir/qtbase/src/corelib/text/qt_attribution.json\n    Entry index: 0\n    Id: unicode-character-database\n    Name: Unicode Character Database (UCD)\n    Description: The Unicode Character Database (UCD) is a set of files that\n define the Unicode character properties and internal mappings.\n    Qt usage: Qt Core uses data obtained from UCD files for working with characters and strings.\n    License: Unicode License Agreement - Data Files and Software (2016)\n",
+      "attribution_id": "unicode-character-database",
+      "metadata_sha256": "4e23736600be956e4214849ad8baaa955441656db7324713fab6353c1163b4f5",
+      "source_license_id": "Unicode-3.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Core-Attribution-unicode-cldr-ff4b1e1aaec2",
+      "name": "Core_Attribution_unicode-cldr",
+      "upstream_license_concluded": "Unicode-3.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/corelib/text/qt_attribution.json",
+      "entry_index": 1,
+      "upstream_comment": "\nCMake target name: Core_Attribution_unicode-cldr\n    Information extracted from:\n     /src_dir/qtbase/src/corelib/text/qt_attribution.json\n    Entry index: 1\n    Id: unicode-cldr\n    Name: Unicode Common Locale Data Repository (CLDR)\n    Description: The Unicode CLDR provides key building blocks for software to support the\n world's languages, with the largest and most extensive standard repository of locale data\n available.\n    Qt usage: Used in Qt Core (QTimeZone, QLocale).\n    License: Unicode License v3\n",
+      "attribution_id": "unicode-cldr",
+      "metadata_sha256": "4e23736600be956e4214849ad8baaa955441656db7324713fab6353c1163b4f5",
+      "source_license_id": "Unicode-3.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-DBus-Attribution-libdbus-1-headers-ff4b1e1aaec2",
+      "name": "DBus_Attribution_libdbus-1-headers",
+      "upstream_license_concluded": "AFL-2.1 OR GPL-2.0-or-later",
+      "reachable_from": [
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/dbus/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: DBus_Attribution_libdbus-1-headers\n    Information extracted from:\n     /src_dir/qtbase/src/dbus/qt_attribution.json\n    Entry index: 0\n    Id: libdbus-1-headers\n    Name: libdbus-1 headers\n    Description: D-Bus is a message bus system, a simple way for applications to talk to one another.\n    Qt usage: Qt D-Bus uses constants and typedefs from libdbus-1 headers.\n    License: Academic Free License v2.1, or GNU General Public License v2.0 or later\n    License file: LICENSE.LIBDBUS-1.txt\n",
+      "attribution_id": "libdbus-1-headers",
+      "metadata_sha256": "346532e1fb3bf653bc949408834c305646fc93f96650a2af9b2171d141c107ee",
+      "source_license_id": "AFL-2.1 OR GPL-2.0-or-later",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/dbus/LICENSE.LIBDBUS-1.txt",
+          "notice_sha256": "ad90aa08bb1a9b7056aa51e2e215b36630855457cde5dffd36aa0faa7b169f24"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-aglfn-ff4b1e1aaec2",
+      "name": "Gui_Attribution_aglfn",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/text/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_aglfn\n    Information extracted from:\n     /src_dir/qtbase/src/gui/text/qt_attribution.json\n    Entry index: 0\n    Id: aglfn\n    Name: Adobe Glyph List For New Fonts\n    Description: Provides standardized names for glyphs.\n    Qt usage: Used by PDF generator to make it easier for reader applications to resolve  the original contents of rendered text.\n    License: BSD 3-Clause \"New\" or \"Revised\" License\n    License file: LICENSE.AGLFN.txt\n",
+      "attribution_id": "aglfn",
+      "metadata_sha256": "73066a55ff52c6546753e1dc0802d8890d58e93e7efa394565cd8bdd0df0995b",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/text/LICENSE.AGLFN.txt",
+          "notice_sha256": "40818155548ff41c67d3a40edf355e9658992b292c227f4c1147425cedc746c6"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-emoji-segmenter-ff4b1e1aaec2",
+      "name": "Gui_Attribution_emoji-segmenter",
+      "upstream_license_concluded": "Apache-2.0",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/emoji-segmenter/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_emoji-segmenter\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/emoji-segmenter/qt_attribution.json\n    Entry index: 0\n    Id: emoji-segmenter\n    Name: Emoji Segmenter\n    Description: A parser for emoji sequences.\n    Qt usage: Used in QtGui for parsing complex emoji sequences. Can be configured using the -emojisegmenter option.\n    License: Apache License 2.0\n",
+      "attribution_id": "emoji-segmenter",
+      "metadata_sha256": "9a980fc0f9e478d2a7e9a571d4cd234c259aaf8e2ea3fb60a0a7cf02cc3c3700",
+      "source_license_id": "Apache-2.0",
+      "license_files": []
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-grayraster-ff4b1e1aaec2",
+      "name": "Gui_Attribution_grayraster",
+      "upstream_license_concluded": "FTL OR GPL-2.0-only",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/painting/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_grayraster\n    Information extracted from:\n     /src_dir/qtbase/src/gui/painting/qt_attribution.json\n    Entry index: 0\n    Id: grayraster\n    Name: Anti-aliasing rasterizer from FreeType 2\n    Description: FreeType is a freely available software library to render fonts.\n    Qt usage: Used in Qt GUI.\n    License: Freetype Project License or GNU General Public License v2.0 only\n    License file: ../../3rdparty/freetype/LICENSE.txt\n",
+      "attribution_id": "grayraster",
+      "metadata_sha256": "8cddd6c73a885f697261c4d6d60e5cd814a2544fcd407504b52a5eb9b7cc3600",
+      "source_license_id": "FTL OR GPL-2.0-only",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/LICENSE.txt",
+          "notice_sha256": "bf543cdda11864477b8d2ca2aa9afc2aaa8f9133461b4d962ed6ec73646256a1"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-icc-srgb-color-profile-ff4b1e1aaec2",
+      "name": "Gui_Attribution_icc-srgb-color-profile",
+      "upstream_license_concluded": "LicenseRef-ICC-License",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/icc/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_icc-srgb-color-profile\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/icc/qt_attribution.json\n    Entry index: 0\n    Id: icc-srgb-color-profile\n    Name: sRGB color profile icc file\n    Description: An ICC color profile for PDF/A-1b compatible PDF files.\n    Qt usage: Used in Qt Gui (Embedded into PDF/A-1b files generated by QPrinter/QPdfWriter).\n    License: International Color Consortium License\n    License file: LICENSE.txt\n",
+      "attribution_id": "icc-srgb-color-profile",
+      "metadata_sha256": "509da9bd2b3f769c730aa4627b1080d65f39b0ecd4130111c9e1122e13cd35b5",
+      "source_license_id": "LicenseRef-ICC-License",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/icc/LICENSE.txt",
+          "notice_sha256": "9e34ff47b3a44814e183342e7e198d127a6740e29d20e8381fba7688dafc79dd"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-opengl-es2-headers-ff4b1e1aaec2",
+      "name": "Gui_Attribution_opengl-es2-headers",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/opengl/qt_attribution.json",
+      "entry_index": 1,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_opengl-es2-headers\n    Information extracted from:\n     /src_dir/qtbase/src/gui/opengl/qt_attribution.json\n    Entry index: 1\n    Id: opengl-es2-headers\n    Name: OpenGL ES 2 Headers\n    Description: OpenGL ES 2 header generated from the Khronos OpenGL / OpenGL ES XML API Registry.\n    Qt usage: Used on Windows and Linux in the OpenGL related headers of Qt GUI.\n    License: MIT License\n    License file: LICENSE.KHRONOS.txt\n",
+      "attribution_id": "opengl-es2-headers",
+      "metadata_sha256": "d05626e02386f22186b385b3ce2cd5a6431b84e2fc552c68f7133e38da552fc1",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/opengl/LICENSE.KHRONOS.txt",
+          "notice_sha256": "2e484f3c26ff5008c704a3ca9dd809d43f24a004a1abb6c202660fbff0d19715"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-opengl-headers-ff4b1e1aaec2",
+      "name": "Gui_Attribution_opengl-headers",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/opengl/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_opengl-headers\n    Information extracted from:\n     /src_dir/qtbase/src/gui/opengl/qt_attribution.json\n    Entry index: 0\n    Id: opengl-headers\n    Name: OpenGL Headers\n    Description: OpenGL header generated from the Khronos OpenGL / OpenGL ES XML API Registry.\n    Qt usage: Used on Windows and Linux in the OpenGL related headers of Qt GUI.\n    License: MIT License\n    License file: LICENSE.KHRONOS.txt\n",
+      "attribution_id": "opengl-headers",
+      "metadata_sha256": "d05626e02386f22186b385b3ce2cd5a6431b84e2fc552c68f7133e38da552fc1",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/opengl/LICENSE.KHRONOS.txt",
+          "notice_sha256": "2e484f3c26ff5008c704a3ca9dd809d43f24a004a1abb6c202660fbff0d19715"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-rhi-miniengine-d3d12-mipmap-ff4b1e1aaec2",
+      "name": "Gui_Attribution_rhi-miniengine-d3d12-mipmap",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/rhi/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_rhi-miniengine-d3d12-mipmap\n    Information extracted from:\n     /src_dir/qtbase/src/gui/rhi/qt_attribution.json\n    Entry index: 0\n    Id: rhi-miniengine-d3d12-mipmap\n    Name: Mipmap generator for D3D12\n    Description: Compute shader for mipmap generation from MiniEngine in DirectX-Graphics-Samples\n    Qt usage: Compute shader for mipmap generation with Direct 3D 12\n    License: MIT License\n    License file: LICENSE.MiniEngine.txt\n",
+      "attribution_id": "rhi-miniengine-d3d12-mipmap",
+      "metadata_sha256": "59df3efb041ed346aa797602a76ef8d284e84c3cc6ace30967d6704fc65dbb47",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/rhi/LICENSE.MiniEngine.txt",
+          "notice_sha256": "cf248820bf1178370bb4f1670a59f8748d46bc96d0f64080cd631511c6046409"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-smooth-scaling-algorithm-ff4b1e1aaec2",
+      "name": "Gui_Attribution_smooth-scaling-algorithm",
+      "upstream_license_concluded": "BSD-2-Clause AND Imlib2",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/painting/qt_attribution.json",
+      "entry_index": 1,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_smooth-scaling-algorithm\n    Information extracted from:\n     /src_dir/qtbase/src/gui/painting/qt_attribution.json\n    Entry index: 1\n    Id: smooth-scaling-algorithm\n    Name: Smooth Scaling Algorithm\n    Description: Normal smoothscale method, based on Imlib2's smoothscale.\n    Qt usage: Used in Qt Gui (QImage::transformed() functions).\n    License: BSD 2-clause \"Simplified\" License and Imlib2 License\n    License file: LICENSE.QIMAGETRANSFORM.txt\n",
+      "attribution_id": "smooth-scaling-algorithm",
+      "metadata_sha256": "8cddd6c73a885f697261c4d6d60e5cd814a2544fcd407504b52a5eb9b7cc3600",
+      "source_license_id": "BSD-2-Clause AND Imlib2",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/painting/LICENSE.QIMAGETRANSFORM.txt",
+          "notice_sha256": "46b3cbfa2f2946b93291506351e9be1dd0a28d2a53260f5aa488abd36fbeca9d"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-vulkan-xml-spec-ff4b1e1aaec2",
+      "name": "Gui_Attribution_vulkan-xml-spec",
+      "upstream_license_concluded": "Apache-2.0 OR MIT",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/vulkan/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_vulkan-xml-spec\n    Information extracted from:\n     /src_dir/qtbase/src/gui/vulkan/qt_attribution.json\n    Entry index: 0\n    Id: vulkan-xml-spec\n    Name: Vulkan API Registry\n    Description: Vulkan XML API Registry.\n    Qt usage: Used to dynamically generate the sources for the QVulkan(Device)Functions classes.\n    License: Apache License 2.0 or MIT License\n    License file: LICENSE.txt\n",
+      "attribution_id": "vulkan-xml-spec",
+      "metadata_sha256": "b4beb6ac27b066a6a71408da116fea60131c06ac9799c9763fe9cef28a76e7b9",
+      "source_license_id": "Apache-2.0 OR MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/vulkan/LICENSE.txt",
+          "notice_sha256": "5f618873b0cdd1e84c611c5529212c2524bfc887bdfd7d1f3b568bad3c649612"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-vulkanmemoryallocator-ff4b1e1aaec2",
+      "name": "Gui_Attribution_vulkanmemoryallocator",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/3rdparty/VulkanMemoryAllocator/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_vulkanmemoryallocator\n    Information extracted from:\n     /src_dir/qtbase/src/3rdparty/VulkanMemoryAllocator/qt_attribution.json\n    Entry index: 0\n    Id: vulkanmemoryallocator\n    Name: Vulkan Memory Allocator\n    Description: Vulkan Memory Allocator\n    Qt usage: Memory management for the Vulkan backend of QRhi.\n    License: MIT License\n    License file: LICENSE.txt\n",
+      "attribution_id": "vulkanmemoryallocator",
+      "metadata_sha256": "833626a9e955bdae274f076786ca2cc7c8b50f9e382dff566db89ec69f8178cf",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/3rdparty/VulkanMemoryAllocator/LICENSE.txt",
+          "notice_sha256": "846d97c8b74ccaa92b9ad031140a04363b3b3985f318094552f297b8bda1c68e"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-webgradients-ff4b1e1aaec2",
+      "name": "Gui_Attribution_webgradients",
+      "upstream_license_concluded": "MIT",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "util/gradientgen/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_webgradients\n    Information extracted from:\n     /src_dir/qtbase/util/gradientgen/qt_attribution.json\n    Entry index: 0\n    Id: webgradients\n    Name: WebGradients\n    Description: WebGradients is a free collection of 180 linear gradients.\n    Qt usage: Used in Qt GUI to provide presets for QGradient.\n    License: MIT License\n    License file: LICENSE.WEBGRADIENTS.txt\n",
+      "attribution_id": "webgradients",
+      "metadata_sha256": "6e87ac5d79ab92110e6e517b2c74e4f4fd15878540e93eea0300e529d3318572",
+      "source_license_id": "MIT",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/util/gradientgen/LICENSE.WEBGRADIENTS.txt",
+          "notice_sha256": "9be732e45b638c74f9c0e5248541dd54dc7e8e9a5545df96b5c4b7c9ac0c68ba"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Gui-Attribution-xserverhelper-ff4b1e1aaec2",
+      "name": "Gui_Attribution_xserverhelper",
+      "upstream_license_concluded": "X11 AND HPND",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "src/gui/painting/qt_attribution.json",
+      "entry_index": 2,
+      "upstream_comment": "\nCMake target name: Gui_Attribution_xserverhelper\n    Information extracted from:\n     /src_dir/qtbase/src/gui/painting/qt_attribution.json\n    Entry index: 2\n    Id: xserverhelper\n    Name: X Server helper\n    Description: Code from X11's region.h, Region.c, poly.h, and PolyReg.c\n    Qt usage: Used in Qt GUI (QRegion).\n    License: X11 License and Historical Permission Notice and Disclaimer\n    License file: LICENSE.XCONSORTIUM.txt\n",
+      "attribution_id": "xserverhelper",
+      "metadata_sha256": "8cddd6c73a885f697261c4d6d60e5cd814a2544fcd407504b52a5eb9b7cc3600",
+      "source_license_id": "X11 AND HPND",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/gui/painting/LICENSE.XCONSORTIUM.txt",
+          "notice_sha256": "a216b01291eb38fc1af93cfccf1fc67b48d9923612e517c2a695e95b3f03c22c"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Platform-Attribution-extra-cmake-modules-ff4b1e1aaec2",
+      "name": "Platform_Attribution_extra-cmake-modules",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "cmake/3rdparty/extra-cmake-modules/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Platform_Attribution_extra-cmake-modules\n    Information extracted from:\n     /src_dir/qtbase/cmake/3rdparty/extra-cmake-modules/qt_attribution.json\n    Entry index: 0\n    Id: extra-cmake-modules\n    Name: extra-cmake-modules\n    Description: Additional CMake modules.\n    Qt usage: Used as part of the build system.\n    License: BSD-3-Clause\n    License file: COPYING-CMAKE-SCRIPTS\n",
+      "attribution_id": "extra-cmake-modules",
+      "metadata_sha256": "f34f498d6c63a78a882b352fa38c9dd076a59b1696cd6a6f921151a61f2a02e0",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/cmake/3rdparty/extra-cmake-modules/COPYING-CMAKE-SCRIPTS",
+          "notice_sha256": "46cde7dc11e64c78d650b4851b88f6704b4665ff60f22a1caf68ceb15e217e5b"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-Platform-Attribution-kwin-ff4b1e1aaec2",
+      "name": "Platform_Attribution_kwin",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ],
+      "metadata": "cmake/3rdparty/kwin/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: Platform_Attribution_kwin\n    Information extracted from:\n     /src_dir/qtbase/cmake/3rdparty/kwin/qt_attribution.json\n    Entry index: 0\n    Id: kwin\n    Name: KWin\n    Description: Additional CMake modules for graphics system dependencies.\n    Qt usage: Used as part of the build system.\n    License: BSD 3-Clause \"New\" or \"Revised\" License\n    License file: COPYING-CMAKE-SCRIPTS\n",
+      "attribution_id": "kwin",
+      "metadata_sha256": "bf3a3c09e99f1c9fab7553ebc4a7548b71dc23fcfdbe6e5df0fa0e7847c2efc3",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/cmake/3rdparty/kwin/COPYING-CMAKE-SCRIPTS",
+          "notice_sha256": "46cde7dc11e64c78d650b4851b88f6704b4665ff60f22a1caf68ceb15e217e5b"
+        }
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-3rdparty-sources-QCocoaIntegrationPlugin-Attribution-cocoa-platform-plugin-ff4b1e1aaec2",
+      "name": "QCocoaIntegrationPlugin_Attribution_cocoa-platform-plugin",
+      "upstream_license_concluded": "BSD-3-Clause",
+      "reachable_from": [
+        "QCocoaIntegrationPlugin"
+      ],
+      "metadata": "src/plugins/platforms/cocoa/qt_attribution.json",
+      "entry_index": 0,
+      "upstream_comment": "\nCMake target name: QCocoaIntegrationPlugin_Attribution_cocoa-platform-plugin\n    Information extracted from:\n     /src_dir/qtbase/src/plugins/platforms/cocoa/qt_attribution.json\n    Entry index: 0\n    Id: cocoa-platform-plugin\n    Name: Cocoa Platform Plugin\n    Description: Allows Qt to integrate into Apple's Cocoa API.\n    Qt usage: Code used in the Qt Platform Abstraction (QPA) for macOS.\n    License: BSD 3-clause \"New\" or \"Revised\" License\n    License file: LICENSE.COCOA.txt\n",
+      "attribution_id": "cocoa-platform-plugin",
+      "metadata_sha256": "27a435bfea96ca950f4a5ad6a82be7fe2a62bb4db0d8851e7a84fc5dce0c3ff3",
+      "source_license_id": "BSD-3-Clause",
+      "license_files": [
+        {
+          "archive_member": "qtbase-everywhere-src-6.11.2/src/plugins/platforms/cocoa/LICENSE.COCOA.txt",
+          "notice_sha256": "e9e5b9f66d21c0e88a4179525ab39cd8d7eac9af78a8404f322c32b0874783d5"
+        }
+      ]
+    }
+  ],
+  "other_reachable_packages": [
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-Core-ff4b1e1aaec2",
+      "name": "Core",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-DBus-ff4b1e1aaec2",
+      "name": "DBus",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-GlobalConfigPrivate-ff4b1e1aaec2",
+      "name": "GlobalConfigPrivate",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-Gui-ff4b1e1aaec2",
+      "name": "Gui",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-Platform-ff4b1e1aaec2",
+      "name": "Platform",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-PlatformModuleInternal-ff4b1e1aaec2",
+      "name": "PlatformModuleInternal",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-ff4b1e1aaec2",
+      "name": "PlatformPluginInternal",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-module-Widgets-ff4b1e1aaec2",
+      "name": "Widgets",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QCocoaIntegrationPlugin-ff4b1e1aaec2",
+      "name": "QCocoaIntegrationPlugin",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QCocoaIntegrationPlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QGifPlugin-ff4b1e1aaec2",
+      "name": "QGifPlugin",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QGifPlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QICOPlugin-ff4b1e1aaec2",
+      "name": "QICOPlugin",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QICOPlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QJpegPlugin-ff4b1e1aaec2",
+      "name": "QJpegPlugin",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QJpegPlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-qt-plugin-QMacStylePlugin-ff4b1e1aaec2",
+      "name": "QMacStylePlugin",
+      "upstream_license_concluded": "LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "reachable_from": [
+        "QMacStylePlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-GLIB2-ff4b1e1aaec2",
+      "name": "GLIB2",
+      "upstream_license_concluded": "LGPL-2.1-or-later",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-ICU-ff4b1e1aaec2",
+      "name": "ICU",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-Libb2-ff4b1e1aaec2",
+      "name": "Libb2",
+      "upstream_license_concluded": "CC0-1.0",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapAtomic-ff4b1e1aaec2",
+      "name": "WrapAtomic",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapBacktrace-ff4b1e1aaec2",
+      "name": "WrapBacktrace",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapDBus1-ff4b1e1aaec2",
+      "name": "WrapDBus1",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapFreetype-ff4b1e1aaec2",
+      "name": "WrapFreetype",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapHarfbuzz-ff4b1e1aaec2",
+      "name": "WrapHarfbuzz",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapJpeg-ff4b1e1aaec2",
+      "name": "WrapJpeg",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "QJpegPlugin"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapOpenGL-ff4b1e1aaec2",
+      "name": "WrapOpenGL",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapPCRE2-ff4b1e1aaec2",
+      "name": "WrapPCRE2",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapPNG-ff4b1e1aaec2",
+      "name": "WrapPNG",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapRt-ff4b1e1aaec2",
+      "name": "WrapRt",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapSystemDoubleConversion-ff4b1e1aaec2",
+      "name": "WrapSystemDoubleConversion",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapSystemMd4c-ff4b1e1aaec2",
+      "name": "WrapSystemMd4c",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapZLIB-ff4b1e1aaec2",
+      "name": "WrapZLIB",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    },
+    {
+      "spdx_id": "SPDXRef-Package-qtbase-system-3rdparty-WrapZSTD-ff4b1e1aaec2",
+      "name": "WrapZSTD",
+      "upstream_license_concluded": "NOASSERTION",
+      "reachable_from": [
+        "Core",
+        "DBus",
+        "Gui",
+        "QCocoaIntegrationPlugin",
+        "QGifPlugin",
+        "QICOPlugin",
+        "QJpegPlugin",
+        "QMacStylePlugin",
+        "Widgets"
+      ]
+    }
+  ],
+  "cocoa_materials": [
+    {
+      "path": "scripts/build-qt-cocoa.sh",
+      "sha256": "71afd48a7b47cbdd9956c081e948fcd455132ee2e2ac83d66ef71794e7294a23"
+    },
+    {
+      "path": "scripts/qt-cocoa/accessibility.patch",
+      "sha256": "3e5a61072b701c3a7da01dd4fe012278b84b44a21211e724d35a532992f7d6ec"
+    },
+    {
+      "path": "scripts/qt-cocoa/CMakeLists.txt",
+      "sha256": "99ec59fa61158d3def4a74d9b2d8bf406ef40d39a63af692f9bd0ed04e5aa9af"
+    }
+  ],
+  "limitations": [
+    "DEPENDS_ON reachability does not prove compiled or runtime inclusion.",
+    "Upstream file checksums are not integrity evidence for relocated/signed bundle binaries.",
+    "Cocoa upstream package is baseline only; WebFence patch and rebuild are separate.",
+    "No license alternative selected or professional legal review performed.",
+    "Windows/Linux and non-Qt embedded components are outside this review."
+  ]
+}
