@@ -64,3 +64,7 @@ This option performs no downloads. Without the variable, development packaging r
 Local verification: 12 Python regressions passed (seven collection, five attachment), actual extraction from 15 archives and independent recheck of all 247 hashes. Bundle from `0fd78f0` with declared modifications: ad hoc signature, current-inventory binding and Cocoa self-test passed. Previous CI `0fd78f0`, run 35897426940, completed all six jobs; [CI `56840c5`](https://github.com/Matte2599/WebFence/actions/runs/35898848286) for the new changes completed: all six jobs passed, including 12 Python regressions on four targets. Actual attachment of the 247 notices was verified locally; CI packaging still runs without the optional variable.
 
 Full-packaging failure injection: a synthetic collection with `INCOMPLETE` was rejected; previous executable and attachment hashes unchanged, previous ad hoc signature still valid.
+
+## First Windows acquisition
+
+Acquired the MSYS2 Qt 6.11.2-2 archive with upstream source, recipe and ten patches; internal hashes checked without executing code. [Provenance, hashes and limits](../evidence/windows-qt-source-2026-09-23.md). Complete Windows collection and independent recipe authentication remain open.

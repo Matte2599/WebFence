@@ -64,3 +64,7 @@ Questa opzione non effettua download. Senza la variabile, il packaging di svilup
 Verifica locale: 12 regressioni Python superate (sette raccolta, cinque inclusione), estrazione effettiva da 15 archivi e ricontrollo indipendente dei 247 hash. Bundle da `0fd78f0` con modifiche dichiarate: firma ad hoc, collegamento all’inventario corrente e self-test Cocoa superati. La CI precedente `0fd78f0`, run 35897426940, ha completato tutti e sei i job; [CI `56840c5`](https://github.com/Matte2599/WebFence/actions/runs/35898848286) delle nuove modifiche completata: tutti e sei i job superati, comprese le 12 regressioni Python sui quattro target. L’inclusione effettiva dei 247 avvisi è verificata localmente; in CI il packaging resta senza la variabile facoltativa.
 
 Iniezione di errore nel packaging completo: raccolta sintetica con `INCOMPLETE` rifiutata; hash dell’eseguibile e dell’allegato precedenti invariati, firma ad hoc precedente ancora valida.
+
+## Prima acquisizione Windows
+
+Acquisito l’archivio MSYS2 Qt 6.11.2-2 con sorgente upstream, ricetta e dieci patch; hash interni verificati senza eseguire codice. [Provenienza, hash e limiti](../evidence/windows-qt-source-2026-09-23.md). La raccolta Windows completa e l’autenticazione indipendente della ricetta restano aperte.
