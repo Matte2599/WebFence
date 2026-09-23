@@ -117,6 +117,18 @@ func selfTest(w *workspace) int {
 	check(!w.evidence.IsVisible() && w.advanced.HasFocus() && !w.advanced.IsChecked(), "hiding details returns focus to advanced control")
 	w.advancedAction.Trigger()
 	check(w.evidence.IsVisible() && w.advanced.IsChecked(), "advanced menu and checkbox stay synchronized")
+	// A 200% desktop can leave roughly this much logical workspace. Check the
+	// actual viewport, including space consumed by native non-overlay scrollbars.
+	originalWidth, originalHeight := w.window.Width(), w.window.Height()
+	w.window.Resize(756, 430)
+	qt.QCoreApplication_ProcessEvents()
+	check(w.table.Viewport().Height() >= w.table.RowHeight(0)+w.table.RowHeight(1), "compact window retains two complete result rows")
+	metrics := w.evidence.FontMetrics()
+	runtime.SetFinalizer(metrics, nil)
+	check(w.evidence.Viewport().Height() >= 2*metrics.Height(), "compact window retains readable evidence viewport")
+	metrics.Delete()
+	w.window.Resize(originalWidth, originalHeight)
+	qt.QCoreApplication_ProcessEvents()
 	copied := ""
 	w.copyEvidence = func(value string) { copied = value }
 	w.copy.Click()

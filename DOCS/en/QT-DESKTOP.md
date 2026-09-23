@@ -53,4 +53,4 @@ The author's choice settles the toolkit decision, not product accessibility. The
 
 Windows/Linux installers, signing/notarization, Windows 10/11 and Debian desktop execution, a macOS machine without development tools, minimum versions and Windows 10 maintenance after Qt 6.12 remain open. WebFence licensing is unchanged; Qt/MIQT inventory and obligations must be completed before distribution. No purchase or commercial license entered into.
 
-The macOS bundle now rebuilds the Qt 6.11.2 Cocoa plugin with a temporary assistive-crash correction: [ADR-006](ADR-006-QT-COCOA.md). CMake and Ninja are also required (`brew install cmake ninja`); Qt sources are downloaded and hash-verified. Other Qt versions are rejected until reassessed. Unpackaged binaries continue using installed Qt.
+The macOS bundle now rebuilds the Qt 6.11.2 Cocoa plugin with a temporary assistive-crash correction: [ADR-006](ADR-006-QT-COCOA.md). CMake, Ninja and MoltenVK/Vulkan headers are also required (`brew install cmake ninja molten-vk vulkan-headers`); Qt sources are downloaded and hash-verified. Other Qt versions are rejected until reassessed. Unpackaged binaries continue using installed Qt.

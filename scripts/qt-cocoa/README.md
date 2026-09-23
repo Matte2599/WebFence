@@ -8,6 +8,6 @@
 - SHA-256: `5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22`.
 - [Gerrit 765434](https://codereview.qt-project.org/c/qt/qtbase/+/765434), revision `c7fd3f34b997bb363be15650647665b3b6b8a5f4`, patch set 1, status NEW on 2026-09-23.
 - Only the two production guards are included; upstream native test changes are not copied. / Incluse soltanto le due guardie di produzione, non le modifiche ai test nativi upstream.
-- Rebuild / ricompilazione: `sh scripts/build-qt-cocoa.sh QT_PREFIX OUTPUT_DYLIB` on macOS ARM64, matching Qt 6.11.2, CMake, Ninja and Apple developer tools. / su macOS ARM64 con Qt 6.11.2 corrispondente, CMake, Ninja e strumenti Apple.
+- Rebuild / ricompilazione: `sh scripts/build-qt-cocoa.sh QT_PREFIX OUTPUT_DYLIB` on macOS ARM64, matching Qt 6.11.2, CMake, Ninja, MoltenVK/Vulkan headers and Apple developer tools. / su macOS ARM64 con Qt 6.11.2 corrispondente, CMake, Ninja, header MoltenVK/Vulkan e strumenti Apple.
 
 Distribution still requires the complete dependency/source/notices inventory documented in M0 packaging. / La distribuzione richiede ancora l’inventario completo di dipendenze, sorgenti e notices previsto dal packaging M0.

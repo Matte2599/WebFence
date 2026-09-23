@@ -6,6 +6,7 @@ import (
 	"github.com/Matte2599/WebFence/internal/i18n"
 	"github.com/Matte2599/WebFence/internal/preferences"
 	qt "github.com/mappu/miqt/qt6"
+	"runtime"
 )
 
 type workspace struct {
@@ -73,6 +74,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	layout.AddWidget(w.notice.QWidget)
 	toolbar := qt.NewQWidget(nil)
 	tools := qt.NewQHBoxLayout(toolbar)
+	tools.SetContentsMargins(0, 0, 0, 0)
 	w.load = qt.NewQPushButton2()
 	w.clear = qt.NewQPushButton2()
 	w.advanced = qt.NewQCheckBox2()
@@ -89,6 +91,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	layout.AddWidget(toolbar)
 	filters := qt.NewQWidget(nil)
 	filterLayout := qt.NewQHBoxLayout(filters)
+	filterLayout.SetContentsMargins(0, 0, 0, 0)
 	w.search = qt.NewQLineEdit2()
 	w.severity = qt.NewQComboBox2()
 	w.severity.AddItems([]string{"", "", "", ""})
@@ -144,8 +147,17 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		w.table.SetColumnWidth(i, size)
 	}
 	w.table.HorizontalHeader().SetStretchLastSection(true)
+	// Keep two complete rows available when high scaling reduces usable height.
+	headerHint := w.table.HorizontalHeader().SizeHint()
+	scrollHint := w.table.HorizontalScrollBar().SizeHint()
+	runtime.SetFinalizer(headerHint, nil)
+	runtime.SetFinalizer(scrollHint, nil)
+	w.table.SetMinimumHeight(headerHint.Height() + 2*w.table.VerticalHeader().DefaultSectionSize() + scrollHint.Height() + 2*w.table.FrameWidth())
+	headerHint.Delete()
+	scrollHint.Delete()
 	details := qt.NewQWidget(nil)
 	detailLayout := qt.NewQVBoxLayout(details)
+	detailLayout.SetContentsMargins(0, 0, 0, 0)
 	w.summary = qt.NewQLabel2()
 	w.summary.SetTextFormat(qt.PlainText)
 	w.summary.SetWordWrap(true)
@@ -161,8 +173,11 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	split := qt.NewQSplitter3(qt.Vertical)
 	split.AddWidget(w.table.QWidget)
 	split.AddWidget(details)
+	split.SetChildrenCollapsible(false)
 	split.SetSizes([]int{400, 220})
 	layout.AddWidget(split.QWidget)
+	// Give spare height to results/evidence, not to the toolbar and filters.
+	layout.SetStretchFactor(split.QWidget, 1)
 	w.fileMenu = w.window.MenuBar().AddMenuWithTitle("")
 	w.viewMenu = w.window.MenuBar().AddMenuWithTitle("")
 	w.languageMenu = w.window.MenuBar().AddMenuWithTitle("")

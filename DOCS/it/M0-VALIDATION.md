@@ -35,3 +35,5 @@ Ricognizione packaging: il [bundle locale esaminato](M0-PACKAGING.md) contiene 1
 Prova GUI del 2026-09-23: layout standard e al 150% ispezionati, ma la copia al 150% termina con SIGSEGV durante reset del filtro seguito da cambio lingua tramite accessibilità. Riprodotto con fixture selezionata; traccia nativa in raccolta, causa ancora da isolare. Nessuna chiusura del gate stabilità/DPI.
 
 Aggiornamento: [correzione Cocoa adottata](ADR-006-QT-COCOA.md) nel bundle di sviluppo. La sequenza del crash passa al 150% e 200%; al 200% resta la tabella troppo compressa, oltre a celle AX non sempre esposte e collaudo VoiceOver/stabilità prolungata da completare.
+
+Layout 200% successivamente corretto e provato: due righe complete e ultima colonna raggiungibile da tastiera, prove scorrevoli. Self-test della finestra compatta aggiunto e superato localmente a scala 1/1,5/2. Restano collaudo lettori, più monitor e stabilità misurata.
