@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "scope": "Manual offline supplement; the automated collector still reports vcs_unverified. No archived config, refs or hooks loaded; no checkout, recipe execution or network.",
+  "source_commit": "61d40c4c077b82ed2ad22640742bd01e3000e222",
+  "source_archive_sha256": "7a0bad039cbc5041a79cfa5d565ba41f7fef66a3c03ab8569167945756aa2aa1",
+  "pkgbuild_sha256": "29739e8a0080f704cfd6e7b271b0cb45530257c0491bbd2f6703cdbf0414b7bc",
+  "git_version": "git version 2.54.0 (Apple Git-157)",
+  "fsck_exit_code": 0,
+  "fsck_output": "",
+  "checksum_method": "MSYS2 pacman 6.1.0-25 calc_checksum_git: git -c core.abbrev=no archive --format tar COMMIT | sha256sum, in isolated bare repository with system/global config and external attributes disabled.",
+  "pacman_binary_sha256": "cb375279a44b37f646dbe834b440c233fddbacb97d6173e5c7d91362717c970f",
+  "git_archive_size_bytes": 140103680,
+  "expected_sha256": "ee1989c086f380e53663ecaebd932b793b59b1a2b660ffc035723df8640559a5",
+  "observed_sha256": "ee1989c086f380e53663ecaebd932b793b59b1a2b660ffc035723df8640559a5",
+  "checksum_matches": true,
+  "verified_pack_files": {
+    "mingw-w64/objects/pack/pack-c2779e8046dbbe24d3df92599c67936f432b2807.idx": {
+      "size_bytes": 2757252,
+      "sha256": "5c99a87b17aa818ba80183563b37b6045e3d2f2c50dba5cf45745b525be59ccf"
+    },
+    "mingw-w64/objects/pack/pack-c2779e8046dbbe24d3df92599c67936f432b2807.pack": {
+      "size_bytes": 54759691,
+      "sha256": "96b736c2a98ec735deb36b17da1a7fb034d087a700f92e08d6813d598698399d"
+    },
+    "mingw-w64/objects/pack/pack-c2779e8046dbbe24d3df92599c67936f432b2807.rev": {
+      "size_bytes": 393792,
+      "sha256": "8bfdfd4d086a4c6d485efa61875e17fad54fc11aedafe3a2f4c3cf714652d39f"
+    }
+  },
+  "collection_recheck": {
+    "archives": 21,
+    "recipe_files": 42
+  }
+}

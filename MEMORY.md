@@ -82,6 +82,9 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, provider/modelli, termini commerciali. Non inventare recapiti, prezzi, benchmark o date di rilascio.
 
+
+- [Sorgenti Windows](DOCS/it/M0-WINDOWS-SOURCES.md): collector separato con ricette vincolate agli hash BUILDINFO; 21 archivi/316.641.108 byte, 175 membri, 103 checksum verificati. Otto firme SKIP non verificate; Git winpthreads verificato manualmente offline (fsck e checksum makepkg), collector resta vcs_unverified. Ricontrollati 21 archivi/42 metadati; evidenze in DOCS/evidence/windows-sources-2026-09-23, materiali /tmp/webfence-windows-sources-054bb2d. 20 regressioni Python locali passate; CI delle modifiche da verificare. Nessuna inclusione automatica/release, completezza sorgenti e revisione ancora aperte.
+
 ## English
 
 ### Author-confirmed facts
@@ -151,6 +154,9 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 
 - Windows provenance: added MSYS2 archive reader matching original DLLs, PKGINFO/BUILDINFO and PKGBUILD hash; packaging requires exact-version cache, no automatic download/upgrade. 16 Python regressions passed. Real Qt binary package verified against published checksum, source recipe matches BUILDINFO; signature not verified. Details in ADR-007 and Windows Qt evidence. CI `ceef622` run 35903124589: Windows fails due to absent Qt cache, MSYS2 action runs -Scc after saving. Disabled only action caching to retain archives in the job; [Corrective CI `054bb2d`](https://github.com/Matte2599/WebFence/actions/runs/35904059667): six passing jobs, 43 DLLs/22 binary packages/21 sources with recipe hashes; evidence in DOCS/evidence/windows-native-provenance-2026-09-23.md.
+
+
+- [Windows sources](DOCS/en/M0-WINDOWS-SOURCES.md): separate collector with recipes bound to BUILDINFO hashes; 21 archives/316,641,108 bytes, 175 members, 103 checksums verified. Eight SKIP signatures unverified; winpthreads Git manually verified offline (fsck and makepkg checksum), collector remains vcs_unverified. Rechecked 21 archives/42 metadata files; evidence in DOCS/evidence/windows-sources-2026-09-23, materials /tmp/webfence-windows-sources-054bb2d. 20 local Python regressions passed; CI for changes remains to verify. No automatic attachment/release, source completeness and review still open.
 
 ### Next work and boundaries
 

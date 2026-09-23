@@ -30,6 +30,7 @@
 | Verifica e chiusura M0 / M0 verification and closure | [IT](it/M0-VALIDATION.md) | [EN](en/M0-VALIDATION.md) |
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
 | Pacchetti Debian/Windows / Debian/Windows packages | [ADR-007 IT](it/ADR-007-PACKAGING.md) | [ADR-007 EN](en/ADR-007-PACKAGING.md) |
+| Sorgenti Windows / Windows sources | [IT](it/M0-WINDOWS-SOURCES.md) | [EN](en/M0-WINDOWS-SOURCES.md) |
 | Materiali sorgente / Source materials | [IT](it/M0-SOURCE-MATERIALS.md) | [EN](en/M0-SOURCE-MATERIALS.md) |
 | Ricognizione packaging / Packaging investigation | [IT](it/M0-PACKAGING.md) | [EN](en/M0-PACKAGING.md) |
 | Portachiavi nativo / Native credentials | [ADR-005 IT](it/ADR-005-CREDENTIALS.md) | [ADR-005 EN](en/ADR-005-CREDENTIALS.md) |
