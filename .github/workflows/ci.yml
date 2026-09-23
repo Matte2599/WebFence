@@ -121,10 +121,25 @@ jobs:
       - run: ./bin/webfence.exe --self-test
       - run: ./bin/webfence.exe --soak-test=10s
       - name: Windows development ZIP
-        run: python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")"
+        run: >-
+          python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")"
+          --collect-sources "$RUNNER_TEMP/webfence-msys2-sources"
+      - name: Failed source attachment preserves the previous Windows ZIP
+        run: |
+          previous_hash=$(sha256sum dist/webfence-windows-amd64.zip)
+          touch "$RUNNER_TEMP/webfence-msys2-sources/INCOMPLETE"
+          trap 'rm -f "$RUNNER_TEMP/webfence-msys2-sources/INCOMPLETE"' EXIT
+          if python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")" \
+              --source-materials "$RUNNER_TEMP/webfence-msys2-sources" > "$RUNNER_TEMP/webfence-source-failure.log" 2>&1; then
+            echo 'Incomplete source collection unexpectedly accepted'
+            exit 1
+          fi
+          grep -F 'Windows source collection is incomplete' "$RUNNER_TEMP/webfence-source-failure.log"
+          test "$previous_hash" = "$(sha256sum dist/webfence-windows-amd64.zip)"
+          echo 'PASS failed source attachment preserves the previous Windows ZIP'
       - name: Windows package without the toolchain on PATH
         shell: pwsh
-        run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip
+        run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources
 
   debian-package:
     strategy:

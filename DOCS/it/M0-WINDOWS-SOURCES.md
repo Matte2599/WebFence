@@ -8,14 +8,14 @@
 
 ```sh
 python3 scripts/collect_windows_sources.py \
-  PERCORSO/notices/native-build.json \
+  PERCORSO/native-build.json \
   /tmp/webfence-windows-source-materials
 
 # Facoltativo: --reuse-directory DIRECTORY_ARCHIVI oppure --zstd PERCORSO
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
 ```
 
-La destinazione deve essere nuova. Sono conservati archivi originali, `PKGBUILD`, `.SRCINFO`, inventario di input e manifest con hash/percorso di ogni membro regolare. `INCOMPLETE` resta presente fino al successo; un errore conserva i materiali parziali e non pubblica il manifest finale. Il riuso ricontrolla l’archivio. Non c’è inclusione automatica nel pacchetto Windows.
+La destinazione deve essere nuova. Sono conservati archivi originali, `PKGBUILD`, `.SRCINFO`, inventario di input e manifest con hash/percorso di ogni membro regolare. `INCOMPLETE` resta presente fino al successo; un errore conserva i materiali parziali e non pubblica il manifest finale. Il riuso ricontrolla l’archivio. Il packaging può includere esplicitamente i materiali, con le opzioni descritte sotto.
 
 Per ciascuna versione, il collector confronta SHA-256 di `PKGBUILD` con quello registrato nel `.BUILDINFO` del pacchetto binario, già confrontato con le DLL distribuite. Deduplica i pacchetti binari generati dalla stessa ricetta e rifiuta hash discordanti. Controlla identità/versione di `.SRCINFO` e checksum dichiarati per sorgenti generici e x86-64; altre architetture non sono dichiarate verificate. `.SRCINFO` viene letto dall’archivio, non rigenerato eseguendo `PKGBUILD`: i controlli attestano la corrispondenza con quei metadati, non un’autenticazione indipendente o una ricostruzione del binario.
 
@@ -32,3 +32,26 @@ Il [manifest](../evidence/windows-sources-2026-09-23/source-materials.json) e il
 Per winpthreads, [supplemento offline](../evidence/windows-sources-2026-09-23/winpthreads-offline-check.json): copiati soltanto pack/index/rev verificati in un repository bare nuovo, senza configurazione, hook o ref dell’archivio. `git fsck --strict --full` passa; commit `61d40c4c077b82ed2ad22640742bd01e3000e222`. Il tar prodotto da `git -c core.abbrev=no archive --format tar COMMIT` ha SHA-256 `ee1989c086f380e53663ecaebd932b793b59b1a2b660ffc035723df8640559a5`, identico a quello dichiarato. Metodo verificato leggendo `calc_checksum_git` del [pacchetto MSYS2 pacman 6.1.0-25](https://packages.msys2.org/packages/pacman), il cui archivio è stato confrontato con il checksum pubblicato. Nessun checkout, script o collegamento di rete durante il controllo Git; configurazioni globali e attributi esterni disabilitati. È una verifica manuale aggiuntiva: il collector conserva onestamente lo stato `vcs_unverified`.
 
 Restano mappatura dei componenti incorporati e relativi avvisi, ambiente e istruzioni di ricompilazione/sostituzione, assemblaggio della distribuzione e revisione legale. La raccolta non chiude M0-02 né autorizza una release.
+
+## Includere i sorgenti nello ZIP
+
+In MSYS2 UCRT64, aggiungere una delle due opzioni al comando di packaging:
+
+```sh
+python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")" \
+  --source-materials "C:/percorso/raccolta-verificata"
+
+# Alternativa esplicita: scaricare, verificare e conservare una nuova raccolta.
+python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")" \
+  --collect-sources "C:/percorso/nuova-raccolta"
+```
+
+Le opzioni sono mutuamente esclusive. Senza opzioni resta il pacchetto di sviluppo con avvisi installati; `--source-materials` non accede alla rete. `--collect-sources` richiede una directory nuova ed esegue la raccolta dopo aver identificato le DLL reali. In caso di errore, lo ZIP precedente resta intatto e la raccolta parziale resta ispezionabile.
+
+`scripts/attach_windows_sources.py` confronta il piano dei pacchetti dell’inventario corrente con quello di acquisizione. Verifica archivi, hash, budget, ricette e metadati rigenerati; rifiuta percorsi discordanti e link nei materiali. Copia gli archivi e rigenera `PKGBUILD`/`.SRCINFO` dai byte copiati, ignorando le ricette sciolte modificabili. L’allegato viene pubblicato in uno staging nuovo solo dopo tutti i controlli. Input di build fidati, nessun supporto a scrittori concorrenti.
+
+Lo ZIP contiene `WebFence/msys2-sources`: archivi originali con sorgenti upstream, patch e avvisi annidati, ricette, manifest di raccolta, inventari iniziale/corrente, `attachment.json` e README IT/EN. I percorsi archivio del manifest sono ora risolvibili all’interno del pacchetto. Gli archivi compressi aggiungono circa 302 MiB prima della compressione ZIP; non vengono estratti o eseguiti dall’app. L’inventario corrente è legato per SHA-256 a quello delle DLL del pacchetto. I metadati di acquisizione non sono presentati come provenienza dell’eseguibile nuovo; il supplemento Git manuale resta evidenza separata, non è importato automaticamente.
+
+Verifica locale: 25 regressioni Python superate; inclusione effettiva di 21 archivi/316.641.108 byte e ricontrollo indipendente di 21 hash archivio e 42 ricette/metadati. Output `/tmp/webfence-windows-source-attachment-a146152`, usando il piano ricostruito della precedente CI come input, non un nuovo eseguibile Windows locale. La CI ora prepara lo ZIP da un inventario reale con `--collect-sources`, controlla tutti gli hash dopo l’estrazione, richiede la presenza dei sorgenti e prova il rifiuto di una raccolta incompleta preservando lo ZIP precedente; esito da verificare.
+
+Da PowerShell 7, la prova completa è `./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources`. I controlli dei sorgenti precedono quelli GUI con PATH di solo sistema. L’assemblaggio conserva `distribution_ready=false` e `corresponding_sources_complete=false`: avvisi incorporati, firme, ambiente di build e ricompilazione/sostituzione richiedono ancora revisione.

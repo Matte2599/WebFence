@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build a development ZIP from an existing WebFence UCRT64 executable."""
+import argparse
 import hashlib
 import json
 import os
@@ -10,6 +11,8 @@ import subprocess
 import sys
 import tempfile
 from msys2_binary_metadata import inspect, sha
+from attach_windows_sources import attach
+from collect_windows_sources import collect
 
 
 def run(*args):
@@ -32,9 +35,11 @@ def notice_relative(path):
     return None
 
 
-def package(prefix, executable):
+def package(prefix, executable, source_materials=None, collect_sources=None):
     if sys.platform != "win32":
         raise ValueError("Native Windows UCRT64 Python required")
+    if source_materials and collect_sources:
+        raise ValueError('Select existing source materials or new collection, not both')
     prefix, executable = Path(prefix).resolve(), Path(executable).resolve()
     repo = Path(__file__).resolve().parent.parent
     dist = repo / "dist"
@@ -138,6 +143,13 @@ def package(prefix, executable):
             "distribution_ready": False,
             "packages": owners, "system_imports": sorted(system_imports),
             "scope": "PE import closure, installed notices and DLL/build metadata matched to cached MSYS2 archives; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
+        if collect_sources:
+            collect(bundle / 'native-build.json', collect_sources, zstd=str(prefix / 'bin/zstd.exe'))
+            source_materials = collect_sources
+        if source_materials:
+            result = attach(bundle / 'native-build.json', source_materials, bundle / 'msys2-sources',
+                            zstd=str(prefix / 'bin/zstd.exe'))
+            print(f"Attached Windows sources: {result['archive_count']} archives, {result['archive_bytes']} bytes")
         subprocess.run([sys.executable, str(repo / "scripts/package-project-docs.py"), str(bundle)], check=True)
         archive = shutil.make_archive(str(stage / "webfence-windows-amd64"), "zip", stage, "WebFence")
         final = dist / "webfence-windows-amd64.zip"
@@ -146,6 +158,11 @@ def package(prefix, executable):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        raise SystemExit("Usage: package-windows.py UCRT64_PREFIX WEBFENCE_EXE")
-    package(*sys.argv[1:])
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('ucrt64_prefix')
+    parser.add_argument('webfence_exe')
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--source-materials', help='Attach an existing verified source collection; no download')
+    selection.add_argument('--collect-sources', help='Download into this new directory, verify and attach sources')
+    args = parser.parse_args()
+    package(args.ucrt64_prefix, args.webfence_exe, args.source_materials, args.collect_sources)

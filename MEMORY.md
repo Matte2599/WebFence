@@ -85,6 +85,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 - [Sorgenti Windows](DOCS/it/M0-WINDOWS-SOURCES.md): collector separato con ricette vincolate agli hash BUILDINFO; 21 archivi/316.641.108 byte, 175 membri, 103 checksum verificati. Otto firme SKIP non verificate; Git winpthreads verificato manualmente offline (fsck e checksum makepkg), collector resta vcs_unverified. Ricontrollati 21 archivi/42 metadati; evidenze in DOCS/evidence/windows-sources-2026-09-23, materiali /tmp/webfence-windows-sources-054bb2d. 20 regressioni Python locali passate; [CI `37da7cf`](https://github.com/Matte2599/WebFence/actions/runs/35907192055) sei job superati, incluse le 20 regressioni sui quattro target; 22 pacchetti/43 DLL Windows e ricette identici al piano sorgenti. Nessuna inclusione automatica/release, completezza sorgenti e revisione ancora aperte.
 
+- Inclusione facoltativa dei 21 archivi sorgente nello ZIP implementata, con ricette rigenerate e vincolo all’inventario corrente; 25 regressioni locali passate. CI con raccolta reale, verifica dello ZIP estratto e preservazione dello ZIP su errore predisposta, da verificare. Materiali locali: /tmp/webfence-windows-source-attachment-a146152. Nessuna release o dichiarazione di completezza.
+
 ## English
 
 ### Author-confirmed facts
@@ -157,6 +159,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 
 - [Windows sources](DOCS/en/M0-WINDOWS-SOURCES.md): separate collector with recipes bound to BUILDINFO hashes; 21 archives/316,641,108 bytes, 175 members, 103 checksums verified. Eight SKIP signatures unverified; winpthreads Git manually verified offline (fsck and makepkg checksum), collector remains vcs_unverified. Rechecked 21 archives/42 metadata files; evidence in DOCS/evidence/windows-sources-2026-09-23, materials /tmp/webfence-windows-sources-054bb2d. 20 local Python regressions passed; [CI `37da7cf`](https://github.com/Matte2599/WebFence/actions/runs/35907192055) six passing jobs, including 20 regressions on four targets; 22 Windows packages/43 DLLs and recipes identical to the source plan. No automatic attachment/release, source completeness and review still open.
+
+- Optional attachment of 21 source archives in the ZIP implemented, with regenerated recipes and current-inventory binding; 25 local regressions passed. CI with actual collection, extracted-ZIP checks and ZIP preservation on failure configured, verification pending. Local materials: /tmp/webfence-windows-source-attachment-a146152. No release or completeness claim.
 
 ### Next work and boundaries
 
