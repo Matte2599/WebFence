@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -94,4 +94,18 @@ Driver e libreria scelti in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/f
 ```sh
 go test -race ./internal/foundation ./internal/signature
 go test ./internal/signature -run '^$' -fuzz '^FuzzVerify$' -fuzztime=20s -parallel=4
+```
+
+## Portachiavi: prove M0
+
+[ADR-005](ADR-005-CREDENTIALS.md) descrive backend, limiti e prove. Gli unit test ordinari non scrivono credenziali personali. Per le prove native macOS (portachiavi temporaneo separato) e Windows (voce sintetica con namespace casuale):
+
+```sh
+go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
+```
+
+Su Linux usare esclusivamente il launcher isolato, con `dbus-run-session`, `gnome-keyring-daemon`, `gdbus` e `rg` installati. Non impostare manualmente il flag di isolamento sul bus personale: il test blocca la raccolta del servizio di prova.
+
+```sh
+sh scripts/test-keychain-linux.sh
 ```

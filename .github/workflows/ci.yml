@@ -43,7 +43,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ pkg-config qt6-base-dev
+          sudo apt-get install -y g++ pkg-config qt6-base-dev dbus-x11 gnome-keyring libglib2.0-bin ripgrep
       - name: macOS Qt dependencies
         if: runner.os == 'macOS'
         run: brew install qtbase pkgconf
@@ -53,7 +53,13 @@ jobs:
       - run: test "$(go env GOARCH)" = "${{ matrix.arch }}"
       - run: test -z "$(gofmt -l cmd internal)"
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
+      - name: Isolated Linux native credential tests
+        if: runner.os == 'Linux'
+        run: sh scripts/test-keychain-linux.sh
+      - name: Private macOS keychain tests
+        if: runner.os == 'macOS'
+        run: go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
       - name: Bounded scope fuzzing
         if: matrix.os == 'ubuntu-24.04'
         run: go test ./internal/scope -run '^$' -fuzz '^FuzzCheck$' -fuzztime=10s -parallel=2
@@ -89,7 +95,9 @@ jobs:
             mingw-w64-ucrt-x86_64-qt6-base
       - run: test "$(go env GOARCH)" = amd64
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
+      - name: Windows native credential tests
+        run: go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
       - run: go build -o bin/webfence.exe ./cmd/webfence
       - run: go vet ./...
       - run: ./bin/webfence.exe --self-test

@@ -29,6 +29,7 @@
 | Scope origini e laboratorio M0 / Origin scope and M0 lab | [IT](it/M0-SCOPE.md) | [EN](en/M0-SCOPE.md) |
 | Verifica e chiusura M0 / M0 verification and closure | [IT](it/M0-VALIDATION.md) | [EN](en/M0-VALIDATION.md) |
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
+| Portachiavi nativo / Native credentials | [ADR-005 IT](it/ADR-005-CREDENTIALS.md) | [ADR-005 EN](en/ADR-005-CREDENTIALS.md) |
 | Desktop Qt corrente / Current Qt desktop | [IT](it/QT-DESKTOP.md) | [EN](en/QT-DESKTOP.md) |
 
 Documenti bilingui condivisi / Shared bilingual documents:

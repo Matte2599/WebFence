@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -94,4 +94,18 @@ Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `interna
 ```sh
 go test -race ./internal/foundation ./internal/signature
 go test ./internal/signature -run '^$' -fuzz '^FuzzVerify$' -fuzztime=20s -parallel=4
+```
+
+## Credentials: M0 tests
+
+[ADR-005](ADR-005-CREDENTIALS.md) documents backends, limits and checks. Ordinary unit tests do not write personal credentials. For native macOS tests (separate temporary keychain) and Windows tests (synthetic item with random namespace):
+
+```sh
+go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
+```
+
+On Linux use only the isolated launcher, with `dbus-run-session`, `gnome-keyring-daemon`, `gdbus` and `rg` installed. Do not manually set the isolation flag on a personal bus: the test locks the test service collection.
+
+```sh
+sh scripts/test-keychain-linux.sh
 ```
