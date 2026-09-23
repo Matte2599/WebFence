@@ -49,6 +49,8 @@ Registro di chiusura M0: [matrice e procedura desktop](DOCS/it/M0-VALIDATION.md)
 
 Task portachiavi M0: aggiunto `internal/credentials`, namespace fisso, ID minuscoli, segreti binari 1–2048 byte, errori redatti e nessun fallback. macOS: adattatore Security.framework classico, controllo UI globale serializzato/ripristinato, API deprecate da rivalutare per app firmata. Windows: wincred v1.2.3; Linux: godbus v5.2.2, Secret Service locale senza prompt, connessione privata e timeout 3 secondi. [ADR-005](DOCS/it/ADR-005-CREDENTIALS.md) registra limiti, inclusa cancellazione non interrompibile dentro le API macOS/Windows. Test macOS con portachiavi temporaneo separato superati, inclusi blocco e assenza; suite Go/vet/moduli superate. CI e launcher Linux isolato predisposti; nessuna prova runtime Windows/Linux ancora dichiarata. GUI invariata.
 
+Prima CI portachiavi `aa722e3`: prove native macOS superate; Linux x86-64/ARM64 ha scoperto il MIME `text/plain` restituito da GNOME Keyring anche per segreti binari. Corretto il controllo: dati sempre opachi, restano controlli sessione/parametri/dimensione; launcher senza attivazione concorrente del daemon. Verifica successiva in attesa.
+
 ### Prossimo lavoro
 
 1. Qt scelto: approfondire menu/focus, albero della tabella, lettori di schermo e stabilità; completare i gate M0 sul toolkit adottato.
@@ -105,6 +107,8 @@ M0 SQLite/JWS task: mattn/go-sqlite3 v1.14.52 (embedded SQLite 3.53.4), jwx/v4 v
 M0 closure register: [matrix and desktop procedure](DOCS/en/M0-VALIDATION.md), separate gates without invented percentages. Additional local Qt offscreen self-tests at scale 1.5 and 2 passed, without visual validation. Existing local macOS bundle: codesign --deep --strict verification passed; main executable otool points to bundled frameworks and system libraries. The bundle also contains numerous third-party dylibs (ICU, glib, freetype, etc.): license/source inventory and clean-machine verification remain pending; do not publish it as a ready release. GitHub Private vulnerability reporting was disabled (public GET: enabled=false); enabled in settings with confirmation and Security overview Enabled on 2026-09-23. SECURITY updated; no report submitted. Author asked about Windows/NVDA and Debian/Orca machine availability; no answer recorded yet. [Legal dossier](DOCS/en/LEGAL-REVIEW.md) and CLA specification prepared; the author confirmed professional review still needs to be arranged. No approved CLA, LICENSE change or signed agreement.
 
 M0 credential task: added `internal/credentials`, fixed namespace, lowercase IDs, 1–2048 byte binary secrets, redacted errors and no fallback. macOS: classic Security.framework adapter, serialized/restored global UI control, deprecated APIs to reassess for signed apps. Windows: wincred v1.2.3; Linux: godbus v5.2.2, local Secret Service without prompts, private connection and three-second timeout. [ADR-005](DOCS/en/ADR-005-CREDENTIALS.md) records limits, including noninterruptible macOS/Windows API calls. Separate temporary macOS keychain tests passed, including locked/absent states; Go/vet/module checks passed. CI and isolated Linux launcher prepared; no Windows/Linux runtime result claimed yet. GUI unchanged.
+
+First credential CI `aa722e3`: native macOS tests passed; Linux x86-64/ARM64 exposed GNOME Keyring returning `text/plain` for binary secrets. Corrected the check: data stays opaque; session/parameter/size checks remain. Launcher no longer activates a concurrent daemon. Follow-up verification pending.
 
 ### Next work
 

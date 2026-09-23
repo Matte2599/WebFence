@@ -21,7 +21,8 @@ printf '%s\n' 'webfence synthetic test password' | gnome-keyring-daemon --foregr
 keychain_pid=$!
 trap 'kill "$keychain_pid" 2>/dev/null || true; wait "$keychain_pid" 2>/dev/null || true' EXIT HUP INT TERM
 keychain_attempt=0
-until gdbus call --session --dest org.freedesktop.secrets --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.ReadAlias default 2>/dev/null | rg -q '/org/freedesktop/secrets/collection/'; do
+until gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus --method org.freedesktop.DBus.NameHasOwner org.freedesktop.secrets 2>/dev/null | rg -q 'true' &&
+    gdbus call --session --dest org.freedesktop.secrets --object-path /org/freedesktop/secrets --method org.freedesktop.Secret.Service.ReadAlias default 2>/dev/null | rg -q '/org/freedesktop/secrets/collection/'; do
     keychain_attempt=$((keychain_attempt + 1))
     if [ "$keychain_attempt" -ge 20 ]; then
         cat "$XDG_RUNTIME_DIR/daemon.log"

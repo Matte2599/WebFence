@@ -208,7 +208,9 @@ func (b linuxBackend) run(ctx context.Context, op int, id string, value []byte) 
 			clear(secret.Value)
 			return nil, err
 		}
-		if secret.Session != session || len(secret.Parameters) != 0 || secret.ContentType != "application/octet-stream" {
+		// GNOME Keyring returns text/plain even for binary input. MIME is
+		// descriptive metadata: return opaque bytes without interpreting it.
+		if secret.Session != session || len(secret.Parameters) != 0 {
 			clear(secret.Value)
 			return nil, ErrUnavailable
 		}
