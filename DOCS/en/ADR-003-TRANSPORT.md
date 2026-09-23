@@ -48,6 +48,8 @@ Local race-enabled tests and `go vet` passed. The lab covers:
 
 A dial fence independent of the code under test restricts tests to owned endpoints. Public and metadata addresses occur only as synthetic input, never actual destinations.
 
+**CI completed:** [run 35861040736](https://github.com/Matte2599/WebFence/actions/runs/35861040736), code `8f189eb`: all four jobs passed, macOS ARM64, Windows Server x86-64 and Ubuntu x86-64/ARM64. Race-enabled transport tests, scope tests and Qt regressions, build/vet and macOS bundle passed; bounded scope fuzzing ran on Linux x86-64. The IPv6 test was explicitly run and passed locally on macOS without skipping; aggregate CI is not used to claim assistive or IPv6 testing on every requested desktop.
+
 ## Consequences and remaining limitations
 
 This task covers the M0 lab and **initial** scope/network test gate. M0 remains open for GUI/accessibility, packaging and other foundation decisions. Real traffic still requires authorization/expiry, internal-service exclusions, IP/CIDR and public/private-network policies, methods and paths, rate limiting, redaction, recovery and scan lifecycle integration. The lab does not establish Internet DNS behavior, enterprise proxies, browser/WebSocket containment, actual private-network behavior or resilience to every OS failure.

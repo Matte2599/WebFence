@@ -48,6 +48,8 @@ Test locali con race detector e `go vet` superati. Il laboratorio verifica:
 
 Un blocco dei dial indipendente dal codice in prova limita i test agli endpoint posseduti. Gli indirizzi pubblici e metadata compaiono soltanto come dati sintetici, mai come destinazioni reali.
 
+**CI completata:** [run 35861040736](https://github.com/Matte2599/WebFence/actions/runs/35861040736), codice `8f189eb`: quattro job superati, macOS ARM64, Windows Server x86-64 e Ubuntu x86-64/ARM64. Test del nuovo trasporto con race detector, test scope e regressioni Qt, build/vet e bundle macOS superati; fuzz scope limitato su Linux x86-64. Il test IPv6 è stato eseguito esplicitamente e superato localmente su macOS, senza skip; la CI aggregata non viene usata per affermare prove assistive o IPv6 su ogni desktop richiesto.
+
 ## Conseguenze e limiti residui
 
 Il task copre il gate M0 del laboratorio e dei **primi** test scope/rete. M0 resta aperta per GUI/accessibilità, packaging e altre decisioni di fondazione. Prima di traffico reale servono autorizzazioni/scadenza, esclusioni dei servizi interni, IP/CIDR e reti pubbliche/private, metodi e percorsi, rate limit, redazione, recupero e integrazione del ciclo di scansione. Il laboratorio non dimostra comportamento di DNS Internet, proxy aziendali, browser, WebSocket, reti private reali o resilienza a ogni guasto OS.
