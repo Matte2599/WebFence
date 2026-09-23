@@ -46,7 +46,12 @@ jobs:
           sudo apt-get install -y g++ pkg-config qt6-base-dev dbus-x11 gnome-keyring libglib2.0-bin ripgrep
       - name: macOS Qt dependencies
         if: runner.os == 'macOS'
-        run: brew install qtbase pkgconf cmake ninja molten-vk vulkan-headers
+        run: |
+          brew list --versions glib || true
+          # A preinstalled older GLib can satisfy Qt's dependency without being
+          # upgraded. Request it explicitly; the reviewed recipe hash still gates packaging.
+          env -u HOMEBREW_NO_INSTALL_UPGRADE brew install qtbase pkgconf cmake ninja molten-vk vulkan-headers glib
+          brew list --versions glib libb2
       - name: macOS development binding flags
         if: runner.os == 'macOS'
         run: echo 'CGO_CXXFLAGS=-O0 -g0 -std=c++17' >> "$GITHUB_ENV"

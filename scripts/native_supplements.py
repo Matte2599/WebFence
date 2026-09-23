@@ -52,7 +52,8 @@ def validate(native_build, inventory, plan):
             raise ValueError('Invalid supplement package identity')
         current = inventory.get('packages', {}).get(package)
         if not current or package != current.get('formula', '') + '@' + current.get('version', ''):
-            raise ValueError('Supplement package differs from current inventory')
+            raise ValueError('Supplement package differs from current inventory: ' + package
+                             + '; available: ' + ', '.join(sorted(inventory.get('packages', {}))))
         recipe = '.brew/' + current['formula'] + '.rb'
         if recipe not in current.get('metadata_files', []):
             raise ValueError('Expected installed recipe in native inventory')
