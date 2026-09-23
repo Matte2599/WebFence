@@ -3,7 +3,6 @@
   "scope": "Reviewed GLib/libb2 Homebrew supplements, not all source or license obligations. Recipe hashes bind this selection to the installed formulas.",
   "packages": {
     "glib@2.90.0": {
-      "installed_recipe_sha256": "eb964bd9d934f92a1e271e84085c58541770d41f5698e7e5f17094375bb46d2a",
       "files": [
         {
           "path": "glib.rb",
@@ -23,10 +22,12 @@
           "size_bytes": 1083172,
           "sha256": "920d1a3fcedeadc32acff95c2e203b319039dd4b4a08dd1a2dfd283d19c0b9ae"
         }
+      ],
+      "installed_recipe_sha256s": [
+        "eb964bd9d934f92a1e271e84085c58541770d41f5698e7e5f17094375bb46d2a"
       ]
     },
     "libb2@0.98.1": {
-      "installed_recipe_sha256": "35179ede9f32d4cb2ab8ea26eb08735e3cdbbbfa1537177bddc66a7b84b517cd",
       "files": [
         {
           "path": "configure-big_sur.diff",
@@ -34,6 +35,10 @@
           "size_bytes": 960,
           "sha256": "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c"
         }
+      ],
+      "installed_recipe_sha256s": [
+        "35179ede9f32d4cb2ab8ea26eb08735e3cdbbbfa1537177bddc66a7b84b517cd",
+        "e0c353e17c03fa5cb4aea32d8ed9cd299d2ee77d950c6a32ccd61082f0f9355c"
       ]
     }
   }

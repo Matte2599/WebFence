@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "distribution_ready": false,
+  "scope": "Published bottle checksums verified, installed recipe bytes read without extracting/installing/executing package code.",
+  "bottles": [
+    {
+      "formula": "glib",
+      "platform": "arm64_sequoia",
+      "url": "https://ghcr.io/v2/homebrew/core/glib/blobs/sha256:91df2202a093cd00b90fa9919f1c1e61e8f78d8ddd9a307009af6d4007072180",
+      "archive_sha256": "91df2202a093cd00b90fa9919f1c1e61e8f78d8ddd9a307009af6d4007072180",
+      "archive_size_bytes": 9379270,
+      "recipe_sha256": "eb964bd9d934f92a1e271e84085c58541770d41f5698e7e5f17094375bb46d2a"
+    },
+    {
+      "formula": "libb2",
+      "platform": "arm64_sequoia",
+      "url": "https://ghcr.io/v2/homebrew/core/libb2/blobs/sha256:cc4304b760722128b914944f85788795f1f02de3072d1fd8e921b836b508776f",
+      "archive_sha256": "cc4304b760722128b914944f85788795f1f02de3072d1fd8e921b836b508776f",
+      "archive_size_bytes": 36095,
+      "recipe_sha256": "e0c353e17c03fa5cb4aea32d8ed9cd299d2ee77d950c6a32ccd61082f0f9355c"
+    }
+  ],
+  "glib_comparison": "Exact same recipe hash as reviewed local GLib 2.90.0.",
+  "libb2_comparison": "Compared with local Tahoe recipe 35179ede9f32d4cb2ab8ea26eb08735e3cdbbbfa1537177bddc66a7b84b517cd. Sequoia lacks no_autobump! because: :requires_manual_review and uses EOS rather than C as test heredoc delimiter. Upstream source/hash, configure patch URL/hash and build instructions identical. Both hashes explicitly reviewed; no text normalization or acceptance of other hashes."
+}

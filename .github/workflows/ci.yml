@@ -48,6 +48,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew list --versions glib || true
+          # Runner formula metadata can also predate the reviewed source plan.
+          brew update
           # A preinstalled older GLib can satisfy Qt's dependency without being
           # upgraded. Request it explicitly; the reviewed recipe hash still gates packaging.
           env -u HOMEBREW_NO_INSTALL_UPGRADE brew install qtbase pkgconf cmake ninja molten-vk vulkan-headers glib

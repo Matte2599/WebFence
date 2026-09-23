@@ -24,7 +24,7 @@ class NativeSupplementsTest(unittest.TestCase):
             'formula': 'sample', 'version': '1.0', 'metadata_files': ['.brew/sample.rb']}}}))
         self.payload = b'synthetic patch, never execute'
         self.plan = {'schema': 1, 'packages': {'sample@1.0': {
-            'installed_recipe_sha256': supplements.download.sha(self.recipe), 'files': [{
+            'installed_recipe_sha256s': [supplements.download.sha(self.recipe)], 'files': [{
                 'path': 'patch.diff', 'url': 'https://example.invalid/patch.diff',
                 'size_bytes': len(self.payload), 'sha256': hashlib.sha256(self.payload).hexdigest()}]}}}
         self.plan_path = self.root / 'plan.json'
@@ -56,6 +56,15 @@ class NativeSupplementsTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'recipe differs'):
                 supplements.collect(self.native, self.plan_path, self.output)
         self.assertFalse(self.output.exists())
+
+    def test_explicit_second_recipe_hash_is_recorded_without_normalization(self):
+        self.recipe.write_text('# Reviewed alternative recipe\n')
+        expected = supplements.download.sha(self.recipe)
+        self.plan['packages']['sample@1.0']['installed_recipe_sha256s'].append(expected)
+        self.save_plan()
+        result = supplements.collect(self.native, self.plan_path, self.output, self.reuse)
+        self.assertEqual(result['installed_recipes'][0]['sha256'], expected)
+        self.assertEqual(supplements.download.sha(self.output / 'sample@1.0/installed-recipe.rb'), expected)
 
     def test_linked_material_rejected_when_os_allows_symlinks(self):
         material = self.reuse / 'sample@1.0/patch.diff'

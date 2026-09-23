@@ -58,10 +58,15 @@ def validate(native_build, inventory, plan):
         if recipe not in current.get('metadata_files', []):
             raise ValueError('Expected installed recipe in native inventory')
         recipe_file = regular_file(native_build.parent, 'homebrew/' + package + '/' + recipe)
-        recipe_hash = record.get('installed_recipe_sha256', '')
-        if (not re.fullmatch(r'[a-f0-9]{64}', recipe_hash) or recipe_file.stat().st_size > MAX_FILE
-                or download.sha(recipe_file) != recipe_hash):
-            raise ValueError('Installed recipe differs from reviewed supplement plan')
+        recipe_hashes = record.get('installed_recipe_sha256s', [])
+        if (not isinstance(recipe_hashes, list) or not 1 <= len(recipe_hashes) <= 4
+                or any(not isinstance(h, str) or not re.fullmatch(r'[a-f0-9]{64}', h) for h in recipe_hashes)
+                or len(set(recipe_hashes)) != len(recipe_hashes) or recipe_file.stat().st_size > MAX_FILE):
+            raise ValueError('Invalid reviewed recipe hashes or recipe size')
+        actual_recipe_hash = download.sha(recipe_file)
+        if actual_recipe_hash not in recipe_hashes:
+            raise ValueError('Installed recipe differs from reviewed supplement plan: '
+                             + package + '; SHA-256 ' + actual_recipe_hash)
         files = record.get('files', [])
         if not isinstance(files, list) or not files:
             raise ValueError('Expected supplement files')
@@ -83,7 +88,7 @@ def validate(native_build, inventory, plan):
             total += size
             if count > 64 or total > MAX_TOTAL:
                 raise ValueError('Combined supplement budget exceeded')
-        result.append((package, recipe_file, record))
+        result.append((package, recipe_file, dict(record, installed_recipe_sha256=actual_recipe_hash)))
     return result
 
 
