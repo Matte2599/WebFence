@@ -77,6 +77,10 @@ Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and deriv
 
 Dependency materials: [source and notice collector](DOCS/en/M0-SOURCE-MATERIALS.md) verified against 15 upstream archives; optional attachment of 247 notices before macOS bundle signing. Distribution review remains open.
 
+Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with recipes bound to binaries and documented integrity checks; optional original archive attachment in the ZIP.
+
+The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
+
 Development packages include IT/EN documentation; packaging checks local file links.
 
 ## License and author
@@ -90,7 +94,3 @@ Use by companies, distribution of the program to companies, software resale and 
 These restrictions are incompatible with the [Open Source Definition](https://opensource.org/osd). WebFence is therefore not described as OSI open source software. The [licensing guide](DOCS/en/LICENSING.md) explains the decision and alternatives. The custom text requires legal review before being used as the basis of commercial contracts.
 
 For license requests, open an issue titled **Licensing inquiry**, without confidential information; the author can provide a private channel. For vulnerabilities in WebFence, follow [SECURITY.md](SECURITY.md).
-
-Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with recipes bound to binaries and documented integrity checks; optional original archive attachment in the ZIP.
-
-The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
