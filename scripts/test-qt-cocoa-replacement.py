@@ -25,7 +25,7 @@ PATCH = '''
  {
      logVersionInformation();
 +    qWarning("WEBFENCE_QT_REPLACEMENT_TRIAL");
- 
+\x20
      if (mInstance)
 '''
 

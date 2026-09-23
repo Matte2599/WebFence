@@ -12,5 +12,6 @@
     "existing_output_rejected_and_previous_result_preserved": true
   },
   "initial_trial_failure": "Resolved Qt prefix to Cellar; linker-name validation correctly rejected opt framework names. Harness fixed to preserve Homebrew prefix spelling; successful rerun recorded.",
-  "distribution_ready": false
+  "distribution_ready": false,
+  "trial_patch": "\n--- a/src/plugins/platforms/cocoa/qcocoaintegration.mm\n+++ b/src/plugins/platforms/cocoa/qcocoaintegration.mm\n@@ -114,6 +114,7 @@\n     , mNativeInterface(new QCocoaNativeInterface)\n     , mKeyboardMapper(new QAppleKeyMapper)\n {\n     logVersionInformation();\n+    qWarning(\"WEBFENCE_QT_REPLACEMENT_TRIAL\");\n \n     if (mInstance)\n"
 }
