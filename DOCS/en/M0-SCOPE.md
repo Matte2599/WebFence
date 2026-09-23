@@ -24,6 +24,8 @@ Pure tests cover distinct origins, ambiguous input, configuration that cannot si
 
 Local verification: race-enabled suite passed with 98.6% package statement coverage; a bounded 20-second fuzz run passed (696,840 reported executions). These are observations from this run, not security guarantees or scanner benchmarks. CI runs the package tests on all four runners and a bounded fuzz session on Linux x86-64.
 
+**CI completed:** [run 35859069506](https://github.com/Matte2599/WebFence/actions/runs/35859069506), code `ed71bec`: all four jobs passed (macOS ARM64, Windows Server x86-64, Ubuntu x86-64/ARM64), including race-enabled scope tests; bounded Linux x86-64 fuzzing, build/vet/Qt self-test and macOS bundle passed. This does not establish Windows 10/11 or Debian assistive desktop behavior.
+
 ## Limitations and next step
 
 This check may recognize an explicitly listed private/loopback origin, but **does not grant permission to connect to that network**. Before enabling product traffic, IP/CIDR policy, DNS and connection-pinned destination addresses, TLS verification, proxy isolation, authorization/expiry, methods and paths/exclusions, shared budgets, cancellation and response handling are required. The lab does not establish DNS rebinding protection, complete SSRF prevention, browser/WebSocket containment or actual private-network behavior. Its adapter must not be reused as the production broker.

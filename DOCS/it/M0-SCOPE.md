@@ -24,6 +24,8 @@ Le prove pure coprono origini distinte, input ambigui, configurazione che non pu
 
 Verifica locale: suite con race detector superata, copertura del pacchetto 98,6% delle istruzioni; fuzzing limitato a 20 secondi superato (696.840 esecuzioni riportate). Sono dati di questa prova, non garanzie di sicurezza o benchmark dello scanner. La CI esegue i test del pacchetto sui quattro runner e una sessione fuzz limitata su Linux x86-64.
 
+**CI completata:** [run 35859069506](https://github.com/Matte2599/WebFence/actions/runs/35859069506), codice `ed71bec`: quattro job superati (macOS ARM64, Windows Server x86-64, Ubuntu x86-64/ARM64), inclusi i test scope con race detector; fuzz limitato su Linux x86-64, build/vet/self-test Qt e bundle macOS superati. Non equivale a verifica dei desktop Windows 10/11 o Debian con tecnologie assistive.
+
 ## Limiti e passo successivo
 
 Questo controllo può riconoscere un’origine privata/loopback dichiarata, ma **non concede il permesso di collegarsi a quella rete**. Prima di attivare traffico nel prodotto occorrono policy IP/CIDR, DNS e indirizzo effettivo fissato alla connessione, verifica TLS, isolamento dei proxy, scadenza/autorizzazione, metodi e percorsi/esclusioni, budget condivisi, cancellazione e gestione delle risposte. Il laboratorio non prova DNS rebinding, SSRF completo, browser, WebSocket o reti private reali. Il suo adattatore non va riutilizzato come broker di produzione.
