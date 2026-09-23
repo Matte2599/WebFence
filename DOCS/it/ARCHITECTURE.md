@@ -70,3 +70,5 @@ La modalità server, utenti condivisi, PostgreSQL e worker distribuiti richiedon
 `internal/scope` realizza soltanto il confronto immutabile di origini HTTP(S), senza rete e senza dipendenze Qt. Un laboratorio loopback esiste esclusivamente nei test. Non sostituisce i confini IP/DNS, autorizzazioni e budget del broker pianificato: [contratto M0](M0-SCOPE.md).
 
 `internal/transport` aggiunge un broker HTTP/TLS confinato a grant loopback, con IP fissato alla connessione e budget/cancellazione condivisi. Decisione M0 e limiti di produzione: [ADR-003](ADR-003-TRANSPORT.md). Nessuna chiamata dalla GUI.
+
+SQLite e il profilo JWS sono selezionati in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): test di fattibilità SQLite e componente `internal/signature`, senza store progetti né report nella GUI.

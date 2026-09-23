@@ -39,7 +39,7 @@ Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi re
 
 - [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
-- [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi.
+- [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi. GUI scelta; SQLite/JWS selezionati e testati localmente ([ADR-004](it/ADR-004-STORAGE-SIGNATURE.md)); portachiavi e conferma CI delle nuove dipendenze ancora aperti.
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
 - [x] Laboratorio sintetico e primi test scope/rete: origini, DNS/IP per connessione, TLS, redirect, budget condivisi e cancellazione verificati su loopback; [ADR-003 e limiti](it/ADR-003-TRANSPORT.md), [CI verde sui quattro target](https://github.com/Matte2599/WebFence/actions/runs/35861040736). Trasporto per target reali e policy complete restano in M1.
 - [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture.
@@ -152,7 +152,7 @@ These checks close the first task, not all of M0. Overall gates remain:
 
 - [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.
-- [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access.
+- [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access. GUI chosen; SQLite/JWS selected and locally tested ([ADR-004](en/ADR-004-STORAGE-SIGNATURE.md)); keychain and CI confirmation of new dependencies remain open.
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
 - [x] Synthetic lab and initial scope/network tests: origins, per-connection DNS/IP, TLS, redirects, shared budgets and cancellation checked on loopback; [ADR-003 and limitations](en/ADR-003-TRANSPORT.md), [passing CI on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35861040736). Real-target transport and complete policies remain in M1.
 - [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes.

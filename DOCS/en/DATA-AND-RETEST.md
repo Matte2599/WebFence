@@ -2,7 +2,7 @@
 
 [Italiano](../it/DATA-AND-RETEST.md) · [Index](../README.md)
 
-Status: M1–M4 logical model; no SQL schema is implemented yet.
+Status: M1–M4 logical model; no product SQL schema is implemented yet. SQLite driver selection and temporary M0 experiments are in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
 
 ## Entities
 

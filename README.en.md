@@ -10,6 +10,8 @@
 
 The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an HTTP lab confined to loopback tests. A [lab transport](DOCS/en/ADR-003-TRANSPORT.md) now adds DNS/IP checks, TLS, budgets and cancellation, restricted to loopback. The GUI remains offline; no production scanner.
 
+The foundations also include SQLite experiments and a restricted Ed25519 JWS component: [M0 choices and checks](DOCS/en/ADR-004-STORAGE-SIGNATURE.md). Project persistence and signed reports in the GUI are not yet available.
+
 ## Why WebFence
 
 AI tools allow individual developers to build substantial applications. Faster development calls for security checks that are equally accessible and rigorous. This is the project's motivation, not evidence that AI-generated code is invariably less secure.

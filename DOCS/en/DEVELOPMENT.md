@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -85,4 +85,13 @@ go test ./internal/scope -run '^$' -fuzz '^FuzzCheck$' -fuzztime=20s -parallel=4
 
 ```sh
 go test -race -cover ./internal/transport
+```
+
+## SQLite and JWS: M0 foundations
+
+Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files only; `internal/signature` exposes byte signing/verification, without reports, JCS or keychain access. Neither is connected to the GUI.
+
+```sh
+go test -race ./internal/foundation ./internal/signature
+go test ./internal/signature -run '^$' -fuzz '^FuzzVerify$' -fuzztime=20s -parallel=4
 ```

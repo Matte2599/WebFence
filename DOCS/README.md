@@ -26,6 +26,7 @@
 | Fonti e limiti della ricerca / Sources and research limits | [IT](it/REFERENCES.md) | [EN](en/REFERENCES.md) |
 | Trasporto M0 e confini di rete / M0 transport and network boundaries | [ADR-003 IT](it/ADR-003-TRANSPORT.md) | [ADR-003 EN](en/ADR-003-TRANSPORT.md) |
 | Scope origini e laboratorio M0 / Origin scope and M0 lab | [IT](it/M0-SCOPE.md) | [EN](en/M0-SCOPE.md) |
+| SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
 | Desktop Qt corrente / Current Qt desktop | [IT](it/QT-DESKTOP.md) | [EN](en/QT-DESKTOP.md) |
 
 Documenti bilingui condivisi / Shared bilingual documents:

@@ -2,7 +2,7 @@
 
 [English](../en/REPORTING.md) · [Indice](../README.md)
 
-Stato: contratto proposto M2, da validare con librerie e vettori di interoperabilità.
+Stato: contratto report proposto M2. M0 implementa soltanto il profilo JWS ristretto di [ADR-004](ADR-004-STORAGE-SIGNATURE.md), con prove indipendenti Ed25519; JCS e verifica del bundle restano da realizzare.
 
 ## Contenuto
 

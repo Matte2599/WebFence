@@ -70,3 +70,5 @@ Server mode, shared users, PostgreSQL and distributed workers require dedicated 
 `internal/scope` implements only immutable HTTP(S) origin comparison, with no networking or Qt dependencies. A loopback laboratory exists exclusively in tests. It does not replace the planned broker’s IP/DNS, authorization and budget boundaries: [M0 contract](M0-SCOPE.md).
 
 `internal/transport` adds an HTTP/TLS broker confined to loopback grants, with pinned connection IPs and shared budgets/cancellation. M0 decision and production limitations: [ADR-003](ADR-003-TRANSPORT.md). No GUI calls.
+
+SQLite and the JWS profile are selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): SQLite feasibility tests and the `internal/signature` component, without a project store or GUI reports.

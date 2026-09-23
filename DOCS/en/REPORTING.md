@@ -2,7 +2,7 @@
 
 [Italiano](../it/REPORTING.md) · [Index](../README.md)
 
-Status: proposed M2 contract, requiring library and interoperability-vector validation.
+Status: proposed M2 report contract. M0 implements only the restricted JWS profile in [ADR-004](ADR-004-STORAGE-SIGNATURE.md), with independent Ed25519 checks; JCS and bundle verification remain unimplemented.
 
 ## Content
 

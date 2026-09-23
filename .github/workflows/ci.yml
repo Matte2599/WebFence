@@ -53,10 +53,13 @@ jobs:
       - run: test "$(go env GOARCH)" = "${{ matrix.arch }}"
       - run: test -z "$(gofmt -l cmd internal)"
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
       - name: Bounded scope fuzzing
         if: matrix.os == 'ubuntu-24.04'
         run: go test ./internal/scope -run '^$' -fuzz '^FuzzCheck$' -fuzztime=10s -parallel=2
+      - name: Bounded JWS fuzzing
+        if: matrix.os == 'ubuntu-24.04'
+        run: go test ./internal/signature -run '^$' -fuzz '^FuzzVerify$' -fuzztime=10s -parallel=2
       - run: go build -o bin/webfence ./cmd/webfence
       - run: go vet ./...
       - run: ./bin/webfence --self-test
@@ -86,7 +89,7 @@ jobs:
             mingw-w64-ucrt-x86_64-qt6-base
       - run: test "$(go env GOARCH)" = amd64
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature
       - run: go build -o bin/webfence.exe ./cmd/webfence
       - run: go vet ./...
       - run: ./bin/webfence.exe --self-test

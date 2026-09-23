@@ -2,7 +2,7 @@
 
 [English](../en/DATA-AND-RETEST.md) · [Indice](../README.md)
 
-Stato: modello logico M1–M4; nessuno schema SQL ancora implementato.
+Stato: modello logico M1–M4; nessuno schema SQL del prodotto ancora implementato. Driver SQLite selezionato e prove temporanee M0 in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
 
 ## Entità
 
