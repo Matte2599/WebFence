@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: planned product architecture. Only the desktop entry point, Fyne workspace, IT/EN catalogs and offline fixtures described in [M0](M0-DESKTOP.md) are implemented; the scanning diagram components remain unimplemented.
+Status: planned product architecture. Only the desktop entry point, Qt Widgets/MIQT workspace, IT/EN catalogs and offline fixtures described in [Qt M0](QT-DESKTOP.md) are implemented; the scanning diagram components remain unimplemented.
 
 ## Initial structure
 

@@ -1,4 +1,4 @@
-name: Go desktop prototype
+name: Qt desktop
 
 on:
   push:
@@ -12,61 +12,75 @@ permissions:
   contents: read
 
 concurrency:
-  group: desktop-${{ github.workflow }}-${{ github.ref }}
+  group: desktop-${{ github.ref }}
   cancel-in-progress: true
 
-jobs:
-  tests:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
-        with:
-          go-version-file: go.mod
-      - name: Formatting
-        run: test -z "$(gofmt -l cmd internal)"
-      - run: go mod verify
-      - run: go vet -tags ci ./...
-      - run: go test -tags ci -race ./...
+env:
+  CGO_ENABLED: '1'
+  CGO_CXXFLAGS: '-O2 -g -std=c++17'
+  QT_QPA_PLATFORM: offscreen
 
-  native-build:
+jobs:
+  native:
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: macos-15
             arch: arm64
-          - os: windows-2022
-            arch: amd64
           - os: ubuntu-24.04
             arch: amd64
           - os: ubuntu-24.04-arm
             arch: arm64
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
-    defaults:
-      run:
-        shell: bash
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
         with:
           go-version-file: go.mod
-      - name: Verify architecture
-        run: test "$(go env GOARCH)" = "${{ matrix.arch }}"
-      - name: Linux native dependencies
+      - name: Linux Qt dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev
-      - name: Windows C compiler
-        if: runner.os == 'Windows'
-        run: echo 'C:\msys64\mingw64\bin' >> "$GITHUB_PATH"
-      - name: Build desktop
-        env:
-          CGO_ENABLED: '1'
-        run: go build -trimpath -o bin/ ./cmd/webfence
+          sudo apt-get install -y g++ pkg-config qt6-base-dev
+      - name: macOS Qt dependencies
+        if: runner.os == 'macOS'
+        run: brew install qtbase pkgconf
+      - run: test "$(go env GOARCH)" = "${{ matrix.arch }}"
+      - run: test -z "$(gofmt -l cmd internal)"
+      - run: go mod download && go mod verify
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences
+      - run: go build -o bin/webfence ./cmd/webfence
+      - run: go vet ./...
+      - run: ./bin/webfence --self-test
       - name: macOS development bundle
         if: runner.os == 'macOS'
         run: sh scripts/package-macos.sh
+
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 35
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - uses: msys2/setup-msys2@66cd2cce69caa17b53920067426061ca1de3a884 # v2
+        with:
+          msystem: UCRT64
+          path-type: inherit
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-qt6-base
+      - run: test "$(go env GOARCH)" = amd64
+      - run: go mod download && go mod verify
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences
+      - run: go build -o bin/webfence.exe ./cmd/webfence
+      - run: go vet ./...
+      - run: ./bin/webfence.exe --self-test

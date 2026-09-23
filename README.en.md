@@ -4,9 +4,9 @@
 
 [Italiano](README.md) · [Documentation](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [License](LICENSE)
 
-**Status: M0 in progress — first runnable desktop prototype, using synthetic examples only.** The Go/Fyne GUI loads 10,000 rows, filters them and displays evidence in IT/EN. The scanning engine is not implemented; there are no supported releases or security benchmarks. See the [M0 report](DOCS/en/M0-DESKTOP.md).
+**Status: M0 in progress — first runnable desktop prototype, using synthetic examples only.** The Go/Qt Widgets GUI loads 10,000 rows, filters them and displays evidence in IT/EN. The scanning engine is not implemented; there are no supported releases or security benchmarks. See the [M0 report](DOCS/en/QT-DESKTOP.md).
 
-A [practical Qt Widgets comparison](DOCS/en/GUI-COMPARISON.md) is available, with a separate experiment and [proposed ADR](DOCS/en/ADR-002-GUI.md). The author’s choice remains open; the main command still uses Fyne.
+**The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Full accessibility and distribution remain open gates.
 
 ## Why WebFence
 
@@ -31,7 +31,7 @@ All these capabilities are **planned**. Milestones and acceptance criteria are i
 
 ## Technical direction
 
-**Go is the recommended language for the core and native desktop application**, with Fyne as the toolkit to validate through a prototype. The first deployment will target a single operator. SQLite is the proposed local store. The scanning browser and AI inference will run as separate components when needed; a CLI can reuse the core later.
+**Go is the recommended language for the core and native desktop application**, with Qt Widgets/MIQT selected for the GUI. The first deployment will target a single operator. SQLite is the proposed local store. The scanning browser and AI inference will run as separate components when needed; a CLI can reuse the core later.
 
 Rust remains an option for bounded components if measurements justify it. The comparison and reconsideration criteria are in the [language ADR](DOCS/en/ADR-001-LANGUAGE.md). Desktop delivery is confirmed; the toolkit still needs accessibility, performance and packaging validation.
 
@@ -55,12 +55,12 @@ Rust remains an option for bounded components if measurements justify it. The co
 With Go 1.27.1 and the native dependencies in the [development guide](DOCS/en/DEVELOPMENT.md):
 
 ```sh
-go run ./cmd/webfence
+CGO_CXXFLAGS='-O2 -g -std=c++17' go run ./cmd/webfence
 ```
 
 On Apple Silicon macOS, create a local bundle with `sh scripts/package-macos.sh`. This is a GUI laboratory: `.invalid` URLs are inert text. The development build is not a signed/notarized installer.
 
-Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and derivatives on x86-64/ARM64. Actual support depends on the [M0 matrix](DOCS/en/M0-DESKTOP.md). The [UX direction](DOCS/en/UX.md) calls for a restrained, traditional desktop, guided workflow and progressively available advanced tools.
+Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and derivatives on x86-64/ARM64. Actual support depends on the [M0 matrix](DOCS/en/QT-DESKTOP.md). The [UX direction](DOCS/en/UX.md) calls for a restrained, traditional desktop, guided workflow and progressively available advanced tools.
 
 ## License and author
 

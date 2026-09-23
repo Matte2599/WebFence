@@ -4,7 +4,7 @@
 
 Leggere [MEMORY.md](MEMORY.md), [README.md](README.md), [DOCS/ROADMAP.md](DOCS/ROADMAP.md) e i documenti pertinenti prima di modificare il progetto. Verificare lo stato Git e preservare il lavoro dell'utente. La memoria riassume decisioni, non sostituisce le istruzioni correnti dell'utente.
 
-- Mantenere il requisito desktop nativo, Go raccomandato e toolkit Fyne ancora da validare. Modifiche architetturali motivate vanno registrate in un ADR.
+- Mantenere il requisito desktop nativo, Go e Qt Widgets/MIQT scelti dall’autore (ADR-002); accessibilità e distribuzione ancora da validare. Modifiche architetturali motivate vanno registrate in un ADR.
 - Aggiornare IT/EN nella stessa modifica; ID, enum e schemi restano indipendenti dalla lingua.
 - Separare funzionalità pianificate da implementate. Non inventare comandi, benchmark, build riuscite o capacità equivalenti a prodotti commerciali.
 - Rispettare la licenza source-available: professionisti indipendenti ammessi gratuitamente, aziende soggette ad autorizzazione. Non sostituirla con MIT/GPL/AGPL senza richiesta dell'autore.
@@ -23,7 +23,7 @@ Richiesta persistente dell’autore: al termine di ogni task, e durante se neces
 
 Read [MEMORY.md](MEMORY.md), [README.en.md](README.en.md), [DOCS/ROADMAP.md](DOCS/ROADMAP.md) and relevant documents before editing. Check Git status and preserve user work. Memory summarizes decisions; it does not replace current user instructions.
 
-- Preserve native desktop delivery, the Go recommendation and Fyne's pending validation. Record justified architecture changes in an ADR.
+- Preserve native desktop delivery, Go and author-selected Qt Widgets/MIQT (ADR-002); accessibility and distribution still require validation. Record justified architecture changes in an ADR.
 - Update IT/EN in the same change; IDs, enums and schemas remain language-independent.
 - Separate planned from implemented capabilities. Do not invent commands, benchmarks, successful builds or equivalence to commercial products.
 - Respect source-available licensing: independent professionals are allowed free use; companies require authorization. Do not replace it with MIT/GPL/AGPL without the author's request.

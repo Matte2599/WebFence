@@ -1,19 +1,15 @@
-// Qt/MIQT feasibility experiment. No scanner and no persistent project data.
-package main
+// Package desktop implements the offline Qt Widgets workspace.
+package desktop
 
 import (
-	"fmt"
-	"os"
-	"runtime"
-	"strings"
-	"time"
-
 	"github.com/Matte2599/WebFence/internal/demo"
 	"github.com/Matte2599/WebFence/internal/i18n"
+	"github.com/Matte2599/WebFence/internal/preferences"
 	qt "github.com/mappu/miqt/qt6"
 )
 
 type workspace struct {
+	copyEvidence                        func(string)
 	window                              *qt.QMainWindow
 	model                               *qt.QAbstractTableModel
 	table                               *qt.QTableView
@@ -21,7 +17,11 @@ type workspace struct {
 	language, severity                  *qt.QComboBox
 	advanced                            *qt.QCheckBox
 	load, clear, copy                   *qt.QPushButton
-	intro, summary, count               *qt.QLabel
+	intro, summary, count, notice       *qt.QLabel
+	languageMenu                        *qt.QMenu
+	italianAction, englishAction        *qt.QAction
+	preferencePath                      string
+	preferenceError                     bool
 	evidence                            *qt.QPlainTextEdit
 	fileMenu                            *qt.QMenu
 	loadAction, clearAction, quitAction *qt.QAction
@@ -29,21 +29,6 @@ type workspace struct {
 	selectedID, locale                  string
 	variants                            map[string]*qt.QVariant
 	emptyVariant                        *qt.QVariant
-}
-
-func main() {
-	runtime.LockOSThread()
-	qt.NewQApplication(os.Args)
-	w := newWorkspace()
-	w.window.Show()
-	if len(os.Args) > 1 && os.Args[1] == "--self-test" {
-		qt.QCoreApplication_ProcessEvents()
-		code := selfTest(w)
-		w.dispose()
-		os.Exit(code)
-	}
-	qt.QApplication_Exec()
-	w.dispose()
 }
 
 // MIQT 0.14 copies callback-returned QVariant values without freeing their
@@ -69,16 +54,9 @@ func (w *workspace) dispose() {
 }
 
 func (w *workspace) tr(key string, args ...any) string { return i18n.Text(w.locale, key, args...) }
-func (w *workspace) extra(it, en string) string {
-	if w.locale == "it" {
-		return it
-	}
-	return en
-}
-
-func newWorkspace() *workspace {
-	w := &workspace{window: qt.NewQMainWindow2(), locale: i18n.Normalize(qt.NewQLocale().Name()), variants: make(map[string]*qt.QVariant), emptyVariant: qt.NewQVariant()}
-	w.window.SetWindowTitle("WebFence · Qt laboratory")
+func newWorkspace(locale, preferencePath string, preferenceError bool) *workspace {
+	w := &workspace{window: qt.NewQMainWindow2(), locale: i18n.Normalize(locale), preferencePath: preferencePath, preferenceError: preferenceError, variants: make(map[string]*qt.QVariant), emptyVariant: qt.NewQVariant()}
+	w.window.SetWindowTitle(w.tr("title"))
 	w.window.Resize(1120, 780)
 	body := qt.NewQWidget(nil)
 	layout := qt.NewQVBoxLayout(body)
@@ -86,6 +64,9 @@ func newWorkspace() *workspace {
 	w.intro = qt.NewQLabel2()
 	w.intro.SetWordWrap(true)
 	layout.AddWidget(w.intro.QWidget)
+	w.notice = qt.NewQLabel2()
+	w.notice.SetWordWrap(true)
+	layout.AddWidget(w.notice.QWidget)
 	toolbar := qt.NewQWidget(nil)
 	tools := qt.NewQHBoxLayout(toolbar)
 	w.load = qt.NewQPushButton2()
@@ -169,9 +150,24 @@ func newWorkspace() *workspace {
 	split.AddWidget(details)
 	split.SetSizes([]int{400, 220})
 	layout.AddWidget(split.QWidget)
+	w.languageMenu = w.window.MenuBar().AddMenuWithTitle("")
+	w.italianAction = w.languageMenu.AddActionWithText("Italiano")
+	w.englishAction = w.languageMenu.AddActionWithText("English")
+	for _, pair := range []struct {
+		action   *qt.QAction
+		shortcut string
+	}{{w.italianAction, "Ctrl+1"}, {w.englishAction, "Ctrl+2"}} {
+		key := qt.NewQKeySequence2(pair.shortcut)
+		pair.action.SetShortcut(key)
+		key.Delete()
+	}
+	w.italianAction.OnTriggered(func() { w.language.SetCurrentIndex(0) })
+	w.englishAction.OnTriggered(func() { w.language.SetCurrentIndex(1) })
 	w.fileMenu = w.window.MenuBar().AddMenuWithTitle("")
 	w.loadAction = w.fileMenu.AddActionWithText("")
-	w.loadAction.SetShortcut(qt.NewQKeySequence2("Ctrl+O"))
+	key := qt.NewQKeySequence2("Ctrl+O")
+	w.loadAction.SetShortcut(key)
+	key.Delete()
 	w.clearAction = w.fileMenu.AddActionWithText("")
 	w.fileMenu.AddSeparator()
 	w.quitAction = w.fileMenu.AddActionWithText("")
@@ -183,14 +179,22 @@ func newWorkspace() *workspace {
 	w.clear.OnClicked(clear)
 	w.clearAction.OnTriggered(clear)
 	w.quitAction.OnTriggered(qt.QCoreApplication_Quit)
+	w.copyEvidence = func(text string) { qt.QGuiApplication_Clipboard().SetText(text) }
 	w.copy.OnClicked(func() {
 		if r, ok := w.selected(); ok {
-			qt.QGuiApplication_Clipboard().SetText(r.Evidence())
+			w.copyEvidence(r.Evidence())
 		}
 	})
 	w.search.OnTextChanged(func(string) { w.filter() })
 	w.severity.OnCurrentIndexChanged(func(int) { w.filter() })
-	w.language.OnCurrentIndexChanged(func(i int) { w.locale = []string{"it", "en"}[i]; w.translate() })
+	w.language.OnCurrentIndexChanged(func(i int) {
+		if i < 0 || i > 1 {
+			return
+		}
+		w.locale = []string{"it", "en"}[i]
+		w.preferenceError = preferences.Save(w.preferencePath, w.locale) != nil
+		w.translate()
+	})
 	w.advanced.OnToggled(func(bool) { w.showEvidence() })
 	w.table.SelectionModel().OnCurrentRowChanged(func(current, previous *qt.QModelIndex) {
 		if current.IsValid() && current.Row() >= 0 && current.Row() < len(w.visible) {
@@ -205,26 +209,30 @@ func newWorkspace() *workspace {
 }
 
 func (w *workspace) translate() {
+	w.window.SetWindowTitle(w.tr("title"))
+	w.languageMenu.SetTitle(w.tr("language"))
+	w.notice.SetText(w.tr("preference_error"))
+	w.notice.SetVisible(w.preferenceError)
 	w.intro.SetText(w.tr("intro"))
 	w.load.SetText(w.tr("load"))
 	w.clear.SetText(w.tr("clear"))
 	w.copy.SetText(w.tr("copy"))
-	w.advanced.SetText(w.extra("Dettagli avanzati", "Advanced details"))
+	w.advanced.SetText(w.tr("advanced"))
 	w.search.SetPlaceholderText(w.tr("search"))
 	w.search.SetAccessibleName(w.tr("search"))
 	w.severity.SetAccessibleName(w.tr("severity"))
 	w.language.SetAccessibleName(w.tr("language"))
-	w.table.SetAccessibleName(w.extra("Risultati sintetici", "Synthetic results"))
+	w.table.SetAccessibleName(w.tr("results"))
 	w.evidence.SetAccessibleName(w.tr("evidence"))
 	blocked := w.severity.BlockSignals(true)
 	for i, key := range []string{"all", "info", "low", "medium"} {
 		w.severity.SetItemText(i, w.tr(key))
 	}
 	w.severity.BlockSignals(blocked)
-	w.fileMenu.SetTitle(w.extra("File", "File"))
+	w.fileMenu.SetTitle(w.tr("file"))
 	w.loadAction.SetText(w.tr("load"))
 	w.clearAction.SetText(w.tr("clear"))
-	w.quitAction.SetText(w.extra("Esci", "Quit"))
+	w.quitAction.SetText(w.tr("quit"))
 	w.filter()
 }
 
@@ -257,7 +265,7 @@ func (w *workspace) selected() (demo.Record, bool) {
 func (w *workspace) showEvidence() {
 	r, ok := w.selected()
 	if ok {
-		w.summary.SetText(w.tr("selected", r.ID) + "\n" + r.Path + "\n" + w.extra("Esempio per valutare la GUI. Nessuna vulnerabilità verificata.", "GUI evaluation example. No verified vulnerability."))
+		w.summary.SetText(w.tr("selected", r.ID) + "\n" + r.Path + "\n" + w.tr("example_summary"))
 		w.evidence.SetPlainText(r.Evidence())
 	} else {
 		key := "select"
@@ -273,66 +281,4 @@ func (w *workspace) showEvidence() {
 	w.evidence.SetVisible(w.advanced.IsChecked())
 	w.copy.SetVisible(w.advanced.IsChecked())
 	w.copy.SetEnabled(ok)
-}
-
-// selfTest exercises the real Qt model/widgets on their owner OS thread.
-// It is not a screen-reader test. It never writes to the system clipboard.
-func selfTest(w *workspace) int {
-	failures := 0
-	check := func(ok bool, name string) {
-		if !ok {
-			fmt.Println("FAIL", name)
-			failures++
-		} else {
-			fmt.Println("PASS", name)
-		}
-	}
-	check(len(w.visible) == 0, "initial empty state")
-	start := time.Now()
-	w.load.Click()
-	qt.QCoreApplication_ProcessEvents()
-	fmt.Printf("load_10000_ms=%.3f\n", float64(time.Since(start).Microseconds())/1000)
-	check(len(w.visible) == 10000, "10000 rows loaded")
-	parent := qt.NewQModelIndex()
-	defer parent.Delete()
-	// Rendering/accessibility can request the same model data repeatedly.
-	for i := 0; i < 10000; i++ {
-		w.model.Data(w.model.Index(i, 0, parent), int(qt.DisplayRole))
-	}
-	cached := len(w.variants)
-	for i := 0; i < 10000; i++ {
-		w.model.Data(w.model.Index(i, 0, parent), int(qt.DisplayRole))
-	}
-	check(len(w.variants) == cached, "repeated model reads do not grow owned variant cache")
-	w.table.SelectRow(9999)
-	original := w.evidence.ToPlainText()
-	check(w.selectedID == "DEMO-10000" && strings.Contains(original, "<script>"), "last row and inert evidence")
-	w.language.SetCurrentIndex(1)
-	w.language.SetCurrentIndex(0)
-	check(w.selectedID == "DEMO-10000" && original == w.evidence.ToPlainText(), "language preserves identity and evidence")
-	w.advanced.SetChecked(true)
-	check(w.evidence.IsVisible(), "advanced detail visible")
-	w.severity.SetCurrentIndex(1)
-	check(len(w.visible) == 3334 && w.selectedID == "DEMO-10000", "severity preserves matching selection")
-	start = time.Now()
-	w.search.SetText("DEMO-10000")
-	qt.QCoreApplication_ProcessEvents()
-	fmt.Printf("filter_last_ms=%.3f\n", float64(time.Since(start).Microseconds())/1000)
-	check(len(w.visible) == 1 && w.selectedID == "DEMO-10000", "filter last row")
-	w.search.SetText("missing")
-	check(len(w.visible) == 0 && w.selectedID == "" && w.evidence.ToPlainText() == "" && !w.copy.IsEnabled(), "no stale evidence on empty results")
-	w.search.SetText("")
-	w.severity.SetCurrentIndex(0)
-	w.table.SelectRow(0)
-	long := strings.Repeat(demo.Records()[0].Evidence(), 2048)
-	w.evidence.SetPlainText(long)
-	qt.QCoreApplication_ProcessEvents()
-	check(w.evidence.ToPlainText() == long, "long evidence exact text roundtrip")
-	fmt.Printf("long_evidence_bytes=%d\n", len(long))
-	w.clear.Click()
-	check(len(w.visible) == 0 && w.evidence.ToPlainText() == "", "clear dataset")
-	if failures > 0 {
-		return 1
-	}
-	return 0
 }

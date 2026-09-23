@@ -2,7 +2,7 @@
 
 [Italiano](../it/ADR-001-LANGUAGE.md) · [Index](../README.md)
 
-Date: 2026-09-23. Status: recommended initial decision; GUI toolkit subject to the M0 prototype. Author-confirmed requirement: native desktop application.
+Date: 2026-09-23. Status: Go confirmed; the original Fyne proposal is superseded by accepted ADR-002. Author-confirmed requirement: native desktop application.
 
 ## Context
 
@@ -35,4 +35,5 @@ First M0 implementation: Go 1.27.1 and Fyne 2.8.1 pinned in `go.mod`/`go.sum`; C
 
 Sources: [Go FAQ](https://go.dev/doc/faq), [Rust ownership](https://doc.rust-lang.org/nomicon/ownership.html), [Fyne](https://github.com/fyne-io/fyne), [Iced](https://github.com/iced-rs/iced). Checked 2026-09-23.
 
-M0 update: [practical Qt/Fyne comparison](GUI-COMPARISON.md) and [proposed ADR-002](ADR-002-GUI.md). The Qt experiment is separate; the author’s choice and adoption gates remain open.
+
+**Subsequent author decision:** Qt Widgets/MIQT replaces Fyne in the desktop. The sections above record the initial evaluation; use [ADR-002](ADR-002-GUI.md) and [Qt status](QT-DESKTOP.md) for the current decision.

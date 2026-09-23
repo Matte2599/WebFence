@@ -2,13 +2,13 @@
 
 [English](../en/ADR-002-GUI.md) · [Indice](../README.md)
 
-Data: 2026-09-23. **Stato: proposta, in attesa della scelta dell’autore.** Il comando principale continua ad avviare Fyne. Go resta il linguaggio del core.
+Data: 2026-09-23. **Stato: accettato dall’autore — «Andiamo con QT».** Qt Widgets tramite MIQT diventa la GUI principale; Go resta il linguaggio del core. La scelta tecnica non chiude i gate di qualità M0.
 
-## Contesto e proposta
+## Contesto e decisione
 
 Il prototipo Fyne non ha superato il gate di accessibilità descritto nel [resoconto M0](M0-DESKTOP.md). L’autore richiede un desktop tradizionale e sobrio, con percorso semplice e dettagli per esperti, e ha richiesto un confronto provato direttamente prima della scelta.
 
-Valutare **Qt Widgets tramite MIQT per Go** come candidato principale del prossimo task M0, subordinando l’adozione definitiva a verifiche assistive, packaging e manutenzione dei binding. L’esperimento è separato in [experiments/qt](../../experiments/qt/README.md); riusa fixture e cataloghi del progetto. Non introduce uno scanner, una WebView o un motore Rust.
+Adottare **Qt Widgets tramite MIQT per Go** come base di sviluppo del desktop. Il codice del laboratorio è trasferito in `internal/desktop`, avviato da `cmd/webfence`; fixture, cataloghi e preferenze restano separati. Fyne e il modulo Qt annidato sono rimossi dalla build corrente e conservati nella cronologia Git. La [guida di sviluppo](DEVELOPMENT.md) contiene i comandi aggiornati. Restano aperti accessibilità, packaging di rilascio e manutenzione dei binding. Nessuno scanner, WebView o motore Rust introdotto.
 
 ## Alternative e conseguenze
 
@@ -21,14 +21,14 @@ La licenza WebFence resta invariata e copre il nostro codice. MIQT è MIT. Per Q
 
 Qt 6.11 dichiara Windows 10 da 1809 e Windows 11 x86-64, macOS da 13 e configurazioni Linux x86-64/ARM64. **Qt 6.12 è annunciata come ultima versione con supporto Windows 10**: prima dell’adozione serve un piano per aggiornamenti e durata del supporto richiesto. La matrice upstream non certifica WebFence né MIQT. [Piattaforme Qt](https://doc.qt.io/qt-6/supported-platforms.html).
 
-## Gate prima della decisione definitiva
+## Gate M0 ancora aperti
 
 1. Verificare lettura e azioni con VoiceOver, NVDA e Orca, oltre al solo albero accessibile.
 2. Compilare e provare packaging/esecuzione sulle quattro architetture richieste e fissare versioni OS minime; specificare il mantenimento di Windows 10.
 3. Verificare selezione/copia, focus, DPI, testo lungo, stabilità e consumi in sessioni prolungate.
 4. Verificare licenze e dipendenze distribuibili; testare il bundle su macchina priva della toolchain.
-5. Mantenere il dominio separato dai widget; aggiornare questo ADR dopo la scelta esplicita dell’autore.
+5. Mantenere il dominio separato dai widget; rivedere questo ADR se le verifiche richiedono un cambio di architettura.
 
-Le prove e i relativi limiti sono nel [confronto pratico](GUI-COMPARISON.md). La scelta di proseguire con Qt non chiuderebbe automaticamente M0.
+Le prove e i relativi limiti sono nel [confronto pratico](GUI-COMPARISON.md). La scelta di Qt non conclude M0; vedi [stato dell’integrazione](QT-DESKTOP.md).
 
 Fonti: [MIQT v0.14.0](https://github.com/mappu/miqt/tree/v0.14.0), [Qt accessibility](https://doc.qt.io/qt-6/accessible.html). Consultate il 2026-09-23.

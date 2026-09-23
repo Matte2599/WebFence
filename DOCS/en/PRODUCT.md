@@ -46,7 +46,7 @@ The MVP excludes a WAF, real-time protection, EDR agent, destructive exploitatio
 ## Open decisions
 
 - Establish supported operating systems through real tests, not compilation alone.
-- Validate Fyne as the Go desktop GUI and select browser driver, AI providers and local model through prototypes and evaluations.
+- Validate accessibility and distribution of Qt Widgets/MIQT, selected for the Go desktop and select browser driver, AI providers and local model through prototypes and evaluations.
 - Establish minimum hardware, benchmark corpus, private security contact and commercial terms.
 
 Priorities and dependencies are in the [roadmap](../ROADMAP.md). No release date is committed.

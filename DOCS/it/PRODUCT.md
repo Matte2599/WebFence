@@ -46,7 +46,7 @@ Non rientrano nell'MVP: WAF, protezione in tempo reale, agente EDR, sfruttamento
 ## Decisioni ancora aperte
 
 - Definire sistemi operativi supportati dopo prove reali, non per sola compilabilità.
-- Validare Fyne come GUI desktop Go e selezionare browser driver, provider AI e modello locale tramite prototipi e valutazioni.
+- Validare accessibilità e distribuzione di Qt Widgets/MIQT, scelto per il desktop Go e selezionare browser driver, provider AI e modello locale tramite prototipi e valutazioni.
 - Stabilire hardware minimo, corpus di benchmark, canale privato di sicurezza e termini commerciali.
 
 Le priorità e le dipendenze sono nella [roadmap](../ROADMAP.md). Nessuna data di rilascio è impegnata.

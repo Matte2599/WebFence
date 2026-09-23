@@ -1,0 +1,29 @@
+# M0 — Qt as the main desktop
+
+[Italiano](../it/QT-DESKTOP.md) · [Index](../README.md) · [ADR-002](ADR-002-GUI.md)
+
+Date: 2026-09-23. **Author-selected Qt integrated into the main entry point. M0 remains open.**
+
+## Change
+
+`cmd/webfence` launches Qt Widgets through MIQT 0.14.0. The workspace lives in `internal/desktop`; the main module no longer depends on Fyne. The nested laboratory was consolidated, avoiding two GUI copies. Fyne trials and the previous comparison remain historical documentation and Git history (`2000c9a`).
+
+The desktop retains 10,000 fixtures, filters, selection, inert evidence, explicit copying and IT/EN. Simple view shows a summary; “Advanced details” reveals original text. The Language menu and Cmd/Ctrl+1 and Cmd/Ctrl+2 shortcuts switch language without changing IDs or evidence. UI text lives in shared catalogs.
+
+The Go `preferences` package persists language independently of Qt bindings: user file `WebFence/ui-language`, containing only `it` or `en`. Failed saving shows a warning while the session remains usable. Old Fyne preferences are neither imported nor deleted. Commands and paths are in the [guide](DEVELOPMENT.md).
+
+No scanner, target networking, CVE, AI, database or signed reports introduced. The Qt value cache remains bounded by fixtures and two languages; it is not a retention mechanism for real data.
+
+## Checks in this task
+
+- Race-enabled Go tests for fixtures, catalogs and preferences passed: repeated language changes, fallback, corrupt data and I/O errors.
+- Main build, C++17-enabled `go vet ./...` and module verification passed on macOS ARM64.
+- Qt offscreen self-test passed: 10,000 rows, selection identity, filters, empty state, persistent language actions, long text, intercepted copying and recoverable error warning. Uses a temporary directory rather than user preferences; does not alter the clipboard.
+- Main bundle script updated for Qt. Bundle verification and native interaction to be recorded after completion.
+- CI replaced with builds, pure tests and Qt self-tests on macOS ARM64, Ubuntu x86-64/ARM64 and Windows Server x86-64 through MSYS2 UCRT64. Remote outcomes to be recorded after push; a workflow's presence does not prove success.
+
+## Open gates
+
+The author's choice settles the toolkit decision, not product accessibility. The inconsistently exposed table node and menu actions from the [comparison](GUI-COMPARISON.md) still need isolation; VoiceOver, NVDA, Orca and DPI checks remain. Shortcuts provide an additional path, not assistive certification.
+
+Windows/Linux installers, signing/notarization, Windows 10/11 and Debian desktop execution, a macOS machine without development tools, minimum versions and Windows 10 maintenance after Qt 6.12 remain open. WebFence licensing is unchanged; Qt/MIQT inventory and obligations must be completed before distribution. No purchase or commercial license entered into.

@@ -2,6 +2,7 @@
 
 [Italiano](../it/M0-DESKTOP.md) · [Index](../README.md)
 
+**Historical report before the Qt choice** (code through `2000c9a`). Commands and state below describe that trial. Current state: [main Qt desktop](QT-DESKTOP.md), [accepted ADR](ADR-002-GUI.md).
 Date: 2026-09-23. First M0 task: Go foundations and offline GUI laboratory. **M0 is not complete.**
 
 ## Implemented behavior
@@ -55,5 +56,3 @@ Next task: determine whether public, supported APIs can resolve the limitation; 
 Accessibility and final GUI choice; DPI and long-text tests; packaging on other platforms and minimum versions; SQLite/JWS/keychain selection and testing; isolated lab and network policy. Legal, CLA and private-reporting tasks remain separate from technical checks. The [UX specification](UX.md) guides subsequent design.
 
 Technical sources: [Fyne 2.8.1](https://github.com/fyne-io/fyne/releases/tag/v2.8.1), [macOS bridge](https://github.com/fyne-io/fyne/blob/v2.8.1/internal/driver/glfw/accessibility_darwin.go), [build without bridge](https://github.com/fyne-io/fyne/blob/v2.8.1/internal/driver/glfw/accessibility_notdarwin.go), [GitHub runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). WebFence observations are local checks, not guarantees attributed to these sources.
-
-M0 update: [practical Qt/Fyne comparison](GUI-COMPARISON.md) and [proposed ADR-002](ADR-002-GUI.md). The Qt experiment is separate; the author’s choice and adoption gates remain open.

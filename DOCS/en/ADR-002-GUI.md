@@ -2,13 +2,13 @@
 
 [Italiano](../it/ADR-002-GUI.md) · [Index](../README.md)
 
-Date: 2026-09-23. **Status: proposal, awaiting the author's choice.** The main command still launches Fyne. Go remains the core language.
+Date: 2026-09-23. **Status: accepted by the author — “Andiamo con QT”.** Qt Widgets through MIQT becomes the main GUI; Go remains the core language. The technical choice does not close the M0 quality gates.
 
-## Context and proposal
+## Context and decision
 
 The Fyne prototype did not pass the accessibility gate described in the [M0 report](M0-DESKTOP.md). The author requires a restrained, traditional desktop with a simple workflow and expert detail, and requested direct testing before choosing.
 
-Evaluate **Qt Widgets through MIQT for Go** as the main candidate for the next M0 task, with final adoption conditional on assistive, packaging and binding-maintenance checks. The experiment lives separately in [experiments/qt](../../experiments/qt/README.md); it reuses project fixtures and catalogs. It introduces no scanner, WebView or Rust engine.
+Adopt **Qt Widgets through MIQT for Go** as the desktop development foundation. Laboratory code moves into `internal/desktop`, launched by `cmd/webfence`; fixtures, catalogs and preferences remain separate. Fyne and the nested Qt module are removed from the current build and retained in Git history. The [development guide](DEVELOPMENT.md) contains current commands. Accessibility, release packaging and binding maintenance remain open. No scanner, WebView or Rust engine introduced.
 
 ## Alternatives and consequences
 
@@ -21,14 +21,14 @@ WebFence's license remains unchanged and covers our code. MIQT is MIT. The propo
 
 Qt 6.11 lists Windows 10 from 1809 and Windows 11 x86-64, macOS from 13, and Linux x86-64/ARM64 configurations. **Qt 6.12 is announced as the last version supporting Windows 10**: adoption needs an update and support-lifetime plan for that requirement. The upstream matrix does not certify WebFence or MIQT. [Qt platforms](https://doc.qt.io/qt-6/supported-platforms.html).
 
-## Gates before the final decision
+## Remaining M0 gates
 
 1. Check reading and actions with VoiceOver, NVDA and Orca, beyond the accessibility tree alone.
 2. Build and exercise packaging/runtime on the four requested architecture targets and set minimum OS versions; define Windows 10 maintenance.
 3. Check selection/copy, focus, DPI, long text, stability and resource usage over extended sessions.
 4. Verify distributable licenses/dependencies; test the bundle on a machine without development tools.
-5. Keep domain code separate from widgets; update this ADR after the author's explicit choice.
+5. Keep domain code separate from widgets; revisit this ADR if verification requires an architecture change.
 
-Tests and their limits are in the [practical comparison](GUI-COMPARISON.md). Choosing to continue with Qt would not automatically close M0.
+Tests and their limits are in the [practical comparison](GUI-COMPARISON.md). The Qt choice does not close M0; see [integration status](QT-DESKTOP.md).
 
 Sources: [MIQT v0.14.0](https://github.com/mappu/miqt/tree/v0.14.0), [Qt accessibility](https://doc.qt.io/qt-6/accessible.html). Accessed 2026-09-23.

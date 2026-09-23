@@ -2,6 +2,7 @@
 
 [English](../en/GUI-COMPARISON.md) · [Indice](../README.md) · [Proposta ADR-002](ADR-002-GUI.md)
 
+**Resoconto storico precedente alla scelta Qt** (codice fino a `2000c9a`). I comandi e lo stato seguenti descrivono quella prova. Stato corrente: [Qt principale](QT-DESKTOP.md), [ADR accettato](ADR-002-GUI.md).
 Data: 2026-09-23. **Confronto sperimentale; toolkit definitivo non scelto.** Il programma principale resta Go/Fyne. Il laboratorio [Qt/MIQT](../../experiments/qt/README.md) è un modulo separato e non esegue richieste di rete.
 
 ## Scenario e ambiente

@@ -23,7 +23,7 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 ### Decisioni progettuali iniziali
 
-- Core e desktop in Go; Fyne candidato da validare in M0. [ADR-001](DOCS/it/ADR-001-LANGUAGE.md) contiene confronto con Rust e criteri di revisione.
+- Core e desktop in Go; **Qt Widgets/MIQT scelto dall’autore**, sostituisce Fyne (ADR-002). [ADR-001](DOCS/it/ADR-001-LANGUAGE.md) contiene confronto con Rust e criteri di revisione.
 - Desktop a operatore singolo, core separato dalla GUI, SQLite proposto, browser e runtime AI isolati. CLI successiva e opzionale.
 - Licenza scelta: **WebFence Community License 1.0**, personalizzata source-available, `LicenseRef-WebFence-Community-1.0`. Non chiamarla open source OSI.
 - Il file [LICENSE](LICENSE) contiene testo inglese prevalente e traduzione italiana. Revisione legale non effettuata; CLA e contratto commerciale non sono ancora pronti.
@@ -33,19 +33,19 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 ### Stato reale
 
-Fondazione documentale completata. Primo task M0 implementato: Go 1.27.1/Fyne 2.8.1, desktop offline, 10.000 record sintetici a richiesta, filtri, prove inerti, copia e lingua IT/EN persistente; test automatici e workflow CI. CI verificata sul codice `b9556c5`: test e build macOS ARM64, Windows Server x86-64, Ubuntu x86-64/ARM64 superati nella run 35845953673. Linux richiede anche `libwayland-dev`. Le build non attestano l’esecuzione della GUI sui sistemi remoti. Build e bundle locali verificati su macOS 26.6.2 ARM64/Xcode 27. Il [resoconto M0](DOCS/it/M0-DESKTOP.md) distingue esiti locali e CI. **Accessibilità Fyne non approvata**: bridge opzionale con albero incompleto e timeout dello strumento di interazione; build normale senza quel tag. Scanner, storage, scope/rete, CVE, firma, AI e keychain assenti. Nessun benchmark di sicurezza o release supportata. Repository su `main`, remoto `origin` configurato. Il commit viene registrato nella cronologia Git; non inserire qui un hash autoreferenziale. Non dedurre un push dall'esistenza del remoto: verificare i riferimenti remoti quando serve.
+Qt Widgets/MIQT 0.14.0 è ora la GUI principale (`cmd/webfence`, `internal/desktop`), Go 1.27.1. Fyne e il modulo Qt annidato rimossi dalla build, conservati nella cronologia. Il prototipo resta offline: 10.000 fixture, filtri, prove/copia, vista semplice/avanzata, IT/EN e menu/scorciatoie lingua. Si salva soltanto `WebFence/ui-language` sotto `os.UserConfigDir()`, con gestione visibile degli errori. Le vecchie preferenze Fyne non sono importate né cancellate. Fixture, cataloghi e preferenze sono pacchetti Go indipendenti da Qt.
 
-Esperimento Qt/MIQT aggiunto in `experiments/qt` (modulo separato): Qt 6.11.2/MIQT 0.14.0, 10.000 fixture condivise, vista semplice/avanzata, IT/EN di sessione. Build, vet, verifica moduli, self-test con testo lungo e bundle macOS superati. Albero assistivo migliore, testo selezionabile e navigazione riga osservati; menu lingua e stabilità dell’interazione assistita restano da isolare. CI Qt Linux x86-64/ARM64 con Qt 6.4.2 superata nella run 35849176371 sul codice `90c7c7b`; anche i cinque job Fyne superati nella run 35849176327. Ripetizione del bundle finale: prove leggibili e navigazione funzionante, nodo tabella non stabilmente esposto; gate assistivo ancora aperto. [Confronto](DOCS/it/GUI-COMPARISON.md) e [ADR-002 proposto](DOCS/it/ADR-002-GUI.md): raccomandazione di proseguire la validazione Qt, **nessuna migrazione approvata**. Valutare separatamente maturità di MIQT, obblighi Qt LGPL/commerciali e fine supporto Windows 10 dopo Qt 6.12. Nessun acquisto.
+Build, vet, verifica moduli, test puri con race detector e self-test Qt aggiornato superati localmente. Bundle e nuova CI a quattro target da registrare a fine task. [Stato Qt](DOCS/it/QT-DESKTOP.md), [ADR-002 accettato](DOCS/it/ADR-002-GUI.md). Il confronto storico (`90c7c7b`) aveva CI Linux Qt superata e limiti nell’albero/accesso assistivo: non dichiararli risolti dalla migrazione. M0 aperta; nessuno scanner, storage progetti, scope/rete, CVE, firma, AI o keychain. Nessuna release supportata. Valutare maturità MIQT, obblighi Qt LGPL/commerciali e mantenimento Windows 10 oltre Qt 6.12. Nessun acquisto. Commit/push sempre autorizzati; verificarne l’esito, non dedurlo dal remoto configurato.
 
 ### Prossimo lavoro
 
-1. Raccogliere la scelta dell’autore dopo il confronto Qt/Fyne e aggiornare ADR-002. Approfondire menu/focus, lettori di schermo e stabilità prima dell’adozione; nessun toolkit è definitivo.
+1. Qt scelto: approfondire menu/focus, albero della tabella, lettori di schermo e stabilità; completare i gate M0 sul toolkit adottato.
 2. Completare verifiche OS/versioni minime, packaging e keychain; aggiungere laboratorio isolato e primi test scope/rete.
 3. Selezionare driver storage e libreria firma, documentando vincoli.
 4. Prima di accettare contributi sostanziali esterni per rilicenza commerciale, definire un accordo esplicito; prima della raccolta di segnalazioni sensibili, attivare un canale privato.
 5. Proseguire secondo [roadmap](DOCS/ROADMAP.md), aggiornando entrambe le lingue.
 
-Domande ancora aperte: versioni minime macOS/Debian, toolkit accessibile, soglie hardware misurate, provider/modello, canale privato e termini economici. Non inventare email, prezzi o promesse di rilascio.
+Domande ancora aperte: versioni minime macOS/Debian, verifica assistiva Qt, soglie hardware misurate, provider/modello, canale privato e termini economici. Non inventare email, prezzi o promesse di rilascio.
 
 ## English
 
@@ -68,7 +68,7 @@ Domande ancora aperte: versioni minime macOS/Debian, toolkit accessibile, soglie
 
 ### Initial design decisions
 
-- Go core and desktop; Fyne candidate to validate in M0. [ADR-001](DOCS/en/ADR-001-LANGUAGE.md) compares Rust and records reconsideration criteria.
+- Go core and desktop; **Qt Widgets/MIQT selected by the author**, replacing Fyne (ADR-002). [ADR-001](DOCS/en/ADR-001-LANGUAGE.md) compares Rust and records reconsideration criteria.
 - Single-operator desktop, GUI-independent core, proposed SQLite store, isolated browser and AI runtime. Later optional CLI.
 - Selected license: custom source-available **WebFence Community License 1.0**, `LicenseRef-WebFence-Community-1.0`. Do not call it OSI open source.
 - [LICENSE](LICENSE) contains governing English text and Italian translation. Legal review has not occurred; CLA and commercial contract are not ready.
@@ -78,16 +78,16 @@ Domande ancora aperte: versioni minime macOS/Debian, toolkit accessibile, soglie
 
 ### Actual state
 
-Documentation foundation complete. First M0 task implemented: Go 1.27.1/Fyne 2.8.1, offline desktop, 10,000 on-demand synthetic records, filters, inert evidence, copy and persistent IT/EN language; automated tests and CI workflow. CI verified for code `b9556c5`: tests and macOS ARM64, Windows Server x86-64, Ubuntu x86-64/ARM64 builds passed in run 35845953673. Linux also requires `libwayland-dev`. Builds do not establish GUI execution on remote systems. Local build and bundle verified on macOS 26.6.2 ARM64/Xcode 27. The [M0 report](DOCS/en/M0-DESKTOP.md) separates local and CI results. **Fyne accessibility is not approved**: optional bridge with incomplete tree and interaction-tool timeout; normal build excludes that tag. Scanner, storage, scope/network, CVE, signing, AI and keychain are absent. No security benchmark or supported release. Repository on `main`, with `origin` configured. Git history records the commit; do not place a self-referential hash here. Do not infer a push from the remote configuration: inspect remote refs when needed.
+Qt Widgets/MIQT 0.14.0 is now the main GUI (`cmd/webfence`, `internal/desktop`), Go 1.27.1. Fyne and the nested Qt module removed from the build, retained in history. The prototype remains offline: 10,000 fixtures, filters, evidence/copy, simple/advanced view, IT/EN and language menu/shortcuts. Only `WebFence/ui-language` under `os.UserConfigDir()` is saved, with visible error handling. Old Fyne preferences are neither imported nor deleted. Fixtures, catalogs and preferences are Qt-independent Go packages.
 
-Qt/MIQT experiment added under `experiments/qt` (separate module): Qt 6.11.2/MIQT 0.14.0, 10,000 shared fixtures, simple/advanced view, session-only IT/EN. Build, vet, module verification, long-text self-test and macOS bundle passed. Better assistive tree, selectable text and row navigation observed; language menu and assisted-interaction stability still need isolation. Qt Linux x86-64/ARM64 CI with Qt 6.4.2 passed in run 35849176371 for code `90c7c7b`; all five Fyne jobs also passed in run 35849176327. Final-bundle repeat: readable evidence and working navigation, table node not consistently exposed; assistive gate remains open. [Comparison](DOCS/en/GUI-COMPARISON.md) and [proposed ADR-002](DOCS/en/ADR-002-GUI.md): recommendation to continue Qt validation, **no approved migration**. Assess MIQT maturity, Qt LGPL/commercial obligations and Windows 10 support ending after Qt 6.12 separately. No purchase.
+Build, vet, module verification, race-enabled pure tests and updated Qt self-test passed locally. Bundle and new four-target CI to be recorded at task completion. [Qt status](DOCS/en/QT-DESKTOP.md), [accepted ADR-002](DOCS/en/ADR-002-GUI.md). The historical comparison (`90c7c7b`) passed Linux Qt CI but had assistive tree/action limitations: migration does not resolve those by itself. M0 open; no scanner, project storage, scope/network, CVE, signing, AI or keychain. No supported release. Assess MIQT maturity, Qt LGPL/commercial obligations and Windows 10 maintenance beyond Qt 6.12. No purchase. Commit/push remain authorized; verify success rather than inferring it from remote configuration.
 
 ### Next work
 
-1. Obtain the author’s choice after the Qt/Fyne comparison and update ADR-002. Investigate menus/focus, screen readers and stability before adoption; neither toolkit is final.
+1. Qt selected: investigate menus/focus, table tree, screen readers and stability; complete M0 gates for the adopted toolkit.
 2. Complete OS/minimum-version, packaging and keychain checks; add the isolated lab and first scope/network tests.
 3. Select storage driver and signing library, recording constraints.
 4. Before accepting substantial external contributions for commercial relicensing, establish an explicit agreement; before collecting sensitive reports, enable a private channel.
 5. Follow the [roadmap](DOCS/ROADMAP.md), updating both languages.
 
-Open questions: minimum macOS/Debian versions, accessible toolkit, measured hardware requirements, provider/model, private contact and pricing terms. Do not invent email addresses, prices or release promises.
+Open questions: minimum macOS/Debian versions, Qt assistive verification, measured hardware requirements, provider/model, private contact and pricing terms. Do not invent email addresses, prices or release promises.

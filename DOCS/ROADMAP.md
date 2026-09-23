@@ -28,12 +28,13 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 - [x] Piattaforme richieste e direzione UX confermate dall’autore: [specifica UX](it/UX.md).
 - [x] Confronto locale Fyne/Qt su fixture comuni, self-test Qt e prova assistiva preliminare; [risultati e limiti](it/GUI-COMPARISON.md), [ADR-002 proposto](it/ADR-002-GUI.md).
 - [x] Esperimento Qt: compilazione, vet e self-test offscreen superati su Ubuntu 24.04 x86-64/ARM64, Qt 6.4.2 ([run](https://github.com/Matte2599/WebFence/actions/runs/35849176371)); non prova il desktop assistivo Linux.
-- [ ] Scelta dell’autore sul candidato GUI; approfondire menu/focus, lettori reali e stabilità.
+- [x] Scelta autore: Qt Widgets/MIQT + Go; [ADR-002 accettato](it/ADR-002-GUI.md), integrazione principale e preferenza lingua indipendente dal toolkit.
+- [ ] Completare verifiche Qt di menu/focus, lettori reali, stabilità e distribuzione; [stato corrente](it/QT-DESKTOP.md).
 - [ ] Risolvere il gate di accessibilità Fyne o registrare un toolkit alternativo dopo confronto pratico.
 
 Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi restano:
 
-- [ ] Prototipo Go/Fyne: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
+- [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
 - [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi.
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
@@ -137,12 +138,13 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 - [x] Author-confirmed requested platforms and UX direction: [UX specification](en/UX.md).
 - [x] Local Fyne/Qt comparison with shared fixtures, Qt self-test and preliminary assistive trial; [results and limitations](en/GUI-COMPARISON.md), [proposed ADR-002](en/ADR-002-GUI.md).
 - [x] Qt experiment: build, vet and offscreen self-test passed on Ubuntu 24.04 x86-64/ARM64, Qt 6.4.2 ([run](https://github.com/Matte2599/WebFence/actions/runs/35849176371)); does not establish Linux assistive desktop behavior.
-- [ ] Author’s GUI candidate choice; investigate menus/focus, actual readers and stability.
+- [x] Author choice: Qt Widgets/MIQT + Go; [accepted ADR-002](en/ADR-002-GUI.md), main integration and toolkit-independent language preference.
+- [ ] Complete Qt menus/focus, actual readers, stability and distribution checks; [current state](en/QT-DESKTOP.md).
 - [ ] Resolve Fyne’s accessibility gate or record an alternative toolkit after practical comparison.
 
 These checks close the first task, not all of M0. Overall gates remain:
 
-- [ ] Go/Fyne prototype: window, large table, evidence reading, keyboard, DPI and assistive technologies.
+- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.
 - [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access.
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.

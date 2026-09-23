@@ -10,9 +10,8 @@ fi
 cd "$(dirname "$0")/.."
 bundle=dist/WebFence.app
 mkdir -p "$bundle/Contents/MacOS"
-# Opt in only for accessibility investigation: FYNE_BUILD_TAGS=accessibility.
-# Fyne's experimental bridge has not passed WebFence's M0 acceptance gate.
-go build -tags "${FYNE_BUILD_TAGS:-}" -trimpath -o "$bundle/Contents/MacOS/webfence" ./cmd/webfence
+export CGO_CXXFLAGS="${CGO_CXXFLAGS:--O2 -g} -std=c++17"
+go build -ldflags '-s -w' -o "$bundle/Contents/MacOS/webfence" ./cmd/webfence
 cat > "$bundle/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -32,4 +31,5 @@ cat > "$bundle/Contents/Info.plist" <<'PLIST'
 </plist>
 PLIST
 plutil -lint "$bundle/Contents/Info.plist"
+"$(brew --prefix qtbase)/bin/macdeployqt" "$bundle" -always-overwrite
 printf 'Development bundle: %s/%s\n' "$PWD" "$bundle"

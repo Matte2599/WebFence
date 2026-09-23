@@ -36,6 +36,7 @@ Errors explain the problem, consequence and available action, with expandable te
 
 Test mouse-free workflows, focus order, control names and states in screen readers, evidence text selection/copy, resizing and DPI, contrast and IT/EN text. Evaluate both beginners and professionals on concrete tasks; participant usability studies have not yet been conducted.
 
-The M0 prototype implements a command bar, filters, table, evidence pane and language selection. It is a feasibility laboratory: full menus, wizards, advanced sections, scanning workspace and project management are **planned**. Current styling uses Fyne's system theme; it is not the final design. The [M0 report](M0-DESKTOP.md) records an open accessibility gate.
+The M0 prototype implements a command bar, filters, table, evidence pane and language selection. It is a feasibility laboratory: wizards, scanning workspace and project management are **planned**. Current styling uses Qt's system style; it is not the final design. The [M0 report](M0-DESKTOP.md) records an open accessibility gate.
 
-M0 update: [practical Qt/Fyne comparison](GUI-COMPARISON.md) and [proposed ADR-002](ADR-002-GUI.md). The Qt experiment is separate; the author’s choice and adoption gates remain open.
+
+Qt is the confirmed choice: File/Language menus, IT/EN shortcuts and a simple/advanced view are implemented in the offline prototype. [State and limitations](QT-DESKTOP.md).

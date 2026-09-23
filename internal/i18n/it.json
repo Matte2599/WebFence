@@ -23,5 +23,11 @@
   "copy": "Copia evidenze",
   "previous": "Precedente",
   "next": "Successivo",
-  "footer": "Valutazione locale della GUI · Gli esempi vengono scartati alla chiusura. Si salva soltanto la preferenza di lingua."
+  "footer": "Valutazione locale della GUI · Gli esempi vengono scartati alla chiusura. Si salva soltanto la preferenza di lingua.",
+  "advanced": "Dettagli avanzati",
+  "results": "Risultati sintetici",
+  "file": "File",
+  "quit": "Esci",
+  "example_summary": "Esempio per valutare la GUI. Nessuna vulnerabilità verificata.",
+  "preference_error": "Impossibile leggere o salvare la preferenza di lingua. La scelta resta valida per questa sessione."
 }

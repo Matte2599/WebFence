@@ -4,9 +4,9 @@
 
 [English](README.en.md) · [Documentazione](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [Licenza](LICENSE)
 
-**Stato: M0 in corso — primo prototipo desktop eseguibile, solo con esempi sintetici.** La GUI Go/Fyne permette di caricare 10.000 righe, filtrarle e leggere le evidenze in IT/EN. Il motore di scansione non è implementato; non esistono release supportate o benchmark di sicurezza. Vedi il [resoconto M0](DOCS/it/M0-DESKTOP.md).
+**Stato: M0 in corso — primo prototipo desktop eseguibile, solo con esempi sintetici.** La GUI Go/Qt Widgets permette di caricare 10.000 righe, filtrarle e leggere le evidenze in IT/EN. Il motore di scansione non è implementato; non esistono release supportate o benchmark di sicurezza. Vedi il [resoconto M0](DOCS/it/QT-DESKTOP.md).
 
-È disponibile un [confronto pratico con Qt Widgets](DOCS/it/GUI-COMPARISON.md), con esperimento separato e [ADR proposto](DOCS/it/ADR-002-GUI.md). La scelta dell’autore è ancora aperta; il comando principale resta Fyne.
+**Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Accessibilità completa e distribuzione restano gate aperti.
 
 ## Perché WebFence
 
@@ -31,7 +31,7 @@ Tutte queste capacità sono **pianificate**. Le milestone e i criteri di accetta
 
 ## Direzione tecnica
 
-**Go è la scelta raccomandata per il core e l'applicazione desktop nativa**, con Fyne come toolkit da validare con un prototipo. La prima installazione sarà pensata per un singolo operatore. SQLite è la proposta per lo storage locale. Browser di scansione e inferenza AI saranno componenti separati, attivati quando necessari; una CLI potrà riutilizzare il core in seguito.
+**Go è la scelta raccomandata per il core e l'applicazione desktop nativa**, con Qt Widgets/MIQT scelto per la GUI. La prima installazione sarà pensata per un singolo operatore. SQLite è la proposta per lo storage locale. Browser di scansione e inferenza AI saranno componenti separati, attivati quando necessari; una CLI potrà riutilizzare il core in seguito.
 
 Rust rimane un'opzione per componenti circoscritti se misure reali ne giustificheranno l'introduzione. Il confronto e le condizioni per rivedere la scelta sono nell'[ADR sul linguaggio](DOCS/it/ADR-001-LANGUAGE.md). La modalità desktop è confermata; il toolkit deve ancora superare prove di accessibilità, prestazioni e distribuzione.
 
@@ -55,12 +55,12 @@ Rust rimane un'opzione per componenti circoscritti se misure reali ne giustifich
 Con Go 1.27.1 e le dipendenze native indicate nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md):
 
 ```sh
-go run ./cmd/webfence
+CGO_CXXFLAGS='-O2 -g -std=c++17' go run ./cmd/webfence
 ```
 
 Su macOS Apple Silicon si può creare un bundle locale con `sh scripts/package-macos.sh`. È un laboratorio GUI: gli URL `.invalid` sono testo inerte. La build di prova non è un installer firmato/notarizzato.
 
-Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e derivati x86-64/ARM64. Il supporto effettivo dipende dalle verifiche della [matrice M0](DOCS/it/M0-DESKTOP.md). La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi.
+Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e derivati x86-64/ARM64. Il supporto effettivo dipende dalle verifiche della [matrice M0](DOCS/it/QT-DESKTOP.md). La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi.
 
 ## Licenza e autore
 

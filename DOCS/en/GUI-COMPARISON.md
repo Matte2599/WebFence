@@ -2,6 +2,7 @@
 
 [Italiano](../it/GUI-COMPARISON.md) · [Index](../README.md) · [ADR-002 proposal](ADR-002-GUI.md)
 
+**Historical report before the Qt choice** (code through `2000c9a`). Commands and state below describe that trial. Current state: [main Qt desktop](QT-DESKTOP.md), [accepted ADR](ADR-002-GUI.md).
 Date: 2026-09-23. **Experimental comparison; final toolkit not selected.** The main program remains Go/Fyne. The [Qt/MIQT laboratory](../../experiments/qt/README.md) is a separate module and sends no network requests.
 
 ## Scenario and environment

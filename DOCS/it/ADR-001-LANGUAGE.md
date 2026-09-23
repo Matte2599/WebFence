@@ -35,4 +35,5 @@ Prima implementazione M0: Go 1.27.1 e Fyne 2.8.1 fissati in `go.mod`/`go.sum`; C
 
 Fonti: [Go FAQ](https://go.dev/doc/faq), [Rust ownership](https://doc.rust-lang.org/nomicon/ownership.html), [Fyne](https://github.com/fyne-io/fyne), [Iced](https://github.com/iced-rs/iced). Verifiche del 2026-09-23.
 
-Aggiornamento M0: [confronto pratico Qt/Fyne](GUI-COMPARISON.md) e [ADR-002 proposto](ADR-002-GUI.md). L’esperimento Qt è separato; scelta dell’autore e gate di adozione ancora aperti.
+
+**Decisione successiva dell’autore:** Qt Widgets/MIQT sostituisce Fyne nel desktop. Le sezioni precedenti registrano la valutazione iniziale; per la decisione corrente usare [ADR-002](ADR-002-GUI.md) e [stato Qt](QT-DESKTOP.md).

@@ -1,68 +1,56 @@
-# Development, desktop and localization
+# Qt desktop development
 
 [Italiano](../it/DEVELOPMENT.md) · [Index](../README.md)
 
-## Current state and starting point
+## Running and checking
 
-First offline M0 prototype: native window, on-demand synthetic dataset, filters, virtualized table, evidence detail, explicit copy and persistent language. No crawler, network engine, database, CVE, signing or AI. Read the [M0 report](M0-DESKTOP.md) and [UX direction](UX.md).
+Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. This remains an offline example prototype: no scanner, persistent projects, CVE or AI. [Status and verification](QT-DESKTOP.md).
 
-Prerequisites: Go **1.27.1**, Fyne **2.8.1** pinned in `go.mod`, C compiler and graphics libraries. macOS requires Xcode/Command Line Tools; Debian derivatives require `gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev`; Windows requires 64-bit GCC/MinGW-w64 on PATH. Go dependencies are downloaded on the first toolchain run; the application does not scan or download anything.
+Requires a C++17 compiler, CGO, pkg-config and Qt 6 Core/Gui/Widgets. On Apple Silicon macOS install Xcode/Command Line Tools and `brew install qtbase pkgconf`; on Debian/Ubuntu use `sudo apt-get install g++ pkg-config qt6-base-dev`.
 
 ```sh
-git clone https://github.com/Matte2599/WebFence.git
-cd WebFence
 go mod download
+export CGO_CXXFLAGS='-O2 -g -std=c++17'
 go run ./cmd/webfence
 ```
 
-To build on macOS/Linux and run automated checks:
-
 ```sh
-go build -trimpath -o bin/ ./cmd/webfence
 go mod verify
-go vet -tags ci ./...
-go test -tags ci -race ./...
+go test -race ./internal/demo ./internal/i18n ./internal/preferences
+go vet ./...
+go build -o bin/webfence ./cmd/webfence
+QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-On Windows the same build command produces `bin/webfence.exe`; run it from PowerShell or Explorer. The `ci` tag uses the software graphics driver in tests: it **does not test the native window or a screen reader**. Local verification and CI results are separated in the report.
+The self-test uses real Qt without a display and a temporary directory for language; copying is intercepted to preserve the clipboard. It also checks save failures, long text and language actions. It is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` now needs Qt dependencies to compile the desktop; pure packages can be checked separately as above.
 
-## Implemented structure
+On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. In UCRT64 use the same variables and build with `go build -o bin/webfence.exe ./cmd/webfence`; run `./bin/webfence.exe --self-test` with `QT_QPA_PLATFORM=offscreen`. Qt DLLs and plugins must be available; the exe alone is not a distributable package. CI uses [setup-msys2](https://github.com/msys2/setup-msys2); MSVC is not the CGO compiler in this setup.
 
-```text
-cmd/webfence/           desktop entry point
-internal/demo/         pure synthetic fixtures, no I/O
-internal/i18n/         embedded IT/EN JSON catalogs
-internal/ui/           Fyne workspace and interaction tests
-scripts/package-macos.sh
-.github/workflows/ci.yml
-DOCS/                  bilingual documentation
-```
+## Structure and data
 
-The `demo` package is not an analysis engine and its records are not findings. Future domain/network/storage packages will be introduced with testable use cases; do not create empty placeholders. The core will remain independent of Fyne.
+- `cmd/webfence`: desktop entry and `--self-test` option.
+- `internal/desktop`: Qt workspace, model value ownership and self-test.
+- `internal/demo`: pure fixtures without networking.
+- `internal/i18n`: embedded IT/EN JSON catalogs.
+- `internal/preferences`: language only, independent of toolkit.
 
-## Systems and packaging
+Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
 
-Confirmed requirement: **Apple Silicon macOS only; Windows 10 and 11 x86-64; Debian and derivatives on x86-64 and ARM64**. No 32-bit architectures. Minimum macOS/Debian versions remain subject to testing. CI builds on ARM64 macOS, x64 Windows Server and x64/ARM64 Ubuntu; it does not establish interactive compatibility with Windows 10/11 or every Debian distribution.
+The only saved preference is `WebFence/ui-language` under `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` or `~/.config`; Windows: `%AppData%`). Writes use a temporary file and rename in the same directory. Errors are visible in the GUI; session language remains usable. Old Fyne preferences are neither imported nor deleted. Examples, filters and selection are not saved. Explicitly copied clipboard contents are not erased by “Clear examples”.
 
-On Apple Silicon macOS:
+The Language menu and selector switch IT/EN; shortcuts are **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** on macOS). **Ctrl+O/Cmd+O** loads examples. Full keyboard and screen-reader validation remains open.
+
+## Platforms and bundle
+
+Requirements: Apple Silicon macOS, Windows 10/11 x86-64, Debian/derivatives x86-64 and ARM64; no 32-bit. Minimum versions and Windows 10 maintenance remain subject to [ADR-002](ADR-002-GUI.md). CI builds do not establish assistive use on the required systems.
 
 ```sh
 sh scripts/package-macos.sh
 open dist/WebFence.app
 ```
 
-The local `0.0.1` bundle is only for M0 evaluation; it is not a release. The script validates the plist, does not install certificates, sign with a distribution identity or notarize. Any signature inserted by the toolchain is not Developer ID. `dist/` and `bin/` are excluded from Git. Simple cross-compilation with CGO disabled is not promised.
-
-To reproduce the Fyne accessibility experiment on macOS, first close the prototype and rebuild:
-
-```sh
-FYNE_BUILD_TAGS=accessibility sh scripts/package-macos.sh
-```
-
-The experimental bridge **has not passed the M0 gate**. Normal builds do not enable it; the final toolkit selection remains open. To restore a normal build, close the app and rerun the script without that variable. See [observed limitations](M0-DESKTOP.md).
-
-The only persistent application preference is `ui.language`, managed by Fyne in the per-user app directory for `io.github.Matte2599.WebFence`, not the repository. Examples, filters and selection are not saved. “Clear examples” removes in-memory records, not content already copied to the clipboard. Keychain, database and their deletion flows remain unimplemented.
+The script produces the local `0.0.1` bundle, validates the plist and uses `macdeployqt` for libraries/plugins. Requires Homebrew Qt and Apple Silicon. No Developer ID signature or notarization; clean-machine testing remains open. `bin/` and `dist/` are Git-ignored. WebFence's license remains unchanged; Qt/MIQT have separate rights and obligations to verify before distribution.
 
 ## IT/EN
 
@@ -77,5 +65,3 @@ Every PR changing requirements or behavior updates matching IT/EN documents. Lan
 Before release: relevant risk tests, dependency/secret scans, SBOM, license inventory, checksums, package signing, IT/EN notes and rollback procedure. Create a verified backup before data migration; binary rollback does not automatically reverse schema changes. Rule/model updates are separately versioned and do not alter running scans.
 
 Keep redacted local logs with run IDs, duration, limits and errors; no default telemetry. On insufficient disk, stale feeds, locked keys, missing runtime or OOM, identify the affected component and remaining capabilities. Do not silently turn degraded operation into success.
-
-M0 update: [practical Qt/Fyne comparison](GUI-COMPARISON.md) and [proposed ADR-002](ADR-002-GUI.md). The Qt experiment is separate; the author’s choice and adoption gates remain open.
