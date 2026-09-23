@@ -9,7 +9,7 @@ Aggiornamento: 2026-09-23. **M0 aperta.** Questo registro riguarda criteri di us
 | M0-01 | Desktop nativo, tabella ampia, prove, IT/EN | Parziale: Qt principale, 10.000 fixture, filtri, lingua persistente, testo lungo, menu/focus e self-test sui quattro target. [Stato Qt](QT-DESKTOP.md). | Collaudo assistivo, DPI visivo e stabilità prolungata descritti sotto. |
 | M0-02 | Build e packaging sui target richiesti | Parziale: bundle macOS, [pacchetti Debian amd64/arm64 e ZIP Windows](ADR-007-PACKAGING.md) con avvio fuori toolchain verificato. | Inventario completo/notices/sorgenti, sistemi minimi, desktop Windows 10/11 e Debian reali; rischi residui espliciti. |
 | M0-03 | GUI, SQLite, JWS, portachiavi | Completato: Qt, SQLite/JWS e [portachiavi nativo](ADR-005-CREDENTIALS.md) selezionati; [CI quattro target verde](https://github.com/Matte2599/WebFence/actions/runs/35870058803), inclusa negazione con token anonimo Windows. | Conservare regressioni; integrazione GUI e gestione chiavi restano successive. |
-| M0-04 | Versioni, scheletro, cataloghi, CI | Completato sul codice `32655b0`: [CI sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35877356234), inclusi pacchetti Debian e Windows con runtime separato. | Ripetere sul commit conclusivo di M0 e verificare il remoto. |
+| M0-04 | Versioni, scheletro, cataloghi, CI | Completato sul codice `8fd55b9`: [CI sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35879464771), inclusi pacchetti Debian e Windows con runtime separato. | Ripetere sul commit conclusivo di M0 e verificare il remoto. |
 | M0-05 | Laboratorio sintetico e primi test scope/rete | Completato: [ADR-003](ADR-003-TRANSPORT.md), CI quattro target, solo loopback. | Mantenere regressioni verdi; trasporto di produzione in M1. |
 | M0-06 | Canale privato, revisione legale e contributori | Parziale: Private vulnerability reporting abilitato e verificato nella UI GitHub; [SECURITY](../../SECURITY.md) aggiornato. | [Revisione legale qualificata del testo](LEGAL-REVIEW.md) e accordo contributori prima delle rispettive aperture; non dichiararli approvati senza riscontro. |
 
@@ -38,4 +38,4 @@ Aggiornamento: [correzione Cocoa adottata](ADR-006-QT-COCOA.md) nel bundle di sv
 
 Layout 200% successivamente corretto e provato: due righe complete e ultima colonna raggiungibile da tastiera, prove scorrevoli. Self-test della finestra compatta aggiunto e superato localmente a scala 1/1,5/2. Restano collaudo lettori, più monitor e stabilità misurata.
 
-Procedura strumentata per la sessione prolungata: [M0-STABILITY](M0-STABILITY.md). Prova breve verificata; la sessione da 30 minuti resta da eseguire.
+Procedura strumentata per la sessione prolungata: [M0-STABILITY](M0-STABILITY.md). Prove brevi verificate in CI; sessione Cocoa da 30 minuti avviata, esito ancora aperto.

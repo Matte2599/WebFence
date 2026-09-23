@@ -16,7 +16,7 @@ Il bundle macOS include una [correzione temporanea Qt Cocoa](DOCS/it/ADR-006-QT-
 
 Disponibili anche procedure di [packaging Debian e Windows](DOCS/it/ADR-007-PACKAGING.md). Verificati `.deb` amd64/arm64 in runtime Debian separati e ZIP Windows con PATH di solo sistema; [CI `32655b0`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35877356234). Pacchetti di sviluppo: collaudo desktop reale e revisione completa dei materiali di distribuzione ancora aperti.
 
-La [procedura di stabilità prolungata](DOCS/it/M0-STABILITY.md) ripete i flussi della GUI e registra memoria Go/RSS. Prova breve verificata; sessione da 30 minuti ancora da completare.
+La [procedura di stabilità prolungata](DOCS/it/M0-STABILITY.md) ripete i flussi della GUI e registra memoria Go/RSS. Prove brevi verificate in CI; sessione nativa macOS da 30 minuti in corso, esito ancora da verificare.
 
 
 ## Perché WebFence
