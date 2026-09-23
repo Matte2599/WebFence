@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.21)
+include(.cmake.conf)
+project(WebFenceCocoaCorrection VERSION 6.11.2 LANGUAGES C CXX OBJC OBJCXX)
+find_package(Qt6 6.11.2 EXACT REQUIRED COMPONENTS BuildInternals Core Gui CorePrivate GuiPrivate)
+qt_build_repo_begin()
+add_subdirectory(qtbase-everywhere-src-6.11.2/src/plugins/platforms/cocoa)
+qt_build_repo_end()

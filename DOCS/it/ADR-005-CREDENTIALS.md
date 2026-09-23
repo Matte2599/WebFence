@@ -2,7 +2,7 @@
 
 [English](../en/ADR-005-CREDENTIALS.md) · [Indice](../README.md)
 
-Data: 2026-09-23. Stato: implementazione M0 selezionata, verifica runtime multipiattaforma in attesa. È una base del core, non una GUI di gestione credenziali o il ciclo di vita delle chiavi dei report.
+Data: 2026-09-23. Stato: implementazione M0 selezionata, verifica runtime multipiattaforma completata. È una base del core, non una GUI di gestione credenziali o il ciclo di vita delle chiavi dei report.
 
 ## Decisione
 
@@ -43,3 +43,5 @@ Test Linux su indirizzi bus respinti, socket assente e cancellazione durante aut
 Prima CI `aa722e3`: test nativi macOS superati; entrambi i runner Linux hanno evidenziato un rifiuto errato della lettura binaria. GNOME Keyring restituisce sempre `text/plain`, anche dopo scrittura `application/octet-stream` ([sorgente upstream](https://github.com/GNOME/gnome-keyring/blob/main/daemon/dbus/gkd-secret-secret.c)). L’adattatore conserva ora byte opachi senza interpretare MIME; controlla ancora sessione, parametri e dimensione. Il launcher attende il proprietario del servizio senza attivare un secondo daemon. Correzione da verificare nella CI successiva.
 
 Aggiunta prova Windows in sottoprocesso dedicato: un thread fissato usa il token anonimo di Windows per verificare il diniego nativo di lettura/scrittura/cancellazione; il token viene ripristinato e la credenziale sintetica originale viene verificata nel processo padre. Nessun blocco della sessione personale. Compilazione e vet Windows in cross-compilazione superati; esecuzione nativa ancora da verificare. [API Microsoft](https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-impersonateanonymoustoken).
+
+Verifica conclusiva: CI del commit `7c4889d` completata con successo sui quattro target, [run 35870058803](https://github.com/Matte2599/WebFence/actions/runs/35870058803). Inclusi CRUD nativi macOS/Windows/Linux, blocco e assenza su portachiavi temporaneo macOS/Secret Service privato Linux e negazione Get/Set/Delete con token anonimo Windows. La verifica aggiorna le attese storiche sopra: selezione M0 completata. Non prova il blocco dello schermo né una GUI di gestione credenziali.

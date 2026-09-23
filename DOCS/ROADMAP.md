@@ -37,9 +37,9 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 
 Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi sono riportati nella [matrice di verifica e collaudo](it/M0-VALIDATION.md):
 
-- [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
+- [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive. [Correzione Cocoa](it/ADR-006-QT-COCOA.md) verificata sulla sequenza del crash; layout 200%, lettori e stabilità prolungata restano aperti.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale. [Ricognizione](it/M0-PACKAGING.md): il bundle locale richiede macOS 26; minimo desiderato da fissare e verificare.
-- [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi. GUI scelta; SQLite/JWS selezionati e verificati sui quattro target ([ADR-004](it/ADR-004-STORAGE-SIGNATURE.md), [CI verde](https://github.com/Matte2599/WebFence/actions/runs/35863431196)); [Portachiavi implementato e testato localmente su macOS](it/ADR-005-CREDENTIALS.md); restano prove native CI Linux/Windows e sessione Windows indisponibile. Prima CI: corretto il rifiuto del MIME binario normalizzato da GNOME Keyring. Prova Windows con token anonimo predisposta, esecuzione nativa da verificare.
+- [x] Selezione motivata di GUI, SQLite, JWS e portachiavi: [ADR-004](it/ADR-004-STORAGE-SIGNATURE.md), [ADR-005](it/ADR-005-CREDENTIALS.md); prove native completate sui quattro target, inclusa indisponibilità Windows con token anonimo ([CI](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
 - [x] Laboratorio sintetico e primi test scope/rete: origini, DNS/IP per connessione, TLS, redirect, budget condivisi e cancellazione verificati su loopback; [ADR-003 e limiti](it/ADR-003-TRANSPORT.md), [CI verde sui quattro target](https://github.com/Matte2599/WebFence/actions/runs/35861040736). Trasporto per target reali e policy complete restano in M1.
 - [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture. Canale GitHub privato abilitato e verificato il 2026-09-23; revisione e accordo ancora aperti.
@@ -150,9 +150,9 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 
 These checks close the first task, not all of M0. Overall gates are tracked in the [verification and trial matrix](en/M0-VALIDATION.md):
 
-- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies. Native SIGSEGV reproduced during the 150% assistive trial; diagnosis in progress.
+- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies. [Cocoa correction](en/ADR-006-QT-COCOA.md) verified against the crash sequence; 200% layout, readers and prolonged stability remain open.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix. [Investigation](en/M0-PACKAGING.md): local bundle requires macOS 26; intended minimum must be fixed and verified.
-- [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access. GUI chosen; SQLite/JWS selected and verified on all four targets ([ADR-004](en/ADR-004-STORAGE-SIGNATURE.md), [passing CI](https://github.com/Matte2599/WebFence/actions/runs/35863431196)); [Keychain implemented and tested locally on macOS](en/ADR-005-CREDENTIALS.md); native Linux/Windows CI checks and Windows session failure trial remain open. First CI: corrected rejection of GNOME Keyring-normalized binary MIME. Windows anonymous-token trial prepared; native execution to verify.
+- [x] Justified selection of GUI, SQLite, JWS and keychain: [ADR-004](en/ADR-004-STORAGE-SIGNATURE.md), [ADR-005](en/ADR-005-CREDENTIALS.md); native tests completed on all four targets, including Windows unavailability with an anonymous token ([CI](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
 - [x] Synthetic lab and initial scope/network tests: origins, per-connection DNS/IP, TLS, redirects, shared budgets and cancellation checked on loopback; [ADR-003 and limitations](en/ADR-003-TRANSPORT.md), [passing CI on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35861040736). Real-target transport and complete policies remain in M1.
 - [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes. GitHub private channel enabled and verified on 2026-09-23; review and agreement remain open.

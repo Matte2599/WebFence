@@ -46,7 +46,10 @@ cat > "$bundle/Contents/Info.plist" <<'PLIST'
 </plist>
 PLIST
 plutil -lint "$bundle/Contents/Info.plist"
-"$(brew --prefix qtbase)/bin/macdeployqt" "$bundle" -always-overwrite
+qt_prefix=$(brew --prefix qtbase)
+"$qt_prefix/bin/macdeployqt" "$bundle" -always-overwrite
+sh scripts/build-qt-cocoa.sh "$qt_prefix" "$bundle/Contents/PlugIns/platforms/libqcocoa.dylib"
+codesign --force --deep --sign - "$bundle"
 codesign --verify --deep --strict "$bundle"
 mkdir -p dist
 # Copy fully before renaming on the destination filesystem. Retain the previous

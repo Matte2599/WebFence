@@ -31,6 +31,7 @@
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
 | Ricognizione packaging / Packaging investigation | [IT](it/M0-PACKAGING.md) | [EN](en/M0-PACKAGING.md) |
 | Portachiavi nativo / Native credentials | [ADR-005 IT](it/ADR-005-CREDENTIALS.md) | [ADR-005 EN](en/ADR-005-CREDENTIALS.md) |
+| Correzione Qt Cocoa / Qt Cocoa correction | [ADR-006 IT](it/ADR-006-QT-COCOA.md) | [ADR-006 EN](en/ADR-006-QT-COCOA.md) |
 | Desktop Qt corrente / Current Qt desktop | [IT](it/QT-DESKTOP.md) | [EN](en/QT-DESKTOP.md) |
 
 Documenti bilingui condivisi / Shared bilingual documents:

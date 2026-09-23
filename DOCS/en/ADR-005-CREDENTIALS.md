@@ -2,7 +2,7 @@
 
 [Italiano](../it/ADR-005-CREDENTIALS.md) · [Index](../README.md)
 
-Date: 2026-09-23. Status: M0 implementation selected, cross-platform runtime verification pending. This is a core foundation, not a credential-management UI or report-key lifecycle.
+Date: 2026-09-23. Status: M0 implementation selected, cross-platform runtime verification complete. This is a core foundation, not a credential-management UI or report-key lifecycle.
 
 ## Decision
 
@@ -43,3 +43,5 @@ Linux tests include rejected bus addresses, absent sockets and cancellation duri
 First CI `aa722e3`: native macOS tests passed; both Linux runners exposed an incorrect rejection of binary reads. GNOME Keyring always returns `text/plain`, including after an `application/octet-stream` write ([upstream source](https://github.com/GNOME/gnome-keyring/blob/main/daemon/dbus/gkd-secret-secret.c)). The adapter now preserves opaque bytes without interpreting MIME; session, parameters and size remain checked. The launcher waits for service ownership without activating a second daemon. Fix awaits the next CI run.
 
 Added a Windows trial in a dedicated subprocess: a pinned thread uses Windows' anonymous token to verify native read/write/delete denial; the token is restored and the original synthetic credential is checked in the parent. No personal session lock. Windows cross-compilation and vet passed; native execution still requires verification. [Microsoft API](https://learn.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-impersonateanonymoustoken).
+
+Final verification: CI for commit `7c4889d` completed successfully on all four targets, [run 35870058803](https://github.com/Matte2599/WebFence/actions/runs/35870058803). Includes native macOS/Windows/Linux CRUD, locked/absent temporary macOS keychain and private Linux Secret Service, and denied Get/Set/Delete with a Windows anonymous token. This supersedes historical pending checks above: M0 selection complete. Does not establish screen-lock denial or a credential-management GUI.

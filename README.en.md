@@ -10,7 +10,7 @@
 
 The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an HTTP lab confined to loopback tests. A [lab transport](DOCS/en/ADR-003-TRANSPORT.md) now adds DNS/IP checks, TLS, budgets and cancellation, restricted to loopback. The GUI remains offline; no production scanner.
 
-The foundations also include SQLite experiments and a restricted Ed25519 JWS component: [M0 choices and checks](DOCS/en/ADR-004-STORAGE-SIGNATURE.md). Project persistence and signed reports in the GUI are not yet available. A separate [native credential adapter](DOCS/en/ADR-005-CREDENTIALS.md) now has local macOS tests; cross-platform runtime verification is pending.
+The foundations also include SQLite experiments and a restricted Ed25519 JWS component: [M0 choices and checks](DOCS/en/ADR-004-STORAGE-SIGNATURE.md). Project persistence and signed reports in the GUI are not yet available. A separate [native credential adapter](DOCS/en/ADR-005-CREDENTIALS.md) is now verified natively on all four CI targets, including unavailable states ([run](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 
 ## Why WebFence
 

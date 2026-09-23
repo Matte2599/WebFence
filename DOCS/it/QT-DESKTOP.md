@@ -52,3 +52,5 @@ Riferimenti implementativi: [focus Qt](https://doc.qt.io/qt-6/focus.html), [noti
 La scelta dell’autore risolve la decisione sul toolkit, non l’accessibilità del prodotto. Restano da isolare il nodo tabella non sempre esposto e le azioni sul menu viste nel [confronto](GUI-COMPARISON.md); servono VoiceOver, NVDA, Orca e prove DPI. Le scorciatoie sono un percorso aggiuntivo, non una certificazione assistiva.
 
 Restano installer Windows/Linux, firme e notarizzazione, esecuzione su Windows 10/11 e Debian desktop, macchina macOS senza toolchain, versioni minime e manutenzione Windows 10 dopo Qt 6.12. Licenza WebFence invariata; inventario e adempimenti Qt/MIQT da completare prima della distribuzione. Nessun acquisto o licenza commerciale sottoscritta.
+
+Il bundle macOS ricompila ora il plugin Cocoa Qt 6.11.2 con una correzione temporanea del crash assistivo: [ADR-006](ADR-006-QT-COCOA.md). Occorrono anche CMake e Ninja (`brew install cmake ninja`); il sorgente Qt viene scaricato e verificato per hash. Versioni Qt diverse vengono rifiutate finché non rivalutate. I binari non confezionati continuano a usare Qt installato.

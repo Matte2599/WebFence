@@ -1,0 +1,31 @@
+# ADR-006 — Correzione temporanea Qt Cocoa
+
+[English](../en/ADR-006-QT-COCOA.md) · [Indice](../README.md)
+
+Data: 2026-09-23. Stato: adottata per il bundle di sviluppo macOS con Qt 6.11.2; verifica CI della nuova build ancora in corso. Non chiude il gate assistivo M0.
+
+## Problema e decisione
+
+Con il plugin Cocoa originale di Qt 6.11.2, la lettura dell’albero accessibile dopo selezione della riga, reset del filtro e cambio lingua ha riprodotto un SIGSEGV. Il PC della traccia ricade nel plugin Cocoa; il binario privo di simboli non permette di attribuire direttamente la funzione. La regressione upstream [b1ed5f6](https://github.com/qt/qtbase/commit/b1ed5f656f064e553b33752f8e87d2f5b9553e38) e la [correzione proposta 765434](https://codereview.qt-project.org/c/qt/qtbase/+/765434), di Caleb Meadows, descrivono una gestione errata della proprietà delle interfacce accessibili di tabella.
+
+Adottiamo le due guardie di produzione del patch set 1, revisione `c7fd3f34b997bb363be15650647665b3b6b8a5f4`: gli elementi sintetici gestiti dal genitore non devono cancellare l’interfaccia accessibile condivisa della tabella. La revisione upstream è **NEW**, non approvata né inclusa in una release verificata. Non disabilitiamo l’accessibilità. Il confronto locale prima/dopo sostiene questa diagnosi, senza dimostrare l’assenza di altri difetti Qt.
+
+## Build e manutenzione
+
+`scripts/build-qt-cocoa.sh` verifica la versione esatta 6.11.2, scarica l’archivio ufficiale e controlla SHA-256 prima di estrarlo. Applica solo le due guardie e compila il plugin contro le corrispondenti librerie/private headers installate. Tutto avviene in una directory temporanea; Qt Homebrew rimane invariato. CMake e Ninja sono prerequisiti aggiuntivi. `WEBFENCE_QT_SOURCE_ARCHIVE` permette il riuso di un archivio locale, comunque verificato.
+
+Il packaging sostituisce il plugin dopo `macdeployqt`, rende relativi i collegamenti QtCore/QtGui, rimuove il relativo RPATH Homebrew e firma nuovamente il bundle ad hoc. Un errore impedisce la pubblicazione e conserva il bundle precedente. Una versione Qt diversa richiede riesame esplicito: niente applicazione silenziosa a un’ABI privata diversa. `go run` e i binari non confezionati usano ancora il Qt installato e possono presentare il difetto originale.
+
+[Sorgente, attribuzione, patch e testi di licenza](../../scripts/qt-cocoa/README.md) sono separati dalla licenza WebFence. Distribuire una libreria Qt modificata richiede completare anche sorgenti corrispondenti, notices e istruzioni di sostituzione; questo task non rende il pacchetto una release pronta. Riesaminare e rimuovere la patch quando una versione Qt ufficiale corretta supera lo stesso collaudo.
+
+## Prove e limiti
+
+- Build isolata del plugin e bundle completo locale riuscite; verifica `codesign --deep --strict` superata.
+- Copie di prova con scala Qt 150% e 200%, stesso eseguibile Go e sostituzione del solo plugin: selezione `DEMO-10000`, apertura prove, cambio IT/EN e filtro `MO-10000` senza il crash precedente.
+- Al 150% verificati anche filtro senza risultati, svuotamento e ricarica. Controlli e prove visibili; nessuna richiesta di rete.
+- Al 200% comandi e prove raggiungibili, ma la tabella iniziale è troppo compressa verticalmente e richiede revisione del layout. Non dichiarare DPI completato.
+- Alcune celle non compaiono stabilmente nella sintesi AX dopo selezione; serve il collaudo reale VoiceOver e non solo lettura dell’albero. Non sono stati eseguiti i nuovi test nativi upstream, né il ciclo misurato di 30 minuti, né test su più monitor.
+
+Questa è una mitigazione verificata della sequenza di crash riprodotta, non una certificazione di accessibilità o stabilità generale.
+
+Controlli aggiuntivi: archivio invalido rifiutato prima dell’estrazione; dipendenze del plugin limitate a framework nel bundle e librerie di sistema. Il bundle ricompilato dalla nuova procedura passa anche la sequenza GUI a scala standard. Self-test offscreen del binario non confezionato superato. Il bundle include solo Cocoa: tentare offscreen termina perché manca quel plugin; puntarlo ai plugin Homebrew carica due copie Qt e fallisce. Non usare questa combinazione come test del bundle: provarlo tramite la GUI nativa.

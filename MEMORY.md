@@ -67,6 +67,9 @@ CI credenziali `a916fab` superata sui quattro target, run 35867740266 (verifica 
 
 Domande ancora aperte: versioni minime macOS/Debian, verifica assistiva Qt, soglie hardware misurate, provider/modello e termini economici. Non inventare email, prezzi o promesse di rilascio.
 
+
+Verifica successiva: CI `7c4889d` verde sui quattro target, run 35870058803, inclusa prova Windows con token anonimo; selezione portachiavi M0 completata. Correzione temporanea Cocoa Qt 6.11.2 adottata nel packaging ([ADR-006](DOCS/it/ADR-006-QT-COCOA.md)): due guardie upstream 765434 patch set 1, ancora NEW. Compilazione plugin isolata con archivio ufficiale verificato per SHA-256, nessuna modifica Homebrew, rifiuto di versioni/hash diversi. Build locale/codesign passati; archivio invalido respinto. Confronto GUI prima/dopo: crash al reset filtro con riga selezionata non riprodotto con plugin corretto al 150%/200%; al 150% anche svuota/ricarica. Tabella al 200% troppo compressa e alcune celle AX non stabili: DPI/accessibilità/stabilità ancora aperti. CI della correzione da verificare.
+
 ## English
 
 ### Author-confirmed facts
@@ -131,3 +134,5 @@ Credential CI `a916fab` passed all four targets, run 35867740266 (final API veri
 5. Follow the [roadmap](DOCS/ROADMAP.md), updating both languages.
 
 Open questions: minimum macOS/Debian versions, Qt assistive verification, measured hardware requirements, provider/model and pricing terms. Do not invent email addresses, prices or release promises.
+
+Follow-up verification: CI `7c4889d` passed all four targets, run 35870058803, including Windows anonymous-token trial; M0 keychain selection complete. Temporary Qt 6.11.2 Cocoa correction adopted in packaging ([ADR-006](DOCS/en/ADR-006-QT-COCOA.md)): two guards from upstream 765434 patch set 1, still NEW. Isolated plugin compilation with SHA-256-verified official archive, no Homebrew changes, other versions/hashes rejected. Local build/codesign passed; invalid archive rejected. Before/after GUI comparison: selected-row filter-reset crash not reproduced with corrected plugin at 150%/200%; also clear/reload at 150%. Table too compressed at 200% and some AX cells inconsistent: DPI/accessibility/stability remain open. Correction CI to verify.

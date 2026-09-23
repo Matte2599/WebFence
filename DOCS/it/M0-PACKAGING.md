@@ -33,3 +33,5 @@ Fonti: [piattaforme supportate Qt](https://doc.qt.io/qt-6/supported-platforms.ht
 ## Aggiornamento del processo di build
 
 Lo script macOS ora prepara il bundle nel filesystem temporaneo dell’host, verifica la firma ad hoc, copia completamente sul volume di destinazione e pubblica con rinomina; conserva il vecchio artefatto fino alla sostituzione e lo ripristina se la pubblicazione fallisce. Evita riscritture ripetute sul disco esterno e bundle finale parziale durante la build. Build locale e doppia verifica codesign superate. Prova con errore del compilatore introdotto appositamente: fallimento rilevato, hash del binario precedente invariato e staging ripulito. Nessun benchmark di velocità.
+
+Il bundle macOS ricompila ora il plugin Cocoa Qt 6.11.2 con una correzione temporanea del crash assistivo: [ADR-006](ADR-006-QT-COCOA.md). Occorrono anche CMake e Ninja (`brew install cmake ninja`); il sorgente Qt viene scaricato e verificato per hash. Versioni Qt diverse vengono rifiutate finché non rivalutate. I binari non confezionati continuano a usare Qt installato.
