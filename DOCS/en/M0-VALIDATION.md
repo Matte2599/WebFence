@@ -31,3 +31,5 @@ Known macOS observations: intermittent AX table node and native Tab skipping cop
 Complete open items with repeatable evidence first. Then run Go/race suites, bounded fuzzing, vet, module/advisory checks, builds, self-tests and applicable package trials. Check translations, links, licenses/notices and `git diff --check`. Update this register, ADRs, README, memory and roadmap; commit/push and CI on final code. Report residual limitations precisely: documenting them does not automatically satisfy a gate.
 
 Packaging investigation: the [inspected local bundle](M0-PACKAGING.md) contains 19 Mach-O files requiring macOS 26 and 9 requiring 14. It does not prove support for older versions; the intended minimum has been requested from the author. Initial inventory and upstream SBOMs identified; compliant packaging and clean-machine trial remain open.
+
+GUI trial on 2026-09-23: standard and 150% layouts inspected, but the 150% copy terminates with SIGSEGV during filter reset followed by language change through accessibility. Reproduced with a selected fixture; native trace being collected, cause still to isolate. Stability/DPI gate not closed.

@@ -55,6 +55,8 @@ Ricognizione packaging: [dossier](DOCS/it/M0-PACKAGING.md). Bundle locale preesi
 
 Prova aggiuntiva Windows predisposta: sottoprocesso e thread con token anonimo, ripristino del token, Get/Set/Delete devono negare accesso e voce sintetica originale deve restare integra. Cross-compilazione/vet superati; prova nativa in attesa. Non blocca la sessione OS personale.
 
+CI credenziali `a916fab` superata sui quattro target, run 35867740266 (verifica finale API: success). La prova Windows con token anonimo del commit successivo resta da eseguire. Packaging macOS aggiornato a staging temporaneo e pubblicazione con rollback; build/codesign locali e guasto compilatore con artefatto precedente preservato superati. Collaudo GUI: layout standard/150% ispezionati ma crash SIGSEGV riprodotto al reset filtro con riga selezionata e successivo cambio lingua via AX. Copia diagnostica temporanea con stderr; causa nativa ancora da isolare. M0 resta aperta.
+
 ### Prossimo lavoro
 
 1. Qt scelto: approfondire menu/focus, albero della tabella, lettori di schermo e stabilità; completare i gate M0 sul toolkit adottato.
@@ -117,6 +119,8 @@ First credential CI `aa722e3`: native macOS tests passed; Linux x86-64/ARM64 exp
 Packaging investigation: [dossier](DOCS/en/M0-PACKAGING.md). Existing local c4ce9cab bundle with vcs.modified=true, not HEAD: 28 Mach-O files, 19 require macOS 26 and 9 macOS 14; no external absolute dependency after excluding LC_ID_DYLIB. This artifact cannot support macOS 13/15 through a flag change alone. Installed Homebrew/Qt SBOMs and dylib families identified, not yet a full product inventory. Asked author for minimum 13/15/26; answer pending.
 
 Additional Windows trial prepared: subprocess and thread with anonymous token, token restoration, Get/Set/Delete must deny access and original synthetic item must stay intact. Cross-compilation/vet passed; native test pending. Does not lock the personal OS session.
+
+Credential CI `a916fab` passed all four targets, run 35867740266 (final API verification: success). The subsequent Windows anonymous-token trial still needs execution. macOS packaging now stages temporarily and publishes with rollback; local build/codesign and injected compiler failure preserving the previous artifact passed. GUI trial: standard/150% layouts inspected, but SIGSEGV reproduced after filter reset with a selected row and subsequent language change through AX. Temporary diagnostic copy captures stderr; native cause still to isolate. M0 remains open.
 
 ### Next work
 

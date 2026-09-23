@@ -8,7 +8,21 @@ if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
 fi
 
 cd "$(dirname "$0")/.."
-bundle=dist/WebFence.app
+# Stage on the host's temporary filesystem: repeatedly rewriting load commands
+# directly on an external volume is slow and can leave a partial final bundle.
+build_temp=$(mktemp -d "${TMPDIR:-/tmp}/webfence-macos.XXXXXX")
+publish_temp=''
+backup=''
+cleanup() {
+  if [ -n "$backup" ] && [ -d "$backup" ] && [ ! -e dist/WebFence.app ]; then
+    mv "$backup" dist/WebFence.app || return
+  fi
+  rm -rf "$build_temp"
+  if [ -n "$publish_temp" ]; then rm -rf "$publish_temp"; fi
+}
+trap cleanup EXIT
+trap 'exit 1' HUP INT TERM
+bundle="$build_temp/WebFence.app"
 mkdir -p "$bundle/Contents/MacOS"
 # Keep flags identical to the regular build so packaging reuses the CGO cache.
 export CGO_CXXFLAGS="${CGO_CXXFLAGS:--O2 -g -std=c++17}"
@@ -33,4 +47,16 @@ cat > "$bundle/Contents/Info.plist" <<'PLIST'
 PLIST
 plutil -lint "$bundle/Contents/Info.plist"
 "$(brew --prefix qtbase)/bin/macdeployqt" "$bundle" -always-overwrite
-printf 'Development bundle: %s/%s\n' "$PWD" "$bundle"
+codesign --verify --deep --strict "$bundle"
+mkdir -p dist
+# Copy fully before renaming on the destination filesystem. Retain the previous
+# generated artifact for rollback until the new bundle has been published.
+publish_temp=$(mktemp -d dist/.webfence-publish.XXXXXX)
+ditto "$bundle" "$publish_temp/WebFence.app"
+codesign --verify --deep --strict "$publish_temp/WebFence.app"
+if [ -e dist/WebFence.app ]; then
+  backup="$publish_temp/previous.app"
+  mv dist/WebFence.app "$backup"
+fi
+mv "$publish_temp/WebFence.app" dist/WebFence.app
+printf 'Development bundle: %s/dist/WebFence.app\n' "$PWD"

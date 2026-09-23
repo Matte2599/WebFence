@@ -29,3 +29,7 @@ Debian 12 offre Qt 6.4.2; Debian 13 Qt 6.8.2 al momento della verifica. La CI Ub
 La CI Windows usa MSYS2 UCRT64 su Windows Server. L’eseguibile richiede plugin/DLL Qt e dipendenze del compilatore/runtime: l’exe da solo non basta. Preparare l’intero runtime, provare senza MSYS2 nel PATH, poi verificare desktop Windows 10/11 reali e percorsi assistivi. Qt 6.11 elenca Windows 10 1809+ e Windows 11; Qt documenta 6.12 come ultimo ramo con supporto Windows 10. È un vincolo upstream, non una verifica WebFence completata o una promessa di manutenzione indefinita.
 
 Fonti: [piattaforme supportate Qt](https://doc.qt.io/qt-6/supported-platforms.html), [Qt Debian 12](https://packages.debian.org/bookworm/libqt6core6), [Qt Debian 13](https://packages.debian.org/trixie/libqt6core6t64), metadati Mach-O locali e SBOM Qt installate. Versioni dei pacchetti e metadati host esaminati nella data indicata.
+
+## Aggiornamento del processo di build
+
+Lo script macOS ora prepara il bundle nel filesystem temporaneo dell’host, verifica la firma ad hoc, copia completamente sul volume di destinazione e pubblica con rinomina; conserva il vecchio artefatto fino alla sostituzione e lo ripristina se la pubblicazione fallisce. Evita riscritture ripetute sul disco esterno e bundle finale parziale durante la build. Build locale e doppia verifica codesign superate. Prova con errore del compilatore introdotto appositamente: fallimento rilevato, hash del binario precedente invariato e staging ripulito. Nessun benchmark di velocità.

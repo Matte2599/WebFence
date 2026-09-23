@@ -150,7 +150,7 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 
 These checks close the first task, not all of M0. Overall gates are tracked in the [verification and trial matrix](en/M0-VALIDATION.md):
 
-- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies.
+- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies. Native SIGSEGV reproduced during the 150% assistive trial; diagnosis in progress.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix. [Investigation](en/M0-PACKAGING.md): local bundle requires macOS 26; intended minimum must be fixed and verified.
 - [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access. GUI chosen; SQLite/JWS selected and verified on all four targets ([ADR-004](en/ADR-004-STORAGE-SIGNATURE.md), [passing CI](https://github.com/Matte2599/WebFence/actions/runs/35863431196)); [Keychain implemented and tested locally on macOS](en/ADR-005-CREDENTIALS.md); native Linux/Windows CI checks and Windows session failure trial remain open. First CI: corrected rejection of GNOME Keyring-normalized binary MIME. Windows anonymous-token trial prepared; native execution to verify.
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
