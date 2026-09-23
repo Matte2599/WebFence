@@ -46,6 +46,8 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 - [Packaging Debian/Windows](DOCS/it/ADR-007-PACKAGING.md) implementato. `.deb` nativo Debian 12 con dipendenze ELF derivate, Installed-Size, provenienza/hash, avvisi Go e launcher; runtime separato senza toolchain, test offscreen/XCB/Openbox non privilegiati, purge che preserva preferenze sintetiche dell’utente. ZIP Windows UCRT64 con chiusura import PE x64, metadati pacchetti/hash/avvisi e test da percorso Unicode/spazi con PATH solo Windows. Errore iniziale ICU corretto cercando anche gli avvisi nominati sotto share; assenza di avvisi ancora bloccante. CI `32655b0` run 35877356234: tutti e sei i job superati, inclusi Windows completo (offscreen e backend nativo), macOS/Linux nativi e pacchetti Debian amd64/arm64. Prova ARM64 locale completa superata. Il self-test attende l’attivazione asincrona prima delle prove focus, normale GUI invariata. Pacchetti effimeri non pubblicati; Windows Server/container Debian non sostituiscono desktop reali o lettori.
 
+- Collaudo prolungato implementato: [M0-STABILITY](DOCS/it/M0-STABILITY.md), timer nel normale event loop Qt, dodici passi per ciclo, preferenze/appunti isolati, log Go/cache e raccoglitore RSS esterno con deadline. Smoke test locale 10 s, unit test, vet e self-test superati; prova 30 minuti e CI ancora da eseguire.
+
 ### Prossimo lavoro e confini
 
 1. Completare M0 secondo la [matrice](DOCS/it/M0-VALIDATION.md), con prove e collaudo complessivo finale, docs IT/EN, commit/push e CI verificata. Non chiudere per i soli test automatizzati.
@@ -99,6 +101,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 - GitHub Private vulnerability reporting enabled and verified on 2026-09-23; no report sent. [Legal dossier](DOCS/en/LEGAL-REVIEW.md) and CLA specification prepared; author confirms professional review still needs arranging. No approved CLA, signature or LICENSE change.
 
 - [Debian/Windows packaging](DOCS/en/ADR-007-PACKAGING.md) implemented. Native Debian 12 `.deb` with derived ELF dependencies, Installed-Size, provenance/hashes, Go notices and launcher; separate runtime without toolchain, unprivileged offscreen/XCB/Openbox tests, purge preserving synthetic user preferences. Windows UCRT64 ZIP with x64 PE import closure, package metadata/hashes/notices and tests from a spaced/Unicode path with Windows-only PATH. Initial ICU failure corrected by also locating named notices under share; missing notices still fail packaging. CI `32655b0` run 35877356234: all six jobs passed, including complete Windows (offscreen and native backend), native macOS/Linux and Debian amd64/arm64 packages. Full local ARM64 trial passed. Self-test waits for asynchronous activation before focus checks, normal GUI unchanged. Ephemeral packages not published; Windows Server/Debian containers do not replace real desktops or readers.
+
+- Prolonged trial implemented: [M0-STABILITY](DOCS/en/M0-STABILITY.md), timer in normal Qt event loop, twelve steps per cycle, isolated preferences/clipboard, Go/cache logs and external RSS collector with deadline. Local 10 s smoke, unit tests, vet and self-test passed; 30-minute trial and CI still to run.
 
 ### Next work and boundaries
 

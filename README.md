@@ -16,6 +16,9 @@ Il bundle macOS include una [correzione temporanea Qt Cocoa](DOCS/it/ADR-006-QT-
 
 Disponibili anche procedure di [packaging Debian e Windows](DOCS/it/ADR-007-PACKAGING.md). Verificati `.deb` amd64/arm64 in runtime Debian separati e ZIP Windows con PATH di solo sistema; [CI `32655b0`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35877356234). Pacchetti di sviluppo: collaudo desktop reale e revisione completa dei materiali di distribuzione ancora aperti.
 
+La [procedura di stabilità prolungata](DOCS/it/M0-STABILITY.md) ripete i flussi della GUI e registra memoria Go/RSS. Prova breve verificata; sessione da 30 minuti ancora da completare.
+
+
 ## Perché WebFence
 
 Gli strumenti AI permettono anche a sviluppatori singoli di realizzare applicazioni articolate. La velocità di sviluppo richiede verifiche di sicurezza altrettanto accessibili e rigorose. Questa è la motivazione del progetto, non una dimostrazione che il codice generato con AI sia sempre meno sicuro.

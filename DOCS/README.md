@@ -43,3 +43,5 @@ Documenti bilingui condivisi / Shared bilingual documents:
 - [SECURITY.md](../SECURITY.md)
 - [MEMORY.md](../MEMORY.md)
 - [AGENTS.md](../AGENTS.md)
+
+- Stabilità prolungata / Prolonged stability: [IT](it/M0-STABILITY.md) · [EN](en/M0-STABILITY.md).

@@ -68,7 +68,9 @@ jobs:
         run: go test ./internal/signature -run '^$' -fuzz '^FuzzVerify$' -fuzztime=10s -parallel=2
       - run: go build -o bin/webfence ./cmd/webfence
       - run: go vet ./...
+      - run: go test ./internal/desktop
       - run: ./bin/webfence --self-test
+      - run: ./bin/webfence --soak-test=10s
       - name: macOS development bundle
         if: runner.os == 'macOS'
         run: sh scripts/package-macos.sh
@@ -101,7 +103,9 @@ jobs:
         run: go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
       - run: go build -ldflags '-H=windowsgui -s -w' -o bin/webfence.exe ./cmd/webfence
       - run: go vet ./...
+      - run: go test ./internal/desktop
       - run: ./bin/webfence.exe --self-test
+      - run: ./bin/webfence.exe --soak-test=10s
       - name: Windows development ZIP
         run: python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")"
       - name: Windows package without the toolchain on PATH

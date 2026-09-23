@@ -37,3 +37,5 @@ GUI trial on 2026-09-23: standard and 150% layouts inspected, but the 150% copy 
 Update: [Cocoa correction adopted](ADR-006-QT-COCOA.md) in the development bundle. The crash sequence passes at 150% and 200%; at 200% the table remains too compressed, some AX cells remain inconsistently exposed, and VoiceOver/prolonged stability trials remain open.
 
 The 200% layout was subsequently corrected and tested: two complete rows, last column reachable by keyboard, scrollable evidence. Compact-window self-test added and passed locally at scales 1/1.5/2. Reader, multi-monitor and measured stability trials remain open.
+
+Instrumented prolonged-session procedure: [M0-STABILITY](M0-STABILITY.md). Smoke test verified; 30-minute session still to run.
