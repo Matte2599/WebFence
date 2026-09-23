@@ -77,7 +77,7 @@ Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e deriv
 
 Materiali delle dipendenze: [raccoglitore sorgenti e avvisi](DOCS/it/M0-SOURCE-MATERIALS.md) verificato su 15 archivi upstream; inclusione facoltativa di 258 avvisi nel bundle macOS prima della firma. Ogni nuovo bundle macOS dichiara inoltre il [minimo OS ricavato dai propri binari](DOCS/it/M0-PACKAGING.md#versione-minima-dichiarata-dallartefatto). La revisione della distribuzione resta aperta.
 
-Raccolti anche [21 pacchetti sorgente Windows](DOCS/it/M0-WINDOWS-SOURCES.md), con ricette collegate ai binari e controlli di integrità documentati; inclusione facoltativa degli archivi originali nello ZIP.
+Raccolti anche [21 pacchetti sorgente Windows](DOCS/it/M0-WINDOWS-SOURCES.md), con ricette collegate ai binari e controlli di integrità documentati; inclusione facoltativa degli archivi originali nello ZIP. La [CI Windows](https://github.com/Matte2599/WebFence/actions/runs/35933571589) verifica la corrispondenza di 74 notices selezionati con gli archivi binari MSYS2; completezza e revisione legale restano aperte.
 
 Disponibile anche l’inclusione nel bundle macOS dei [supplementi Homebrew GLib/libb2](DOCS/it/M0-SOURCE-MATERIALS.md#supplementi-homebrew-nel-bundle-macos), vincolati agli hash delle ricette installate.
 

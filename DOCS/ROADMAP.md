@@ -70,7 +70,7 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [Metadati licenza Windows](evidence/windows-license-metadata-2026-09-24.md): hash di 21 archivi sorgente e 42 ricette/metadati ricontrollati; campi `license` delle ricette indicizzati per i 22 pacchetti binari, con distinzione `libiconv`. Nessuna conclusione sulla licenza effettiva delle 43 DLL o sui componenti incorporati; notices, firme PGP SKIP, sostituzione e revisione legale ancora aperti. M0-02/06 invariati.
 
-Avvisi Windows: il packaging confronta ora i notices selezionati con i membri degli archivi binari MSYS2, ne registra gli hash nell'inventario e li ricontrolla nello ZIP estratto insieme alle DLL. Regressione sintetica e 58 test Python locali superati; CI Windows sul codice nuovo in attesa. La copertura dei notices, le firme e la revisione legale restano aperte, quindi M0-02 non cambia stato.
+[Avvisi Windows](evidence/windows-notice-linkage-2026-09-24.md): il packaging confronta i notices selezionati con i membri degli archivi binari MSYS2, ne registra gli hash nell'inventario e li ricontrolla nello ZIP estratto insieme alle DLL. [CI `8a8ea85`](https://github.com/Matte2599/WebFence/actions/runs/35933571589) conclusa: sei job verdi al primo tentativo, 58 test Python su Windows, 43 DLL/22 pacchetti/74 notices verificati, 21 archivi sorgente ricontrollati, self-test e soak Windows/offscreen superati. La copertura dei notices, le firme e la revisione legale restano aperte, quindi M0-02 non cambia stato.
 
 ### M1 — Alpha tradizionale controllata
 
@@ -209,7 +209,7 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 
 [Windows license metadata](evidence/windows-license-metadata-2026-09-24.md): hashes of 21 source archives and 42 recipe/metadata files rechecked; recipe `license` fields indexed for the 22 binary packages, distinguishing `libiconv`. No conclusion about effective licenses of the 43 DLLs or embedded components; notices, SKIP PGP signatures, replacement and legal review remain open. M0-02/06 unchanged.
 
-Windows notices: packaging now compares selected notices with members of cached MSYS2 binary archives, records their hashes in the inventory and rechecks them alongside DLLs in the extracted ZIP. Synthetic regression and 58 local Python tests passed; Windows CI on the new code is pending. Notice coverage, signatures and legal review remain open, so M0-02 status is unchanged.
+[Windows notices](evidence/windows-notice-linkage-2026-09-24.md): packaging compares selected notices with members of cached MSYS2 binary archives, records their hashes in the inventory and rechecks them alongside DLLs in the extracted ZIP. [CI `8a8ea85`](https://github.com/Matte2599/WebFence/actions/runs/35933571589) completed: six green jobs on the first attempt, 58 Windows Python tests, 43 DLLs/22 packages/74 notices checked, 21 source archives rechecked, Windows/offscreen self-tests and soaks passed. Notice coverage, signatures and legal review remain open, so M0-02 status is unchanged.
 
 ### M1 — Controlled traditional alpha
 

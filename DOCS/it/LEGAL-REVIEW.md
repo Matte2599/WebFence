@@ -14,6 +14,7 @@ Stato: preparazione tecnica, **nessun parere legale professionale acquisito**. Q
 - [Esame delle 15 ricette macOS](../evidence/homebrew-recipe-review-2026-09-23.md), che distingue patch/risorse della build da fixture dei test e rami Linux.
 - [Mappatura dei nove binari Qt macOS e attribuzioni upstream](../evidence/qt-component-review-2026-09-23.md): associazioni tecniche verificate, non inventario completo degli incorporati o approvazione legale.
 - [Registro dei metadati delle 21 ricette Windows](../evidence/windows-license-metadata-2026-09-24.md): dichiarazioni MSYS2 ricontrollate, non licenze finali dei binari; `custom`, scelte `OR`, componenti incorporati e notices richiedono esame.
+- [Corrispondenza dei 74 notices Windows selezionati](../evidence/windows-notice-linkage-2026-09-24.md): pacchetti e hash verificati nella CI; completezza degli avvisi e obblighi legali non accertati.
 - [Registro delle 18 librerie non Qt e del binario Go](../evidence/macos-nonqt-component-review-2026-09-23.md): provenienza tecnica e dichiarazioni upstream; termini dei singoli binari ancora da esaminare.
 - [Approfondimento libintl](../evidence/macos-nonqt-component-review-2026-09-23.md): ricetta e sorgente indicano LGPL 2.1 o successiva per il componente, ma occorre verificare composizione esatta del binario e obblighi di distribuzione.
 - [Report](REPORTING.md): firma dell'operatore, nessuna certificazione della sicurezza, diritti su template distinti dai dati dell'utente.
