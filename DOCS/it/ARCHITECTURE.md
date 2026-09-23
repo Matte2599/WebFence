@@ -2,7 +2,7 @@
 
 [English](../en/ARCHITECTURE.md) · [Indice](../README.md)
 
-Stato: progetto tecnico, nessun componente implementato.
+Stato: architettura del prodotto pianificata. Implementati soltanto il punto di ingresso desktop, il workspace Fyne, i cataloghi IT/EN e le fixture offline descritte in [M0](M0-DESKTOP.md); i componenti del diagramma di scansione restano da realizzare.
 
 ## Struttura iniziale
 

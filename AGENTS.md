@@ -15,7 +15,9 @@ Leggere [MEMORY.md](MEMORY.md), [README.md](README.md), [DOCS/ROADMAP.md](DOCS/R
 - Se cambia una decisione persistente, aggiornare MEMORY e documenti pertinenti, distinguendo requisito dell'autore, proposta e verifica completata.
 - I contributi esterni non concedono automaticamente diritti di rilicenza; vedere [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Allo stato iniziale non esistono comandi di build o test del prodotto. Prima di usarli, leggere i manifest effettivamente presenti; non presumere che una directory pianificata esista.
+Esistono `go.mod` e il prototipo M0: leggere [DEVELOPMENT](DOCS/it/DEVELOPMENT.md) per build/test e [resoconto M0](DOCS/it/M0-DESKTOP.md) per i limiti reali. Non presumere che i moduli pianificati esistano.
+
+Richiesta persistente dell’autore: al termine di ogni task, e durante se necessario, aggiornare documentazione IT/EN, MEMORY e ROADMAP; eseguire le verifiche pertinenti, fare commit e push e verificare lo stato remoto. Conservare le preferenze OS e UX riportate nella memoria.
 
 ## English
 
@@ -32,4 +34,6 @@ Read [MEMORY.md](MEMORY.md), [README.en.md](README.en.md), [DOCS/ROADMAP.md](DOC
 - Update MEMORY and relevant documents when persistent decisions change, distinguishing author requirements, proposals and completed verification.
 - External contributions do not automatically grant relicensing rights; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Initially there are no product build or test commands. Read actual manifests before using such commands; do not assume planned directories exist.
+The M0 prototype and `go.mod` exist: read [DEVELOPMENT](DOCS/en/DEVELOPMENT.md) for build/tests and the [M0 report](DOCS/en/M0-DESKTOP.md) for actual limitations. Do not assume planned modules exist.
+
+Persistent author instruction: at the end of each task, and during it when needed, update IT/EN documentation, MEMORY and ROADMAP; perform relevant checks, commit and push, then verify remote state. Preserve the OS and UX preferences recorded in memory.

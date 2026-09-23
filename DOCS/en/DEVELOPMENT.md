@@ -4,41 +4,65 @@
 
 ## Current state and starting point
 
-The repository contains documentation and editor/Git configuration only. There is no `go.mod`, build, installer, server, CLI or engine test suite. To obtain the documents:
+First offline M0 prototype: native window, on-demand synthetic dataset, filters, virtualized table, evidence detail, explicit copy and persistent language. No crawler, network engine, database, CVE, signing or AI. Read the [M0 report](M0-DESKTOP.md) and [UX direction](UX.md).
+
+Prerequisites: Go **1.27.1**, Fyne **2.8.1** pinned in `go.mod`, C compiler and graphics libraries. macOS requires Xcode/Command Line Tools; Debian derivatives require `gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev`; Windows requires 64-bit GCC/MinGW-w64 on PATH. Go dependencies are downloaded on the first toolchain run; the application does not scan or download anything.
 
 ```sh
 git clone https://github.com/Matte2599/WebFence.git
 cd WebFence
+go mod download
+go run ./cmd/webfence
 ```
 
-Read the [README](../../README.en.md), [roadmap](../ROADMAP.md) and [CONTRIBUTING](../../CONTRIBUTING.md). No `webfence scan` command is available: do not add executable instructions until the path is implemented and verified.
+To build on macOS/Linux and run automated checks:
 
-## Proposed future structure
+```sh
+go build -trimpath -o bin/ ./cmd/webfence
+go mod verify
+go vet -tags ci ./...
+go test -tags ci -race ./...
+git diff --check
+```
+
+On Windows the same build command produces `bin/webfence.exe`; run it from PowerShell or Explorer. The `ci` tag uses the software graphics driver in tests: it **does not test the native window or a screen reader**. Local verification and CI results are separated in the report.
+
+## Implemented structure
 
 ```text
-cmd/webfence/          desktop application
-cmd/webfence-cli/      possible later CLI
-internal/app/         use cases
-internal/ui/          GUI and localization
-internal/policy/      authorization and scope
-internal/scan/        scheduler, discovery and checks
-internal/intelligence/
-internal/ai/
-internal/report/
-internal/storage/
-testdata/             synthetic fixtures
-DOCS/                 bilingual specifications
+cmd/webfence/           desktop entry point
+internal/demo/         pure synthetic fixtures, no I/O
+internal/i18n/         embedded IT/EN JSON catalogs
+internal/ui/           Fyne workspace and interaction tests
+scripts/package-macos.sh
+.github/workflows/ci.yml
+DOCS/                  bilingual documentation
 ```
 
-Create packages when a useful first function exists, not as empty containers. The core does not import the GUI toolkit; checks do not directly access arbitrary networking or filesystems.
+The `demo` package is not an analysis engine and its records are not findings. Future domain/network/storage packages will be introduced with testable use cases; do not create empty placeholders. The core will remain independent of Fyne.
 
-## Systems and installation
+## Systems and packaging
 
-Targets: macOS, Windows and Linux. The support matrix depends on real OS/architecture tests; the design machine does not establish compatibility elsewhere. Go/Fyne requires an appropriate graphics/native toolchain: see [Fyne documentation](https://docs.fyne.io/started/). Do not assume `CGO_ENABLED=0` or simple cross-compilation for the entire desktop.
+Confirmed requirement: **Apple Silicon macOS only; Windows 10 and 11 x86-64; Debian and derivatives on x86-64 and ARM64**. No 32-bit architectures. Minimum macOS/Debian versions remain subject to testing. CI builds on ARM64 macOS, x64 Windows Server and x64/ARM64 Ubuntu; it does not establish interactive compatibility with Windows 10/11 or every Debian distribution.
 
-M0 must test macOS bundles, Windows packaging and the selected Linux format, graphics dependencies, keychain and accessibility. Application signing/notarization and report signing are separate systems. No distribution certificates are present. Go, GUI, browser and library versions will be pinned after the prototype, with lockfiles and reproducible CI.
+On Apple Silicon macOS:
 
-The app uses per-user system data directories, not the source directory; exports go to operator-selected destinations. No routine administrator privileges. Models, browsers and large snapshots are optional verified packages; disclose downloads and disk requirements before installation. Uninstallation does not silently delete data: provide an explicit choice.
+```sh
+sh scripts/package-macos.sh
+open dist/WebFence.app
+```
+
+The local `0.0.1` bundle is only for M0 evaluation; it is not a release. The script validates the plist, does not install certificates, sign with a distribution identity or notarize. Any signature inserted by the toolchain is not Developer ID. `dist/` and `bin/` are excluded from Git. Simple cross-compilation with CGO disabled is not promised.
+
+To reproduce the Fyne accessibility experiment on macOS, first close the prototype and rebuild:
+
+```sh
+FYNE_BUILD_TAGS=accessibility sh scripts/package-macos.sh
+```
+
+The experimental bridge **has not passed the M0 gate**. Normal builds do not enable it; the final toolkit selection remains open. To restore a normal build, close the app and rerun the script without that variable. See [observed limitations](M0-DESKTOP.md).
+
+The only persistent application preference is `ui.language`, managed by Fyne in the per-user app directory for `io.github.Matte2599.WebFence`, not the repository. Examples, filters and selection are not saved. “Clear examples” removes in-memory records, not content already copied to the clipboard. Keychain, database and their deletion flows remain unimplemented.
 
 ## IT/EN
 

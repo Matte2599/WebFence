@@ -2,7 +2,7 @@
 
 [English](../en/QUALITY.md) · [Indice](../README.md)
 
-Stato: piano di verifica, nessun risultato misurato. L'obiettivo di copertura professionale non viene trasformato in una dichiarazione di equivalenza a prodotti commerciali.
+Stato: piano di qualità del motore, senza benchmark di scansione. I primi test della GUI offline e i limiti di accessibilità sono nel [resoconto M0](M0-DESKTOP.md). L'obiettivo di copertura professionale non viene trasformato in una dichiarazione di equivalenza a prodotti commerciali.
 
 ## Corpus
 

@@ -2,12 +2,12 @@
 
 ## Italiano
 
-Grazie per l'interesse in WebFence. Il progetto è in fase documentale: proposte di requisiti, correzioni e traduzioni sono utili fin da ora. Leggere [README](README.md), [licenza](LICENSE), [roadmap](DOCS/ROADMAP.md) e [governance](DOCS/it/LICENSING.md).
+Grazie per l'interesse in WebFence. Il progetto ha avviato il prototipo desktop M0: proposte di requisiti, correzioni e traduzioni sono utili fin da ora. Leggere [README](README.md), [licenza](LICENSE), [roadmap](DOCS/ROADMAP.md) e [governance](DOCS/it/LICENSING.md).
 
 1. Per modifiche sostanziali descrivere problema, risultato e impatto in una issue, senza dati sensibili.
 2. Lavorare in un branch o fork con cambiamenti circoscritti e rispettare la licenza del progetto.
 3. Aggiornare entrambe le lingue e distinguere proposta da implementazione.
-4. Per codice futuro includere verifiche proporzionate e fixture proprie; per documentazione controllare link e coerenza.
+4. Per codice includere verifiche proporzionate e fixture proprie secondo la [guida di sviluppo](DOCS/it/DEVELOPMENT.md); per documentazione controllare link e coerenza.
 5. Nella PR indicare cosa cambia, perché, controlli effettuati e limiti noti. Il maintainer decide l'integrazione.
 
 Non inviare chiavi, cookie, report di clienti o payload provenienti da sistemi non autorizzati. Le vulnerabilità di WebFence seguono [SECURITY.md](SECURITY.md).
@@ -22,12 +22,12 @@ Nessuna cessione automatica, tariffa o promessa di royalties ai contributori è 
 
 ## English
 
-Thank you for your interest in WebFence. The project is at the documentation stage: requirement proposals, corrections and translations are already useful. Read the [README](README.en.md), [license](LICENSE), [roadmap](DOCS/ROADMAP.md) and [governance](DOCS/en/LICENSING.md).
+Thank you for your interest in WebFence. The project has started its M0 desktop prototype: requirement proposals, corrections and translations are already useful. Read the [README](README.en.md), [license](LICENSE), [roadmap](DOCS/ROADMAP.md) and [governance](DOCS/en/LICENSING.md).
 
 1. For substantial changes, describe the problem, outcome and impact in an issue without sensitive data.
 2. Work in a branch or fork with focused changes and respect the project license.
 3. Update both languages and distinguish proposals from implementation.
-4. Future code needs proportionate verification and owned fixtures; documentation needs link and consistency checks.
+4. Code needs proportionate verification and owned fixtures following the [development guide](DOCS/en/DEVELOPMENT.md); documentation needs link and consistency checks.
 5. PRs explain what changed, why, checks performed and known limits. The maintainer decides integration.
 
 Do not submit keys, cookies, client reports or payloads from unauthorized systems. WebFence vulnerabilities follow [SECURITY.md](SECURITY.md).

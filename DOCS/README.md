@@ -18,6 +18,8 @@
 | Modello delle minacce / Threat model | [IT](it/THREAT-MODEL.md) | [EN](en/THREAT-MODEL.md) |
 | Qualità e benchmark / Quality and benchmarks | [IT](it/QUALITY.md) | [EN](en/QUALITY.md) |
 | Sviluppo, installazione e lingue / Development, deployment and languages | [IT](it/DEVELOPMENT.md) | [EN](en/DEVELOPMENT.md) |
+| Prototipo desktop M0 / M0 desktop prototype | [IT](it/M0-DESKTOP.md) | [EN](en/M0-DESKTOP.md) |
+| Interfaccia e usabilità / Interface and usability | [IT](it/UX.md) | [EN](en/UX.md) |
 | Licenze e governance / Licensing and governance | [IT](it/LICENSING.md) | [EN](en/LICENSING.md) |
 | Fonti e limiti della ricerca / Sources and research limits | [IT](it/REFERENCES.md) | [EN](en/REFERENCES.md) |
 

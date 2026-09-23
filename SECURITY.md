@@ -4,7 +4,7 @@
 
 ### Stato supportato
 
-WebFence è in progettazione. Non esistono release eseguibili supportate e non è ancora verificata l'attivazione della segnalazione privata sul repository. La policy sarà aggiornata con versioni e canale operativo prima della prima release.
+WebFence ha un prototipo desktop M0 con esempi sintetici offline; non è uno scanner operativo. Non esistono release eseguibili supportate e non è ancora verificata l'attivazione della segnalazione privata sul repository. La policy sarà aggiornata con versioni e canale operativo prima della prima release.
 
 ### Segnalare un problema di WebFence
 
@@ -22,7 +22,7 @@ Il [modello delle minacce](DOCS/it/THREAT-MODEL.md) descrive controlli previsti,
 
 ### Supported state
 
-WebFence is in design. There are no supported executable releases, and repository private reporting enablement has not been verified. This policy will list versions and an operational channel before the first release.
+WebFence has an M0 desktop prototype with offline synthetic examples; it is not an operational scanner. There are no supported executable releases, and repository private reporting enablement has not been verified. This policy will list versions and an operational channel before the first release.
 
 ### Reporting a WebFence vulnerability
 

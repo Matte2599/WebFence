@@ -14,6 +14,9 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 - Il testo predisposto permette a professionisti indipendenti persone fisiche analisi retribuite e consegna di report a clienti, anche aziende. Non equiparare una società di consulenza a una persona fisica.
 - Distribuzione a scopo di lucro e distribuzione del programma alle aziende richiedono autorizzazione di Matteo Luigi Feroldi; eventuali royalties/licenze sono concordate, non già prezzate.
 - UI, documentazione e report in **italiano e inglese**.
+- Piattaforme confermate: macOS **solo Apple Silicon**, Windows **10/11 x86-64**, Linux **Debian e derivati x86-64/ARM64**; nessun 32 bit.
+- UX: semplice e sobria, moderna ma familiare come gli strumenti desktop Windows 2015–2020; percorso guidato e approfondimenti per esperti. Vedi [UX](DOCS/it/UX.md).
+- A ogni task aggiornare documentazione, memoria e roadmap, poi commit e push; durante il task quando necessario. Questa autorizzazione è persistente.
 - Analisi tradizionale e AI, profili configurabili, CVE aggiornate, report firmati, progetti persistenti fino a cancellazione, retest dei fix e regressioni.
 - Modelli AI remoti frontier, locali e gestibili dal programma sono obiettivi; non c'è un modello WebFence addestrato.
 - Invicti/Acunetix sono riferimenti di profondità desiderata, non equivalenza provata.
@@ -30,17 +33,17 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 ### Stato reale
 
-Creati README IT/EN, DOCS bilingui, roadmap, licenza, policy di contribuzione/sicurezza e istruzioni agenti. Repository inizializzato su `main`, remoto `origin` configurato. Nessun motore, GUI, build, scanner, test funzionale, modello o benchmark implementato. Il commit viene registrato nella cronologia Git; non inserire qui un hash autoreferenziale. Non dedurre un push dall'esistenza del remoto: verificare i riferimenti remoti quando serve.
+Fondazione documentale completata. Primo task M0 implementato: Go 1.27.1/Fyne 2.8.1, desktop offline, 10.000 record sintetici a richiesta, filtri, prove inerti, copia e lingua IT/EN persistente; test automatici e workflow CI. Build e bundle locali verificati su macOS 26.6.2 ARM64/Xcode 27. Il [resoconto M0](DOCS/it/M0-DESKTOP.md) distingue esiti locali e CI. **Accessibilità Fyne non approvata**: bridge opzionale con albero incompleto e timeout dello strumento di interazione; build normale senza quel tag. Scanner, storage, scope/rete, CVE, firma, AI e keychain assenti. Nessun benchmark di sicurezza o release supportata. Repository su `main`, remoto `origin` configurato. Il commit viene registrato nella cronologia Git; non inserire qui un hash autoreferenziale. Non dedurre un push dall'esistenza del remoto: verificare i riferimenti remoti quando serve.
 
 ### Prossimo lavoro
 
-1. M0: prototipo desktop e verifica toolkit, accessibilità, keychain e packaging.
-2. Definire piattaforme iniziali e versioni; avviare un core minimale con fixture isolate.
+1. M0: risolvere accessibilità e rivalutare il toolkit sullo stesso scenario; non dichiarare Fyne definitivo.
+2. Completare verifiche OS/versioni minime, packaging e keychain; aggiungere laboratorio isolato e primi test scope/rete.
 3. Selezionare driver storage e libreria firma, documentando vincoli.
 4. Prima di accettare contributi sostanziali esterni per rilicenza commerciale, definire un accordo esplicito; prima della raccolta di segnalazioni sensibili, attivare un canale privato.
 5. Proseguire secondo [roadmap](DOCS/ROADMAP.md), aggiornando entrambe le lingue.
 
-Domande ancora aperte: OS/architetture iniziali, soglie hardware misurate, provider/modello, canale privato e termini economici. Non inventare email, prezzi o promesse di rilascio.
+Domande ancora aperte: versioni minime macOS/Debian, toolkit accessibile, soglie hardware misurate, provider/modello, canale privato e termini economici. Non inventare email, prezzi o promesse di rilascio.
 
 ## English
 
@@ -54,6 +57,9 @@ Domande ancora aperte: OS/architetture iniziali, soglie hardware misurate, provi
 - The prepared text allows natural-person independent professionals to perform paid assessments and deliver reports to clients, including companies. Do not treat a consulting company as an individual.
 - Commercial distribution and distribution of the program to companies require Matteo Luigi Feroldi's authorization; royalties/licenses are negotiated, not already priced.
 - UI, documentation and reports in **Italian and English**.
+- Confirmed platforms: **Apple Silicon only** macOS, **Windows 10/11 x86-64**, **Debian and derivatives x86-64/ARM64**; no 32-bit support.
+- UX: simple and restrained, modern but familiar like Windows desktop tools from 2015–2020; guided workflow with expert depth. See [UX](DOCS/en/UX.md).
+- Update documentation, memory and roadmap for every task, then commit and push; also during work when necessary. This authorization persists.
 - Traditional and AI analysis, configurable profiles, current CVE intelligence, signed reports, projects retained until deletion, fix retests and regressions.
 - Remote frontier models, local models and product-managed models are goals; no trained WebFence model exists.
 - Invicti/Acunetix are desired depth references, not proven equivalence.
@@ -70,14 +76,14 @@ Domande ancora aperte: OS/architetture iniziali, soglie hardware misurate, provi
 
 ### Actual state
 
-Created IT/EN READMEs, bilingual DOCS, roadmap, license, contribution/security policies and agent instructions. Repository initialized on `main` with `origin` configured. No engine, GUI, build, scanner, functional tests, model or benchmark is implemented. Git history records the commit; do not place a self-referential hash here. Do not infer a push from the remote configuration: inspect remote refs when needed.
+Documentation foundation complete. First M0 task implemented: Go 1.27.1/Fyne 2.8.1, offline desktop, 10,000 on-demand synthetic records, filters, inert evidence, copy and persistent IT/EN language; automated tests and CI workflow. Local build and bundle verified on macOS 26.6.2 ARM64/Xcode 27. The [M0 report](DOCS/en/M0-DESKTOP.md) separates local and CI results. **Fyne accessibility is not approved**: optional bridge with incomplete tree and interaction-tool timeout; normal build excludes that tag. Scanner, storage, scope/network, CVE, signing, AI and keychain are absent. No security benchmark or supported release. Repository on `main`, with `origin` configured. Git history records the commit; do not place a self-referential hash here. Do not infer a push from the remote configuration: inspect remote refs when needed.
 
 ### Next work
 
-1. M0: desktop prototype and toolkit, accessibility, keychain and packaging validation.
-2. Define initial platforms and versions; start a minimal core with isolated fixtures.
+1. M0: resolve accessibility and reassess the toolkit against the same scenario; do not declare Fyne final.
+2. Complete OS/minimum-version, packaging and keychain checks; add the isolated lab and first scope/network tests.
 3. Select storage driver and signing library, recording constraints.
 4. Before accepting substantial external contributions for commercial relicensing, establish an explicit agreement; before collecting sensitive reports, enable a private channel.
 5. Follow the [roadmap](DOCS/ROADMAP.md), updating both languages.
 
-Open questions: initial OS/architectures, measured hardware requirements, provider/model, private contact and pricing terms. Do not invent email addresses, prices or release promises.
+Open questions: minimum macOS/Debian versions, accessible toolkit, measured hardware requirements, provider/model, private contact and pricing terms. Do not invent email addresses, prices or release promises.

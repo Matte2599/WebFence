@@ -6,7 +6,7 @@ Aggiornamento / Updated: 2026-09-23. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
-Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esiste soltanto il pacchetto documentale iniziale. Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
+Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale e il primo prototipo desktop M0 offline; M0 è ancora aperta. Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
 
 ### Fondazione documentale — completata
 
@@ -20,7 +20,15 @@ Queste spunte attestano documenti creati, non codice funzionante o revisione leg
 
 ### M0 — Fattibilità desktop e fondazioni del codice
 
-Dipende dalla fondazione documentale. Priorità immediata.
+Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offline e fondazioni Go; [risultati e limiti](it/M0-DESKTOP.md).
+
+- [x] Modulo Go/Fyne fissato, cataloghi IT/EN, fixture offline e test GUI con race detector.
+- [x] Finestra, 10.000 righe, filtri, dettaglio/copiatore evidenze e preferenza lingua persistente.
+- [x] Build e bundle locale di sviluppo su macOS Apple Silicon; workflow CI introdotto.
+- [x] Piattaforme richieste e direzione UX confermate dall’autore: [specifica UX](it/UX.md).
+- [ ] Risolvere il gate di accessibilità Fyne o registrare un toolkit alternativo dopo confronto pratico.
+
+Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi restano:
 
 - [ ] Prototipo Go/Fyne: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
@@ -104,7 +112,7 @@ CLI/CI, import SBOM, arricchimenti KEV/EPSS, verifiche su specifici framework, s
 
 ## English
 
-This roadmap uses dependencies and exit criteria, without promised release dates. Only the initial documentation package exists. Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
+This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation and first offline M0 desktop prototype exist; M0 remains open. Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
 
 ### Documentation foundation — complete
 
@@ -118,7 +126,15 @@ These checks represent created documents, not working code or completed legal re
 
 ### M0 — Desktop feasibility and code foundations
 
-Depends on the documentation foundation. Immediate priority.
+Depends on the documentation foundation. **In progress.** First task: offline prototype and Go foundations; [results and limitations](en/M0-DESKTOP.md).
+
+- [x] Pinned Go/Fyne module, IT/EN catalogs, offline fixtures and GUI tests with race detector.
+- [x] Window, 10,000 rows, filters, evidence reader/copy and persistent language preference.
+- [x] Local development build and bundle on Apple Silicon macOS; CI workflow introduced.
+- [x] Author-confirmed requested platforms and UX direction: [UX specification](en/UX.md).
+- [ ] Resolve Fyne’s accessibility gate or record an alternative toolkit after practical comparison.
+
+These checks close the first task, not all of M0. Overall gates remain:
 
 - [ ] Go/Fyne prototype: window, large table, evidence reading, keyboard, DPI and assistive technologies.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.

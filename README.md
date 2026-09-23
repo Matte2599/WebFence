@@ -4,7 +4,7 @@
 
 [English](README.en.md) · [Documentazione](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [Licenza](LICENSE)
 
-**Stato: progettazione iniziale — nessun motore di scansione è ancora implementato.** Questo repository contiene la specifica di prodotto, le decisioni architetturali e il piano di sviluppo. Non sono ancora disponibili binari, comandi di scansione o risultati di benchmark.
+**Stato: M0 in corso — primo prototipo desktop eseguibile, solo con esempi sintetici.** La GUI Go/Fyne permette di caricare 10.000 righe, filtrarle e leggere le evidenze in IT/EN. Il motore di scansione non è implementato; non esistono release supportate o benchmark di sicurezza. Vedi il [resoconto M0](DOCS/it/M0-DESKTOP.md).
 
 ## Perché WebFence
 
@@ -45,8 +45,20 @@ Rust rimane un'opzione per componenti circoscritti se misure reali ne giustifich
 
 1. Leggi la [visione e i requisiti](DOCS/it/PRODUCT.md).
 2. Consulta [architettura](DOCS/it/ARCHITECTURE.md), [modello delle minacce](DOCS/it/THREAT-MODEL.md) e [roadmap](DOCS/ROADMAP.md).
-3. Per contribuire, parti da [CONTRIBUTING.md](CONTRIBUTING.md). Non esiste ancora una procedura di build del prodotto.
+3. Per contribuire, parti da [CONTRIBUTING.md](CONTRIBUTING.md). La [guida di sviluppo](DOCS/it/DEVELOPMENT.md) contiene i comandi del prototipo.
 4. Le decisioni persistenti sono in [MEMORY.md](MEMORY.md); le istruzioni per gli agenti sono in [AGENTS.md](AGENTS.md).
+
+## Avviare il prototipo
+
+Con Go 1.27.1 e le dipendenze native indicate nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md):
+
+```sh
+go run ./cmd/webfence
+```
+
+Su macOS Apple Silicon si può creare un bundle locale con `sh scripts/package-macos.sh`. È un laboratorio GUI: gli URL `.invalid` sono testo inerte. La build di prova non è un installer firmato/notarizzato.
+
+Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e derivati x86-64/ARM64. Il supporto effettivo dipende dalle verifiche della [matrice M0](DOCS/it/M0-DESKTOP.md). La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi.
 
 ## Licenza e autore
 

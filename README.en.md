@@ -4,7 +4,7 @@
 
 [Italiano](README.md) · [Documentation](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [License](LICENSE)
 
-**Status: initial design — no scanning engine has been implemented yet.** This repository contains the product specification, architectural decisions and development plan. There are no product binaries, scan commands or benchmark results yet.
+**Status: M0 in progress — first runnable desktop prototype, using synthetic examples only.** The Go/Fyne GUI loads 10,000 rows, filters them and displays evidence in IT/EN. The scanning engine is not implemented; there are no supported releases or security benchmarks. See the [M0 report](DOCS/en/M0-DESKTOP.md).
 
 ## Why WebFence
 
@@ -45,8 +45,20 @@ Rust remains an option for bounded components if measurements justify it. The co
 
 1. Read the [product vision and requirements](DOCS/en/PRODUCT.md).
 2. Review the [architecture](DOCS/en/ARCHITECTURE.md), [threat model](DOCS/en/THREAT-MODEL.md) and [roadmap](DOCS/ROADMAP.md).
-3. To contribute, start with [CONTRIBUTING.md](CONTRIBUTING.md). A product build procedure does not exist yet.
+3. To contribute, start with [CONTRIBUTING.md](CONTRIBUTING.md). The [development guide](DOCS/en/DEVELOPMENT.md) contains prototype commands.
 4. Persistent decisions live in [MEMORY.md](MEMORY.md); agent instructions are in [AGENTS.md](AGENTS.md).
+
+## Run the prototype
+
+With Go 1.27.1 and the native dependencies in the [development guide](DOCS/en/DEVELOPMENT.md):
+
+```sh
+go run ./cmd/webfence
+```
+
+On Apple Silicon macOS, create a local bundle with `sh scripts/package-macos.sh`. This is a GUI laboratory: `.invalid` URLs are inert text. The development build is not a signed/notarized installer.
+
+Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and derivatives on x86-64/ARM64. Actual support depends on the [M0 matrix](DOCS/en/M0-DESKTOP.md). The [UX direction](DOCS/en/UX.md) calls for a restrained, traditional desktop, guided workflow and progressively available advanced tools.
 
 ## License and author
 

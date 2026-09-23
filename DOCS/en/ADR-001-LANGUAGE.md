@@ -31,6 +31,6 @@ Avoid introducing both a Go core and a Rust core initially. Isolate browsers and
 
 Reopen this ADR if the GUI prototype misses essential requirements, the development team has a demonstrable operational advantage in Rust, or repeatable profiles reveal GC/CPU costs that cannot be addressed with limits, algorithms and better allocation patterns. Compare Go/Fyne and Rust/Iced on the same scenario; aesthetic preference alone does not justify rewriting the engine.
 
-Initial implementation: a Go version supported at M0, pinned in the future `go.mod` and CI. No minimum version or dependency is claimed to be installed today.
+First M0 implementation: Go 1.27.1 and Fyne 2.8.1 pinned in `go.mod`/`go.sum`; CI reads the Go version from the module. Development build and bundle verified on macOS 26.6.2 ARM64 with Xcode 27. Accessibility does not pass the gate: incomplete tree and unverified assisted interaction. **Fyne remains a candidate; this limitation requires renewed evaluation before adopting it for the product.** Details and alternatives to compare are in the [M0 report](M0-DESKTOP.md).
 
 Sources: [Go FAQ](https://go.dev/doc/faq), [Rust ownership](https://doc.rust-lang.org/nomicon/ownership.html), [Fyne](https://github.com/fyne-io/fyne), [Iced](https://github.com/iced-rs/iced). Checked 2026-09-23.

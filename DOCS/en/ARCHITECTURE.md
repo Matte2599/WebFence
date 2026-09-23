@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: technical design; no component is implemented.
+Status: planned product architecture. Only the desktop entry point, Fyne workspace, IT/EN catalogs and offline fixtures described in [M0](M0-DESKTOP.md) are implemented; the scanning diagram components remain unimplemented.
 
 ## Initial structure
 

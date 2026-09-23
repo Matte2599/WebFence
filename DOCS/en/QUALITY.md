@@ -2,7 +2,7 @@
 
 [Italiano](../it/QUALITY.md) · [Index](../README.md)
 
-Status: verification plan, with no measured results. Professional-coverage ambitions are not claims of equivalence to commercial products.
+Status: engine quality plan, without scanning benchmarks. Initial offline GUI tests and accessibility limitations are recorded in the [M0 report](M0-DESKTOP.md). Professional-coverage ambitions are not claims of equivalence to commercial products.
 
 ## Corpus
 
