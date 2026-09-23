@@ -46,3 +46,5 @@ La licenza di WebFence non cambia le licenze di librerie, motori, regole importa
 Il testo personalizzato è una prima stesura tecnica, non una licenza standard già validata da un legale. Una revisione professionale deve verificare definizioni, applicabilità, tutela dei consumatori, accordi per contributori e contratti commerciali. Non sono inventati tariffe, partita IVA, indirizzi, email, foro competente o condizioni di pagamento.
 
 Responsabile delle decisioni: Matteo Luigi Feroldi. Le modifiche pubbliche di licenza devono avere versione e changelog; non revocano retroattivamente i diritti regolarmente ottenuti sulle copie precedenti.
+
+Preparazione M0: [dossier per il revisore e specifica dell’accordo contributori](LEGAL-REVIEW.md). Non è un parere acquisito né un CLA attivo.

@@ -49,7 +49,7 @@ The table describes planned complete contracts. `internal/scope` and `internal/t
 
 ## Persistence and external processes
 
-SQLite is proposed for metadata, the queue and observations; separate files hold larger evidence. Serialize writes where useful, enforce foreign keys, migrations and disk quotas. Save a checkpoint and queue state in one transaction when they describe the same progress. Write files to staging first, then promote them atomically; recovery removes orphans without deleting referenced evidence.
+SQLite is selected (ADR-004) for the future metadata, queue and observation store; separate files hold larger evidence. Serialize writes where useful, enforce foreign keys, migrations and disk quotas. Save a checkpoint and queue state in one transaction when they describe the same progress. Write files to staging first, then promote them atomically; recovery removes orphans without deleting referenced evidence.
 
 Keep credentials and private keys in the system keychain or an encrypted container unlocked by the operator. The database stores references, not plaintext secrets. SQLite encryption is not automatic: choose a compatible library explicitly and document metadata exposure.
 

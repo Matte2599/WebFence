@@ -49,7 +49,7 @@ La tabella descrive i contratti completi pianificati. `internal/scope` e `intern
 
 ## Persistenza e processi esterni
 
-SQLite è la scelta proposta per metadati, coda e osservazioni; file separati per prove voluminose. Accesso serializzato alle scritture quando utile, foreign key, migrazioni e quota disco. Un checkpoint e lo stato della coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
+SQLite è scelto (ADR-004) per il futuro store di metadati, coda e osservazioni; file separati per prove voluminose. Accesso serializzato alle scritture quando utile, foreign key, migrazioni e quota disco. Un checkpoint e lo stato della coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
 
 Credenziali e chiavi private nel portachiavi del sistema o in un contenitore cifrato sbloccato dall'operatore. Il database contiene riferimenti, non segreti in chiaro. La cifratura di SQLite non è automatica: scegliere esplicitamente una libreria compatibile e documentare cosa rimane nei metadati.
 

@@ -46,3 +46,5 @@ The WebFence license does not change licenses of libraries, engines, imported ru
 The custom text is an initial technical draft, not a standard license already validated by a lawyer. Professional review should cover definitions, enforceability, consumer protection, contributor agreements and commercial contracts. No prices, tax identifiers, addresses, email addresses, jurisdiction clauses or payment terms have been invented.
 
 Decision owner: Matteo Luigi Feroldi. Public license changes must have a version and changelog; they do not retroactively revoke rights properly obtained for earlier copies.
+
+M0 preparation: [reviewer dossier and contributor agreement specification](LEGAL-REVIEW.md). This is neither an obtained legal opinion nor an active CLA.

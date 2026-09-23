@@ -35,14 +35,14 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 - [ ] Completare verifiche Qt di menu/focus, lettori reali, stabilità e distribuzione; [stato corrente](it/QT-DESKTOP.md).
 - [x] Registrato Qt come alternativa a Fyne dopo confronto pratico; gate assistivo Qt ancora aperto.
 
-Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi restano:
+Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi sono riportati nella [matrice di verifica e collaudo](it/M0-VALIDATION.md):
 
 - [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
-- [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi. GUI scelta; SQLite/JWS selezionati e testati localmente ([ADR-004](it/ADR-004-STORAGE-SIGNATURE.md)); portachiavi e conferma CI delle nuove dipendenze ancora aperti.
+- [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi. GUI scelta; SQLite/JWS selezionati e verificati sui quattro target ([ADR-004](it/ADR-004-STORAGE-SIGNATURE.md), [CI verde](https://github.com/Matte2599/WebFence/actions/runs/35863431196)); portachiavi ancora aperto.
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
 - [x] Laboratorio sintetico e primi test scope/rete: origini, DNS/IP per connessione, TLS, redirect, budget condivisi e cancellazione verificati su loopback; [ADR-003 e limiti](it/ADR-003-TRANSPORT.md), [CI verde sui quattro target](https://github.com/Matte2599/WebFence/actions/runs/35861040736). Trasporto per target reali e policy complete restano in M1.
-- [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture.
+- [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture. Canale GitHub privato abilitato e verificato il 2026-09-23; revisione e accordo ancora aperti.
 
 Uscita: prototipo distribuibile sulle piattaforme inizialmente dichiarate, lettura delle prove accessibile, rischi di packaging documentati e ADR aggiornato. Nessuna capacità di scansione professionale dichiarata.
 
@@ -148,14 +148,14 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 - [ ] Complete Qt menus/focus, actual readers, stability and distribution checks; [current state](en/QT-DESKTOP.md).
 - [x] Recorded Qt as the Fyne alternative after practical comparison; Qt assistive gate remains open.
 
-These checks close the first task, not all of M0. Overall gates remain:
+These checks close the first task, not all of M0. Overall gates are tracked in the [verification and trial matrix](en/M0-VALIDATION.md):
 
 - [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.
-- [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access. GUI chosen; SQLite/JWS selected and locally tested ([ADR-004](en/ADR-004-STORAGE-SIGNATURE.md)); keychain and CI confirmation of new dependencies remain open.
+- [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access. GUI chosen; SQLite/JWS selected and verified on all four targets ([ADR-004](en/ADR-004-STORAGE-SIGNATURE.md), [passing CI](https://github.com/Matte2599/WebFence/actions/runs/35863431196)); keychain remains open.
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
 - [x] Synthetic lab and initial scope/network tests: origins, per-connection DNS/IP, TLS, redirects, shared budgets and cancellation checked on loopback; [ADR-003 and limitations](en/ADR-003-TRANSPORT.md), [passing CI on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35861040736). Real-target transport and complete policies remain in M1.
-- [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes.
+- [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes. GitHub private channel enabled and verified on 2026-09-23; review and agreement remain open.
 
 Exit: distributable prototype on initially declared platforms, accessible evidence reading, documented packaging risks and updated ADR. No professional scanning capability claimed.
 

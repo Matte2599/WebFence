@@ -22,10 +22,12 @@
 | Confronto toolkit GUI / GUI toolkit comparison | [IT](it/GUI-COMPARISON.md) | [EN](en/GUI-COMPARISON.md) |
 | Decisione GUI / GUI decision | [ADR-002 IT](it/ADR-002-GUI.md) | [ADR-002 EN](en/ADR-002-GUI.md) |
 | Interfaccia e usabilità / Interface and usability | [IT](it/UX.md) | [EN](en/UX.md) |
+| Dossier revisione legale / Legal review dossier | [IT](it/LEGAL-REVIEW.md) | [EN](en/LEGAL-REVIEW.md) |
 | Licenze e governance / Licensing and governance | [IT](it/LICENSING.md) | [EN](en/LICENSING.md) |
 | Fonti e limiti della ricerca / Sources and research limits | [IT](it/REFERENCES.md) | [EN](en/REFERENCES.md) |
 | Trasporto M0 e confini di rete / M0 transport and network boundaries | [ADR-003 IT](it/ADR-003-TRANSPORT.md) | [ADR-003 EN](en/ADR-003-TRANSPORT.md) |
 | Scope origini e laboratorio M0 / Origin scope and M0 lab | [IT](it/M0-SCOPE.md) | [EN](en/M0-SCOPE.md) |
+| Verifica e chiusura M0 / M0 verification and closure | [IT](it/M0-VALIDATION.md) | [EN](en/M0-VALIDATION.md) |
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
 | Desktop Qt corrente / Current Qt desktop | [IT](it/QT-DESKTOP.md) | [EN](en/QT-DESKTOP.md) |
 

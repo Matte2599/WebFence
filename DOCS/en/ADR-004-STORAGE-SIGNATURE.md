@@ -33,7 +33,7 @@ This is not yet the report verifier: JCS, manifest schema, file hashes/paths, tr
 
 ## Verification and licenses
 
-Race-enabled tests, complete Go tests, vet and module verification passed locally on macOS ARM64. The test prints SQLite 3.53.4. Local 20-second JWS fuzzing completed 2,507,150 executions without failure. `govulncheck` v1.8.0 with `-test ./...` found no known vulnerabilities in the analyzed Go code at check time; it does not examine all native Qt/SQLite libraries or constitute certification. CI now covers the new packages on macOS ARM64, Windows Server x86-64 and Ubuntu x86-64/ARM64; remote results must be recorded after push. No implied Windows 10/11 or interactive Debian trial.
+Race-enabled tests, complete Go tests, vet and module verification passed locally on macOS ARM64. The test prints SQLite 3.53.4. Local 20-second JWS fuzzing completed 2,507,150 executions without failure. `govulncheck` v1.8.0 with `-test ./...` found no known vulnerabilities in the analyzed Go code at check time; it does not examine all native Qt/SQLite libraries or constitute certification. CI for commit `f1d2a84` passed on all four targets, macOS ARM64, Windows Server x86-64 and Ubuntu x86-64/ARM64 ([run 35863431196](https://github.com/Matte2599/WebFence/actions/runs/35863431196)): race suite, build, vet, Qt self-tests, JWS fuzzing on Linux x86-64 and macOS bundle. No implied Windows 10/11 or interactive Debian trial.
 
 Added module licenses are MIT (mattn, jwx, dsig, option, fastjson), checked in pinned sources. SQLite retains its public-domain terms. Preserve texts/notices in future packages containing them; this inventory does not close Qt licensing or distribution legal review.
 
