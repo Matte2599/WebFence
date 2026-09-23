@@ -63,3 +63,15 @@ Esito conclusivo del task: **tutti e sei i job verdi** sul codice `32655b0` ([ru
 | arm64 | `a0ae5104727feca727d75c214021253fffa464f56a152a39f8909a5cad924405` |
 
 Gli hash identificano questa esecuzione; timestamp e pacchetti APT/MSYS2 possono cambiare tra build. Non si dichiara riproducibilità bit-per-bit. M0-02 resta parziale per i gate descritti nella matrice.
+
+## Documentazione offline nei pacchetti
+
+Il raccoglitore comune `scripts/package-project-docs.py` conserva README IT/EN, LICENSE, DOCS, memoria, istruzioni per contributori/sicurezza e materiali locali richiamati dai documenti. È usato da macOS, Windows e Debian prima della pubblicazione dell’artefatto. Su Windows la documentazione è nella cartella `WebFence` dello ZIP; su Debian in `/usr/share/doc/webfence`, con LICENSE identico al file convenzionale `copyright`; su macOS in `Contents/Resources/notices`. La presenza della patch Cocoa nella documentazione Linux/Windows è materiale di riferimento, non indica che quei binari la utilizzino.
+
+Il packaging verifica che i collegamenti Markdown locali puntino a file inclusi, senza accedere alla rete. Non verifica URL remoti o ancore di intestazione, né trasforma i comandi descritti in funzionalità del prodotto. Documenti esistenti non vengono sovrascritti; gli errori fanno fallire lo staging. Per ricontrollare un albero di documentazione confezionato: `python3 scripts/package-project-docs.py PERCORSO --check`.
+
+Corregge un difetto dei precedenti pacchetti Windows/Debian: i README rimandavano a DOCS non inclusa, e Debian conservava LICENSE solo come `copyright`. Il contesto Docker ora include anche i documenti; gli hash degli input Debian li comprendono. Le prove dello ZIP estratto e del pacchetto Debian installato controllano gli accessi alla documentazione IT/EN e alla licenza.
+
+Verifiche locali del raccoglitore: 68 documenti Markdown e 519 collegamenti locali; rimozione intenzionale di una guida rilevata, documenti già presenti preservati. Bundle macOS con firma/self-test Cocoa superati; `.deb` ARM64 compilato, installato e rimosso con test offscreen/XCB superati. Documentazione estratta dal `.deb`: 68 Markdown/521 link validi, LICENSE identico a copyright. SHA-256 del `.deb` locale: `e5c175563b2f6d5479ec873644fd20b7601fd12bcf635fbb6ddceae71c8f094a`. Build da `a4c621c` con modifiche dichiarate. CI di questa modifica da verificare.
+
+Il primo collaudo installato ha rilevato che `bookworm-slim` esclude i documenti tramite dpkg. Il solo container di test ora conserva esplicitamente `/usr/share/doc/webfence`; il `.deb` non modifica la policy dpkg dell’utente. Su sistemi configurati per eliminare documentazione, l’amministratore può continuare a farlo.

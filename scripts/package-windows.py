@@ -111,8 +111,7 @@ def package(prefix, executable):
         (bundle / "native-build.json").write_text(json.dumps({"schema": 1, "files": files,
             "packages": owners, "system_imports": sorted(system_imports),
             "scope": "PE import closure and installed MSYS2 notices; not full source compliance or dynamic-load coverage"}, indent=2) + "\n")
-        for name in ["LICENSE", "README.md", "README.en.md"]:
-            shutil.copyfile(repo / name, bundle / name)
+        subprocess.run([sys.executable, str(repo / "scripts/package-project-docs.py"), str(bundle)], check=True)
         archive = shutil.make_archive(str(stage / "webfence-windows-amd64"), "zip", stage, "WebFence")
         final = dist / "webfence-windows-amd64.zip"
         os.replace(archive, final)

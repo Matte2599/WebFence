@@ -119,3 +119,5 @@ macOS packaging also requires Python 3.9+ to collect provenance/notices before s
 Optional source-archive and notice collection from a macOS inventory: [procedure, requirements and tests](M0-SOURCE-MATERIALS.md). Not automatically run by the product build.
 
 Set `WEBFENCE_NATIVE_SOURCE_MATERIALS` to a completed collection directory to attach reverified source notices before macOS signing; see the same procedure. Archives remain separate.
+
+Offline documentation included in all packages through a shared collector, with linked-file verification: [procedure and limits](ADR-007-PACKAGING.md#offline-documentation-in-packages).

@@ -63,3 +63,15 @@ Final task outcome: **all six jobs passed** on code `32655b0` ([run](https://git
 | arm64 | `a0ae5104727feca727d75c214021253fffa464f56a152a39f8909a5cad924405` |
 
 Hashes identify this run; timestamps and APT/MSYS2 packages may change between builds. Bit-for-bit reproducibility is not claimed. M0-02 remains partial for the gates in the matrix.
+
+## Offline documentation in packages
+
+The shared `scripts/package-project-docs.py` collector preserves IT/EN READMEs, LICENSE, DOCS, memory, contributor/security instructions and locally referenced materials. macOS, Windows and Debian use it before publishing an artifact. Windows documentation is under the ZIP’s `WebFence` directory; Debian uses `/usr/share/doc/webfence`, with LICENSE identical to the conventional `copyright` file; macOS uses `Contents/Resources/notices`. The Cocoa patch in Linux/Windows documentation is reference material, not a claim that those binaries use it.
+
+Packaging checks that local Markdown links resolve to included files, without network access. It does not verify remote URLs or heading anchors, or turn documented commands into product capabilities. Existing documents are not overwritten; errors fail staging. To recheck a packaged documentation tree: `python3 scripts/package-project-docs.py PATH --check`.
+
+Fixes a defect in earlier Windows/Debian packages: READMEs linked to absent DOCS, and Debian retained LICENSE only as `copyright`. The Docker context now includes documentation too; Debian source-input hashes cover it. Extracted-ZIP and installed-Debian-package trials check IT/EN documentation entry points and the license.
+
+Local collector verification: 68 Markdown documents and 519 local links; intentionally removed guide detected, existing documents preserved. macOS bundle signature/Cocoa self-test passed; ARM64 `.deb` built, installed and purged with passing offscreen/XCB tests. Documentation extracted from the `.deb`: 68 Markdown files/521 valid links, LICENSE identical to copyright. Local `.deb` SHA-256: `e5c175563b2f6d5479ec873644fd20b7601fd12bcf635fbb6ddceae71c8f094a`. Build from `a4c621c` with declared modifications. CI for this change still requires verification.
+
+The first installed-package trial found that `bookworm-slim` excludes documentation through dpkg. Only the test container now explicitly retains `/usr/share/doc/webfence`; the `.deb` does not change the user’s dpkg policy. Systems configured to omit documentation remain under administrator control.

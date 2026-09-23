@@ -23,7 +23,7 @@ go build -buildvcs=false -ldflags '-s -w' -o "$root/usr/bin/webfence" ./cmd/webf
 install -m 644 packaging/debian/webfence.desktop "$root/usr/share/applications/"
 desktop-file-validate "$root/usr/share/applications/webfence.desktop"
 install -m 644 LICENSE "$doc/copyright"
-install -m 644 README.md README.en.md "$doc/"
+python3 scripts/package-project-docs.py "$doc"
 python3 scripts/package-go-notices.py "$root/usr/bin/webfence" "$doc/notices"
 cat > "$stage/debian/control" <<'CONTROL'
 Source: webfence
@@ -54,7 +54,7 @@ Description: WebFence offline desktop feasibility prototype
 CONTROL
 # Include inputs and native build versions; no claim of a complete SBOM.
 dpkg-query -W -f='${binary:Package}\t${Version}\n' libqt6core6 libqt6gui6 libqt6widgets6 libc6 libstdc++6 > "$doc/native-build.tsv"
-(find cmd internal scripts packaging -type f ! -name '*.pyc' -print0; printf 'go.mod\0go.sum\0LICENSE\0') | sort -z | xargs -0 sha256sum > "$doc/source-inputs.sha256"
+(find cmd internal scripts packaging DOCS experiments/qt -type f ! -name '*.pyc' ! -name '.DS_Store' -print0; printf 'go.mod\0go.sum\0LICENSE\0README.md\0README.en.md\0AGENTS.md\0MEMORY.md\0CONTRIBUTING.md\0SECURITY.md\0') | sort -z | xargs -0 sha256sum > "$doc/source-inputs.sha256"
 printf 'revision=%s\ndirty=%s\n' "${WEBFENCE_SOURCE_REVISION:-unrecorded}" "${WEBFENCE_SOURCE_DIRTY:-unknown}" > "$doc/source-revision.txt"
 # Report the installed footprint to APT instead of its default unknown/zero size.
 installed_size=$(du -sk "$root/usr" | awk '{print $1}')

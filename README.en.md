@@ -77,6 +77,8 @@ Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and deriv
 
 Dependency materials: [source and notice collector](DOCS/en/M0-SOURCE-MATERIALS.md) verified against 15 upstream archives; optional attachment of 247 notices before macOS bundle signing. Distribution review remains open.
 
+Development packages include IT/EN documentation; packaging checks local file links.
+
 ## License and author
 
 Author and project owner: **Matteo Luigi Feroldi** — [Matte2599](https://github.com/Matte2599).

@@ -119,3 +119,5 @@ Il packaging macOS richiede anche Python 3.9+ per raccogliere provenienza e avvi
 Raccolta facoltativa degli archivi sorgente e avvisi da un inventario macOS: [procedura, requisiti e test](M0-SOURCE-MATERIALS.md). Non viene eseguita automaticamente dalla build del prodotto.
 
 Impostare `WEBFENCE_NATIVE_SOURCE_MATERIALS` alla directory di una raccolta completata per includere gli avvisi sorgente ricontrollati prima della firma macOS; vedere la stessa procedura. Gli archivi restano separati.
+
+Documentazione offline inclusa su tutti i pacchetti tramite un raccoglitore comune, con verifica dei file collegati: [procedura e limiti](ADR-007-PACKAGING.md#documentazione-offline-nei-pacchetti).

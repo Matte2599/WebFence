@@ -5,6 +5,13 @@ New-Item -ItemType Directory -Path $probeRoot | Out-Null
 try {
     Expand-Archive -LiteralPath $Archive -DestinationPath $probeRoot
     $bundle = Join-Path $probeRoot 'WebFence'
+    foreach ($document in @('LICENSE', 'README.md', 'README.en.md', 'DOCS/README.md',
+                            'DOCS/it/DEVELOPMENT.md', 'DOCS/en/DEVELOPMENT.md')) {
+        if (-not (Test-Path -LiteralPath (Join-Path $bundle $document) -PathType Leaf)) {
+            throw "Missing packaged documentation: $document"
+        }
+    }
+    Write-Output 'PASS extracted ZIP includes license and Italian/English documentation entry points'
     foreach ($platform in @('offscreen', 'windows')) {
         foreach ($trial in @('--self-test', '--soak-test=10s')) {
             $info = [Diagnostics.ProcessStartInfo]::new()

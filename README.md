@@ -77,6 +77,8 @@ Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e deriv
 
 Materiali delle dipendenze: [raccoglitore sorgenti e avvisi](DOCS/it/M0-SOURCE-MATERIALS.md) verificato su 15 archivi upstream; inclusione facoltativa di 247 avvisi nel bundle macOS prima della firma. La revisione della distribuzione resta aperta.
 
+La documentazione IT/EN è inclusa nei pacchetti di sviluppo; il packaging controlla i collegamenti ai file locali.
+
 ## Licenza e autore
 
 Autore e responsabile del progetto: **Matteo Luigi Feroldi** — [Matte2599](https://github.com/Matte2599).

@@ -63,6 +63,9 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 - Inclusione avvisi sorgente: nuovo `scripts/attach-native-sources.py`, attivato nel packaging macOS da `WEBFENCE_NATIVE_SOURCE_MATERIALS`. Confronta dipendenze/URL/hash con l’inventario corrente, ricontrolla archivi e rigenera avvisi senza copiare file sciolti modificabili; output temporaneo, nessuna sovrascrittura. Acquisizione e build corrente identificate separatamente; archivi fuori app, stato distribuzione ancora false. 12 regressioni Python e verifica effettiva dei 247 avvisi passate; bundle ad hoc/self-test Cocoa superati su `0fd78f0` con modifiche. CI precedente `0fd78f0`, run 35897426940: sei job superati. Errore di raccolta incompleta nel packaging completo: app/allegato/firma precedenti preservati. CI `56840c5`, [run 35898848286](https://github.com/Matte2599/WebFence/actions/runs/35898848286): sei job superati, 12 regressioni Python sui quattro target.
 
+
+- Documentazione confezionata: nuovo raccoglitore comune `scripts/package-project-docs.py` per i tre packager. Corregge DOCS mancante nello ZIP/.deb e LICENSE Debian presente solo come copyright; contesto Docker e hash input aggiornati. Verifica file dei link Markdown locali (non URL/ancore), rifiuta sovrascrittura. Prova locale 68 documenti/519 link, guida rimossa rilevata e file esistenti preservati. Build locali macOS (firma/self-test) e Debian ARM64 (installazione, documenti, offscreen/XCB, purge) superate; `.deb` estratto con 68 documenti/521 link verificati. bookworm-slim esclude i documenti: eccezione solo nel container di test, nessuna policy utente cambiata dal pacchetto. 12 regressioni Python precedenti ancora verdi. Nuova CI da verificare.
+
 ### Prossimo lavoro e confini
 
 1. Completare M0 secondo la [matrice](DOCS/it/M0-VALIDATION.md), con prove e collaudo complessivo finale, docs IT/EN, commit/push e CI verificata. Non chiudere per i soli test automatizzati.
@@ -133,6 +136,9 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 
 - Source notice attachment: new `scripts/attach-native-sources.py`, enabled in macOS packaging by `WEBFENCE_NATIVE_SOURCE_MATERIALS`. Matches dependencies/URLs/hashes against current inventory, rechecks archives and regenerates notices without copying mutable loose files; temporary output, no overwrite. Acquisition and current build identified separately; archives outside app, distribution status still false. 12 Python regressions and actual verification of 247 notices passed; ad hoc bundle/Cocoa self-test passed on modified `0fd78f0`. Previous CI `0fd78f0`, run 35897426940: six passing jobs. Incomplete-collection failure in full packaging: previous app/attachment/signature preserved. CI `56840c5`, [run 35898848286](https://github.com/Matte2599/WebFence/actions/runs/35898848286): six passing jobs, 12 Python regressions on four targets.
+
+
+- Packaged documentation: new shared `scripts/package-project-docs.py` collector for all three packagers. Fixes missing DOCS in ZIP/.deb and Debian LICENSE previously present only as copyright; Docker context and input hashes updated. Checks local Markdown file links (not URLs/anchors), refuses overwrite. Local trial: 68 documents/519 links, removed guide detected and existing files preserved. Local macOS (signature/self-test) and Debian ARM64 (install, documents, offscreen/XCB, purge) builds passed; extracted `.deb` checked with 68 documents/521 links. bookworm-slim excludes documentation: exception only in the test container, no user policy changed by the package. Previous 12 Python regressions still pass. New CI to verify.
 
 ### Next work and boundaries
 

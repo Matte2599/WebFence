@@ -113,17 +113,7 @@ def collect(bundle, qt_prefix):
     record = json.loads(go_record.read_text())
     record['executable_hash_stage'] = 'before final bundle signing; not the final signed executable hash'
     go_record.write_text(json.dumps(record, indent=2) + '\n')
-    shutil.copytree(repo / 'scripts/qt-cocoa', output / 'scripts/qt-cocoa')
-    shutil.copyfile(repo / 'scripts/build-qt-cocoa.sh', output / 'scripts/build-qt-cocoa.sh')
-    for name in ['LICENSE', 'README.md', 'README.en.md']:
-        shutil.copyfile(repo / name, output / name)
-    # Preserve linked documentation instead of shipping READMEs with missing paths.
-    shutil.copytree(repo / 'DOCS', output / 'DOCS', ignore=shutil.ignore_patterns('.DS_Store'))
-    for name in ['AGENTS.md', 'MEMORY.md', 'CONTRIBUTING.md', 'SECURITY.md']:
-        shutil.copyfile(repo / name, output / name)
-    archive_readme = output / 'experiments/qt/README.md'
-    archive_readme.parent.mkdir(parents=True)
-    shutil.copyfile(repo / 'experiments/qt/README.md', archive_readme)
+    subprocess.run([sys.executable, str(repo / 'scripts/package-project-docs.py'), str(output)], check=True)
     build = json.loads(subprocess.check_output(['go', 'version', '-m', '-json', str(executable)], text=True))
     provenance = {item['Key']: item['Value'] for item in build.get('Settings', []) if item['Key'] in
                   {'vcs.revision', 'vcs.time', 'vcs.modified', 'GOOS', 'GOARCH', 'CGO_CXXFLAGS'}}
