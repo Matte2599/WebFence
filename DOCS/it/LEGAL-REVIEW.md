@@ -8,7 +8,10 @@ Stato: preparazione tecnica, **nessun parere legale professionale acquisito**. Q
 
 - [WebFence Community License 1.0](../../LICENSE), testo inglese prevalente e traduzione italiana.
 - [CONTRIBUTING](../../CONTRIBUTING.md): copyright dei contributori e assenza di diritti commerciali automatici.
-- [ADR-002 Qt](ADR-002-GUI.md), [ADR-004 SQLite/JWS](ADR-004-STORAGE-SIGNATURE.md), inventario preciso dei componenti dei futuri pacchetti.
+- [ADR-002 Qt](ADR-002-GUI.md) e [ADR-004 SQLite/JWS](ADR-004-STORAGE-SIGNATURE.md).
+- [Inventario e packaging](M0-PACKAGING.md), [pacchetto sorgenti nativi macOS](M0-SOURCE-MATERIALS.md#pacchetto-sorgenti-macos-affiancabile-al-bundle) e [sorgenti Windows](M0-WINDOWS-SOURCES.md): materiali verificati disponibili, con limiti e provenienza dichiarati.
+- [Ricompilazione e sostituzione Cocoa](M0-QT-REPLACEMENT.md), provata localmente e in CI; riguarda il solo plugin, non tutte le librerie.
+- [Esame delle 15 ricette macOS](../evidence/homebrew-recipe-review-2026-09-23.md), che distingue patch/risorse della build da fixture dei test e rami Linux.
 - [Report](REPORTING.md): firma dell'operatore, nessuna certificazione della sicurezza, diritti su template distinti dai dati dell'utente.
 
 Requisiti dell'autore da preservare: individui e professionisti indipendenti ammessi gratuitamente anche per incarichi retribuiti; aziende soggette ad autorizzazione, anche per uso interno; distribuzione commerciale o alle aziende soggetta ad accordo; report ai clienti ammessi; royalties eventuali negoziate, non automatiche. Il prodotto è source-available, non open source OSI.
@@ -20,7 +23,7 @@ Requisiti dell'autore da preservare: individui e professionisti indipendenti amm
 | Definizioni | Professionista individuale, società di consulenza, dipendente, impresa individuale; casi di clienti che controllano il programma | Non revisionato |
 | Concessioni | Fork/hosting pubblico, uso di professionisti, ridistribuzione, servizi ospitati, eccezione dei report | Non revisionato |
 | Validità contrattuale | Modalità di accettazione, legge/foro, consumatori e norme inderogabili, lingua prevalente, cessazione/ripristino | Non revisionato; nessuna giurisdizione o identità fiscale inventata |
-| Qt e terzi | Diritti sulle librerie separati; notices, sorgenti corrispondenti, sostituzione/rilink ed esecuzione della versione modificata | Inventario e procedura packaging da completare |
+| Qt e terzi | Diritti sulle librerie separati; notices, sorgenti corrispondenti, sostituzione/rilink ed esecuzione della versione modificata | Inventari e pacchetti di materiali disponibili; sostituzione Cocoa provata. Mappatura degli incorporati, compatibilità e completezza da revisionare |
 | Contributi | Titolarità, autorizzazione del datore, concessione per licenza commerciale, brevetti e accettazione separata | CLA non attivo |
 | Contratti commerciali | Ambito/versioni, installazioni, durata, supporto, prezzi/royalties, responsabilità e trattamento dati applicabile | Nessuna offerta o accordo standard attivo |
 

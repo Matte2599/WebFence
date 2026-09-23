@@ -2,13 +2,16 @@
 
 [Italiano](../it/LEGAL-REVIEW.md) · [Licensing](LICENSING.md) · [M0 matrix](M0-VALIDATION.md)
 
-Status: technical preparation, **no professional legal opinion obtained**. This dossier does not change LICENSE or activate a CLA or commercial agreement.The author confirmed that professional review still needs to be arranged.
+Status: technical preparation, **no professional legal opinion obtained**. This dossier does not change LICENSE or activate a CLA or commercial agreement. The author confirmed that professional review still needs to be arranged.
 
 ## Material for review
 
 - [WebFence Community License 1.0](../../LICENSE), governing English text and Italian translation.
 - [CONTRIBUTING](../../CONTRIBUTING.md): contributor copyright and absence of automatic commercial rights.
-- [ADR-002 Qt](ADR-002-GUI.md), [ADR-004 SQLite/JWS](ADR-004-STORAGE-SIGNATURE.md), exact inventory of future package components.
+- [ADR-002 Qt](ADR-002-GUI.md) and [ADR-004 SQLite/JWS](ADR-004-STORAGE-SIGNATURE.md).
+- [Inventory and packaging](M0-PACKAGING.md), [macOS native source package](M0-SOURCE-MATERIALS.md#macos-source-package-accompanying-the-bundle) and [Windows sources](M0-WINDOWS-SOURCES.md): verified materials available with explicit limitations and provenance.
+- [Cocoa rebuilding and replacement](M0-QT-REPLACEMENT.md), tested locally and in CI; covers the plugin only, not every library.
+- [Review of 15 macOS recipes](../evidence/homebrew-recipe-review-2026-09-23.md), distinguishing build patches/resources from test fixtures and Linux branches.
 - [Reporting](REPORTING.md): operator signatures, no security certification, template rights separate from user data.
 
 Author requirements to preserve: free individual/independent professional use including paid engagements; companies require authorization, including internal use; commercial/company distribution requires agreement; delivery of reports to clients allowed; optional negotiated royalties, never automatic. The product is source-available, not OSI open source.
@@ -20,7 +23,7 @@ Author requirements to preserve: free individual/independent professional use in
 | Definitions | Individual professional, consulting company, employee, sole proprietorship; clients controlling the program | Not reviewed |
 | Grants | Forks/public hosting, professional use, redistribution, hosted services, report exception | Not reviewed |
 | Contract validity | Acceptance, governing law/venue, consumers and mandatory law, governing language, termination/reinstatement | Not reviewed; no invented jurisdiction or tax identity |
-| Qt and third parties | Separate library rights; notices, corresponding source, replacement/relinking and execution of modified versions | Package inventory and procedure pending |
+| Qt and third parties | Separate library rights; notices, corresponding source, replacement/relinking and execution of modified versions | Inventories and material packages available; Cocoa replacement tested. Embedded mapping, compatibility and completeness require review |
 | Contributions | Ownership, employer authorization, commercial licensing grant, patents and separate acceptance | No active CLA |
 | Commercial agreements | Scope/versions, installations, duration, support, pricing/royalties, liability and applicable data processing | No active standard offer or agreement |
 
