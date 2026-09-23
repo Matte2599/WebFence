@@ -125,6 +125,15 @@ func selfTest(w *workspace) int {
 	qt.QCoreApplication_ProcessEvents()
 	fmt.Printf("compact_table_height=%d minimum=%d viewport=%d rows=%d header=%d scrollbar=%d frame=%d\n", w.table.Height(), w.table.MinimumHeight(), w.table.Viewport().Height(), w.table.RowHeight(0)+w.table.RowHeight(1), w.table.HorizontalHeader().Height(), w.table.HorizontalScrollBar().Height(), w.table.FrameWidth())
 	check(w.table.Viewport().Height() >= w.table.RowHeight(0)+w.table.RowHeight(1), "compact window retains two complete result rows")
+	// A taller native header must not steal the space reserved for result rows.
+	// This also exercises geometry changes after the initial style polish.
+	header := w.table.HorizontalHeader()
+	originalHeaderMinimum := header.MinimumHeight()
+	header.SetMinimumHeight(header.Height() + 24)
+	qt.QCoreApplication_ProcessEvents()
+	check(w.table.Viewport().Height() >= w.table.RowHeight(0)+w.table.RowHeight(1), "header geometry change preserves two complete rows")
+	header.SetMinimumHeight(originalHeaderMinimum)
+	qt.QCoreApplication_ProcessEvents()
 	metrics := w.evidence.FontMetrics()
 	runtime.SetFinalizer(metrics, nil)
 	check(w.evidence.Viewport().Height() >= 2*metrics.Height(), "compact window retains readable evidence viewport")

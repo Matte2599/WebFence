@@ -58,6 +58,27 @@ func (w *workspace) dispose() {
 	w.emptyVariant.Delete()
 }
 
+// updateTableMinimumHeight keeps two whole rows visible at compact sizes.
+// Native Cocoa headers can be taller than SizeHint after layout; relying only
+// on the pre-show hint leaves a clipped row when scrollbars consume space.
+func (w *workspace) updateTableMinimumHeight() {
+	header := w.table.HorizontalHeader()
+	headerHint := header.SizeHint()
+	scrollHint := w.table.HorizontalScrollBar().SizeHint()
+	runtime.SetFinalizer(headerHint, nil)
+	runtime.SetFinalizer(scrollHint, nil)
+	headerHeight := max(headerHint.Height(), header.MinimumHeight())
+	if header.IsVisible() {
+		headerHeight = max(headerHeight, header.Height())
+	}
+	minimum := headerHeight + 2*w.table.VerticalHeader().DefaultSectionSize() + scrollHint.Height() + 2*w.table.FrameWidth()
+	headerHint.Delete()
+	scrollHint.Delete()
+	if w.table.MinimumHeight() != minimum {
+		w.table.SetMinimumHeight(minimum)
+	}
+}
+
 func (w *workspace) tr(key string, args ...any) string { return i18n.Text(w.locale, key, args...) }
 func newWorkspace(locale, preferencePath string, preferenceError bool) *workspace {
 	w := &workspace{window: qt.NewQMainWindow2(), locale: i18n.Normalize(locale), preferencePath: preferencePath, preferenceError: preferenceError, variants: make(map[string]*qt.QVariant), emptyVariant: qt.NewQVariant()}
@@ -147,16 +168,11 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		w.table.SetColumnWidth(i, size)
 	}
 	w.table.HorizontalHeader().SetStretchLastSection(true)
-	// Keep two complete rows available when high scaling reduces usable height.
-	// Native styles finalize font/section metrics during polish (before show).
+	// Header geometry can differ from its size hint after native layout. Refresh
+	// the minimum when Qt finalizes it, including non-overlay scrollbar space.
 	w.table.EnsurePolished()
-	headerHint := w.table.HorizontalHeader().SizeHint()
-	scrollHint := w.table.HorizontalScrollBar().SizeHint()
-	runtime.SetFinalizer(headerHint, nil)
-	runtime.SetFinalizer(scrollHint, nil)
-	w.table.SetMinimumHeight(headerHint.Height() + 2*w.table.VerticalHeader().DefaultSectionSize() + scrollHint.Height() + 2*w.table.FrameWidth())
-	headerHint.Delete()
-	scrollHint.Delete()
+	w.table.HorizontalHeader().OnGeometriesChanged(w.updateTableMinimumHeight)
+	w.updateTableMinimumHeight()
 	details := qt.NewQWidget(nil)
 	detailLayout := qt.NewQVBoxLayout(details)
 	detailLayout.SetContentsMargins(0, 0, 0, 0)

@@ -52,6 +52,8 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 - CI `75efbbf`, run 35883794750: cinque job verdi, macOS fallito solo nel nuovo controllo Cocoa delle due righe compatte; Tab passa. Metriche ora calcolate dopo EnsurePolished, diagnostica dimensioni aggiunta. Bundle con patch 772484: self-test locali Cocoa 1/1,5/2 superati; CI della correzione da verificare.
 
+- CI `6d711e5`, run 35884948483: cinque job verdi, Cocoa ancora viewport 59 invece di 60 punti. Aggiornamento ora reattivo a geometriesChanged dell’intestazione con altezza effettiva. Regressione con intestazione maggiorata: fallisce prima, passa dopo (offscreen). CI della correzione da verificare.
+
 ### Prossimo lavoro e confini
 
 1. Completare M0 secondo la [matrice](DOCS/it/M0-VALIDATION.md), con prove e collaudo complessivo finale, docs IT/EN, commit/push e CI verificata. Non chiudere per i soli test automatizzati.
@@ -111,6 +113,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 - Automated macOS inventory added to bundle preparation: name/UUID/ARM64 matched to Homebrew kegs, installed materials, Go and Cocoa patch/licenses, IT/EN docs. Probe of 28 Mach-O/15 packages and unknown-file rejection verified. Hashes explicitly before signing; `distribution_ready=false`, Qt/GLib and corresponding sources still incomplete. Local signed bundle verified, including doc links and metadata with dirty=true. GLib recipe references an uninstalled Homebrew patch; sources/patches remain to acquire. CI `9f87c49`, run 35881924949: six passing jobs; details in M0-PACKAGING.
 
 - CI `75efbbf`, run 35883794750: five jobs passed, macOS failed only the new Cocoa compact two-row check; Tab passes. Metrics now calculated after EnsurePolished, dimension diagnostics added. Bundle with patch 772484: local Cocoa 1/1.5/2 self-tests passed; correction CI to verify.
+
+- CI `6d711e5`, run 35884948483: five jobs passed, Cocoa viewport still 59 instead of 60 points. Update now reacts to header geometriesChanged using actual height. Taller-header regression fails before and passes after (offscreen). Correction CI to verify.
 
 ### Next work and boundaries
 
