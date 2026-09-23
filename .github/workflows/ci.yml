@@ -74,6 +74,13 @@ jobs:
       - name: macOS development bundle
         if: runner.os == 'macOS'
         run: sh scripts/package-macos.sh
+      - name: macOS Cocoa bundle regression
+        if: runner.os == 'macOS'
+        env:
+          QT_QPA_PLATFORM: cocoa
+        run: |
+          ./dist/WebFence.app/Contents/MacOS/webfence --self-test
+          ./dist/WebFence.app/Contents/MacOS/webfence --soak-test=10s
 
   windows:
     runs-on: windows-2022

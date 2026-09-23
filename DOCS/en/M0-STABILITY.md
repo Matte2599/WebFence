@@ -33,12 +33,18 @@ The trial sends no OS keyboard input and does not listen to screen readers; it d
 
 2026-09-23: local 10 s offscreen trial completed four cycles (about 12 s), duration-bound unit tests, desktop vet and full self-test passed. Verified argument rejection before Qt initialization, failed exit, missing completion event and existing-directory preservation. A synthetic stalled child ignoring SIGTERM was stopped by the external deadline and forced cleanup; no passing outcome produced. [CI `8fd55b9` passed, six jobs](https://github.com/Matte2599/WebFence/actions/runs/35879464771): smoke trials on four targets and inside the Windows ZIP (offscreen and native backend), plus regressions and Debian packaging. No prolonged-stability outcome presumed.
 
-## macOS session started — outcome still open
+## macOS session completed — 600 cycles
 
 Started 2026-09-23 15:11:46 UTC, requested duration 1,800 s. Code `8fd55b95207c2b9319e8b002c8de8be34f31c60f`, clean checkout; Go 1.27.1, Qt 6.11.2 with corrected Cocoa, CGO C++ `-O2 -g -std=c++17`. Apple M5 Pro, 15 logical CPUs, 24 GiB RAM, macOS 26.6.2 (25G83), ARM64; no backend or scaling override.
 
 Ad hoc signed bundle copy with only a separate name/identifier (`WebFence Stability`, `io.github.Matte2599.WebFence.Stability`) to distinguish the older open instance. Copy executable SHA-256: `3a4e4747a8e2482b4d9c345cdc80b621a9e6a28f687b574960120775eef8668a`. Code/plugin are from the stated build; re-signing changes the hash.
 
-Local output: `/tmp/webfence-soak-macos-8fd55b9-30m/`, including metadata, build-info, host/Qt version, events, RSS and stderr. First 105 cycles in 315 s passed; cache 109 entries. These are intermediate results, not a 30-minute trial. Verify process/logs before continuing: do not restart because observation timed out.
+Local output: `/tmp/webfence-soak-macos-8fd55b9-30m/`, including metadata, build-info, host/Qt version, events, RSS and stderr. Completed 600 cycles in 1,800.004 s of workload (1,800.837 s externally), exit zero, 360 RSS samples, maximum interval 5.018 s and no INCOMPLETE marker. [Synthetic logs and analysis](../evidence/macos-soak-2026-09-23/analysis.json) retained in the repository; full stderr remains local with hash and normalized counts in the analysis.
 
 Screenshot/AX reads of the new instance confirm UI and evidence visible during cycles. Two AX reads of the older instance timed out; sampling its process showed the main thread waiting for events. Cause undetermined: not evidence of a crash or a VoiceOver verification.
+
+RSS collector also verified in a Debian ARM64 Linux container: code `9f87c49`, networking disabled during execution, offscreen backend, four cycles in about 12 s. This is a short collector check with toolchain present, not a real desktop or prolonged result. Local builds also ran during the macOS session: measurements are stability observations, not isolated performance benchmarks.
+
+RSS medians in the 60–300, 300–600, 600–900, 900–1200, 1200–1500 and 1500–1800 s windows are respectively 122.46 / 114.84 / 113.88 / 108.80 / 107.64 / 107.80 MiB; sampled peak 166.78 MiB, last sample 107.58 MiB. The first 32 KiB reading precedes loading and is not a useful baseline. Final Go heap 4,290,272 bytes, final cache 109 entries. No sustained RSS growth observed in this window; this proves neither absence of leaks nor product hardware requirements.
+
+The workload completed without crash or deadline expiry, but stderr contains **17,730 AX warnings**, concerning `QComboBoxListView` children and invalid Cocoa notifications. These are not ignored: the assistive gate remains open. This trial uses the stated commit, before the TabFocusAllControls correction, and does not validate that change for 30 minutes.

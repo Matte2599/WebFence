@@ -24,7 +24,7 @@ Record commit, package hash, system/version/architecture, Qt, reader/version, sc
 5. Try 100%, 150%, 200% scaling, a reduced window and long text: readable labels, reachable commands, working scrolling/splitter, no clipped essential content. Move between monitors with different scaling when available. Local offscreen self-tests with `QT_SCALE_FACTOR=1.5` and `2` passed; these do not verify visual rendering or monitor switching.
 6. Controlled session of at least 30 minutes cycling load/filter/language/clear and evidence reading. Record duration, starting/ending memory and trend, freezes, crashes or unbounded growth. Do not claim hardware requirements or benchmarks before measurement.
 
-Known macOS observations: intermittent AX table node and native Tab skipping copy under the current preference; shortcuts and Qt tests do not close those issues. The author has been asked about Windows/NVDA and Debian/Orca machine availability; no result is presumed.
+On macOS the AX table node remains intermittent. The Tab/Copy issue is corrected and verified below; actual reader testing remains necessary. The author has been asked about Windows/NVDA and Debian/Orca machine availability; no result is presumed.
 
 ## Final closure
 
@@ -38,4 +38,10 @@ Update: [Cocoa correction adopted](ADR-006-QT-COCOA.md) in the development bundl
 
 The 200% layout was subsequently corrected and tested: two complete rows, last column reachable by keyboard, scrollable evidence. Compact-window self-test added and passed locally at scales 1/1.5/2. Reader, multi-monitor and measured stability trials remain open.
 
-Instrumented prolonged-session procedure: [M0-STABILITY](M0-STABILITY.md). Smoke trials verified in CI; 30-minute Cocoa session started, outcome still open.
+Instrumented prolonged-session procedure: [M0-STABILITY](M0-STABILITY.md). Smoke trials verified in CI; 30-minute Cocoa session completed: 600 cycles, no crash or observed sustained RSS growth; AX warnings still open.
+
+### Cocoa navigation verified on 2026-09-23
+
+The native bundle self-test reproduced two failures: Tab skipped Copy and did not follow the hidden-details sequence. WebFence now sets `QStyleHints::setTabFocusBehavior(Qt::TabFocusAllControls)` after QApplication creation, including normal app startup. This affects only the Qt instance: no macOS preference is written. The method is public in headers and available in MIQT, but Qt documents it as internal; reassess it and retain native regressions when changing Qt versions.
+
+Bundle build, desktop unit tests, vet and Cocoa self-test passed. OS input verified in an isolated bundle copy: Tab from evidence to Copy, reverse Shift+Tab, hidden details skipped through to Load. Search for `DEMO-10000` verified after observing focus; an earlier input sequence without intermediate observations entered only `000`, so it was not counted as passing. AX cells remain intermittent: this check is not VoiceOver verification. Added Cocoa bundle self-test and stability smoke to CI; outcome of the new change still to verify.

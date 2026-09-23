@@ -23,6 +23,11 @@ func Run(args []string) int {
 	}
 	runtime.LockOSThread()
 	qt.NewQApplication(args)
+	// Keep WebFence's explicit tab order reachable on Cocoa too. This override
+	// changes only this QStyleHints instance, never the user's OS preferences.
+	// The setter is public in Qt headers/MIQT but documented internal by Qt;
+	// keep native regression coverage when changing the pinned Qt baseline.
+	qt.QGuiApplication_StyleHints().SetTabFocusBehavior(qt.TabFocusAllControls)
 	systemLocale := qt.NewQLocale()
 	locale := i18n.Normalize(systemLocale.Name())
 	systemLocale.Delete()

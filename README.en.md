@@ -18,7 +18,7 @@ The macOS bundle now collects [provenance and available notices](DOCS/en/M0-PACK
 
 Procedures for [Debian and Windows packaging](DOCS/en/ADR-007-PACKAGING.md) are also available. Verified amd64/arm64 `.deb` files in separate Debian runtimes and the Windows ZIP with system-only PATH; [CI `32655b0`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35877356234). Development packages: real-desktop trials and full distribution-material review remain open.
 
-The [prolonged stability procedure](DOCS/en/M0-STABILITY.md) repeats GUI flows and records Go memory/RSS. Smoke trials verified in CI; native macOS 30-minute session running, outcome still to verify.
+The [prolonged stability procedure](DOCS/en/M0-STABILITY.md) repeats GUI flows and records Go memory/RSS. Smoke trials verified in CI; native macOS session completed: 600 cycles in 30 minutes, without crashes or observed sustained RSS growth. AX warnings and assistive trials remain open.
 
 
 ## Why WebFence

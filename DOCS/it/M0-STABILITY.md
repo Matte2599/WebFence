@@ -33,12 +33,18 @@ La prova non invia input di tastiera OS né ascolta screen reader e non sostitui
 
 2026-09-23: prova locale offscreen da 10 s completata in quattro cicli (circa 12 s), unit test dei limiti durata, vet desktop e self-test completo superati. Verificati rifiuto degli argomenti prima di inizializzare Qt, uscita fallita, assenza dell’evento finale e conservazione di directory esistente. Un processo sintetico bloccato che ignora SIGTERM è stato terminato dalla deadline esterna e dalla pulizia forzata; nessun esito positivo prodotto. [CI `8fd55b9` superata, sei job](https://github.com/Matte2599/WebFence/actions/runs/35879464771): smoke test sui quattro target e nello ZIP Windows (offscreen e backend nativo), oltre alle regressioni e al packaging Debian. Nessun esito di stabilità prolungata presunto.
 
-## Sessione macOS avviata — esito ancora aperto
+## Sessione macOS completata — 600 cicli
 
 Avvio 2026-09-23 15:11:46 UTC, durata richiesta 1.800 s. Codice `8fd55b95207c2b9319e8b002c8de8be34f31c60f`, checkout pulito; Go 1.27.1, Qt 6.11.2 con Cocoa corretto, CGO C++ `-O2 -g -std=c++17`. Apple M5 Pro, 15 CPU logiche, 24 GiB RAM, macOS 26.6.2 (25G83), ARM64; nessun override di backend o scala.
 
 Copia del bundle firmata ad hoc con solo nome/identificatore separati (`WebFence Stability`, `io.github.Matte2599.WebFence.Stability`) per distinguere la vecchia istanza aperta. SHA-256 dell’eseguibile della copia: `3a4e4747a8e2482b4d9c345cdc80b621a9e6a28f687b574960120775eef8668a`. Codice e plugin sono quelli della build indicata; la nuova firma modifica l’hash.
 
-Output locale: `/tmp/webfence-soak-macos-8fd55b9-30m/`, con metadata, build-info, versione host/Qt, eventi, RSS e stderr. I primi 105 cicli in 315 s sono passati; cache 109 voci. Questi sono risultati intermedi, non una prova da 30 minuti. Verificare il processo e i log prima di proseguire: non ricominciare per un timeout di osservazione.
+Output locale: `/tmp/webfence-soak-macos-8fd55b9-30m/`, con metadata, build-info, versione host/Qt, eventi, RSS e stderr. Completati 600 cicli in 1.800,004 s di workload (1.800,837 s esterni), uscita zero, 360 campioni RSS, intervallo massimo 5,018 s e nessun marcatore INCOMPLETE. [Log sintetici e analisi](../evidence/macos-soak-2026-09-23/analysis.json) conservati nel repository; stderr completo resta locale, con hash e conteggi normalizzati nell’analisi.
 
 Screenshot e letture AX della nuova istanza confermano UI e prove visibili durante i cicli. Due letture AX della vecchia istanza hanno raggiunto il timeout; il campionamento del suo processo mostrava il thread principale in attesa di eventi. Causa non determinata: non è una prova di crash né una verifica di VoiceOver.
+
+Raccoglitore RSS verificato anche in un container Linux Debian ARM64: codice `9f87c49`, rete disabilitata durante l’esecuzione, backend offscreen, quattro cicli in circa 12 s. È una prova breve del raccoglitore con toolchain presente, non un desktop reale né un risultato prolungato. Durante la sessione macOS sono state svolte anche build locali: le misure sono osservazioni di stabilità, non benchmark di prestazioni in ambiente isolato.
+
+Le mediane RSS nelle finestre 60–300, 300–600, 600–900, 900–1200, 1200–1500 e 1500–1800 s sono rispettivamente 122,46 / 114,84 / 113,88 / 108,80 / 107,64 / 107,80 MiB; picco campionato 166,78 MiB, ultimo campione 107,58 MiB. La prima lettura da 32 KiB precede il caricamento e non è una base utile. Heap Go finale 4.290.272 byte, cache finale 109 voci. Nessuna crescita RSS sostenuta osservata in questa finestra; non dimostra assenza di leak né requisiti hardware del prodotto.
+
+Il carico è completato senza crash o deadline superata, ma stderr contiene **17.730 avvisi AX**, relativi a figli `QComboBoxListView` e notifiche Cocoa invalide. Non sono ignorati: il gate assistivo resta aperto. Questa prova usa il commit indicato, precedente alla correzione TabFocusAllControls, e non convalida quella modifica per 30 minuti.

@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "revision": "8fd55b95207c2b9319e8b002c8de8be34f31c60f",
+  "dirty": false,
+  "executable_sha256": "3a4e4747a8e2482b4d9c345cdc80b621a9e6a28f687b574960120775eef8668a",
+  "host": {
+    "os": "macOS 26.6.2 (25G83)",
+    "arch": "arm64",
+    "cpu": "Apple M5 Pro",
+    "logical_cpus": 15,
+    "ram_gib": 24
+  },
+  "build": {
+    "go": "1.27.1",
+    "qt": "6.11.2 with corrected Cocoa",
+    "cgo_cxxflags": "-O2 -g -std=c++17"
+  },
+  "result": {
+    "exit_code": 0,
+    "elapsed_seconds": 1800.8372201249585,
+    "cycles": 600,
+    "qt_platform": "cocoa",
+    "rss_first_bytes": 32768,
+    "rss_last_bytes": 112803840,
+    "rss_peak_sampled_bytes": 174882816,
+    "samples": 360,
+    "scope": "workload completed; memory trend requires review; not an assistive trial"
+  },
+  "last_event": {
+    "event": "passed",
+    "detail": "completed whole cycles",
+    "elapsed_seconds": 1800.004267875,
+    "requested_seconds": 1800,
+    "cycles": 600,
+    "phase": 0,
+    "go_heap_alloc_bytes": 4290272,
+    "go_sys_bytes": 18139400,
+    "go_gc_count": 1199,
+    "variant_cache_entries": 109,
+    "qt_platform": "cocoa"
+  },
+  "rss_windows": [
+    {
+      "from_seconds": 60,
+      "to_seconds": 300,
+      "count": 48,
+      "min_bytes": 127778816,
+      "median_bytes": 128409600.0,
+      "max_bytes": 174882816
+    },
+    {
+      "from_seconds": 300,
+      "to_seconds": 600,
+      "count": 60,
+      "min_bytes": 119554048,
+      "median_bytes": 120414208.0,
+      "max_bytes": 128679936
+    },
+    {
+      "from_seconds": 600,
+      "to_seconds": 900,
+      "count": 60,
+      "min_bytes": 118931456,
+      "median_bytes": 119406592.0,
+      "max_bytes": 120471552
+    },
+    {
+      "from_seconds": 900,
+      "to_seconds": 1200,
+      "count": 60,
+      "min_bytes": 111853568,
+      "median_bytes": 114081792.0,
+      "max_bytes": 119439360
+    },
+    {
+      "from_seconds": 1200,
+      "to_seconds": 1500,
+      "count": 60,
+      "min_bytes": 111411200,
+      "median_bytes": 112869376.0,
+      "max_bytes": 117030912
+    },
+    {
+      "from_seconds": 1500,
+      "to_seconds": 1800,
+      "count": 60,
+      "min_bytes": 111116288,
+      "median_bytes": 113033216.0,
+      "max_bytes": 113197056
+    }
+  ],
+  "max_sample_gap_seconds": 5.0176422909717076,
+  "stderr_sha256": "5b6bd386fc70041b9d063053dc0e2870841d1c978f9c9f4273e642897f9cb550",
+  "stderr_lines": {
+    "qt.accessibility.core: Cannot create accessible child interface for object:  QComboBoxListView(<address>)  index:  0 type:  QAccessible::NameChanged": 3546,
+    "qt.accessibility.core: Invalid child in QAccessibleEvent: QComboBoxListView(<address>) child: 0": 2364,
+    "QCocoaAccessibility::notifyAccessibilityUpdate: invalid element": 3546,
+    "qt.accessibility.core: Cannot create accessible child interface for object:  QComboBoxListView(<address>)  index:  1 type:  QAccessible::SelectionAdd": 1773,
+    "qt.accessibility.core: Invalid child in QAccessibleEvent: QComboBoxListView(<address>) child: 1": 1182,
+    "qt.accessibility.core: Cannot create accessible child interface for object:  QComboBoxListView(<address>)  index:  0 type:  QAccessible::SelectionRemove": 1773,
+    "qt.accessibility.core: Cannot create accessible child interface for object:  QComboBoxListView(<address>)  index:  0 type:  QAccessible::SelectionAdd": 1773,
+    "qt.accessibility.core: Cannot create accessible child interface for object:  QComboBoxListView(<address>)  index:  1 type:  QAccessible::SelectionRemove": 1773
+  },
+  "raw_hashes": {
+    "events.jsonl": "06034d7256d1deed397e89ea14a8f5393ea519545fa5ee09ecf14ab159e04814",
+    "rss.jsonl": "235067f25cf54c13eadb848c924c3c8cf88a56ed89b9ae7e214f24842d0cc28d",
+    "metadata.json": "6416bd532801559990ea09d8b7f492c5b5d4768369048de9e443c70c7ebeb521",
+    "summary.json": "db13a12aaf3bad6e462f069ea71e077601c6b09714ca58db9ce1b33aa4a16d16",
+    "stderr.log": "5b6bd386fc70041b9d063053dc0e2870841d1c978f9c9f4273e642897f9cb550"
+  }
+}
