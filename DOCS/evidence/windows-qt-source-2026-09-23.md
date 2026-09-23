@@ -29,3 +29,11 @@ Data / Date: 2026-09-23. Package: `mingw-w64-ucrt-x86_64-qt6-base`, version `6.1
 | `013-qt6-windeployqt-qmlimportscanner-path.patch` | 863 | `c4783da805c1189c747dc899fb4275a593b2e08522d3af88e74b3dec42d9b4fe` |
 | `PKGBUILD` | 9794 | `42bd77bdf7d864af917e4cf415736a4f23ce708ef9809135125d64a6d9999c65` |
 | `qtbase-everywhere-src-6.11.2.tar.xz` | 50582668 | `5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22` |
+
+## Collegamento al pacchetto binario / Binary package binding
+
+**IT:** Acquisito il pacchetto binario Qt 6.11.2-2 (17.003.163 byte) e verificato SHA-256 `ccc98698391f78419de72640175508a68b7ba9e25a43a54e01a05b51079ad6a2` rispetto alla pagina ufficiale MSYS2 sopra citata. L’hash PKGBUILD nel suo BUILDINFO è `42bd77bdf7d864af917e4cf415736a4f23ce708ef9809135125d64a6d9999c65`, identico alla ricetta dell’archivio sorgente. Questo aggiunge una corrispondenza indipendente dai checksum interni dell’archivio sorgente; non è verifica di firma distaccata. Lettore provato sulle tre DLL QtCore/Gui/Widgets contenute nell’archivio; il confronto con DLL installate richiede la CI Windows.
+
+**EN:** Acquired the Qt 6.11.2-2 binary package (17,003,163 bytes), verifying SHA-256 `ccc98698391f78419de72640175508a68b7ba9e25a43a54e01a05b51079ad6a2` against the official MSYS2 page cited above. Its BUILDINFO PKGBUILD hash is `42bd77bdf7d864af917e4cf415736a4f23ce708ef9809135125d64a6d9999c65`, matching the source-archive recipe. This adds a match independent of internal source-archive checksums; it is not detached-signature verification. Reader exercised on the archived QtCore/Gui/Widgets DLLs; comparison with installed DLLs requires Windows CI.
+
+Local binary archive: `/tmp/webfence-msys2-qt6-base-6.11.2-2.pkg.tar.zst`; ledger and metadata: `/tmp/webfence-msys2-qt6-base-materials/`.

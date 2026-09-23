@@ -69,6 +69,9 @@ Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro
 
 - Prima acquisizione sorgenti Windows: MSYS2 Qt 6.11.2-2 (versione del job Windows CI `56840c5`), archivio 50.590.681 byte in `/tmp/webfence-msys2-qt6-base-6.11.2-2.src.tar.zst`. Ricetta/.SRCINFO, Qt e dieci patch; undici hash interni corrispondenti, Qt uguale al sorgente upstream già verificato. Hash esterno osservato, firma/autenticazione indipendente della ricetta non verificate; nessun codice eseguito. Ledger in DOCS/evidence/windows-qt-source-2026-09-23.md; raccolta completa/integrazione aperte.
 
+
+- Provenienza Windows: aggiunto lettore archivi MSYS2 con confronto DLL originali, PKGINFO/BUILDINFO e hash PKGBUILD; packaging richiede cache della versione esatta, nessun download/upgrade automatico. 16 regressioni Python passate. Pacchetto binario Qt reale verificato contro checksum pubblicato, ricetta sorgente corrisponde al BUILDINFO; firma non verificata. Dettagli in ADR-007 ed evidenza Windows Qt. CI nuova pendente.
+
 ### Prossimo lavoro e confini
 
 1. Completare M0 secondo la [matrice](DOCS/it/M0-VALIDATION.md), con prove e collaudo complessivo finale, docs IT/EN, commit/push e CI verificata. Non chiudere per i soli test automatizzati.
@@ -145,6 +148,9 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 
 - First Windows source acquisition: MSYS2 Qt 6.11.2-2 (version in Windows CI job `56840c5`), 50,590,681-byte archive at `/tmp/webfence-msys2-qt6-base-6.11.2-2.src.tar.zst`. Recipe/.SRCINFO, Qt and ten patches; eleven matching internal hashes, Qt matches previously verified upstream source. Outer hash observed, independent recipe authentication/signature not verified; no code executed. Ledger in DOCS/evidence/windows-qt-source-2026-09-23.md; full collection/integration open.
+
+
+- Windows provenance: added MSYS2 archive reader matching original DLLs, PKGINFO/BUILDINFO and PKGBUILD hash; packaging requires exact-version cache, no automatic download/upgrade. 16 Python regressions passed. Real Qt binary package verified against published checksum, source recipe matches BUILDINFO; signature not verified. Details in ADR-007 and Windows Qt evidence. New CI pending.
 
 ### Next work and boundaries
 

@@ -68,3 +68,5 @@ Full-packaging failure injection: a synthetic collection with `INCOMPLETE` was r
 ## First Windows acquisition
 
 Acquired the MSYS2 Qt 6.11.2-2 archive with upstream source, recipe and ten patches; internal hashes checked without executing code. [Provenance, hashes and limits](../evidence/windows-qt-source-2026-09-23.md). Complete Windows collection and independent recipe authentication remain open.
+
+The Windows manifest now binds DLLs to cached binary packages and the source recipe hash: [procedure and limits](ADR-007-PACKAGING.md#matching-msys2-binary-packages). Locally verified the source PKGBUILD ↔ Qt binary BUILDINFO binding against a published-checksum-verified package too; detached signature still not verified.

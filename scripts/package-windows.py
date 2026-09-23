@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from msys2_binary_metadata import inspect, sha
 
 
 def run(*args):
@@ -86,12 +87,18 @@ def package(prefix, executable):
         notices = bundle / "notices"
         subprocess.run([sys.executable, str(repo / "scripts/package-go-notices.py"),
                         str(bundle / "webfence.exe"), str(notices / "go")], check=True)
-        owners, files = {}, []
+        owners, files, required = {}, [], {}
         for binary in sorted(bundle.rglob("*.dll")):
             source = source_for(binary.name)
             owner = run("pacman", "-Qoq", run("cygpath", "-u", source))
+            if not re.fullmatch(r'mingw-w64-ucrt-x86_64-[a-z0-9+_.-]+', owner):
+                raise ValueError('Expected a UCRT64 DLL owner')
             if owner not in owners:
                 metadata = run("pacman", "-Qi", owner)
+                identity = run('pacman', '-Q', owner).split()
+                if (len(identity) != 2 or identity[0] != owner
+                        or not re.fullmatch(r'[A-Za-z0-9._+~-]+', identity[1])):
+                    raise ValueError('Invalid installed UCRT64 package version')
                 licenses = []
                 for line in run("pacman", "-Ql", owner).splitlines():
                     _, path = line.split(" ", 1)
@@ -105,12 +112,32 @@ def package(prefix, executable):
                             licenses.append(str(target.relative_to(bundle)))
                 if not licenses:
                     raise ValueError("Missing packaged license notices for " + owner)
-                owners[owner] = {"pacman_metadata": metadata, "license_files": licenses}
+                owners[owner] = {"pacman_metadata": metadata, "version": identity[1], "license_files": licenses}
+            member = source.relative_to(prefix.parent).as_posix()
+            required.setdefault(owner, {})[member] = sha(source)
             files.append({"path": binary.relative_to(bundle).as_posix(), "sha256": digest(binary),
-                          "source_sha256": digest(source), "package": owner})
+                          "source_sha256": required[owner][member], "package": owner, "binary_package_member": member})
+        cache = Path(run('cygpath', '-w', '/var/cache/pacman/pkg'))
+        for owner, record in owners.items():
+            candidates = [p for p in cache.glob(owner + '-' + record['version'] + '-*.pkg.tar.*')
+                          if p.name.endswith(('.pkg.tar.zst', '.pkg.tar.xz', '.pkg.tar.gz'))]
+            if len(candidates) != 1:
+                raise ValueError('Retain exactly one cached binary package for ' + owner + ' ' + record['version'])
+            binary_record, metadata = inspect(candidates[0], owner, record['version'], required[owner],
+                                               str(prefix / 'bin/zstd.exe'))
+            destination = notices / 'native' / owner / 'build'
+            destination.mkdir()
+            binary_record['metadata_files'] = []
+            for name, raw in metadata.items():
+                target = destination / name
+                target.write_bytes(raw)
+                binary_record['metadata_files'].append({'path': target.relative_to(bundle).as_posix(), 'sha256': sha(target)})
+            record['binary_package'] = binary_record
+            print(f"Verified {owner} {record['version']}: {len(required[owner])} DLLs; source {binary_record['source_package']}; PKGBUILD {binary_record['pkgbuild_sha256']}")
         (bundle / "native-build.json").write_text(json.dumps({"schema": 1, "files": files,
+            "distribution_ready": False,
             "packages": owners, "system_imports": sorted(system_imports),
-            "scope": "PE import closure and installed MSYS2 notices; not full source compliance or dynamic-load coverage"}, indent=2) + "\n")
+            "scope": "PE import closure, installed notices and DLL/build metadata matched to cached MSYS2 archives; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
         subprocess.run([sys.executable, str(repo / "scripts/package-project-docs.py"), str(bundle)], check=True)
         archive = shutil.make_archive(str(stage / "webfence-windows-amd64"), "zip", stage, "WebFence")
         final = dist / "webfence-windows-amd64.zip"

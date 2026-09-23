@@ -68,3 +68,5 @@ Iniezione di errore nel packaging completo: raccolta sintetica con `INCOMPLETE` 
 ## Prima acquisizione Windows
 
 Acquisito l’archivio MSYS2 Qt 6.11.2-2 con sorgente upstream, ricetta e dieci patch; hash interni verificati senza eseguire codice. [Provenienza, hash e limiti](../evidence/windows-qt-source-2026-09-23.md). La raccolta Windows completa e l’autenticazione indipendente della ricetta restano aperte.
+
+Il manifest Windows ora collega le DLL ai pacchetti binari in cache e all’hash della ricetta sorgente: [procedura e limiti](ADR-007-PACKAGING.md#corrispondenza-con-i-pacchetti-binari-msys2). Verificato localmente anche il collegamento PKGBUILD sorgente ↔ BUILDINFO del pacchetto Qt con checksum pubblicato; firma distaccata ancora non verificata.
