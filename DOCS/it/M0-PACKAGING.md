@@ -6,7 +6,7 @@ Data: 2026-09-23. Solo artefatti di sviluppo; nessuna release supportata o revis
 
 ## Artefatto macOS esaminato
 
-Il `dist/WebFence.app` locale esistente è un bundle di sviluppo, non il commit corrente del repository. `go version -m` identifica la revisione `c4ce9cab56635db726e590ad0c2c09f20d0f18ee` con `vcs.modified=true`, Go 1.27.1 e MIQT 0.14.0. SHA-256 dell’eseguibile principale: `de663edcda2eceddafb5e020a9b944949371f1bb20c569178d7f03c6a4048436`. Identifica il binario esaminato, non un manifest di release firmato.
+Il primo `dist/WebFence.app` esaminato era un bundle di sviluppo precedente al commit corrente; i dati seguenti sono storici e la verifica del bundle successivo è riportata sotto. `go version -m` identifica la revisione `c4ce9cab56635db726e590ad0c2c09f20d0f18ee` con `vcs.modified=true`, Go 1.27.1 e MIQT 0.14.0. SHA-256 dell’eseguibile principale: `de663edcda2eceddafb5e020a9b944949371f1bb20c569178d7f03c6a4048436`. Identifica il binario esaminato, non un manifest di release firmato.
 
 L’ispezione in sola lettura di tutti i Mach-O, escludendo duplicati symlink, ha trovato **28 binari/librerie/plugin**. `otool -l` indica macOS minimo **14.0 per 9** e **26.0 per 19**, compreso l’eseguibile principale. QtCore dichiara 14.0; glib e ICU nel bundle dichiarano 26.0. Questo artefatto richiede quindi macOS 26, nonostante il supporto upstream Qt più ampio. Cambiare Info.plist o il deployment target del solo eseguibile Go non abbassa i requisiti incorporati nelle librerie distribuite.
 
@@ -22,11 +22,11 @@ L’albero Homebrew Qt 6.11.2 installato fornisce `sbom.spdx.json` e `share/qt/s
 
 Prima di distribuire un pacchetto raccogliere licenze/avvisi dei componenti effettivi e materiali richiesti per sorgenti corrispondenti/sostituzione, risolvendo la compatibilità tramite la [revisione legale](LEGAL-REVIEW.md). Le espressioni di licenza Homebrew descrivono una formula intera, non necessariamente ogni componente incorporato. La licenza WebFence non sostituisce le licenze delle dipendenze; nessun acquisto Qt commerciale o approvazione legale effettuati.
 
-## Prossimo lavoro Linux e Windows
+## Pacchetti Linux e Windows
 
-Debian 12 offre Qt 6.4.2; Debian 13 Qt 6.8.2 al momento della verifica. La CI Ubuntu corrente è utile ma non prova la base di un pacchetto Debian. Compilare contro il runtime minimo scelto, derivare i requisiti dai binari reali e provare l’installazione su un sistema corrispondente pulito. Per un `.deb` nativo preferire dipendenze Qt del sistema con requisiti espliciti di pacchetto/versione; un pacchetto portabile richiede invece un bundle di dipendenze verificato. Nessun installer Linux ancora presente.
+Debian 12 offre Qt 6.4.2; Debian 13 Qt 6.8.2 al momento della verifica. Il `.deb` nativo ora viene compilato e provato in Debian 12, con dipendenze ELF derivate e Qt fornito dal sistema. Entrambe le architetture amd64/arm64 hanno superato installazione, self-test offscreen/XCB e purge nel runtime container senza toolchain ([CI](https://github.com/Matte2599/WebFence/actions/runs/35876057107)). Non equivale a una verifica su desktop fisico, Wayland o Orca. [ADR-007](ADR-007-PACKAGING.md) descrive procedura e limiti.
 
-La CI Windows usa MSYS2 UCRT64 su Windows Server. L’eseguibile richiede plugin/DLL Qt e dipendenze del compilatore/runtime: l’exe da solo non basta. Preparare l’intero runtime, provare senza MSYS2 nel PATH, poi verificare desktop Windows 10/11 reali e percorsi assistivi. Qt 6.11 elenca Windows 10 1809+ e Windows 11; Qt documenta 6.12 come ultimo ramo con supporto Windows 10. È un vincolo upstream, non una verifica WebFence completata o una promessa di manutenzione indefinita.
+La CI Windows usa MSYS2 UCRT64 su Windows Server. L’eseguibile richiede plugin/DLL Qt e dipendenze del compilatore/runtime: l’exe da solo non basta. Lo script ZIP raccoglie il runtime e la CI prevede avvio senza MSYS2 nel PATH; l’esito è tracciato in [ADR-007](ADR-007-PACKAGING.md). Restano da verificare desktop Windows 10/11 reali e percorsi assistivi. Qt 6.11 elenca Windows 10 1809+ e Windows 11; Qt documenta 6.12 come ultimo ramo con supporto Windows 10. È un vincolo upstream, non una verifica WebFence completata o una promessa di manutenzione indefinita.
 
 Fonti: [piattaforme supportate Qt](https://doc.qt.io/qt-6/supported-platforms.html), [Qt Debian 12](https://packages.debian.org/bookworm/libqt6core6), [Qt Debian 13](https://packages.debian.org/trixie/libqt6core6t64), metadati Mach-O locali e SBOM Qt installate. Versioni dei pacchetti e metadati host esaminati nella data indicata.
 
@@ -38,4 +38,4 @@ Il bundle macOS ricompila ora il plugin Cocoa Qt 6.11.2 con una correzione tempo
 
 Bundle locale aggiornato verificato il 2026-09-23: revisione Go `953ed2daf5061b4044f7cd9d8ff72b133153d260`, `vcs.modified=false`. SHA-256 eseguibile `4af00ede347509677b52c55bd8a355a77faef6d9879327868ae325ef124b0abf`; plugin Cocoa corretto `acc31e86a786050c2e7280c5be09df30718262d7b4514dc5d82f65e8d13d5511`. Build e firma ad hoc verificate; [CI quattro target verde](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Questi hash identificano artefatti locali, non garantiscono build bit-per-bit riproducibili. Il minimo OS del nuovo bundle non è stato ridotto.
 
-Aggiunti confezionamento `.deb`/ZIP Windows e collaudi del runtime separato: [ADR-007 e comandi](ADR-007-PACKAGING.md). Implementazione in verifica; non sono release supportate.
+Aggiunti confezionamento `.deb`/ZIP Windows e collaudi del runtime separato: [ADR-007 e comandi](ADR-007-PACKAGING.md). [CI `32655b0` superata, sei job](https://github.com/Matte2599/WebFence/actions/runs/35877356234); pacchetti di sviluppo, non release supportate.

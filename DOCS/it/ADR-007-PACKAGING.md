@@ -2,7 +2,7 @@
 
 [English](../en/ADR-007-PACKAGING.md) · [Indice](../README.md)
 
-Data: 2026-09-23. Stato: implementazione in verifica. Pacchetti di sviluppo M0, non release supportate. I gate di distribuzione, licenze complete e collaudo assistivo restano nella [matrice](M0-VALIDATION.md).
+Data: 2026-09-23. Stato: implementato; verifiche CI per piattaforma riportate sotto. Pacchetti di sviluppo M0, non release supportate. I gate di distribuzione, licenze complete e collaudo assistivo restano nella [matrice](M0-VALIDATION.md).
 
 ## Decisione
 
@@ -45,10 +45,21 @@ Il container runtime Debian parte dall’immagine slim senza Go, gcc o qmake. In
 
 Prima prova XCB: i test di focus fallivano in un server X senza window manager. Il collaudo ora attende un window manager dedicato; il self-test dell’app attende fino a tre secondi l’attivazione asincrona della finestra prima delle verifiche tastiera e fallisce esplicitamente se non avviene. La normale esecuzione interattiva non viene modificata.
 
-Windows CI usa Windows Server, non Windows 10/11. PATH ripulito e avvio da ZIP estratto sono evidenze più forti della sola build, ma non equivalgono a una macchina completamente pulita o al collaudo NVDA. Esiti nativi e CI da registrare dopo le esecuzioni effettive.
+Windows CI usa Windows Server, non Windows 10/11. PATH ripulito e avvio da ZIP estratto sono evidenze più forti della sola build, ma non equivalgono a una macchina completamente pulita o al collaudo NVDA. Esiti effettivi riportati sotto.
 
 Fonti: [dpkg-shlibdeps](https://manpages.debian.org/bookworm/dpkg-dev/dpkg-shlibdeps.1.en.html), [file QtGui Debian](https://packages.debian.org/bookworm/arm64/libqt6gui6/filelist), [distribuzione Windows Qt](https://doc.qt.io/qt-6/windows-deployment.html), [Qt UCRT64 MSYS2](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-qt6-base).
 
-Prova locale ARM64 del 2026-09-23: build `.deb`, installazione nel runtime senza toolchain, self-test offscreen e XCB/Openbox da utente non privilegiato e purge superati. Verificati log e checksum esportati. Windows e Debian x86-64 attendono CI; nessuna equivalenza con desktop reali presunta. La build Windows usa il sottosistema GUI per evitare una console aggiuntiva.
+Prova locale ARM64 del 2026-09-23: build `.deb`, installazione nel runtime senza toolchain, self-test offscreen e XCB/Openbox da utente non privilegiato e purge superati. Verificati log e checksum esportati. Questa prova locale non stabilisce equivalenza con desktop reali. La build Windows usa il sottosistema GUI per evitare una console aggiuntiva.
 
-Verifica CI `ea2896a`, [run 35876057107](https://github.com/Matte2599/WebFence/actions/runs/35876057107): build/test macOS e Linux e pacchetti Debian amd64/arm64 superati. Windows supera build e self-test, ma il confezionamento si ferma perché ICU conserva LICENSE in `share/icu/<versione>/LICENSE`. Raccolta corretta per includere avvisi nominati esplicitamente sotto `share`, sempre appartenenti al pacchetto installato; avvisi mancanti continuano a bloccare il pacchetto. [Inventario MSYS2 ICU](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-icu). Nuova verifica Windows in attesa. Aggiunto Installed-Size al `.deb`; preferenza sintetica per il test purge creata dallo stesso utente non privilegiato.
+Verifica CI `ea2896a`, [run 35876057107](https://github.com/Matte2599/WebFence/actions/runs/35876057107): build/test macOS e Linux e pacchetti Debian amd64/arm64 superati. Windows supera build e self-test, ma il confezionamento si ferma perché ICU conserva LICENSE in `share/icu/<versione>/LICENSE`. Raccolta corretta per includere avvisi nominati esplicitamente sotto `share`, sempre appartenenti al pacchetto installato; avvisi mancanti continuano a bloccare il pacchetto. [Inventario MSYS2 ICU](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-icu). Verifica successiva riportata sotto. Aggiunto Installed-Size al `.deb`; preferenza sintetica per il test purge creata dallo stesso utente non privilegiato.
+
+Windows verificato sul commit `32655b0` ([CI 35877356234](https://github.com/Matte2599/WebFence/actions/runs/35877356234)): ZIP completo, raccolta notices ICU corretta, self-test offscreen e backend Windows nativo superati con PATH di solo sistema e percorso con spazi/Unicode. SHA-256 dello ZIP generato sul runner: `9c5226fbb452fe8f0f2329496f0bc80cfff01532215df7d4dedb943735f5c6f1`; artefatto effimero non pubblicato. Non dimostra Windows 10/11 o NVDA.
+
+Esito conclusivo del task: **tutti e sei i job verdi** sul codice `32655b0` ([run](https://github.com/Matte2599/WebFence/actions/runs/35877356234)). Debian amd64 e arm64 superano build, installazione, self-test offscreen/XCB e purge. Hash dei `.deb` effimeri della CI:
+
+| Architecture | SHA-256 |
+| --- | --- |
+| amd64 | `50c539bc43ab9810e7c7a87723d8b2acbf731462ca3ec711e3d6ec8504d1cbd1` |
+| arm64 | `a0ae5104727feca727d75c214021253fffa464f56a152a39f8909a5cad924405` |
+
+Gli hash identificano questa esecuzione; timestamp e pacchetti APT/MSYS2 possono cambiare tra build. Non si dichiara riproducibilità bit-per-bit. M0-02 resta parziale per i gate descritti nella matrice.
