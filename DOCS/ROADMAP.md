@@ -66,6 +66,8 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [Prova runtime macOS isolata](evidence/macos-isolated-runtime-2026-09-24.md): su copia privata firmata, ambiente figlio con PATH di sistema, self-test Cocoa con due plugin caricati dal bundle e soak tracciato con 24 immagini app/1.127 totali, nessuna esterna a bundle o sistema Apple. [CI `bc217a2`: sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35929219514), 57 regressioni Python sui target nativi; sul runner macOS 15 due plugin, 24 immagini app/1.033 totali e quattro cicli in 12,102 s. Il self-test con tracciamento dyld simultaneo ha avuto cinque asserzioni Tab fallite; le prove separate non sostituiscono Mac pulito, lettori o revisione legale.
 
+[Difetto AX dopo reset dei filtri](evidence/macos-ax-table-reset-2026-09-24.md): su una copia privata del bundle, la sequenza 10.000 → 1 → 0 → 10.000 righe lascia `AXRows` con 10.000 riferimenti ma la prima riga non valida (`kAXErrorInvalidUIElement`). Confermato a stato fermo da un nuovo client AX; self-test Qt interno e soak non lo rilevano. Tre varianti private del plugin non hanno fornito una correzione. M0-01 richiede ora correzione e ricollaudo prima del lettore reale; bundle originale e preferenza personale preservati.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -198,6 +200,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 [CI `c47f1ea`](https://github.com/Matte2599/WebFence/actions/runs/35927157090) completed on the first attempt: six passing jobs. All four native targets pass 53 Python regressions; macOS 15 removes six external rpaths and checks 28 binaries/194 references (148 Apple, 46 internal) in the signed bundle, then passes Cocoa, plugin replacement and the 15/258/4/28 native-source package. Windows also passes from a Unicode/spaced path without the toolchain in PATH; Debian amd64/arm64 passes separate-runtime and purge checks. This closes verification of the linkage check, not M0 gates for readers, clean machines, minimum OS versions or legal review.
 
 [Isolated macOS runtime trial](evidence/macos-isolated-runtime-2026-09-24.md): a signed private copy, child environment with a system-only PATH, Cocoa self-test with two plugins loaded from the bundle, and a traced soak with 24 app images/1,127 total, none outside the bundle or Apple system. [CI `bc217a2`: six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35929219514), 57 Python regressions on native targets; macOS 15 runner observed two plugins, 24 app images/1,033 total and four cycles in 12.102 s. A self-test with simultaneous dyld tracing failed five Tab assertions; the separate checks do not replace a clean Mac, readers or legal review.
+
+[AX defect after filter reset](evidence/macos-ax-table-reset-2026-09-24.md): on a private bundle copy, the 10,000 → 1 → 0 → 10,000 row sequence leaves `AXRows` reporting 10,000 references while the first row is invalid (`kAXErrorInvalidUIElement`). Confirmed in an idle state from a fresh AX client; the internal Qt self-test and soak miss it. Three private plugin variants yielded no correction. M0-01 now requires a fix and retest before a real reader trial; original bundle and personal preference preserved.
 
 ### M1 — Controlled traditional alpha
 
