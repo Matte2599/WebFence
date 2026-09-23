@@ -75,7 +75,7 @@ Su macOS Apple Silicon si può creare un bundle locale con `sh scripts/package-m
 
 Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e derivati x86-64/ARM64. Il supporto effettivo dipende dalle verifiche della [matrice M0](DOCS/it/QT-DESKTOP.md). La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi.
 
-Materiali delle dipendenze: [raccoglitore sorgenti e avvisi](DOCS/it/M0-SOURCE-MATERIALS.md) verificato su 15 archivi upstream; inclusione facoltativa di 247 avvisi nel bundle macOS prima della firma. La revisione della distribuzione resta aperta.
+Materiali delle dipendenze: [raccoglitore sorgenti e avvisi](DOCS/it/M0-SOURCE-MATERIALS.md) verificato su 15 archivi upstream; inclusione facoltativa di 247 avvisi nel bundle macOS prima della firma. Ogni nuovo bundle macOS dichiara inoltre il [minimo OS ricavato dai propri binari](DOCS/it/M0-PACKAGING.md#versione-minima-dichiarata-dallartefatto). La revisione della distribuzione resta aperta.
 
 Raccolti anche [21 pacchetti sorgente Windows](DOCS/it/M0-WINDOWS-SOURCES.md), con ricette collegate ai binari e controlli di integrità documentati; inclusione facoltativa degli archivi originali nello ZIP.
 

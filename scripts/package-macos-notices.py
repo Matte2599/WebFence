@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import sys
+from macho_minos import declare_minimum, parse_otool
 
 MACHO = {b'\xcf\xfa\xed\xfe', b'\xfe\xed\xfa\xcf', b'\xce\xfa\xed\xfe',
          b'\xfe\xed\xfa\xce', b'\xca\xfe\xba\xbe', b'\xbe\xba\xfe\xca',
@@ -70,7 +71,8 @@ def collect(bundle, qt_prefix):
     for binary in binaries:
         uuid = arm_uuid(binary)
         item = {'path': binary.relative_to(bundle).as_posix(), 'uuid': uuid,
-                'sha256_before_final_signing': sha(binary)}
+                'sha256_before_final_signing': sha(binary),
+                'minimum_macos': parse_otool(subprocess.check_output(['otool', '-l', str(binary)], text=True))}
         if binary == executable:
             item['origin'] = 'webfence-go-build'
         elif binary == cocoa:
@@ -117,13 +119,17 @@ def collect(bundle, qt_prefix):
     build = json.loads(subprocess.check_output(['go', 'version', '-m', '-json', str(executable)], text=True))
     provenance = {item['Key']: item['Value'] for item in build.get('Settings', []) if item['Key'] in
                   {'vcs.revision', 'vcs.time', 'vcs.modified', 'GOOS', 'GOARCH', 'CGO_CXXFLAGS'}}
+    minimum = declare_minimum(bundle / 'Contents/Info.plist', files)
     inventory = {'schema': 1, 'distribution_ready': False, 'webfence_build': provenance, 'scope': 'Mach-O origin matching by name/arm64/UUID and installed notices; not a complete product SBOM or distribution approval',
+        'macos_minimum': minimum,
         'hash_stage': 'before final bundle signing; UUID is a provenance hint, not an integrity proof',
         'files': files, 'packages': packages,
         'open_items': ['Complete embedded-component attribution', 'Qt and GLib upstream notices beyond installed build-tool notices',
                        'Corresponding source archives, patches and replacement/rebuild materials', 'Qualified legal review and clean-machine trials']}
     (output / 'native-build.json').write_text(json.dumps(inventory, indent=2) + '\n')
     print(f'Collected {len(files)} Mach-O records and {len(packages)} Homebrew packages; distribution review remains open')
+    print('Declared bundle macOS minimum:', minimum['bundle_declaration'],
+          '; maximum Mach-O requirement:', minimum['mach_o_requirement'])
 
 
 if __name__ == '__main__':

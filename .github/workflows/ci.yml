@@ -105,6 +105,35 @@ jobs:
           assert record['supplement_bytes'] == sum(x['size_bytes'] for x in record['files'])
           print('PASS signed bundle supplements: 4 files, 2 recipe hashes, current inventory binding')
           PY
+      - name: Verify macOS deployment metadata independently
+        if: runner.os == 'macOS'
+        run: |
+          python3 - <<'PY'
+          import json, plistlib, re, subprocess
+          from pathlib import Path
+          bundle = Path('dist/WebFence.app')
+          inventory = json.loads((bundle / 'Contents/Resources/notices/native-build.json').read_text())
+          observations = []
+          for item in inventory['files']:
+              text = subprocess.check_output(['xcrun', 'vtool', '-show-build', str(bundle / item['path'])], text=True)
+              values = re.findall(r'^\s*minos (\S+)\s*$', text, flags=re.M)
+              if not values and 'LC_VERSION_MIN_MACOSX' in text:
+                  values = re.findall(r'^\s*version (\S+)\s*$', text, flags=re.M)
+              assert len(values) == 1, item['path']
+              parts = tuple(int(x) for x in values[0].split('.'))
+              parts += (0,) * (3 - len(parts))
+              observed = '.'.join(str(x) for x in parts)
+              assert observed == item['minimum_macos']['minimum'], item['path']
+              observations.append((parts, item['path']))
+          required = max(value for value, _ in observations)
+          required_text = '.'.join(str(x) for x in required)
+          declared = plistlib.loads((bundle / 'Contents/Info.plist').read_bytes())['LSMinimumSystemVersion']
+          assert tuple(int(x) for x in declared.split('.')) >= required
+          assert inventory['macos_minimum']['bundle_declaration'] == declared
+          assert inventory['macos_minimum']['mach_o_requirement'] == required_text
+          assert inventory['macos_minimum']['limiting_files'] == sorted(path for value, path in observations if value == required)
+          print(f'PASS macOS minimum: plist {declared}, {len(observations)} Mach-O files independently checked with vtool, binary floor {required_text}')
+          PY
       - name: macOS Cocoa bundle regression
         if: runner.os == 'macOS'
         env:

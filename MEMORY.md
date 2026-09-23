@@ -89,6 +89,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 - Supplementi Homebrew GLib/libb2 integrati prima della firma: quattro file/1.093.639 byte e due ricette vincolati agli hash revisionati, senza esecuzione. Piano con varianti libb2 Tahoe/Sequoia verificate; il manifest registra la variante effettiva. Il runner richiede `brew update` e GLib esplicito: verificato passaggio 2.88.3 → 2.90.0. Bundle locale con 247 avvisi e supplementi: firma/Cocoa e preservazione su piano errato superati, lingua personale invariata. [CI `5521c34`](https://github.com/Matte2599/WebFence/actions/runs/35912249024): sei job superati, 31 regressioni Python sui quattro target, supplementi firmati verificati su macOS 15. Completezza sorgenti e revisione distribuzione restano aperte; dettagli in M0-SOURCE-MATERIALS.
 
+- Minimo macOS per artefatto: `macho_minos.py` legge tutti i load command di deployment e imposta LSMinimumSystemVersion prima della firma, preservando un valore preesistente più alto. Inventario con minimo per file/massimo e file determinanti; nessuna modifica ai binari. Regressione: vecchio plist senza chiave pur con minimo 26. Nuovo bundle locale 26.0.0 (19 file minimo 26, nove minimo 14), verifica indipendente vtool su 28 file, firma e self-test Cocoa passati; 36 regressioni Python locali. CI da verificare. Non definisce il minimo ufficiale né prova avvio sotto requisito.
+
 ## English
 
 ### Author-confirmed facts
@@ -165,6 +167,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 - Optional attachment of 21 source archives in the ZIP implemented, with regenerated recipes and current-inventory binding; 25 local regressions passed. CI [`69f1dcc`](https://github.com/Matte2599/WebFence/actions/runs/35908880543) completed: six passing jobs, 25 Python regressions on four targets; Windows collected/attached 21 archives, verified extracted-ZIP hashes, preserved the ZIP on failure and passed offscreen/native self-tests and soaks with system-only PATH. Local materials: /tmp/webfence-windows-source-attachment-a146152. No release or completeness claim.
 
 - Homebrew GLib/libb2 supplements attached before signing: four files/1,093,639 bytes and two recipes bound to reviewed hashes, without execution. Reviewed Tahoe/Sequoia libb2 variants; manifest records the actual variant. Runner requires `brew update` and explicit GLib: 2.88.3 → 2.90.0 verified. Local bundle with 247 notices and supplements: signature/Cocoa and preservation on invalid plan passed, personal language unchanged. [CI `5521c34`](https://github.com/Matte2599/WebFence/actions/runs/35912249024): six passing jobs, 31 Python regressions on four targets, signed supplements verified on macOS 15. Source completeness and distribution review remain open; details in M0-SOURCE-MATERIALS.
+
+- Per-artifact macOS minimum: `macho_minos.py` reads all deployment load commands and sets LSMinimumSystemVersion before signing, preserving a higher existing value. Inventory records per-file/maximum requirements and limiting files; no binary modification. Regression: previous plist lacked the key despite minimum 26. New local bundle 26.0.0 (19 files minimum 26, nine minimum 14), independent vtool checks on 28 files, signature and Cocoa self-test passed; 36 local Python regressions. CI remains to verify. Does not define official minimum or test launch below the requirement.
 
 ### Next work and boundaries
 
