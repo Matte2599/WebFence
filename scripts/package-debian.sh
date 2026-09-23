@@ -56,6 +56,9 @@ CONTROL
 dpkg-query -W -f='${binary:Package}\t${Version}\n' libqt6core6 libqt6gui6 libqt6widgets6 libc6 libstdc++6 > "$doc/native-build.tsv"
 (find cmd internal scripts packaging -type f ! -name '*.pyc' -print0; printf 'go.mod\0go.sum\0LICENSE\0') | sort -z | xargs -0 sha256sum > "$doc/source-inputs.sha256"
 printf 'revision=%s\ndirty=%s\n' "${WEBFENCE_SOURCE_REVISION:-unrecorded}" "${WEBFENCE_SOURCE_DIRTY:-unknown}" > "$doc/source-revision.txt"
+# Report the installed footprint to APT instead of its default unknown/zero size.
+installed_size=$(du -sk "$root/usr" | awk '{print $1}')
+printf 'Installed-Size: %s\n' "$installed_size" >> "$root/DEBIAN/control"
 chmod -R go-w "$root"
 dpkg-deb --root-owner-group --build "$root" "$stage/webfence.deb"
 dpkg-deb --info "$stage/webfence.deb"

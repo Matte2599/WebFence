@@ -3,7 +3,7 @@
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import shutil
 import subprocess
@@ -17,6 +17,18 @@ def run(*args):
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def notice_relative(path):
+    """Select package-owned notices, including ICU's versioned share directory."""
+    location = PurePosixPath(path)
+    if path.endswith("/") or ".." in location.parts or not path.startswith("/ucrt64/share/"):
+        return None
+    relative = location.relative_to("/ucrt64/share")
+    if relative.parts[0] == "licenses" or re.fullmatch(
+            r"(?:licen[cs]e|copying|copyright|notice)(?:[._-].*)?", location.name, flags=re.I):
+        return relative
+    return None
 
 
 def package(prefix, executable):
@@ -83,10 +95,10 @@ def package(prefix, executable):
                 licenses = []
                 for line in run("pacman", "-Ql", owner).splitlines():
                     _, path = line.split(" ", 1)
-                    if "/share/licenses/" in path and not path.endswith("/"):
+                    relative = notice_relative(path)
+                    if relative is not None:
                         local = Path(run("cygpath", "-w", path))
                         if local.is_file():
-                            relative = path.split("/share/licenses/", 1)[1]
                             target = notices / "native" / owner / relative
                             target.parent.mkdir(parents=True, exist_ok=True)
                             shutil.copyfile(local, target)

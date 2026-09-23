@@ -22,7 +22,7 @@ RUN useradd --create-home webfence-test && install -d -m 700 -o webfence-test -g
 RUN ! command -v go && ! command -v gcc && ! command -v qmake6 && \
     (runuser -u webfence-test -- env XDG_RUNTIME_DIR=/tmp/webfence-runtime QT_QPA_PLATFORM=offscreen webfence --self-test > /out/offscreen.log 2>&1 || { cat /out/offscreen.log; exit 1; }) && \
     (runuser -u webfence-test -- env XDG_RUNTIME_DIR=/tmp/webfence-runtime xvfb-run -a sh /opt/webfence-test/test-xcb.sh > /out/xcb.log 2>&1 || { cat /out/xcb.log; exit 1; })
-RUN mkdir -p /home/webfence-test/.config/WebFence && printf en > /home/webfence-test/.config/WebFence/ui-language && \
+RUN runuser -u webfence-test -- sh -c 'mkdir -p "$HOME/.config/WebFence" && printf en > "$HOME/.config/WebFence/ui-language"' && \
     apt-get purge -y webfence && test ! -e /usr/bin/webfence && test ! -e /usr/share/applications/webfence.desktop && \
     test "$(cat /home/webfence-test/.config/WebFence/ui-language)" = en && \
     printf 'Install, unprivileged offscreen/XCB self-tests and purge passed; synthetic user preference preserved.\n' > /out/validation.txt && \
