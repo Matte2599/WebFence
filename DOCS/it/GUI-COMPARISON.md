@@ -23,7 +23,7 @@ Host: macOS 26.6.2 ARM64, Xcode 27, Go 1.27.1. Fyne 2.8.1; candidato MIQT 0.14.0
 | Azioni tramite strumento assistivo | Attivazione problematica | Caricamento, filtro e dettagli avanzati funzionano; click su cella/menu lingua non sufficiente nella prova |
 | Bundle locale | Avvio verificato | `macdeployqt`, avvio e verifica firma ad hoc locale superati; non firma Developer ID/notarizzazione |
 
-L’ispezione Qt non dimostra accessibilità completa. Durante ulteriori tentativi sul menu lingua lo strumento ha restituito `noWindowsAvailable`; la successiva acquisizione ha mostrato un’istanza vuota. Causa non isolata: non attribuire automaticamente un crash a Qt né considerare superato il percorso. Servono riproduzione controllata e VoiceOver reale. Non sono stati provati NVDA o Orca. Con tutte le 10.000 righe caricate lo strumento ha mostrato il nodo tabella senza enumerare le celle; le celle sono state osservate dopo il filtro a una riga.
+L’ispezione Qt non dimostra accessibilità completa. Durante ulteriori tentativi sul menu lingua lo strumento ha restituito `noWindowsAvailable`; la successiva acquisizione ha mostrato un’istanza vuota. Causa non isolata: non attribuire automaticamente un crash a Qt né considerare superato il percorso. Servono riproduzione controllata e VoiceOver reale. Non sono stati provati NVDA o Orca. Con tutte le 10.000 righe caricate lo strumento ha mostrato il nodo tabella senza enumerare le celle; le celle sono state osservate dopo il filtro a una riga. Nella ripetizione sul bundle finale la navigazione e le evidenze funzionavano, ma l’albero non includeva stabilmente il nodo tabella: anche questo resta un gate da isolare fra toolkit e strumento di ispezione.
 
 ## Test e misure locali
 
@@ -37,7 +37,7 @@ L’ispezione Qt non dimostra accessibilità completa. Durante ulteriori tentati
 
 ## Matrice e limiti
 
-macOS ARM64 è l’unico desktop Qt provato direttamente. È stato aggiunto un workflow dedicato per compilazione e self-test offscreen su Ubuntu 24.04 x86-64/ARM64; **l’esito remoto deve essere registrato dopo l’esecuzione**. Il workflow principale Fyne non verifica Qt. Nessuna esecuzione Qt su Windows 10/11 o Debian desktop è stata effettuata; compatibilità dichiarata dai fornitori e build CI non sostituiscono queste prove.
+macOS ARM64 è l’unico desktop Qt provato direttamente. Il workflow dedicato ha superato compilazione, `go vet`, verifica moduli e self-test offscreen su **Ubuntu 24.04 x86-64 e ARM64**, Qt **6.4.2+dfsg-21.1build5**: [run 35849176371](https://github.com/Matte2599/WebFence/actions/runs/35849176371), codice `90c7c7b`. Entrambi i log confermano tutti i controlli, incluso il testo da 624.640 byte e le letture ripetute del modello. Anche i cinque job del prototipo Fyne sono passati sullo stesso codice: [run 35849176327](https://github.com/Matte2599/WebFence/actions/runs/35849176327). Il workflow principale Fyne non verifica Qt. Nessuna esecuzione Qt su Windows 10/11 o Debian desktop è stata effettuata; compatibilità dichiarata dai fornitori e build CI non sostituiscono queste prove.
 
 Restano DPI multipli, accessibilità con lettori reali, stabilità prolungata, packaging Windows/Linux, bundle macOS su macchina pulita, inventario delle licenze e versioni OS minime. Non distribuire il bundle come prodotto pronto.
 

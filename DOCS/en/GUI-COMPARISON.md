@@ -23,7 +23,7 @@ Host: macOS 26.6.2 ARM64, Xcode 27, Go 1.27.1. Fyne 2.8.1; candidate MIQT 0.14.0
 | Actions through assistive tooling | Problematic activation | Load, filter and advanced details work; cell/language-menu click insufficient in the trial |
 | Local bundle | Launch verified | `macdeployqt`, launch and local ad hoc signature verification passed; no Developer ID signing/notarization |
 
-Qt inspection does not prove full accessibility. During further language-menu attempts, tooling returned `noWindowsAvailable`; the next capture showed an empty instance. Cause not isolated: do not automatically attribute a crash to Qt or mark that workflow passed. Controlled reproduction and actual VoiceOver testing are needed. NVDA and Orca were not tested. With all 10,000 rows loaded, tooling showed the table node without enumerating cells; cells were observed after filtering to one row.
+Qt inspection does not prove full accessibility. During further language-menu attempts, tooling returned `noWindowsAvailable`; the next capture showed an empty instance. Cause not isolated: do not automatically attribute a crash to Qt or mark that workflow passed. Controlled reproduction and actual VoiceOver testing are needed. NVDA and Orca were not tested. With all 10,000 rows loaded, tooling showed the table node without enumerating cells; cells were observed after filtering to one row. In the final-bundle repeat, navigation and evidence worked but the tree did not consistently include the table node: this also remains a gate to isolate between toolkit and inspection tooling.
 
 ## Local tests and measurements
 
@@ -37,7 +37,7 @@ Qt inspection does not prove full accessibility. During further language-menu at
 
 ## Matrix and limitations
 
-macOS ARM64 is the only Qt desktop tested directly. A dedicated workflow was added for builds and offscreen self-tests on Ubuntu 24.04 x86-64/ARM64; **remote results must be recorded after execution**. The main Fyne workflow does not check Qt. No Qt runtime testing on Windows 10/11 or Debian desktop has occurred; upstream compatibility claims and CI builds do not replace those checks.
+macOS ARM64 is the only Qt desktop tested directly. The dedicated workflow passed compilation, `go vet`, module verification and offscreen self-tests on **Ubuntu 24.04 x86-64 and ARM64**, Qt **6.4.2+dfsg-21.1build5**: [run 35849176371](https://github.com/Matte2599/WebFence/actions/runs/35849176371), code `90c7c7b`. Both logs confirm all checks, including 624,640-byte text and repeated model reads. All five Fyne prototype jobs also passed for the same code: [run 35849176327](https://github.com/Matte2599/WebFence/actions/runs/35849176327). The main Fyne workflow does not check Qt. No Qt runtime testing on Windows 10/11 or Debian desktop has occurred; upstream compatibility claims and CI builds do not replace those checks.
 
 Multiple DPI settings, actual screen readers, prolonged stability, Windows/Linux packaging, the macOS bundle on a clean machine, license inventory and minimum OS versions remain open. Do not distribute the bundle as a ready product.
 
