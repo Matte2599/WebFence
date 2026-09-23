@@ -41,3 +41,5 @@ The current patch replaces the earlier two guards entirely with production `.h`/
 Isolated copy with the same executable and new plugin: 20 cycles in 60.003 s, exit zero, 13 RSS samples and empty stderr after a CUA AX read during the workload. In the subsequent OS-input trial all four `DEMO-10000` cells remain available after selection, IT/EN, an empty filter and restoration; the row also returns as the focused element. Language preference restored to Italian. This is a short trial; it does not replace VoiceOver, multiple monitors or a new prolonged session. Upstream tests were not executed.
 
 [Synthetic logs and short-trial metadata](../evidence/macos-ax-772484-2026-09-23/analysis.json).
+
+Patch 772484 and the geometry correction are verified in [CI `8d3053f`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35885936443), including the Cocoa bundle, native self-test and stability smoke. Updated prolonged session still running (M0-STABILITY).

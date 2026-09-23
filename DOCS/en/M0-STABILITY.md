@@ -48,3 +48,9 @@ RSS collector also verified in a Debian ARM64 Linux container: code `9f87c49`, n
 RSS medians in the 60–300, 300–600, 600–900, 900–1200, 1200–1500 and 1500–1800 s windows are respectively 122.46 / 114.84 / 113.88 / 108.80 / 107.64 / 107.80 MiB; sampled peak 166.78 MiB, last sample 107.58 MiB. The first 32 KiB reading precedes loading and is not a useful baseline. Final Go heap 4,290,272 bytes, final cache 109 entries. No sustained RSS growth observed in this window; this proves neither absence of leaks nor product hardware requirements.
 
 The workload completed without crash or deadline expiry, but stderr contains **17,730 AX warnings**, concerning `QComboBoxListView` children and invalid Cocoa notifications. These are not ignored: the assistive gate remains open. This trial uses the stated commit, before the TabFocusAllControls correction, and does not validate that change for 30 minutes.
+
+## New session with patch 772484 — running
+
+Started on 2026-09-23 at 16:04:37 UTC, requested duration 1,800 s, revision `8d3053fbe90c6101bb336493c149c9cc91f31cf0` with `vcs.modified=false`. Same host and flags as the earlier trial, new Cocoa patch 772484 and Tab/geometry corrections. Isolated `WebFence Stability Current` copy, identifier `io.github.Matte2599.WebFence.StabilityCurrent`, signed ad hoc. Executable SHA-256 `33ad7886d8195463b7a9fd9cbc5325f3107b562c0d9d1ed498b0865a038bb137`.
+
+Logs in `/tmp/webfence-soak-macos-8d3053f-30m/`. CUA AX read during cycles to exercise the bridge; no input changing the workload. Outcome still open: verify final event, exit code, RSS and stderr before claiming the result. Do not confuse this session with the earlier 600-cycle trial.

@@ -41,3 +41,5 @@ La patch corrente sostituisce interamente le due guardie precedenti con le sole 
 Copia isolata con lo stesso eseguibile e nuovo plugin: 20 cicli in 60,003 s, uscita zero, 13 campioni RSS e stderr vuoto dopo lettura AX tramite CUA durante il ciclo. Nella successiva prova con input OS le quattro celle di `DEMO-10000` restano disponibili dopo selezione, IT/EN, filtro vuoto e ripristino; la riga torna anche come elemento con focus. Preferenza lingua ripristinata a italiano. È una prova breve; non sostituisce VoiceOver, più monitor o una nuova sessione prolungata. I test upstream non sono stati eseguiti.
 
 [Log sintetici e metadati della prova breve](../evidence/macos-ax-772484-2026-09-23/analysis.json).
+
+La patch 772484 e la correzione di geometria sono verificate nella [CI `8d3053f`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35885936443), inclusi bundle Cocoa, self-test nativo e smoke di stabilità. Sessione prolungata aggiornata ancora in corso (M0-STABILITY).
