@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=WebFence
+Comment=Offline desktop feasibility prototype
+Comment[it]=Prototipo desktop di fattibilità offline
+Exec=webfence
+Terminal=false
+Categories=Development;
+StartupNotify=true

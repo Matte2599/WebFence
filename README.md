@@ -14,6 +14,8 @@ Le fondazioni includono anche prove SQLite e un componente JWS Ed25519 limitato:
 
 Il bundle macOS include una [correzione temporanea Qt Cocoa](DOCS/it/ADR-006-QT-COCOA.md) per il crash assistivo riprodotto; layout compatto verificato al 200% e [CI verde sui quattro target](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Restano aperti collaudi con lettori reali e distribuzione.
 
+Disponibili anche procedure di [packaging Debian e Windows](DOCS/it/ADR-007-PACKAGING.md). Il primo `.deb` ARM64 ha superato installazione, self-test e rimozione in un runtime Debian separato; verifiche CI degli altri pacchetti in corso.
+
 ## Perché WebFence
 
 Gli strumenti AI permettono anche a sviluppatori singoli di realizzare applicazioni articolate. La velocità di sviluppo richiede verifiche di sicurezza altrettanto accessibili e rigorose. Questa è la motivazione del progetto, non una dimostrazione che il codice generato con AI sia sempre meno sicuro.

@@ -1,0 +1,16 @@
+**
+!go.mod
+!go.sum
+!cmd/
+!cmd/**
+!internal/
+!internal/**
+!scripts/
+!scripts/**
+!packaging/
+!packaging/**
+!LICENSE
+!README.md
+!README.en.md
+**/__pycache__
+**/*.pyc

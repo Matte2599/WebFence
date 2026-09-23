@@ -69,6 +69,7 @@ func selfTest(w *workspace) int {
 		// Interfaces/cells are owned by Qt's accessibility cache, never delete them here.
 	}
 	check(len(w.visible) == 0, "initial empty state")
+	check(w.window.IsActiveWindow(), "test window activated before keyboard checks")
 	checkAccessible("empty")
 	start := time.Now()
 	w.load.Click()

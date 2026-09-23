@@ -14,6 +14,8 @@ The foundations also include SQLite experiments and a restricted Ed25519 JWS com
 
 The macOS bundle includes a [temporary Qt Cocoa correction](DOCS/en/ADR-006-QT-COCOA.md) for the reproduced assistive crash; compact layout checked at 200% and [CI passed on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Actual screen-reader and distribution trials remain open.
 
+Procedures for [Debian and Windows packaging](DOCS/en/ADR-007-PACKAGING.md) are also available. The first ARM64 `.deb` passed install, self-tests and removal in a separate Debian runtime; other package CI checks are in progress.
+
 ## Why WebFence
 
 AI tools allow individual developers to build substantial applications. Faster development calls for security checks that are equally accessible and rigorous. This is the project's motivation, not evidence that AI-generated code is invariably less secure.

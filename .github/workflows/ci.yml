@@ -93,11 +93,40 @@ jobs:
             mingw-w64-ucrt-x86_64-gcc
             mingw-w64-ucrt-x86_64-pkgconf
             mingw-w64-ucrt-x86_64-qt6-base
+            mingw-w64-ucrt-x86_64-python
       - run: test "$(go env GOARCH)" = amd64
       - run: go mod download && go mod verify
       - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
       - name: Windows native credential tests
         run: go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
-      - run: go build -o bin/webfence.exe ./cmd/webfence
+      - run: go build -ldflags '-H=windowsgui -s -w' -o bin/webfence.exe ./cmd/webfence
       - run: go vet ./...
       - run: ./bin/webfence.exe --self-test
+      - name: Windows development ZIP
+        run: python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")"
+      - name: Windows package without the toolchain on PATH
+        shell: pwsh
+        run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip
+
+  debian-package:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            arch: amd64
+          - os: ubuntu-24.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Build and test Debian package in a clean runtime
+        run: >-
+          docker build --progress=plain --file packaging/debian/Dockerfile
+          --build-arg SOURCE_REVISION="$GITHUB_SHA" --build-arg SOURCE_DIRTY=false
+          --output type=local,dest=dist/debian-${{ matrix.arch }} .
+      - name: Inspect runtime checks
+        run: |
+          cat dist/debian-${{ matrix.arch }}/validation.txt
+          cat dist/debian-${{ matrix.arch }}/SHA256SUMS

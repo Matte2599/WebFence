@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"github.com/Matte2599/WebFence/internal/i18n"
 	"github.com/Matte2599/WebFence/internal/preferences"
@@ -47,7 +48,17 @@ func Run(args []string) int {
 	defer w.dispose()
 	w.window.Show()
 	if selfTesting {
-		qt.QCoreApplication_ProcessEvents()
+		// Native window managers deliver map/activation asynchronously. Wait for
+		// that before testing keyboard focus; do not change OS focus preferences.
+		w.window.ActivateWindow()
+		deadline := time.Now().Add(3 * time.Second)
+		for {
+			qt.QCoreApplication_ProcessEvents()
+			if w.window.IsActiveWindow() || time.Now().After(deadline) {
+				break
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
 		return selfTest(w)
 	}
 	return qt.QApplication_Exec()
