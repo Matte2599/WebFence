@@ -41,6 +41,10 @@ The self-test checks action focus, menu/checkbox synchronization, stale-data pre
 
 The missing table node after filtering was reproduced through macOS AX inspection before this change. The new keyboard workflow and internal Qt checks are insufficient to declare that limitation resolved. To close the gate, repeat with VoiceOver, NVDA and Orca: load → filter → read headers/row → open evidence → change language → remove filter → clear; verify announcements, focus, original text and absence of stale cells. Record OS/Qt/reader versions, DPI and results per platform.
 
+**macOS GUI trial:** updated bundle opened; Cmd+O/F → DEMO-10000 filter → F6 selects the row; Tab reaches the summary; Cmd+Shift+E opens evidence; Cmd+A followed by Cmd+2 preserves the selected text; Cmd+Shift+D hides the pane and returns focus to the advanced control. View → Read evidence was also activated from the menu. Language restored to Italian. In the observed native configuration, Tab from evidence goes to search, skipping the copy button: the actual cycle also depends on macOS navigation conventions/settings, not just Qt tab order. No system accessibility preferences were changed. The table node remained intermittent in this trial: absent immediately after filtering, exposed again after Tab. No VoiceOver certification.
+
+**Task CI passed:** [run 35857456908](https://github.com/Matte2599/WebFence/actions/runs/35857456908), code `6268ae3`: all four jobs completed with build, vet, Go tests and updated Qt self-test; macOS bundle included. Tab/Shift+Tab and selection preservation pass on all runners. Linux Qt 6.4.2 logs declare the explicit accessible cache reset; this is not an Orca test.
+
 Implementation references: [Qt focus](https://doc.qt.io/qt-6/focus.html), [model notifications](https://doc.qt.io/qt-6/qabstractitemmodel.html#dataChanged), [reset in Qt 6.11.2 source](https://github.com/qt/qtbase/blob/v6.11.2/src/widgets/itemviews/qabstractitemview.cpp). MIQT values returned by `Index()` and `TextCursor()` have automatic finalizers: do not manually free the same value without first removing its finalizer.
 
 ## Open gates
