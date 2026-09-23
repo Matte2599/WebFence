@@ -47,6 +47,9 @@ jobs:
       - name: macOS Qt dependencies
         if: runner.os == 'macOS'
         run: brew install qtbase pkgconf
+      - name: macOS development binding flags
+        if: runner.os == 'macOS'
+        run: echo 'CGO_CXXFLAGS=-O0 -g0 -std=c++17' >> "$GITHUB_ENV"
       - run: test "$(go env GOARCH)" = "${{ matrix.arch }}"
       - run: test -z "$(gofmt -l cmd internal)"
       - run: go mod download && go mod verify

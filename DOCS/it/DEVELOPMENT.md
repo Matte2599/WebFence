@@ -6,7 +6,7 @@
 
 Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. È ancora un prototipo offline con esempi: nessuno scanner, progetto persistente, CVE o AI. [Stato e verifiche](QT-DESKTOP.md).
 
-La prima compilazione dei binding può richiedere diversi minuti; le successive beneficiano della cache Go.
+La prima compilazione dei binding può richiedere diversi minuti; le successive beneficiano della cache Go. La CI macOS compila i wrapper C++ con `-O0 -g0` per contenere il costo della prima compilazione; build e bundle usano gli stessi flag e la cache. Le librerie Qt installate restano quelle del pacchetto Homebrew. Lo script locale usa per default `-O2 -g`; la CI verifica funzionalità, non prestazioni di release.
 
 Servono compilatore C++17, CGO, pkg-config e Qt 6 Core/Gui/Widgets. Su macOS Apple Silicon installare Xcode/Command Line Tools e `brew install qtbase pkgconf`; su Debian/Ubuntu `sudo apt-get install g++ pkg-config qt6-base-dev`.
 
