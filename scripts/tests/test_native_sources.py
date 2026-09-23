@@ -114,6 +114,54 @@ class NativeSourcesTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             sources.archive_plan(data)
 
+    def test_qt_references_include_nonstandard_files_before_and_after_metadata(self):
+        # Order must not matter; shared parent references are ordinary Qt data.
+        self.make_archive([
+            ('sample/shared/terms.txt', b'synthetic parent terms'),
+            ('sample/shared/sub/qt_attribution.json',
+             b'[{"LicenseFile":"../terms.txt","Description":"line one\nline two"},'
+             b'{"LicenseFiles":["named-terms.txt","../terms.txt"]}]'),
+            ('sample/shared/sub/named-terms.txt', b'synthetic local terms'),
+            ('sample/unused.c', b'not a referenced notice')])
+        out = self.root / 'notices'
+        record = sources.collect_notices(self.archive, out)
+        self.assertEqual((out / 'sample/shared/terms.txt').read_bytes(), b'synthetic parent terms')
+        self.assertEqual((out / 'sample/shared/sub/named-terms.txt').read_bytes(), b'synthetic local terms')
+        self.assertFalse((out / 'sample/unused.c').exists())
+        self.assertEqual(len(record['qt_license_references']), 2)
+        self.assertEqual(len(record['files']), 3)
+
+    def test_qt_missing_linked_and_duplicate_references_rejected(self):
+        metadata = ('sample/sub/qt_attribution.json', b'{"LicenseFile":"terms.txt"}')
+        for other in ([], [('sample/sub/terms.txt', ('../../outside',))],
+                      [('sample/sub/terms.txt', b'a'), ('sample/sub/terms.txt', b'b')],
+                      [metadata, ('sample/sub/terms.txt', b'a')]):
+            self.make_archive([metadata, *other])
+            with self.subTest(other=other), tempfile.TemporaryDirectory(dir=self.root) as out:
+                with self.assertRaises(ValueError):
+                    sources.collect_notices(self.archive, Path(out))
+
+    def test_qt_unsafe_reference_paths_and_metadata_rejected(self):
+        for value in ('../../../outside', '/tmp/outside', 'C:/outside',
+                      '..\\outside', 'x\nfile', '', 12):
+            self.make_archive([('sample/sub/qt_attribution.json',
+                                json.dumps({'LicenseFile': value}).encode())])
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                sources.collect_notices(self.archive, self.root / 'notices')
+        for content in (b'{invalid', b'[null]', b'{"LicenseFiles":true}'):
+            self.make_archive([('sample/qt_attribution.json', content)])
+            with self.subTest(content=content), self.assertRaises(ValueError):
+                sources.collect_notices(self.archive, self.root / 'notices')
+        self.assertFalse((self.root / 'notices').exists())
+
+    def test_qt_reference_count_and_metadata_budgets(self):
+        self.make_archive([('sample/qt_attribution.json', b'{"LicenseFiles":["one","two"]}')])
+        with patch.object(sources, 'MAX_QT_REFERENCES', 1), self.assertRaisesRegex(ValueError, 'reference budget'):
+            sources.collect_notices(self.archive, self.root / 'notices')
+        with patch.object(sources, 'MAX_NOTICE', 4), self.assertRaisesRegex(ValueError, 'attribution size'):
+            sources.collect_notices(self.archive, self.root / 'notices')
+        self.assertFalse((self.root / 'notices').exists())
+
     def test_curl_version_and_transfer_policy(self):
         with patch.object(sources.subprocess, 'check_output', return_value='curl 8.3.0\n'), self.assertRaises(ValueError):
             sources.fetch('https://example.invalid/src', self.root / 'out', 123)

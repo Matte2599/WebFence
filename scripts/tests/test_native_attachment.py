@@ -87,7 +87,7 @@ class NativeAttachmentTest(unittest.TestCase):
     def test_manifest_tampering_and_incomplete_collection(self):
         manifest_path = self.materials / 'source-materials.json'
         original = manifest_path.read_text()
-        for change in ['input', 'notice', 'archive', 'ready', 'missing']:
+        for change in ['input', 'notice', 'archive', 'ready', 'qt_reference', 'missing']:
             data = json.loads(original)
             if change == 'input':
                 data['input_manifest_sha256'] = '0' * 64
@@ -97,6 +97,8 @@ class NativeAttachmentTest(unittest.TestCase):
                 data['archives'][0]['archive'] = '../source.tar.gz'
             elif change == 'ready':
                 data['distribution_ready'] = True
+            elif change == 'qt_reference':
+                data['archives'][0]['qt_license_references'] = [{'attribution': 'forged', 'path': 'forged'}]
             else:
                 data['archives'] = []
             manifest_path.write_text(json.dumps(data))
@@ -120,6 +122,32 @@ class NativeAttachmentTest(unittest.TestCase):
             self.run_attach()
         self.assertFalse(self.output.exists())
         self.assertTrue(other.is_file())
+
+    def test_qt_reference_ledger_is_regenerated_and_tampering_rejected(self):
+        archive = self.root / 'qt.tar'
+        with tarfile.open(archive, 'w') as output:
+            for name, value in [('qt/terms.txt', b'synthetic referenced terms'),
+                                ('qt/qt_attribution.json', b'{"LicenseFile":"terms.txt"}')]:
+                info = tarfile.TarInfo(name)
+                info.size = len(value)
+                output.addfile(info, io.BytesIO(value))
+        data = json.loads(self.inventory.read_text())
+        data['packages']['sample@1.0']['upstream_archives'][0]['checksums'][0]['checksumValue'] = attachment.sources.sha(archive)
+        self.inventory.write_text(json.dumps(data))
+        self.materials = self.root / 'qt-materials'
+        manifest = attachment.sources.collect(self.inventory, self.materials, [archive])
+        path = self.materials / 'source-materials.json'
+        original = path.read_text()
+        manifest['archives'][0]['qt_license_references'][0]['path'] = 'qt/forged.txt'
+        path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, 'Regenerated'):
+            self.run_attach()
+        self.assertFalse(self.output.exists())
+        path.write_text(original)
+        result = self.run_attach()
+        record = json.loads(original)['archives'][0]
+        self.assertEqual((self.output / record['notice_root'] / 'qt/terms.txt').read_bytes(), b'synthetic referenced terms')
+        self.assertEqual(result['notice_count'], 2)
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
+import posixpath
 import re
 import shutil
 import subprocess
@@ -20,6 +21,7 @@ MAX_UNPACKED = 2 * 1024 * 1024 * 1024
 MAX_NOTICE = 4 * 1024 * 1024
 MAX_TOTAL_NOTICES = 32 * 1024 * 1024
 MAX_MEMBERS = 100000
+MAX_QT_REFERENCES = 4096
 # References explicitly named by FreeType's root LICENSE.TXT. Keep whole files
 # containing these notices; the source archive remains the canonical material.
 FREETYPE_REFERENCES = {'docs/FTL.TXT', 'docs/GPLv2.TXT', 'src/bdf/README', 'src/pcf/README',
@@ -91,9 +93,62 @@ def is_notice(path):
             or 'LICENSES' in path.parts or path.name == 'qt_attribution.json')
 
 
+def qt_license_references(archive):
+    """Read Qt attribution references before streaming files in arbitrary order.
+
+    Qt metadata contains literal newlines in strings, hence strict=False. This
+    only relaxes JSON string parsing; reference paths still have strict bounds.
+    Never resolve filesystem links or extract metadata as executable content.
+    """
+    references, seen = set(), set()
+    unpacked = metadata_bytes = 0
+    with tarfile.open(archive, mode='r|*') as source:
+        for number, member in enumerate(source, 1):
+            if number > MAX_MEMBERS or member.size < 0:
+                raise ValueError('Archive entry budget exceeded')
+            unpacked += member.size
+            if unpacked > MAX_UNPACKED:
+                raise ValueError('Uncompressed source budget exceeded')
+            path = safe_path(member.name.rstrip('/'))
+            if path.name != 'qt_attribution.json':
+                continue
+            if member.name in seen or not member.isfile() or len(path.parts) < 2:
+                raise ValueError('Invalid or duplicate Qt attribution metadata')
+            seen.add(member.name)
+            metadata_bytes += member.size
+            if member.size > MAX_NOTICE or metadata_bytes > MAX_TOTAL_NOTICES:
+                raise ValueError('Qt attribution size budget exceeded')
+            with source.extractfile(member) as stream:
+                data = json.loads(stream.read(), strict=False)
+            entries = data if isinstance(data, list) else [data]
+            for entry in entries:
+                if not isinstance(entry, dict):
+                    raise ValueError('Expected Qt attribution object')
+                for field in ('LicenseFile', 'LicenseFiles'):
+                    values = entry.get(field, [])
+                    values = [values] if isinstance(values, str) else values
+                    if not isinstance(values, list):
+                        raise ValueError('Expected Qt license file string or list')
+                    for value in values:
+                        if (not isinstance(value, str) or not value or value.startswith('/')
+                                or '\\' in value or ':' in value or '//' in value
+                                or any(ord(c) < 32 for c in value)):
+                            raise ValueError('Unsafe Qt license reference')
+                        target = safe_path(posixpath.normpath(posixpath.join(str(path.parent), value)))
+                        if len(target.parts) < 2 or target.parts[0] != path.parts[0]:
+                            raise ValueError('Qt license reference escapes archive root')
+                        references.add((path.as_posix(), target.as_posix()))
+                        if len(references) > MAX_QT_REFERENCES:
+                            raise ValueError('Qt license reference budget exceeded')
+    return [{'attribution': attribution, 'path': path} for attribution, path in sorted(references)]
+
+
 def collect_notices(archive, destination, references=()):
     files, links, seen = [], [], set()
     references, found_references = set(references), set()
+    qt_references = qt_license_references(archive)
+    qt_paths = {item['path'] for item in qt_references}
+    found_qt = set()
     unpacked = notice_bytes = 0
     # Stream rather than extractall: do not materialize links, devices, code or
     # arbitrary paths. The original archive preserves all source files.
@@ -106,7 +161,7 @@ def collect_notices(archive, destination, references=()):
                 raise ValueError('Uncompressed source budget exceeded')
             path = safe_path(member.name.rstrip('/'))
             relative = '/'.join(path.parts[1:])
-            if not (is_notice(path) or relative in references) or member.isdir():
+            if not (is_notice(path) or relative in references or path.as_posix() in qt_paths) or member.isdir():
                 continue
             if member.name in seen:
                 raise ValueError('Duplicate notice path')
@@ -119,6 +174,8 @@ def collect_notices(archive, destination, references=()):
                 raise ValueError('Unsupported notice entry type')
             if relative in references:
                 found_references.add(relative)
+            if path.as_posix() in qt_paths:
+                found_qt.add(path.as_posix())
             notice_bytes += member.size
             if member.size > MAX_NOTICE or notice_bytes > MAX_TOTAL_NOTICES:
                 raise ValueError('Notice size budget exceeded')
@@ -131,7 +188,12 @@ def collect_notices(archive, destination, references=()):
         raise ValueError('No regular source notices found')
     if references != found_references:
         raise ValueError('Missing referenced source notices; review package changes')
-    return {'files': files, 'archive_links': links, 'scope': 'source-tree notices, possibly a superset of shipped code'}
+    if qt_paths != found_qt:
+        raise ValueError('Missing regular Qt license references; review package changes')
+    result = {'files': files, 'archive_links': links, 'scope': 'source-tree notices, possibly a superset of shipped code'}
+    if qt_references:
+        result['qt_license_references'] = qt_references
+    return result
 
 
 def collect(manifest, output, reuse=()):

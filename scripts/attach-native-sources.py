@@ -83,7 +83,8 @@ def attach(native_build, materials, output):
             target.mkdir(parents=True)
             references = sources.FREETYPE_REFERENCES if item['package'].startswith('freetype@') else ()
             extracted = sources.collect_notices(archive, target, references)
-            if any(record.get(key) != value for key, value in extracted.items()):
+            if (any(record.get(key) != value for key, value in extracted.items())
+                    or record.get('qt_license_references', []) != extracted.get('qt_license_references', [])):
                 raise ValueError('Regenerated source notices differ from collection manifest')
         (stage / 'source-materials.json').write_bytes(source_raw)
         (stage / 'native-build.input.json').write_bytes(input_raw)

@@ -1,0 +1,394 @@
+{
+  "date": "2026-09-23",
+  "repository_head_before_change": "3598b5fc70a8e337d4ed81bf8b354104e775dbc9",
+  "archive_count": 15,
+  "archive_bytes": 170920531,
+  "previous_notice_count": 247,
+  "notice_count": 258,
+  "previous_manifest_sha256": "d3d9196ca40b7247f070b08644535f9f8e15173665afaf0ca2aa220fcdcb560b",
+  "updated_manifest_sha256": "67db33f918aa27b7faf3f89de8ca0741c9ec7ab8e0789438a795e8e3694aed6b",
+  "current_inventory_input_sha256": "5f2a4b16b706c74106cecb76fe881502f9c0b6ef0667a6134a1ee47bba3dad0e",
+  "qt_source_sha256": "5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22",
+  "all_previous_notices_unchanged": true,
+  "all_archive_and_notice_hashes_independently_checked": true,
+  "additional_files_checked_against_original_archive": [
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/BDF-LICENSE.txt",
+      "size_bytes": 2305,
+      "sha256": "e4e792f29e66750f2e410fd7b50a567652c180f6ee15e1a4dfa0bb5cde524537"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/PCF-LICENSE.txt",
+      "size_bytes": 2218,
+      "sha256": "6938597bfdeca0db191a8f9ede52eaf2482c2c71a0094c084747a1235f9958fe"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/ZLIB-LICENSE.txt",
+      "size_bytes": 962,
+      "sha256": "2b1f5d615382a151af3eb71462ad17d89e2efee8fa7664058d35d3d9237ebb19"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libjpeg/ijg-license.txt",
+      "size_bytes": 1815,
+      "sha256": "1cb448f5e2e6d3aca60943f4eee1a04675628dc0266a074a42bc1560ebc28d61"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpsl/PSL-LICENSE.txt",
+      "size_bytes": 16726,
+      "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/BRG_ENDIAN_LICENSE",
+      "size_bytes": 645,
+      "sha256": "2fed6f252ca4a7e813811de3cd3cd08183edd4138bdee909410ef6eee394e82c"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/CC0_LICENSE",
+      "size_bytes": 7013,
+      "sha256": "1f2786e2c5befeb4dcba6638db6528bf96ef5d2cf24bc85ab5a81ef00abef59d"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wasm/DEJAVU-LICENSE",
+      "size_bytes": 8816,
+      "sha256": "7a083b136e64d064794c3419751e5c7dd10d2f64c108fe5ba161eae5e5958a93"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt",
+      "size_bytes": 1055,
+      "sha256": "a8341b9c90ef447a77f55d550e6691e370d3ac15d60edb584def356e348ab828"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/appmenu/LGPL-2.1-or-later.txt",
+      "size_bytes": 25906,
+      "sha256": "1ccf09bf2f598308df4bed9cd8e9657dc5cd0973d2800318f2e241486e2edf3f"
+    },
+    {
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/text-input/v2/HPND_LICENSE.txt",
+      "size_bytes": 1095,
+      "sha256": "8172d52f3b7bba7d10af2f9134c63d0f699ba6b20a47e35f5ac45654c500bfd7"
+    }
+  ],
+  "qt_license_references": [
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/cmake/3rdparty/extra-cmake-modules/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/cmake/3rdparty/extra-cmake-modules/COPYING-CMAKE-SCRIPTS"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/cmake/3rdparty/kwin/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/cmake/3rdparty/kwin/COPYING-CMAKE-SCRIPTS"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/D3D12MemoryAllocator/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/D3D12MemoryAllocator/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/VulkanMemoryAllocator/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/VulkanMemoryAllocator/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/android/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/android/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/blake2/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/blake2/COPYING"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/double-conversion/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/double-conversion/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/easing/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/easing/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/forkfd/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/forkfd/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/BDF-LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/PCF-LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/ZLIB-LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/gradle/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/gradle/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/harfbuzz-ng/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/harfbuzz-ng/COPYING"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/icc/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/icc/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/libjpeg/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libjpeg/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/libjpeg/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libjpeg/ijg-license.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpng/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpng/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpsl/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpsl/PSL-LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpsl/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/libpsl/src/LICENSE.chromium"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/md4c/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/md4c/LICENSE.md"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/pcre2/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/pcre2/LICENCE.md"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/pcre2/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/pcre2/LICENSE-SLJIT"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/pixman/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/pixman/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/rfc6234/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/rfc6234/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/BRG_ENDIAN_LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/sha3/CC0_LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/tinycbor/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/tinycbor/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wasm/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wasm/DEJAVU-LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/appmenu/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/appmenu/LGPL-2.1-or-later.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/color-management/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/fractional-scale/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/fullscreen-shell/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/linux-dmabuf/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/pointer-gestures/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/pointer-warp/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/presentation-time/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/scaler/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/session-management/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/tablet/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/text-input/v1/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/text-input/v2/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/text-input/v2/HPND_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/text-input/v3/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/viewporter/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/wayland/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/wl-eglstream/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/wlr-data-control/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/wp-primary-selection/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-activation/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-decoration/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-dialog/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-foreign/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-output/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-shell/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-system-bell/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/xdg-toplevel-icon/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/wayland/protocols/MIT_LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/xcb/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/xcb/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/3rdparty/zlib/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/zlib/LICENSE"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/corelib/kernel/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/corelib/kernel/LICENSE.QEVENTDISPATCHER_CF.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/dbus/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/dbus/LICENSE.LIBDBUS-1.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/opengl/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/gui/opengl/LICENSE.KHRONOS.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/painting/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/3rdparty/freetype/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/painting/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/gui/painting/LICENSE.QIMAGETRANSFORM.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/painting/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/gui/painting/LICENSE.XCONSORTIUM.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/rhi/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/gui/rhi/LICENSE.MiniEngine.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/text/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/gui/text/LICENSE.AGLFN.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/gui/vulkan/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/gui/vulkan/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/plugins/platforms/cocoa/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/plugins/platforms/cocoa/LICENSE.COCOA.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/testinternal/3rdparty/cmake/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/testinternal/3rdparty/cmake/Copyright.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/catch2/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/catch2/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/cycle/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/cycle/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/linux/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/linux/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/valgrind/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/src/testlib/3rdparty/valgrind/LICENSE.txt"
+    },
+    {
+      "attribution": "qtbase-everywhere-src-6.11.2/util/gradientgen/qt_attribution.json",
+      "path": "qtbase-everywhere-src-6.11.2/util/gradientgen/LICENSE.WEBGRADIENTS.txt"
+    }
+  ],
+  "distribution_ready": false,
+  "scope": "Source-tree Qt LicenseFile/LicenseFiles references; includes unshipped platforms and build tools, not binary reachability or legal approval.",
+  "local_bundle_verification": {
+    "webfence_build": {
+      "CGO_CXXFLAGS": "-O2 -g -std=c++17",
+      "GOARCH": "arm64",
+      "GOOS": "darwin",
+      "vcs.revision": "3598b5fc70a8e337d4ed81bf8b354104e775dbc9",
+      "vcs.time": "2026-09-23T20:44:17Z",
+      "vcs.modified": "true"
+    },
+    "native_inventory_sha256": "70c949869c1914ba06a3f259fb010e0ed80819b05083102bcefd8ca4a3015b01",
+    "attached_notice_count": 258,
+    "attachment_bound_to_current_inventory": true,
+    "all_attached_notice_hashes_rechecked": true,
+    "ad_hoc_signature_passed": true,
+    "cocoa_self_test_passed": true,
+    "personal_language_preserved": true,
+    "homebrew_supplements_present": true,
+    "old_collection_rejected_without_publishing_attachment": true
+  }
+}
