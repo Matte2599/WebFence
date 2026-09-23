@@ -14,6 +14,8 @@ The foundations also include SQLite experiments and a restricted Ed25519 JWS com
 
 The macOS bundle includes a [temporary Qt Cocoa correction](DOCS/en/ADR-006-QT-COCOA.md) for the reproduced assistive crash; compact layout checked at 200% and [CI passed on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Actual screen-reader and distribution trials remain open.
 
+The macOS bundle now collects [provenance and available notices](DOCS/en/M0-PACKAGING.md), explicitly recording materials still missing for distribution.
+
 Procedures for [Debian and Windows packaging](DOCS/en/ADR-007-PACKAGING.md) are also available. Verified amd64/arm64 `.deb` files in separate Debian runtimes and the Windows ZIP with system-only PATH; [CI `32655b0`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35877356234). Development packages: real-desktop trials and full distribution-material review remain open.
 
 The [prolonged stability procedure](DOCS/en/M0-STABILITY.md) repeats GUI flows and records Go memory/RSS. Smoke trials verified in CI; native macOS 30-minute session running, outcome still to verify.

@@ -39,3 +39,13 @@ The macOS bundle now rebuilds the Qt 6.11.2 Cocoa plugin with a temporary assist
 Updated local bundle verified on 2026-09-23: Go revision `953ed2daf5061b4044f7cd9d8ff72b133153d260`, `vcs.modified=false`. Executable SHA-256 `4af00ede347509677b52c55bd8a355a77faef6d9879327868ae325ef124b0abf`; corrected Cocoa plugin `acc31e86a786050c2e7280c5be09df30718262d7b4514dc5d82f65e8d13d5511`. Build and ad hoc signature verified; [four-target CI passed](https://github.com/Matte2599/WebFence/actions/runs/35873709410). These hashes identify local artifacts, not a guarantee of bit-for-bit reproducible builds. The new bundle minimum OS was not lowered.
 
 Added `.deb`/Windows ZIP packaging and separate-runtime checks: [ADR-007 and commands](ADR-007-PACKAGING.md). [CI `32655b0` passed, six jobs](https://github.com/Matte2599/WebFence/actions/runs/35877356234); development packages, not supported releases.
+
+## Automated macOS collection
+
+`package-macos-notices.py` runs against the staged bundle before final signing. Requires Python 3.9+ and Apple developer tools. For every Mach-O it checks a single ARM64 slice and finds a unique name/UUID match among installed Homebrew kegs in Qt's runtime closure. Includes actually matched versions, installed recipes/patches, receipts, upstream SBOMs and available notices. UUID is a provenance hint, not cryptographic proof. Unknown/ambiguous native files fail the build; dependencies listed in the receipt but absent from the app are not inventoried as shipped.
+
+`Contents/Resources/notices` also collects actual linked Go modules, LICENSE and IT/EN documentation, the Cocoa patch, its LGPL/GPL texts and rebuild script. Hashes are labelled **before final signing**, which may change binaries; do not present them as signed-bundle checksums. Final signing protects the added resources.
+
+The manifest sets `distribution_ready: false`. The local probe matched 28 total Mach-O files (executable, rebuilt Cocoa and 26 originals) to 15 Homebrew packages. GLib supplies no installed notices; installed Qt notices concern CMake tools and do not suffice for Qt runtime. Complete source archives, embedded components, further notices and replacement materials remain to collect/verify. Upstream SBOMs are retained as sources, not declared product SBOMs. Script success alone grants no distribution approval.
+
+Verified rejection of an unrelated Mach-O component and preservation of an existing inventory. Local bundle integration completed: ad hoc signature verified, 28 records/15 packages checked, bundled documentation links valid. Local build from code `e683437` with declared modifications; change CI still to verify. The GLib recipe also references a Homebrew patch absent from the keg: it remains among source materials to acquire.
