@@ -12,6 +12,50 @@ try {
         }
     }
     Write-Output 'PASS extracted ZIP includes license and Italian/English documentation entry points'
+    $native = Get-Content -Raw -LiteralPath (Join-Path $bundle 'native-build.json') | ConvertFrom-Json
+    $packageNames = @($native.packages.PSObject.Properties.Name)
+    if ($native.schema -ne 1 -or @($native.files).Count -lt 1 -or $packageNames.Count -lt 1) {
+        throw 'Invalid packaged native inventory'
+    }
+    foreach ($file in $native.files) {
+        if ($packageNames -notcontains $file.package -or $file.path.Contains('\') -or
+            $file.path.Split('/') -contains '..') {
+            throw "Invalid DLL package mapping: $($file.path)"
+        }
+        $binary = Join-Path $bundle $file.path
+        if (-not (Test-Path -LiteralPath $binary -PathType Leaf) -or
+            (Get-FileHash -Algorithm SHA256 -LiteralPath $binary).Hash -ne $file.sha256) {
+            throw "Packaged DLL checksum mismatch: $($file.path)"
+        }
+    }
+    $noticeCount = 0
+    foreach ($owner in $packageNames) {
+        $record = $native.packages.PSObject.Properties[$owner].Value
+        $notices = @($record.license_file_records)
+        $paths = @($record.license_files)
+        if ($notices.Count -lt 1 -or $notices.Count -ne $paths.Count -or
+            $record.binary_package.verified_notice_count -ne $notices.Count) {
+            throw "Incomplete packaged notice inventory: $owner"
+        }
+        $seen = @{}
+        foreach ($notice in $notices) {
+            $prefix = "notices/native/$owner/"
+            if (-not $notice.path.StartsWith($prefix, [StringComparison]::Ordinal) -or
+                $notice.path.Contains('\') -or $notice.path.Split('/') -contains '..' -or
+                $seen.ContainsKey($notice.path) -or $paths -notcontains $notice.path -or
+                -not $notice.binary_package_member.StartsWith('ucrt64/share/', [StringComparison]::Ordinal)) {
+                throw "Invalid packaged notice mapping: $owner"
+            }
+            $seen[$notice.path] = $true
+            $path = Join-Path $bundle $notice.path
+            if (-not (Test-Path -LiteralPath $path -PathType Leaf) -or
+                (Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash -ne $notice.sha256) {
+                throw "Packaged notice checksum mismatch: $($notice.path)"
+            }
+            $noticeCount++
+        }
+    }
+    Write-Output "PASS extracted ZIP native notices: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices"
     $sourceRoot = Join-Path $bundle 'msys2-sources'
     if ($RequireSources -or (Test-Path -LiteralPath $sourceRoot)) {
         $attachment = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot 'attachment.json') | ConvertFrom-Json

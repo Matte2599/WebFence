@@ -13,6 +13,8 @@ Updated: 2026-09-24. **M0 remains open.** This register tracks exit criteria, no
 | M0-05 | Synthetic lab and initial scope/network tests | Complete: [ADR-003](ADR-003-TRANSPORT.md), four-target CI, loopback only. | Keep regressions passing; production transport belongs to M1. |
 | M0-06 | Private channel, legal review and contributors | Partial: Private vulnerability reporting enabled and verified in GitHub UI; [SECURITY](../../SECURITY.md) updated. | [Qualified legal review](LEGAL-REVIEW.md) and contributor agreement before opening corresponding processes; do not claim approval without evidence. |
 
+M0-02, Windows notices: [comparison of selected files with cached binary archives and extracted-ZIP recheck](M0-WINDOWS-SOURCES.md) implemented, 58 local Python tests passed. Windows CI on the new code and completeness of selection are still to be checked; gate unchanged.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.

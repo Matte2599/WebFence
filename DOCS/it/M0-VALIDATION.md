@@ -13,6 +13,8 @@ Aggiornamento: 2026-09-24. **M0 aperta.** Questo registro riguarda criteri di us
 | M0-05 | Laboratorio sintetico e primi test scope/rete | Completato: [ADR-003](ADR-003-TRANSPORT.md), CI quattro target, solo loopback. | Mantenere regressioni verdi; trasporto di produzione in M1. |
 | M0-06 | Canale privato, revisione legale e contributori | Parziale: Private vulnerability reporting abilitato e verificato nella UI GitHub; [SECURITY](../../SECURITY.md) aggiornato. | [Revisione legale qualificata del testo](LEGAL-REVIEW.md) e accordo contributori prima delle rispettive aperture; non dichiararli approvati senza riscontro. |
 
+M0-02, avvisi Windows: [confronto dei file selezionati con gli archivi binari e ricontrollo nello ZIP](M0-WINDOWS-SOURCES.md) implementati, 58 test Python locali superati. La CI Windows del nuovo codice e la completezza della selezione sono ancora da verificare; gate invariato.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.

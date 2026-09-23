@@ -62,14 +62,17 @@ def tar_stream(path, zstd):
         process.wait(timeout=10)
 
 
-def inspect(archive_path, name, version, required_files, zstd='zstd'):
+def inspect(archive_path, name, version, required_files, zstd='zstd', *, required_notices=None):
     archive_path = Path(archive_path)
     if (not archive_path.is_file() or archive_path.is_symlink()
             or archive_path.stat().st_size > MAX_ARCHIVE):
         raise ValueError('Invalid cached binary archive')
     if not required_files:
         raise ValueError('Expected package DLLs to verify')
-    metadata, matched = {}, set()
+    required_notices = {} if required_notices is None else required_notices
+    if set(required_files) & set(required_notices):
+        raise ValueError('A package member cannot be both a DLL and a notice')
+    metadata, matched, matched_notices = {}, set(), set()
     total = 0
     with tar_stream(archive_path, zstd) as archive:
         for count, member in enumerate(archive, 1):
@@ -84,9 +87,11 @@ def inspect(archive_path, name, version, required_files, zstd='zstd'):
             if (PurePosixPath(path).is_absolute() or '\\' in path or ':' in path
                     or any(p in {'', '.', '..'} for p in path.split('/'))):
                 raise ValueError('Unsafe package path')
-            if path not in {'.PKGINFO', '.BUILDINFO'} and path not in required_files:
+            if (path not in {'.PKGINFO', '.BUILDINFO'} and path not in required_files
+                    and path not in required_notices):
                 continue
-            if not member.isfile() or path in metadata or path in matched:
+            if (not member.isfile() or path in metadata or path in matched
+                    or path in matched_notices):
                 raise ValueError('Duplicate or nonregular package evidence')
             with archive.extractfile(member) as stream:
                 if path in {'.PKGINFO', '.BUILDINFO'}:
@@ -97,11 +102,18 @@ def inspect(archive_path, name, version, required_files, zstd='zstd'):
                     digest = hashlib.sha256()
                     for chunk in iter(lambda: stream.read(1024 * 1024), b''):
                         digest.update(chunk)
-                    if digest.hexdigest() != required_files[path]:
-                        raise ValueError('Installed DLL differs from cached package: ' + path)
-                    matched.add(path)
+                    if path in required_files:
+                        if digest.hexdigest() != required_files[path]:
+                            raise ValueError('Installed DLL differs from cached package: ' + path)
+                        matched.add(path)
+                    else:
+                        if digest.hexdigest() != required_notices[path]:
+                            raise ValueError('Installed notice differs from cached package: ' + path)
+                        matched_notices.add(path)
     if matched != set(required_files) or set(metadata) != {'.PKGINFO', '.BUILDINFO'}:
         raise ValueError('Missing DLL or build metadata in cached package')
+    if matched_notices != set(required_notices):
+        raise ValueError('Missing notice in cached package')
     package, build = fields(metadata['.PKGINFO']), fields(metadata['.BUILDINFO'])
     base = single(package, 'pkgbase')
     if not re.fullmatch(r'mingw-w64-[a-z0-9+_.-]+', base):
@@ -117,4 +129,5 @@ def inspect(archive_path, name, version, required_files, zstd='zstd'):
     return {'filename': archive_path.name, 'sha256': sha(archive_path),
             'size_bytes': archive_path.stat().st_size, 'source_package': base,
             'version': version, 'pkgbuild_sha256': recipe, 'verified_dll_count': len(matched),
-            'signature_verification': 'not performed by this collector; cached package and installed DLL correspondence only'}, metadata
+            'verified_notice_count': len(matched_notices),
+            'signature_verification': 'not performed by this collector; cached package and installed DLL/notice correspondence only'}, metadata

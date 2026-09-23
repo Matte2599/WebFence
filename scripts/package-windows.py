@@ -92,7 +92,7 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
         notices = bundle / "notices"
         subprocess.run([sys.executable, str(repo / "scripts/package-go-notices.py"),
                         str(bundle / "webfence.exe"), str(notices / "go")], check=True)
-        owners, files, required = {}, [], {}
+        owners, files, required, required_notices = {}, [], {}, {}
         for binary in sorted(bundle.rglob("*.dll")):
             source = source_for(binary.name)
             owner = run("pacman", "-Qoq", run("cygpath", "-u", source))
@@ -104,7 +104,7 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 if (len(identity) != 2 or identity[0] != owner
                         or not re.fullmatch(r'[A-Za-z0-9._+~-]+', identity[1])):
                     raise ValueError('Invalid installed UCRT64 package version')
-                licenses = []
+                licenses, license_records = [], []
                 for line in run("pacman", "-Ql", owner).splitlines():
                     _, path = line.split(" ", 1)
                     relative = notice_relative(path)
@@ -112,12 +112,21 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                         local = Path(run("cygpath", "-w", path))
                         if local.is_file():
                             target = notices / "native" / owner / relative
+                            if target.exists():
+                                raise ValueError('Duplicate package notice: ' + path)
                             target.parent.mkdir(parents=True, exist_ok=True)
                             shutil.copyfile(local, target)
-                            licenses.append(str(target.relative_to(bundle)))
+                            published = target.relative_to(bundle).as_posix()
+                            member = local.relative_to(prefix.parent).as_posix()
+                            notice_hash = sha(target)
+                            required_notices.setdefault(owner, {})[member] = notice_hash
+                            licenses.append(published)
+                            license_records.append({'path': published, 'sha256': notice_hash,
+                                                    'binary_package_member': member})
                 if not licenses:
                     raise ValueError("Missing packaged license notices for " + owner)
-                owners[owner] = {"pacman_metadata": metadata, "version": identity[1], "license_files": licenses}
+                owners[owner] = {"pacman_metadata": metadata, "version": identity[1],
+                                 "license_files": licenses, "license_file_records": license_records}
             member = source.relative_to(prefix.parent).as_posix()
             required.setdefault(owner, {})[member] = sha(source)
             files.append({"path": binary.relative_to(bundle).as_posix(), "sha256": digest(binary),
@@ -129,7 +138,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
             if len(candidates) != 1:
                 raise ValueError('Retain exactly one cached binary package for ' + owner + ' ' + record['version'])
             binary_record, metadata = inspect(candidates[0], owner, record['version'], required[owner],
-                                               str(prefix / 'bin/zstd.exe'))
+                                               str(prefix / 'bin/zstd.exe'),
+                                               required_notices=required_notices[owner])
             destination = notices / 'native' / owner / 'build'
             destination.mkdir()
             binary_record['metadata_files'] = []
@@ -138,7 +148,9 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 target.write_bytes(raw)
                 binary_record['metadata_files'].append({'path': target.relative_to(bundle).as_posix(), 'sha256': sha(target)})
             record['binary_package'] = binary_record
-            print(f"Verified {owner} {record['version']}: {len(required[owner])} DLLs; source {binary_record['source_package']}; PKGBUILD {binary_record['pkgbuild_sha256']}")
+            print(f"Verified {owner} {record['version']}: {len(required[owner])} DLLs, "
+                  f"{binary_record['verified_notice_count']} notices; source {binary_record['source_package']}; "
+                  f"PKGBUILD {binary_record['pkgbuild_sha256']}")
         (bundle / "native-build.json").write_text(json.dumps({"schema": 1, "files": files,
             "distribution_ready": False,
             "packages": owners, "system_imports": sorted(system_imports),

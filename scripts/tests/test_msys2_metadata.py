@@ -21,6 +21,9 @@ class MSYS2MetadataTest(unittest.TestCase):
         self.member = 'ucrt64/bin/synthetic.dll'
         self.payload = b'Synthetic DLL fixture, never executable'
         self.required = {self.member: hashlib.sha256(self.payload).hexdigest()}
+        self.notice_member = 'ucrt64/share/licenses/synthetic/LICENSE'
+        self.notice_payload = b'Synthetic license notice fixture\n'
+        self.required_notices = {self.notice_member: hashlib.sha256(self.notice_payload).hexdigest()}
         self.pkg = (f'pkgname = {self.name}\npkgbase = mingw-w64-synthetic\npkgver = 1.2-3\narch = any\n').encode()
         self.build = (f'format = 2\npkgname = {self.name}\npkgname = {self.name}-debug\n'
                       'pkgbase = mingw-w64-synthetic\npkgver = 1.2-3\npkgarch = any\n'
@@ -41,8 +44,9 @@ class MSYS2MetadataTest(unittest.TestCase):
                     entry.size = len(data)
                     archive.addfile(entry, io.BytesIO(data))
 
-    def inspect(self, required=None):
-        return metadata.inspect(self.archive, self.name, '1.2-3', self.required if required is None else required)
+    def inspect(self, required=None, notices=None):
+        return metadata.inspect(self.archive, self.name, '1.2-3', self.required if required is None else required,
+                                required_notices=notices)
 
     def test_binding_preserves_metadata_without_extracting_code(self):
         self.write(extras=[('install.sh', b'never execute')])
@@ -51,8 +55,27 @@ class MSYS2MetadataTest(unittest.TestCase):
         self.assertEqual(record['pkgbuild_sha256'], 'a' * 64)
         self.assertEqual(record['sha256'], metadata.sha(self.archive))
         self.assertEqual(record['verified_dll_count'], 1)
+        self.assertEqual(record['verified_notice_count'], 0)
         self.assertEqual(raw['.BUILDINFO'], self.build)
         self.assertFalse((self.archive.parent / 'install.sh').exists())
+
+    def test_installed_notice_must_match_cached_binary_package(self):
+        self.write(extras=[(self.notice_member, self.notice_payload)])
+        record, _ = self.inspect(notices=self.required_notices)
+        self.assertEqual(record['verified_notice_count'], 1)
+        self.write(extras=[(self.notice_member, b'altered notice')])
+        with self.assertRaisesRegex(ValueError, 'Installed notice differs'):
+            self.inspect(notices=self.required_notices)
+        self.write()
+        with self.assertRaisesRegex(ValueError, 'Missing notice'):
+            self.inspect(notices=self.required_notices)
+        self.write(extras=[(self.notice_member, ('outside',))])
+        with self.assertRaisesRegex(ValueError, 'nonregular'):
+            self.inspect(notices=self.required_notices)
+        self.write(extras=[(self.notice_member, self.notice_payload),
+                           (self.notice_member, self.notice_payload)])
+        with self.assertRaisesRegex(ValueError, 'Duplicate'):
+            self.inspect(notices=self.required_notices)
 
     def test_changed_or_missing_dll_rejected(self):
         self.write(payload=b'changed after installation')
