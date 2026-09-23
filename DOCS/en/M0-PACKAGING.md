@@ -64,4 +64,13 @@ Packaging now reads `LC_BUILD_VERSION` or `LC_VERSION_MIN_MACOSX` from every inc
 
 [Apple documents this key](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/LaunchServicesKeys.html#//apple_ref/doc/uid/20001431-113253) as the minimum requirement used by Launch Services to report insufficient systems. The calculated value is a conservative floor for all included binaries, **not compatibility certification or a choice of officially supported minimum**. Dependency requirements are not lowered; a different build may declare a different minimum.
 
-Defect reproduced on the previous bundle: the executable and 18 other Mach-O files require macOS 26, but `LSMinimumSystemVersion` is missing. Five new regressions cover modern/legacy commands, numeric comparison, SDK/minimum separation, rejection and preservation of invalid plists; 36 Python tests passed locally overall. New bundle: value `26.0.0`, 19 Mach-O files with minimum 26 and nine with minimum 14. Independent `vtool` checks on all 28 files, ad hoc signature and Cocoa self-test passed; CI remains to complete. Launch Services’ error dialog has not been tested on macOS below the requirement.
+Defect reproduced on the previous bundle: the executable and 18 other Mach-O files require macOS 26, but `LSMinimumSystemVersion` is missing. Five new regressions cover modern/legacy commands, numeric comparison, SDK/minimum separation, rejection and preservation of invalid plists; 36 Python tests passed locally overall. New bundle: value `26.0.0`, 19 Mach-O files with minimum 26 and nine with minimum 14. Independent `vtool` checks on all 28 files, ad hoc signature and Cocoa self-test passed; CI completed as recorded below. Launch Services’ error dialog has not been tested on macOS below the requirement.
+
+[CI `3593dcc`](https://github.com/Matte2599/WebFence/actions/runs/35914285406): six passing jobs, 36 Python regressions on four targets. macOS 15 runner bundle: declared/Mach-O minimum 15.0.0 and 28 files rechecked with vtool, signature and Cocoa passed.
+
+| Verified artifact | Plist minimum | Mach-O files rechecked | Execution trial |
+| --- | --- | --- | --- |
+| Local bundle from `f64f534` with declared modifications | 26.0.0 | 28, including 19 minimum 26 and nine minimum 14 | Cocoa self-test on the local Mac |
+| CI `3593dcc` bundle, macOS 15 runner | 15.0.0 | 28; maximum requirement 15.0.0 | Cocoa self-test and short soak |
+
+These values identify different builds and do not promise macOS 15 compatibility for the local bundle. Clean-desktop trials and the official minimum still need definition/verification.
