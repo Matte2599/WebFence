@@ -19,14 +19,14 @@ There is no scanner, scope/network engine, persistent projects, keychain, CVE, s
 
 | Requested platform | This task's verification | Limitation |
 | --- | --- | --- |
-| Apple Silicon macOS / ARM64 | Build and bundle on macOS 26.6.2, Xcode 27, Go 1.27.1 | Minimum version, distribution signing and notarization unvalidated |
-| Windows 10/11 x86-64 | Build workflow on x64 Windows Server 2022 prepared | Does not establish GUI execution on Windows 10/11 |
-| Debian/derivatives x86-64 | Build workflow on Ubuntu 24.04 prepared | Debian and minimum versions untested |
-| Debian/derivatives ARM64 | Build workflow on ARM64 Ubuntu 24.04 prepared | Linux hardware and desktops untested |
+| Apple Silicon macOS / ARM64 | Local build/bundle on macOS 26.6.2 and ARM64 `macos-15` CI, Go 1.27.1 | Minimum version, distribution signing and notarization unvalidated |
+| Windows 10/11 x86-64 | CI build on x64 Windows Server 2022 passed | Does not establish GUI execution on Windows 10/11 |
+| Debian/derivatives x86-64 | CI build on x64 Ubuntu 24.04 passed | Debian and minimum versions untested |
+| Debian/derivatives ARM64 | CI build on ARM64 Ubuntu 24.04 passed | Linux hardware and desktops untested |
 
 Neither Intel macOS nor 32-bit architectures were requested. This is a support plan, not certification. Remote run outcomes are on the [Actions page](https://github.com/Matte2599/WebFence/actions); a workflow's existence does not establish a passing run.
 
-The first CI run passed tests and the macOS build, but Linux builds also required Wayland headers (`wayland-client-core.h`): added `libwayland-dev` to prerequisites and the workflow. Remote revalidation is in progress. Markdown-only changes do not rerun builds.
+**Verified CI:** [run 35845953673](https://github.com/Matte2599/WebFence/actions/runs/35845953673), commit `b9556c5`: all five jobs passed (tests and four native builds). The workflow also installs `libwayland-dev`: GLFW requires Wayland headers as well as X11 headers. Markdown-only changes do not rerun builds; this run identifies the verified code.
 
 ## Local verification
 
@@ -44,7 +44,7 @@ Test data is synthetic; no remote target was assessed. Go toolchain/dependency d
 
 The normal build exposes the window and menus to macOS inspection, but not widgets. Fyne's experimental `accessibility` tag exposes some labels and buttons; in the experiment, selectors, the table and evidence pane content were absent from the tree, with duplicated groups. Activating the button through the tree did not load records and a subsequent tool interaction timed out. The timeout alone does not establish an application crash.
 
-Inspection of Fyne 2.8.1 source confirms that the macOS bridge visits `fyne.Accessible` objects and recurses through `fyne.Container`; enabling the tag is not sufficient to make every composite widget accessible. On Linux this version does not include the same native bridge. Full VoiceOver, NVDA and Orca testing has not been performed.
+Inspection of Fyne 2.8.1 source confirms that the macOS bridge visits `fyne.Accessible` objects and recurses through `fyne.Container`; enabling the tag is not sufficient to make every composite widget accessible. On Linux this version does not include the same native bridge. The public `fyne.Accessible` interface only provides a label and role; element creation in the inspected macOS bridge passes null action callbacks. This explains the observed activation limitation and requires a toolkit-level solution or comparison with alternatives, not merely changes to WebFence labels. Full VoiceOver, NVDA and Orca testing has not been performed.
 
 The normal bundle remains useful for visual/functional experiments but **does not meet product accessibility requirements**. The script's optional tag only reproduces the investigation. Do not bypass this gate by declaring M0 complete or making unvalidated GUI components permanent.
 

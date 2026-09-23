@@ -24,7 +24,7 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 
 - [x] Modulo Go/Fyne fissato, cataloghi IT/EN, fixture offline e test GUI con race detector.
 - [x] Finestra, 10.000 righe, filtri, dettaglio/copiatore evidenze e preferenza lingua persistente.
-- [x] Build e bundle locale di sviluppo su macOS Apple Silicon; workflow CI introdotto e prerequisiti Wayland Linux corretti dopo la prima run.
+- [x] Build e bundle locale di sviluppo su macOS Apple Silicon; CI verificata con test e quattro build native superate ([run](https://github.com/Matte2599/WebFence/actions/runs/35845953673)).
 - [x] Piattaforme richieste e direzione UX confermate dall’autore: [specifica UX](it/UX.md).
 - [ ] Risolvere il gate di accessibilità Fyne o registrare un toolkit alternativo dopo confronto pratico.
 
@@ -33,7 +33,7 @@ Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi re
 - [ ] Prototipo Go/Fyne: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
 - [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi.
-- [ ] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
+- [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
 - [ ] Laboratorio sintetico isolato e primi test di scope/rete.
 - [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture.
 
@@ -130,7 +130,7 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 
 - [x] Pinned Go/Fyne module, IT/EN catalogs, offline fixtures and GUI tests with race detector.
 - [x] Window, 10,000 rows, filters, evidence reader/copy and persistent language preference.
-- [x] Local development build and bundle on Apple Silicon macOS; CI workflow introduced and Linux Wayland prerequisites corrected after the first run.
+- [x] Local development build and bundle on Apple Silicon macOS; verified CI with tests and four passing native builds ([run](https://github.com/Matte2599/WebFence/actions/runs/35845953673)).
 - [x] Author-confirmed requested platforms and UX direction: [UX specification](en/UX.md).
 - [ ] Resolve Fyne’s accessibility gate or record an alternative toolkit after practical comparison.
 
@@ -139,7 +139,7 @@ These checks close the first task, not all of M0. Overall gates remain:
 - [ ] Go/Fyne prototype: window, large table, evidence reading, keyboard, DPI and assistive technologies.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.
 - [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access.
-- [ ] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
+- [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
 - [ ] Isolated synthetic lab and initial scope/network tests.
 - [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes.
 

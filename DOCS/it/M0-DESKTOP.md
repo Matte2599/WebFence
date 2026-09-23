@@ -19,14 +19,14 @@ Non sono presenti scanner, scope/rete, progetti persistenti, keychain, CVE, repo
 
 | Piattaforma richiesta | Prova di questo task | Limite |
 | --- | --- | --- |
-| macOS Apple Silicon / ARM64 | Build e bundle su macOS 26.6.2, Xcode 27, Go 1.27.1 | Versione minima, firma distribuzione e notarizzazione non validate |
-| Windows 10/11 x86-64 | Workflow di build su Windows Server 2022 x64 predisposto | Non equivale a esecuzione della GUI su Windows 10/11 |
-| Debian/derivati x86-64 | Workflow di build su Ubuntu 24.04 predisposto | Debian e versioni minime non provate |
-| Debian/derivati ARM64 | Workflow di build su Ubuntu 24.04 ARM64 predisposto | Hardware e desktop Linux non provati |
+| macOS Apple Silicon / ARM64 | Build/bundle locali su macOS 26.6.2 e CI `macos-15` ARM64, Go 1.27.1 | Versione minima, firma distribuzione e notarizzazione non validate |
+| Windows 10/11 x86-64 | Build CI su Windows Server 2022 x64 superata | Non equivale a esecuzione della GUI su Windows 10/11 |
+| Debian/derivati x86-64 | Build CI su Ubuntu 24.04 x64 superata | Debian e versioni minime non provate |
+| Debian/derivati ARM64 | Build CI su Ubuntu 24.04 ARM64 superata | Hardware e desktop Linux non provati |
 
 Nessun supporto a macOS Intel o architetture a 32 bit richiesto. La matrice è un piano di supporto, non una certificazione. Gli esiti delle esecuzioni remote sono nella [pagina Actions](https://github.com/Matte2599/WebFence/actions); la presenza del workflow non prova che una run sia passata.
 
-La prima run CI ha passato test e build macOS, ma le build Linux richiedevano anche gli header Wayland (`wayland-client-core.h`): aggiunto `libwayland-dev` ai prerequisiti e al workflow. Nuova verifica remota in corso. Le modifiche esclusivamente Markdown non rilanciano le build.
+**CI verificata:** [run 35845953673](https://github.com/Matte2599/WebFence/actions/runs/35845953673), commit `b9556c5`: tutti e cinque i job superati (test e quattro build native). Il workflow installa anche `libwayland-dev`: GLFW richiede gli header Wayland oltre a quelli X11. Le modifiche esclusivamente Markdown non rilanciano le build; questa run identifica il codice verificato.
 
 ## Verifiche locali
 
@@ -44,7 +44,7 @@ I dati di test sono sintetici; nessun target remoto è stato analizzato. I downl
 
 La build normale espone all'ispezione macOS la finestra e i menu, ma non i widget. Il tag sperimentale Fyne `accessibility` espone parte delle etichette e dei pulsanti; nella prova i selettori, la tabella e il contenuto del pannello prove mancavano dall'albero, con gruppi duplicati. L'attivazione del pulsante tramite albero non ha caricato le righe e una successiva interazione dello strumento è terminata in timeout. Il timeout da solo non dimostra un crash dell'applicazione.
 
-La lettura del sorgente Fyne 2.8.1 conferma che il bridge macOS visita gli oggetti `fyne.Accessible` e ricorre nei `fyne.Container`; non basta abilitare il tag per rendere accessibili tutti i widget composti. Su Linux questa versione non include il medesimo bridge nativo. Non sono state eseguite prove complete con VoiceOver, NVDA o Orca.
+La lettura del sorgente Fyne 2.8.1 conferma che il bridge macOS visita gli oggetti `fyne.Accessible` e ricorre nei `fyne.Container`; non basta abilitare il tag per rendere accessibili tutti i widget composti. Su Linux questa versione non include il medesimo bridge nativo. L’interfaccia pubblica `fyne.Accessible` offre soltanto etichetta e ruolo; nel bridge macOS esaminato la creazione dell’elemento passa callback di azione nulle. Questo spiega il limite di attivazione osservato e richiede una soluzione nel toolkit o un confronto con alternative, non una semplice modifica delle etichette WebFence. Non sono state eseguite prove complete con VoiceOver, NVDA o Orca.
 
 Il bundle normale rimane utile per prove visive e funzionali, **non soddisfa il requisito di accessibilità del prodotto**. Il tag è facoltativo nello script solo per riprodurre l'indagine. Non aggirare il gate dichiarando completata M0 o rendendo permanenti componenti GUI non ancora convalidati.
 
