@@ -88,6 +88,9 @@ jobs:
       - name: Verify published macOS dependency closure
         if: runner.os == 'macOS'
         run: python3 scripts/check-macos-linkage.py dist/WebFence.app
+      - name: Exercise isolated macOS bundle and observe loaded libraries
+        if: runner.os == 'macOS'
+        run: python3 scripts/test-macos-bundle-isolated.py dist/WebFence.app
       - name: Verify packaged Homebrew supplements
         if: runner.os == 'macOS'
         run: |

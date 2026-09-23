@@ -64,6 +64,8 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [CI `c47f1ea`](https://github.com/Matte2599/WebFence/actions/runs/35927157090) conclusa al primo tentativo: sei job verdi. Sui quattro target nativi passano 53 regressioni Python; macOS 15 rimuove sei RPATH esterni e verifica 28 binari/194 riferimenti (148 Apple, 46 interni) nel bundle firmato, poi supera Cocoa, sostituzione plugin e pacchetto sorgenti 15/258/4/28. Windows passa anche da percorso Unicode/spazi senza toolchain nel PATH; Debian amd64/arm64 passa runtime separato e purge. Questo chiude la verifica del controllo di collegamento, non i gate M0 su lettori, macchine pulite, minimi OS o revisione legale.
 
+[Prova runtime macOS isolata](evidence/macos-isolated-runtime-2026-09-24.md): su copia privata firmata, ambiente figlio con PATH di sistema, self-test Cocoa con due plugin caricati dal bundle e soak tracciato con 24 immagini app/1.127 totali, nessuna esterna a bundle o sistema Apple. Test automatico aggiunto alla CI macOS, esito remoto da verificare. Il self-test con tracciamento dyld simultaneo ha avuto cinque asserzioni Tab fallite; le prove separano i due strumenti e non sostituiscono Mac pulito, lettori o revisione legale.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -194,6 +196,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 [Mach-O check](evidence/macos-linkage-closure-2026-09-24.md). Mach-O closure check integrated into macOS packaging: six external LC_RPATH entries removed in staging before inventory/signing, then rejection of non-Apple dependencies outside the bundle. Private-copy trial: 28 binaries, 194 references (148 Apple, 46 internal), ad hoc signature, Cocoa self-test and 10-second soak passed; originals preserved. 53 local Python regressions passed, including seven new ones. [CI for the integrated code](https://github.com/Matte2599/WebFence/actions/runs/35927157090) passed six jobs; the trial does not cover dlopen or clean Macs. [Evidence](evidence/macos-linkage-closure-2026-09-24.md).
 
 [CI `c47f1ea`](https://github.com/Matte2599/WebFence/actions/runs/35927157090) completed on the first attempt: six passing jobs. All four native targets pass 53 Python regressions; macOS 15 removes six external rpaths and checks 28 binaries/194 references (148 Apple, 46 internal) in the signed bundle, then passes Cocoa, plugin replacement and the 15/258/4/28 native-source package. Windows also passes from a Unicode/spaced path without the toolchain in PATH; Debian amd64/arm64 passes separate-runtime and purge checks. This closes verification of the linkage check, not M0 gates for readers, clean machines, minimum OS versions or legal review.
+
+[Isolated macOS runtime trial](evidence/macos-isolated-runtime-2026-09-24.md): a signed private copy, child environment with a system-only PATH, Cocoa self-test with two plugins loaded from the bundle, and a traced soak with 24 app images/1,127 total, none outside the bundle or Apple system. Automated check added to macOS CI; remote result pending verification. A self-test with simultaneous dyld tracing failed five Tab assertions; the checks keep these instruments separate and do not replace a clean Mac, readers or legal review.
 
 ### M1 — Controlled traditional alpha
 
