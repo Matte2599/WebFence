@@ -81,7 +81,7 @@ Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with
 
 The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
 
-Locally verified [Cocoa plugin rebuilding and replacement](DOCS/en/M0-QT-REPLACEMENT.md) using materials shipped in the bundle, retaining the same Go build.
+Verified locally and in [macOS 15 CI](https://github.com/Matte2599/WebFence/actions/runs/35916839178) [Cocoa plugin rebuilding and replacement](DOCS/en/M0-QT-REPLACEMENT.md) using materials shipped in the bundle, retaining the same Go build.
 
 Development packages include IT/EN documentation; packaging checks local file links.
 
