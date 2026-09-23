@@ -87,6 +87,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 - Inclusione facoltativa dei 21 archivi sorgente nello ZIP implementata, con ricette rigenerate e vincolo all’inventario corrente; 25 regressioni locali passate. CI [`69f1dcc`](https://github.com/Matte2599/WebFence/actions/runs/35908880543) completata: sei job superati, 25 regressioni Python sui quattro target; su Windows raccolti/inclusi 21 archivi, verificati gli hash nello ZIP estratto, preservato lo ZIP su errore e superati self-test/soak offscreen e nativi con PATH di solo sistema. Materiali locali: /tmp/webfence-windows-source-attachment-a146152. Nessuna release o dichiarazione di completezza.
 
+- Supplementi Homebrew: `native_supplements.py` e piano revisionato per GLib/libb2, con hash delle ricette correnti, quattro download/1.093.639 byte, staging senza sovrascrittura e inclusione prima della firma tramite WEBFENCE_NATIVE_SUPPLEMENT_PLAN. 30 regressioni locali passate; bundle con 247 avvisi e supplementi, firma e self-test Cocoa superati. Piano errato rifiutato dal packaging completo: eseguibile, allegato e preferenza lingua precedenti invariati; firma precedente valida. CI da verificare; completezza sorgenti e distribuzione ancora aperte.
+
 ## English
 
 ### Author-confirmed facts
@@ -161,6 +163,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 - [Windows sources](DOCS/en/M0-WINDOWS-SOURCES.md): separate collector with recipes bound to BUILDINFO hashes; 21 archives/316,641,108 bytes, 175 members, 103 checksums verified. Eight SKIP signatures unverified; winpthreads Git manually verified offline (fsck and makepkg checksum), collector remains vcs_unverified. Rechecked 21 archives/42 metadata files; evidence in DOCS/evidence/windows-sources-2026-09-23, materials /tmp/webfence-windows-sources-054bb2d. 20 local Python regressions passed; [CI `37da7cf`](https://github.com/Matte2599/WebFence/actions/runs/35907192055) six passing jobs, including 20 regressions on four targets; 22 Windows packages/43 DLLs and recipes identical to the source plan. No automatic attachment/release, source completeness and review still open.
 
 - Optional attachment of 21 source archives in the ZIP implemented, with regenerated recipes and current-inventory binding; 25 local regressions passed. CI [`69f1dcc`](https://github.com/Matte2599/WebFence/actions/runs/35908880543) completed: six passing jobs, 25 Python regressions on four targets; Windows collected/attached 21 archives, verified extracted-ZIP hashes, preserved the ZIP on failure and passed offscreen/native self-tests and soaks with system-only PATH. Local materials: /tmp/webfence-windows-source-attachment-a146152. No release or completeness claim.
+
+- Homebrew supplements: `native_supplements.py` and reviewed GLib/libb2 plan, bound to current recipe hashes, four downloads/1,093,639 bytes, staging without overwrite and attachment before signing via WEBFENCE_NATIVE_SUPPLEMENT_PLAN. 30 local regressions passed; bundle with 247 notices and supplements, signature and Cocoa self-test passed. Invalid plan rejected by full packaging: previous executable, attachment and language preference unchanged; previous signature valid. CI remains to verify; source completeness and distribution still open.
 
 ### Next work and boundaries
 

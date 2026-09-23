@@ -56,6 +56,12 @@ if [ -n "${WEBFENCE_NATIVE_SOURCE_MATERIALS:-}" ]; then
     "$WEBFENCE_NATIVE_SOURCE_MATERIALS" \
     "$bundle/Contents/Resources/notices/upstream-source"
 fi
+if [ -n "${WEBFENCE_NATIVE_SUPPLEMENT_PLAN:-}" ]; then
+  python3 scripts/native_supplements.py \
+    "$bundle/Contents/Resources/notices/native-build.json" \
+    "$WEBFENCE_NATIVE_SUPPLEMENT_PLAN" \
+    "$bundle/Contents/Resources/notices/homebrew-supplements"
+fi
 codesign --force --deep --sign - "$bundle"
 codesign --verify --deep --strict "$bundle"
 mkdir -p dist

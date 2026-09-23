@@ -70,3 +70,27 @@ Full-packaging failure injection: a synthetic collection with `INCOMPLETE` was r
 Acquired the MSYS2 Qt 6.11.2-2 archive with upstream source, recipe and ten patches; internal hashes checked without executing code. [Provenance, hashes and limits](../evidence/windows-qt-source-2026-09-23.md). The subsequent [Windows collection](M0-WINDOWS-SOURCES.md) covers 21 source packages with recipes bound to binaries; complete assembly and review remain open.
 
 The Windows manifest now binds DLLs to cached binary packages and the source recipe hash: [procedure and limits](ADR-007-PACKAGING.md#matching-msys2-binary-packages). Locally verified the source PKGBUILD ↔ Qt binary BUILDINFO binding against a published-checksum-verified package too; detached signature still not verified.
+
+## Homebrew supplements in the macOS bundle
+
+The reviewed `packaging/macos/homebrew-supplements.json` plan identifies four files: the GLib recipe at the previously verified Homebrew revision, GLib path patch, gobject-introspection 1.86.0 and libb2 configure patch. Each group is bound to the installed recipe hash in the bundle as well as the inventory name/version. The plan is a trusted build input to review when dependencies change: the program does not interpret Ruby or automatically infer every required resource.
+
+```sh
+# Explicit attachment before signing, with verified HTTPS downloads.
+WEBFENCE_NATIVE_SUPPLEMENT_PLAN=packaging/macos/homebrew-supplements.json \
+  sh scripts/package-macos.sh
+
+# Separate collection without modifying a signed application.
+python3 scripts/native_supplements.py \
+  dist/WebFence.app/Contents/Resources/notices/native-build.json \
+  packaging/macos/homebrew-supplements.json \
+  /tmp/webfence-homebrew-supplements
+```
+
+The variable is independent of `WEBFENCE_NATIVE_SOURCE_MATERIALS`: the 247 upstream notices and supplements can be included together. Without an explicit plan packaging acquires no supplements. The standalone collector accepts `--reuse-directory DIRECTORY` to reuse files in `package@version/filename` layout, verifying without network access. The destination must be new; output is published only after all checks pass. Failure removes temporary staging and preserves existing destinations.
+
+Limits: 16 packages, 64 files, 16 MiB per file/recipe and 64 MiB combined supplements; 16 MiB per manifest. Credential-free HTTPS with the curl limits described above; size and SHA-256 checked after copying too. Mismatched versions, recipes or paths, duplicates, links and incorrect hashes are rejected. No patch, recipe or archive content is executed. Builder-controlled inputs and staging, without concurrent writers.
+
+Bundle output is `Contents/Resources/notices/homebrew-supplements`, included before ad hoc signing. It contains the four materials, two installed recipes, plan, current inventory copy and `attachment.json` with hashes and provenance. Retains `distribution_ready=false` and `corresponding_sources_complete=false`: this plan covers GLib/libb2, not every Homebrew resource, environment or distribution obligation.
+
+Local verification on 2026-09-23: actual download of four files/1,093,639 bytes and matching two recipes succeeded; 30 Python regressions passed. Local bundle with 247 notices and supplements: hashes rechecked, ad hoc signature and Cocoa self-test passed. Invalid plan rejected by full packaging: previous executable, attachment and language preference unchanged, previous signature valid. CI remains to verify.

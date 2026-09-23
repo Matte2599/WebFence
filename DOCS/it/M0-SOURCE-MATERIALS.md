@@ -70,3 +70,27 @@ Iniezione di errore nel packaging completo: raccolta sintetica con `INCOMPLETE` 
 Acquisito l’archivio MSYS2 Qt 6.11.2-2 con sorgente upstream, ricetta e dieci patch; hash interni verificati senza eseguire codice. [Provenienza, hash e limiti](../evidence/windows-qt-source-2026-09-23.md). La successiva [raccolta Windows](M0-WINDOWS-SOURCES.md) copre 21 pacchetti sorgente con ricette collegate ai binari; assemblaggio completo e revisione restano aperti.
 
 Il manifest Windows ora collega le DLL ai pacchetti binari in cache e all’hash della ricetta sorgente: [procedura e limiti](ADR-007-PACKAGING.md#corrispondenza-con-i-pacchetti-binari-msys2). Verificato localmente anche il collegamento PKGBUILD sorgente ↔ BUILDINFO del pacchetto Qt con checksum pubblicato; firma distaccata ancora non verificata.
+
+## Supplementi Homebrew nel bundle macOS
+
+Il piano revisionato `packaging/macos/homebrew-supplements.json` identifica quattro file: ricetta GLib alla revisione Homebrew già verificata, patch dei percorsi GLib, gobject-introspection 1.86.0 e patch configure di libb2. Ciascun gruppo è vincolato all’hash della ricetta installata nel bundle, oltre che a nome/versione nell’inventario. Il piano è un input di build fidato da revisionare quando cambiano le dipendenze: il programma non interpreta Ruby e non deduce automaticamente tutte le risorse necessarie.
+
+```sh
+# Inclusione esplicita prima della firma, con download HTTPS verificati.
+WEBFENCE_NATIVE_SUPPLEMENT_PLAN=packaging/macos/homebrew-supplements.json \
+  sh scripts/package-macos.sh
+
+# Raccolta separata, senza modificare un’app firmata.
+python3 scripts/native_supplements.py \
+  dist/WebFence.app/Contents/Resources/notices/native-build.json \
+  packaging/macos/homebrew-supplements.json \
+  /tmp/webfence-homebrew-supplements
+```
+
+La variabile è indipendente da `WEBFENCE_NATIVE_SOURCE_MATERIALS`: si possono includere insieme i 247 avvisi upstream e i supplementi. Senza un piano esplicito il packaging non acquisisce supplementi. Il collector standalone accetta `--reuse-directory DIRECTORY` per riutilizzare file nella struttura `pacchetto@versione/nome-file`, verificandoli senza rete. La destinazione deve essere nuova; il risultato viene pubblicato soltanto dopo tutti i controlli. Un errore rimuove lo staging temporaneo e preserva le destinazioni precedenti.
+
+Limiti: 16 pacchetti, 64 file, 16 MiB per file/ricetta e 64 MiB complessivi di supplementi; 16 MiB per manifest. HTTPS senza credenziali, con i limiti curl già descritti; dimensione e SHA-256 verificati anche dopo la copia. Versioni, ricette, percorsi discordanti, duplicati, link o hash errati vengono rifiutati. Nessuna patch, ricetta o contenuto degli archivi viene eseguito. Input e staging sono controllati dal costruttore, senza scrittori concorrenti.
+
+Nel bundle l’output è `Contents/Resources/notices/homebrew-supplements`, incluso prima della firma ad hoc. Contiene i quattro materiali, le due ricette installate, il piano, una copia dell’inventario corrente e `attachment.json` con hash e provenienza. Conserva `distribution_ready=false` e `corresponding_sources_complete=false`: questo piano copre GLib/libb2, non tutte le risorse Homebrew, gli ambienti o gli obblighi di distribuzione.
+
+Verifica locale del 2026-09-23: download reale di quattro file/1.093.639 byte e corrispondenza delle due ricette riusciti; 30 regressioni Python passate. Bundle locale con 247 avvisi e supplementi: hash ricontrollati, firma ad hoc e self-test Cocoa superati. Piano errato rifiutato dal packaging completo: eseguibile, allegato e preferenza lingua precedenti invariati, firma precedente valida. CI da verificare.

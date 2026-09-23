@@ -75,7 +75,29 @@ jobs:
       - run: ./bin/webfence --soak-test=10s
       - name: macOS development bundle
         if: runner.os == 'macOS'
+        env:
+          WEBFENCE_NATIVE_SUPPLEMENT_PLAN: packaging/macos/homebrew-supplements.json
         run: sh scripts/package-macos.sh
+      - name: Verify packaged Homebrew supplements
+        if: runner.os == 'macOS'
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('dist/WebFence.app/Contents/Resources/notices')
+          materials = root / 'homebrew-supplements'
+          record = json.loads((materials / 'attachment.json').read_text())
+          def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
+          assert record['distribution_ready'] is False and record['corresponding_sources_complete'] is False
+          assert sha(root / 'native-build.json') == record['native_build_sha256']
+          assert sha(materials / 'native-build.current.json') == record['native_build_sha256']
+          assert sha(materials / 'plan.json') == record['plan_sha256']
+          for entry in record['files'] + record['installed_recipes']:
+              assert sha(materials / entry['path']) == entry['sha256']
+          assert record['file_count'] == len(record['files']) == 4
+          assert record['supplement_bytes'] == sum(x['size_bytes'] for x in record['files'])
+          print('PASS signed bundle supplements: 4 files, 2 recipe hashes, current inventory binding')
+          PY
       - name: macOS Cocoa bundle regression
         if: runner.os == 'macOS'
         env:
