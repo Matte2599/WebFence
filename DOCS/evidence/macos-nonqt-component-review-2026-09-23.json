@@ -1,0 +1,1012 @@
+{
+  "schema": 1,
+  "date": "2026-09-23",
+  "scope": "Actual local signed macOS bundle: non-Qt Homebrew libraries and Go executable; technical source/notice association, not legal or distribution approval.",
+  "distribution_ready": false,
+  "native_inventory_sha256": "70c949869c1914ba06a3f259fb010e0ed80819b05083102bcefd8ca4a3015b01",
+  "source_package_sha256": "505e05c33fe7bf18c45623d94cb508637bffafd8ceb41207535d60f9e751d3ef",
+  "counts": {
+    "homebrew_libraries": 18,
+    "homebrew_packages": 14,
+    "webfence_go_executables": 1,
+    "upstream_notice_files": 90
+  },
+  "files": [
+    {
+      "bundle_path": "Contents/Frameworks/libb2.1.dylib",
+      "post_signing_sha256": "8d33f4da64a3c352d8adb082f9238e4d122ccb2be3115786905ec78119c43dc9",
+      "origin": "homebrew",
+      "package": "libb2@0.98.1",
+      "installed_sha256": "3b47cc062d3b2547159844fe700b96c9a3c912e5eeb39101af9a1b5d4b83b4e2",
+      "source_path": "lib/libb2.1.dylib",
+      "uuid": "CDB9743E-4399-33D0-A9AF-8667F7F00478"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libdbus-1.3.dylib",
+      "post_signing_sha256": "09b1bc7b040682767e61f811c489e7fa356b7ca3152dc087217e00da5e0614fe",
+      "origin": "homebrew",
+      "package": "dbus@1.16.2_1",
+      "installed_sha256": "ec34e6babcba777ac7379a70aef3e90022bf4219c99da11feeb23c209642548c",
+      "source_path": "lib/libdbus-1.3.dylib",
+      "uuid": "D67BD0E2-713D-3B96-8916-513463708577"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libdouble-conversion.3.dylib",
+      "post_signing_sha256": "4a538ef7415fce8b12bbf8b5ef6cd07ba25c49b8ad9909b8bf0151ac0fb6cd57",
+      "origin": "homebrew",
+      "package": "double-conversion@3.4.0",
+      "installed_sha256": "9bcb7d1c3f0fa2605c330a3034f087798951f18ab3429128a230832ad9c34d83",
+      "source_path": "lib/libdouble-conversion.3.4.0.dylib",
+      "uuid": "A37DDDD2-A19D-363B-B32A-90DA247139E4"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libfreetype.6.dylib",
+      "post_signing_sha256": "5c5741c1c704a2a179ba5b9d1663daf57fe22d2c62d667d1ebe17e65d540b81d",
+      "origin": "homebrew",
+      "package": "freetype@2.14.3",
+      "installed_sha256": "e4b41d886673fd1c282764a3113224d83b09bd705d12db7c36366fb04b7592dc",
+      "source_path": "lib/libfreetype.6.dylib",
+      "uuid": "0A7E6C59-803B-3A5A-8F9B-240D7B3025CA"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libglib-2.0.0.dylib",
+      "post_signing_sha256": "c4f8492ecc1e3cf7900c019ce280a36fa8de4d8f28269632bb7f9aecc1e147c2",
+      "origin": "homebrew",
+      "package": "glib@2.90.0",
+      "installed_sha256": "e23a6acee2d81c533320953756b9d5151201b762d6fd12a332b1bd8acc110d14",
+      "source_path": "lib/libglib-2.0.0.dylib",
+      "uuid": "0C5D9F8A-59EC-3D2F-86BE-39BD6D6E6E14"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libgraphite2.3.dylib",
+      "post_signing_sha256": "37022034602d8564f03c3a40988d0dbc5076ee763b902088a0b18b3f9fd0e422",
+      "origin": "homebrew",
+      "package": "graphite2@1.3.15",
+      "installed_sha256": "fc59eeb61994433d7dcd349848db14951be1fac332349872ad03f86361473153",
+      "source_path": "lib/libgraphite2.3.3.1.dylib",
+      "uuid": "6A793C2F-5759-3012-8CCC-7DC558236EAF"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libgthread-2.0.0.dylib",
+      "post_signing_sha256": "b942ce463a8b02bbf3bf1a7134a2dc9eb123a87656b7c4dd9c1f8b8c5a3676eb",
+      "origin": "homebrew",
+      "package": "glib@2.90.0",
+      "installed_sha256": "f239eb82a4d0ec3679c03578b825b7af71ee77719a04a8f2eaf306e10a742695",
+      "source_path": "lib/libgthread-2.0.0.dylib",
+      "uuid": "D5C85655-4558-39C2-BF84-9A81509EFC97"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libharfbuzz.0.dylib",
+      "post_signing_sha256": "1fc27c4bed03b00891153f748390517d8fd4130ab37e1ba1f6dc3650b77a7e12",
+      "origin": "homebrew",
+      "package": "harfbuzz@14.5.0",
+      "installed_sha256": "6b9751b1edf515e346410d30aad89921203b6eca871bbc718299c73122e41f5c",
+      "source_path": "lib/libharfbuzz.0.dylib",
+      "uuid": "44EF5F7E-BBE2-3010-BF70-D2F20F994477"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libicudata.78.dylib",
+      "post_signing_sha256": "cf300df7a626011c57097b17d4714d0b7d0f234aaac50fa60a070268a550cc50",
+      "origin": "homebrew",
+      "package": "icu4c@78@78.3",
+      "installed_sha256": "e7dafc3fe6613326daa30d1c930aa66219ab5524fe576b0e7b3039451652b6bf",
+      "source_path": "lib/libicudata.78.3.dylib",
+      "uuid": "405A29E4-230E-3E63-8CA7-2F482D507E59"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libicui18n.78.dylib",
+      "post_signing_sha256": "12567fbfeebd82d036c9c7231891f26d516e2b53a49b970d5b389f5e15f3df49",
+      "origin": "homebrew",
+      "package": "icu4c@78@78.3",
+      "installed_sha256": "f319e50c965a1a0065d2cc5595d8553ff60b0e78a2e76bc3173774fd112de9ed",
+      "source_path": "lib/libicui18n.78.3.dylib",
+      "uuid": "6D9ABF1A-5E38-3103-A0EC-F1C0868F6FCA"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libicuuc.78.dylib",
+      "post_signing_sha256": "aa574b6a868fb3f289bdfa5b4c6ae4dc9acbe2d4ab2331af387f5eac8e05192a",
+      "origin": "homebrew",
+      "package": "icu4c@78@78.3",
+      "installed_sha256": "177dab8ae0bf0b1357d7ec6404a1e145bcc3d927aa15c3064171d23b2a1fd263",
+      "source_path": "lib/libicuuc.78.3.dylib",
+      "uuid": "EC934797-EFF8-36BA-BA4D-A1EFD318018A"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libintl.8.dylib",
+      "post_signing_sha256": "61dc283ec7aa7f6cb7d4c393af55ea22ed122b4a475a060b28b65a435c77883d",
+      "origin": "homebrew",
+      "package": "gettext@1.0",
+      "installed_sha256": "0c6d618e75fea85cc3d631e164a71766fba9341d19ce1f723300c52e63037c51",
+      "source_path": "lib/libintl.8.dylib",
+      "uuid": "9EF58F71-571D-352E-BB98-6E9754D6B30B"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libjpeg.8.dylib",
+      "post_signing_sha256": "050a896492f06ab91a7fa3003f52579f4596f0570b33f57e86c5ebb3e8e0f396",
+      "origin": "homebrew",
+      "package": "jpeg-turbo@3.2.0",
+      "installed_sha256": "e6585d0aee1969a63f288f97bbe3ef100ac787bc25ebcc4e6487b82b96cdbcae",
+      "source_path": "lib/libjpeg.8.3.2.dylib",
+      "uuid": "8A556CB1-F63C-35A2-9417-3657A66AB758"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libmd4c.0.dylib",
+      "post_signing_sha256": "07cf8cef1adb020c792f538dfddd0e6a2ee000e3e0c1f147b7c7a9cde922f20c",
+      "origin": "homebrew",
+      "package": "md4c@0.6.0",
+      "installed_sha256": "ed57c14b5540e007e3657b4b5e9bb4a173367e8f8bda2b761c90c2253e551e05",
+      "source_path": "lib/libmd4c.0.6.0.dylib",
+      "uuid": "DCC7DA10-6B70-39A5-BC61-C8C1EC420348"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libpcre2-16.0.dylib",
+      "post_signing_sha256": "6ca0f87b3dc630c0e09627ec55dccbc32901647aa01470b32f3026c94b2c025e",
+      "origin": "homebrew",
+      "package": "pcre2@10.48",
+      "installed_sha256": "91f681c6755bda152bef3b343ea278ec92054b95cbdf2c66589f4921ca03adf5",
+      "source_path": "lib/libpcre2-16.0.dylib",
+      "uuid": "CF2B7BC3-0705-3D27-AAA0-2D0699C7302C"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libpcre2-8.0.dylib",
+      "post_signing_sha256": "d74a9c6f9e5bb0d32bc06c06049332d5ced65072b53c292bab50c512781d4e90",
+      "origin": "homebrew",
+      "package": "pcre2@10.48",
+      "installed_sha256": "6b698ffc744550e149829d94045912448b8ac4b692cb267dce9fc2f3ed60659d",
+      "source_path": "lib/libpcre2-8.0.dylib",
+      "uuid": "C0441B62-B4E2-30CF-AFE5-2FF172C2B0BF"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libpng16.16.dylib",
+      "post_signing_sha256": "e9b614de013e19f6acf6f6df7959662654d85fae2ae76e8c4bd3428ff7b33c7f",
+      "origin": "homebrew",
+      "package": "libpng@1.6.58",
+      "installed_sha256": "0af10df88b17d1c23769d3669786dc35b6e09d45a0122889f769aec29f52dc33",
+      "source_path": "lib/libpng16.16.dylib",
+      "uuid": "68CBDB4A-D121-3925-A2AB-FA1A7598B757"
+    },
+    {
+      "bundle_path": "Contents/Frameworks/libzstd.1.dylib",
+      "post_signing_sha256": "0f917511c2873917457a41d4aa284f1759fafdc425093fa8c8d50ff4e29da878",
+      "origin": "homebrew",
+      "package": "zstd@1.5.7_1",
+      "installed_sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab",
+      "source_path": "lib/libzstd.1.5.7.dylib",
+      "uuid": "1CE1197A-4A2B-3036-984E-95599210332B"
+    },
+    {
+      "bundle_path": "Contents/MacOS/webfence",
+      "post_signing_sha256": "55022d491cc0fb168bf2b3726bdf179b92eeecbec0ac2bc1faf85152a1274efc",
+      "origin": "webfence-go-build",
+      "build_info": {
+        "CGO_CXXFLAGS": "-O2 -g -std=c++17",
+        "GOARCH": "arm64",
+        "GOOS": "darwin",
+        "vcs.revision": "3598b5fc70a8e337d4ed81bf8b354104e775dbc9",
+        "vcs.time": "2026-09-23T20:44:17Z",
+        "vcs.modified": "true"
+      }
+    }
+  ],
+  "packages": [
+    {
+      "package": "dbus@1.16.2_1",
+      "source_archive_sha256": "0ba2a1a4b16afe7bceb2c07e9ce99a8c2c3508e5dec290dbb643384bd6beb7e2",
+      "source_url": "https://dbus.freedesktop.org/releases/dbus/dbus-1.16.2.tar.xz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-dbus-src",
+      "source_sbom_license_concluded": "AFL-2.1 OR GPL-2.0-or-later",
+      "sbom_sha256": "7ebd4c11f8e40ad413d0ca34bd9eb2c5e16243c23dc2b08e14e03678ed07d65b",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/dbus@1.16.2_1/COPYING",
+          "sha256": "150e5d08e1cb5e62b65967d7931acad2c42d98ec1bbb584bebb01921cbc853c2"
+        },
+        {
+          "path": "homebrew/dbus@1.16.2_1/.brew/dbus.rb",
+          "sha256": "0ccf3ea6dd594140eaeaecc7dbd5810af6a6ca94885311501cd4bdabd5f843df"
+        },
+        {
+          "path": "homebrew/dbus@1.16.2_1/INSTALL_RECEIPT.json",
+          "sha256": "d9e8ba610d10cc541dc198eb8dc3b17782bdd85025f58b6ad1eb711ddfbf77dd"
+        },
+        {
+          "path": "homebrew/dbus@1.16.2_1/sbom.spdx.json",
+          "sha256": "7ebd4c11f8e40ad413d0ca34bd9eb2c5e16243c23dc2b08e14e03678ed07d65b"
+        }
+      ],
+      "upstream_notice_count": 12,
+      "upstream_notice_sha256s": [
+        {
+          "path": "dbus-1.16.2/COPYING",
+          "sha256": "150e5d08e1cb5e62b65967d7931acad2c42d98ec1bbb584bebb01921cbc853c2"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/AFL-2.0.txt",
+          "sha256": "7ecc7db84298adb05d2cf10339c63a5315a1c5c270a68d97d7d40a53b508ccde"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/AFL-2.1.txt",
+          "sha256": "93bb4f7417aa775bab9026cc3d0af28aeb64451fc5a8ec651876785edd8eaf9b"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/Apache-2.0.txt",
+          "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/BSD-3-Clause.txt",
+          "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/GPL-2.0-or-later.txt",
+          "sha256": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/LGPL-2.1-or-later.txt",
+          "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/LicenseRef-CMakeScripts.txt",
+          "sha256": "a4c1387064fda4c22bfca364b606eb4e0421efa37cad27c040a3d7ca7186d522"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/LicenseRef-GAP.txt",
+          "sha256": "cf4bc4c56dd0837f3d53b8c1467e0d7dbb95223de8bcfe83a4981c318a738ae3"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/LicenseRef-pycrypto-orig.txt",
+          "sha256": "2cb8f4f410f0ffc5dcfbadd188e20c859fdbb161e616cf2f3d34dfbf8c740547"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/MIT.txt",
+          "sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0"
+        },
+        {
+          "path": "dbus-1.16.2/LICENSES/TCL.txt",
+          "sha256": "36fc2d8a56a2a014ded51e298a7e63635eb4ec62e8bedb99c82b892542ac5e7d"
+        }
+      ]
+    },
+    {
+      "package": "double-conversion@3.4.0",
+      "source_archive_sha256": "42fd4d980ea86426e457b24bdfa835a6f5ad9517ddb01cdb42b99ab9c8dd5dc9",
+      "source_url": "https://github.com/google/double-conversion/archive/refs/tags/v3.4.0.tar.gz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-double-conversion-src",
+      "source_sbom_license_concluded": "BSD-3-Clause",
+      "sbom_sha256": "a98e394299c61f5663a2e19340700d7219df221876d8d76085dcfc4ab0b45259",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/double-conversion@3.4.0/COPYING",
+          "sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca"
+        },
+        {
+          "path": "homebrew/double-conversion@3.4.0/LICENSE",
+          "sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca"
+        },
+        {
+          "path": "homebrew/double-conversion@3.4.0/.brew/double-conversion.rb",
+          "sha256": "e5fa484ea27ae32a1dd2ecab92a2dcde38f00ffa47b073310ff1768ceba501c5"
+        },
+        {
+          "path": "homebrew/double-conversion@3.4.0/INSTALL_RECEIPT.json",
+          "sha256": "b2f66cf40700dba009ecf5eee0fda0ab47c387ae1620e2ffebcd5b9e8a99c4f9"
+        },
+        {
+          "path": "homebrew/double-conversion@3.4.0/sbom.spdx.json",
+          "sha256": "a98e394299c61f5663a2e19340700d7219df221876d8d76085dcfc4ab0b45259"
+        }
+      ],
+      "upstream_notice_count": 2,
+      "upstream_notice_sha256s": [
+        {
+          "path": "double-conversion-3.4.0/COPYING",
+          "sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca"
+        },
+        {
+          "path": "double-conversion-3.4.0/LICENSE",
+          "sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca"
+        }
+      ]
+    },
+    {
+      "package": "freetype@2.14.3",
+      "source_archive_sha256": "36bc4f1cc413335368ee656c42afca65c5a3987e8768cc28cf11ba775e785a5f",
+      "source_url": "https://downloads.sourceforge.net/project/freetype/freetype2/2.14.3/freetype-2.14.3.tar.xz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-freetype-src",
+      "source_sbom_license_concluded": "FTL",
+      "sbom_sha256": "0c3bc468b60ef5ec92c39392e62acf805a4824697c5a0e18841b59493f1d84a2",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/freetype@2.14.3/LICENSE.TXT",
+          "sha256": "bd36c8b474855fa294c2ec5c184544478ef3720aad37d65a6296a4f264fd2d3b"
+        },
+        {
+          "path": "homebrew/freetype@2.14.3/.brew/freetype.rb",
+          "sha256": "cc500226718264185ecf4b0560e0d9daee933c3e40622dd936b955536d025613"
+        },
+        {
+          "path": "homebrew/freetype@2.14.3/INSTALL_RECEIPT.json",
+          "sha256": "ee97e5657a9192c5ee0b34259f54cc3783f64a662f500d3f12cd4ce7850daeb3"
+        },
+        {
+          "path": "homebrew/freetype@2.14.3/sbom.spdx.json",
+          "sha256": "0c3bc468b60ef5ec92c39392e62acf805a4824697c5a0e18841b59493f1d84a2"
+        }
+      ],
+      "upstream_notice_count": 12,
+      "upstream_notice_sha256s": [
+        {
+          "path": "freetype-2.14.3/docs/GPLv2.TXT",
+          "sha256": "c4120c6752c910c299e3bd9cb3a46ff262c268303ca2069b61f92f10a5656c18"
+        },
+        {
+          "path": "freetype-2.14.3/docs/FTL.TXT",
+          "sha256": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f"
+        },
+        {
+          "path": "freetype-2.14.3/src/autofit/ft-hb-decls.h",
+          "sha256": "ed05eec3b5657f98a0c106fa4aa2e5a4bc7f0864e5d34bd5989eee6d8b718bcf"
+        },
+        {
+          "path": "freetype-2.14.3/src/autofit/hb-script-list.h",
+          "sha256": "0627d9f6a59a8b09e562e8aeaf414300899308725350beeb50b62b8657399576"
+        },
+        {
+          "path": "freetype-2.14.3/src/autofit/ft-hb-ft.c",
+          "sha256": "84dd5ddff1cec222e1755b4962faf45836238dfa3a46854dabd969eb4e50f8be"
+        },
+        {
+          "path": "freetype-2.14.3/src/autofit/ft-hb-types.h",
+          "sha256": "f106bf7cc41f52cd70907266a74a293c57bc5f71285b01c36bf198ad8b1c6234"
+        },
+        {
+          "path": "freetype-2.14.3/src/pcf/README",
+          "sha256": "18d9782898d9eac04476e2f744678137b2a889689ed3e923e052fc396a86f86b"
+        },
+        {
+          "path": "freetype-2.14.3/src/bdf/README",
+          "sha256": "7984455e7e5a9faba3797c8bf095fbe10cc846316b7320aff8c58402e22b82fe"
+        },
+        {
+          "path": "freetype-2.14.3/src/base/fthash.c",
+          "sha256": "693e5a54b3ce30140975a94a3369dbe706eb1f280c69e80da426d39cc45b94ef"
+        },
+        {
+          "path": "freetype-2.14.3/src/gzip/zlib.h",
+          "sha256": "c86a25c27f74cb97b8fa07b175f479f063d5064ace9995b4684063643c81cf1b"
+        },
+        {
+          "path": "freetype-2.14.3/include/freetype/internal/fthash.h",
+          "sha256": "023d88d49d29ecf3833db7717a3f7ae223c17ec2012bdb5bf33bb67abaf616c4"
+        },
+        {
+          "path": "freetype-2.14.3/LICENSE.TXT",
+          "sha256": "bd36c8b474855fa294c2ec5c184544478ef3720aad37d65a6296a4f264fd2d3b"
+        }
+      ]
+    },
+    {
+      "package": "gettext@1.0",
+      "source_archive_sha256": "85d99b79c981a404874c02e0342176cf75c7698e2b51fe41031cf6526d974f1a",
+      "source_url": "https://ftpmirror.gnu.org/gnu/gettext/gettext-1.0.tar.gz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-gettext-src",
+      "source_sbom_license_concluded": "GPL-3.0-or-later AND LGPL-2.1-or-later",
+      "sbom_sha256": "9e13068848f3b482c7637a3a1bedf43268bcfef302bbcd9882853c277c13092b",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/gettext@1.0/COPYING",
+          "sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b"
+        },
+        {
+          "path": "homebrew/gettext@1.0/.brew/gettext.rb",
+          "sha256": "170f5a29d2eb95b9dd1f1f754c0f9b90692c3d5dcf6db02c199c93e2c445177d"
+        },
+        {
+          "path": "homebrew/gettext@1.0/INSTALL_RECEIPT.json",
+          "sha256": "cd8d84829a595b5bf5bf6ee0d3f57c66130a17d41cc005674e8a1606e188a991"
+        },
+        {
+          "path": "homebrew/gettext@1.0/sbom.spdx.json",
+          "sha256": "9e13068848f3b482c7637a3a1bedf43268bcfef302bbcd9882853c277c13092b"
+        }
+      ],
+      "upstream_notice_count": 17,
+      "upstream_notice_sha256s": [
+        {
+          "path": "gettext-1.0/COPYING",
+          "sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b"
+        },
+        {
+          "path": "gettext-1.0/gettext-runtime/COPYING",
+          "sha256": "7ef2cdfe58e0c0460657b6598b49af29d4e03c1e41cbaf0e1da1eb8ad74b95d0"
+        },
+        {
+          "path": "gettext-1.0/gettext-runtime/libasprintf/COPYING",
+          "sha256": "03133addae5b99a6148c538300e6d97074453089be1423b741bd081f18e2b298"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/COPYING",
+          "sha256": "5d4cff30d5038f82a0edc79798456049b61e1752fdb7e9ab1f4bfb9fae3a7303"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/gnulib-lib/libxml/COPYING",
+          "sha256": "c5c63674f8a83c4d2e385d96d1c670a03cb871ba2927755467017317878574bd"
+        },
+        {
+          "path": "gettext-1.0/gnulib-local/lib/libxml/COPYING",
+          "sha256": "c5c63674f8a83c4d2e385d96d1c670a03cb871ba2927755467017317878574bd"
+        },
+        {
+          "path": "gettext-1.0/libtextstyle/COPYING",
+          "sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b"
+        },
+        {
+          "path": "gettext-1.0/libtextstyle/lib/libxml/COPYING",
+          "sha256": "c5c63674f8a83c4d2e385d96d1c670a03cb871ba2927755467017317878574bd"
+        },
+        {
+          "path": "gettext-1.0/gettext-runtime/intl/COPYING.LIB",
+          "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+        },
+        {
+          "path": "gettext-1.0/gettext-runtime/libasprintf/COPYING.LIB",
+          "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-0.23.2/LICENSE",
+          "sha256": "5f9cf9fb6acb1972b35ae29119ce563bb60ec097656bc4b69b9bac2d04c7a147"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-0.23.2/lib/src/unicode/LICENSE",
+          "sha256": "6a18c5fac70d7860b57f5b72b4e2c9a1ba6b3d2741eef7ff9767c5379364f10d"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-d-0.8.2/LICENSE",
+          "sha256": "ecf206b1a27e8e4ea07f1e1529cb111b4be5ce8420bd27b8269981d9c0c389f8"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-go-0.23.4/LICENSE",
+          "sha256": "2e0110e07abef7c2548b26ec9d6969775617ca539a0dc8dbeeb14d6452c711d1"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-ocaml-0.23.2/LICENSE",
+          "sha256": "f977a20805dd6e275f14bc090a5f8e638401dad4df366841c1060f12c75b74ae"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-rust-0.23.2/LICENSE",
+          "sha256": "31d5b6f4243d5c7c6e1c4ebbbb9f6407bd1457a08bcc4f706521710341acba36"
+        },
+        {
+          "path": "gettext-1.0/gettext-tools/tree-sitter-typescript-0.23.2/LICENSE",
+          "sha256": "49bf33cf78ef5897e4e161ce1517df7de1ae5042a65b6bcfd44401e0fc606559"
+        }
+      ]
+    },
+    {
+      "package": "glib@2.90.0",
+      "source_archive_sha256": "17d15cac2af80a33271127408e0abc2748eb297c595c2a26409e81e14e7d1b8f",
+      "source_url": "https://download.gnome.org/sources/glib/2.90/glib-2.90.0.tar.xz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-glib-src",
+      "source_sbom_license_concluded": "LGPL-2.1-or-later",
+      "sbom_sha256": "fbd645caca0a35762991cd3fe298af362634da8568b7ef4bf2ac765116debe9a",
+      "installed_notice_status": "no_installed_notices",
+      "installed_materials": [
+        {
+          "path": "homebrew/glib@2.90.0/.brew/glib.rb",
+          "sha256": "eb964bd9d934f92a1e271e84085c58541770d41f5698e7e5f17094375bb46d2a"
+        },
+        {
+          "path": "homebrew/glib@2.90.0/INSTALL_RECEIPT.json",
+          "sha256": "177af0129f5273a053ffc7bcb8b34705ec440841c3f9aec67044f21c7b5c34f4"
+        },
+        {
+          "path": "homebrew/glib@2.90.0/sbom.spdx.json",
+          "sha256": "fbd645caca0a35762991cd3fe298af362634da8568b7ef4bf2ac765116debe9a"
+        }
+      ],
+      "upstream_notice_count": 14,
+      "upstream_notice_sha256s": [
+        {
+          "path": "glib-2.90.0/LICENSES/AFL-2.0.txt",
+          "sha256": "7ecc7db84298adb05d2cf10339c63a5315a1c5c270a68d97d7d40a53b508ccde"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/Apache-2.0.txt",
+          "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/CC-BY-SA-3.0.txt",
+          "sha256": "3f941b3b89cf7b8370ceb83cc76d2120d471b58735d8ca60238a751a48d7f72f"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/CC0-1.0.txt",
+          "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/GPL-2.0-or-later.txt",
+          "sha256": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/LGPL-2.1-only.txt",
+          "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/LGPL-2.1-or-later.txt",
+          "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/LLVM-exception.txt",
+          "sha256": "e34c58338bd89d43e709e226610d8f32b3e3c47f4ad9a99a8dc1d4ac7842488e"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/LicenseRef-old-glib-tests.txt",
+          "sha256": "fb261b2d5dbe76c4850f90da763210bc385e52428df6bbfd7b06295ac8a32914"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/MIT.txt",
+          "sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0"
+        },
+        {
+          "path": "glib-2.90.0/LICENSES/MPL-1.1.txt",
+          "sha256": "6214f8b1300bb9f37b16ebc146f8f61af0187e0025042ff95c8b3030744a8795"
+        },
+        {
+          "path": "glib-2.90.0/docs/reference/COPYING",
+          "sha256": "b1ec1d0e5947f81e815d8771f7d4d90671a94bb10a42dc687fb566de461a57aa"
+        },
+        {
+          "path": "glib-2.90.0/subprojects/gvdb/COPYING",
+          "sha256": "bdbcdaa7858872393e9d6b216bbdc8a23e99d98dd6cdb7cda19458025b9e19fc"
+        },
+        {
+          "path": "glib-2.90.0/subprojects/gvdb/LICENSES/LGPL-2.1-or-later.txt",
+          "sha256": "5749785c8bdefafcb5d798270ed0a967036fe2ca63dcedade1627565dfef81d2"
+        }
+      ]
+    },
+    {
+      "package": "graphite2@1.3.15",
+      "source_archive_sha256": "c6bc8b4252724665297f7cad0c55897285c673f9b8e6db3522ace833593fe0b1",
+      "source_url": "https://github.com/silnrsi/graphite/releases/download/1.3.15/graphite2-1.3.15.tgz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-graphite2-src",
+      "source_sbom_license_concluded": "GPL-2.0-or-later OR LGPL-2.1-or-later OR MPL-1.1+",
+      "sbom_sha256": "03504e28af8534e3dc34ae50eebb1491d9e3edddb552131dec380b674cc849f9",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/graphite2@1.3.15/COPYING",
+          "sha256": "2c272829ff23f182c8bf7ea12fedea69b0ae148663123ed5240c117cb129c9c1"
+        },
+        {
+          "path": "homebrew/graphite2@1.3.15/LICENSE",
+          "sha256": "cab46cd45adbfea4b1d0f14b033c70062c73074fa0b56532c2f351576ddf455e"
+        },
+        {
+          "path": "homebrew/graphite2@1.3.15/.brew/graphite2.rb",
+          "sha256": "dc60f1784330fbf36c320a92dbf31b0f4f5ed83bab6b252963cdade7b87f6d49"
+        },
+        {
+          "path": "homebrew/graphite2@1.3.15/INSTALL_RECEIPT.json",
+          "sha256": "ddbb2467bcacbf7cf90b30d05534a4232d30ca5503c5eefc6fe52f8e3c1b0ac7"
+        },
+        {
+          "path": "homebrew/graphite2@1.3.15/sbom.spdx.json",
+          "sha256": "03504e28af8534e3dc34ae50eebb1491d9e3edddb552131dec380b674cc849f9"
+        }
+      ],
+      "upstream_notice_count": 4,
+      "upstream_notice_sha256s": [
+        {
+          "path": "graphite2-1.3.15/COPYING",
+          "sha256": "2c272829ff23f182c8bf7ea12fedea69b0ae148663123ed5240c117cb129c9c1"
+        },
+        {
+          "path": "graphite2-1.3.15/LICENSE",
+          "sha256": "cab46cd45adbfea4b1d0f14b033c70062c73074fa0b56532c2f351576ddf455e"
+        },
+        {
+          "path": "graphite2-1.3.15/debian-src/copyright",
+          "sha256": "88f17179e66c9efcdd88316a0294499bd5e221e8ccb14523c389fccc491bfb3a"
+        },
+        {
+          "path": "graphite2-1.3.15/site/LICENSE",
+          "sha256": "d33679dceb70f30adc7d184ab009dc92e7b03385a606e544feb7465357e078d3"
+        }
+      ]
+    },
+    {
+      "package": "harfbuzz@14.5.0",
+      "source_archive_sha256": "b7132e148358a45185c9feafd049dbaf243649d3c44414b3534d9c95d18592b9",
+      "source_url": "https://github.com/harfbuzz/harfbuzz/releases/download/14.5.0/harfbuzz-14.5.0.tar.xz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-harfbuzz-src",
+      "source_sbom_license_concluded": "MIT",
+      "sbom_sha256": "4fd99bf5ba368c37ee9b0bff44550303388e78dd590b4bf1b880ceb54f82e153",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/harfbuzz@14.5.0/COPYING",
+          "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
+        },
+        {
+          "path": "homebrew/harfbuzz@14.5.0/.brew/harfbuzz.rb",
+          "sha256": "4a01ef42e17002fbe8c4ae20690b972bbf2a346512ba91e076411b2e7ddf65ec"
+        },
+        {
+          "path": "homebrew/harfbuzz@14.5.0/INSTALL_RECEIPT.json",
+          "sha256": "7e02094d5ff246a4db96013b322d38fd4503b5c81bbdab8d9c2526d199d5e011"
+        },
+        {
+          "path": "homebrew/harfbuzz@14.5.0/sbom.spdx.json",
+          "sha256": "4fd99bf5ba368c37ee9b0bff44550303388e78dd590b4bf1b880ceb54f82e153"
+        }
+      ],
+      "upstream_notice_count": 6,
+      "upstream_notice_sha256s": [
+        {
+          "path": "harfbuzz-14.5.0/COPYING",
+          "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
+        },
+        {
+          "path": "harfbuzz-14.5.0/perf/texts/COPYING",
+          "sha256": "cf977e70247d5fa9d44955e4d8ed23b503c31f78570f62136756278c2cfcb3c3"
+        },
+        {
+          "path": "harfbuzz-14.5.0/src/ms-use/COPYING",
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+        },
+        {
+          "path": "harfbuzz-14.5.0/test/COPYING",
+          "sha256": "9b35b8485f69cd298fccbb3c40a827dc06cf1185553bef827903497d2944a8d7"
+        },
+        {
+          "path": "harfbuzz-14.5.0/test/shape/data/aots/COPYING",
+          "sha256": "f55f74bf740db07bb032a90aa74af4307adea3d489c1ccba12453cf0c0a764cb"
+        },
+        {
+          "path": "harfbuzz-14.5.0/test/shape/data/text-rendering-tests/COPYING",
+          "sha256": "d24039e4d22c9bc72096f6174374539d92a3d6e1163938546ec59179fe095e6f"
+        }
+      ]
+    },
+    {
+      "package": "icu4c@78@78.3",
+      "source_archive_sha256": "3a2e7a47604ba702f345878308e6fefeca612ee895cf4a5f222e7955fabfe0c0",
+      "source_url": "https://github.com/unicode-org/icu/releases/download/release-78.3/icu4c-78.3-sources.tgz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-icu4c@78-src",
+      "source_sbom_license_concluded": "ICU",
+      "sbom_sha256": "6230a9586c2523c285a4bb1950a11265472bc1f492113397eed92d61fcf1d35e",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/icu4c@78@78.3/LICENSE",
+          "sha256": "e55522d81edc687a341a4411e0776e54ca654e90147f354a90458aaced4116af"
+        },
+        {
+          "path": "homebrew/icu4c@78@78.3/license.html",
+          "sha256": "c62d7697c03979f5056d28b338fafc7a1152820f7b379adf4a9d88cd37160f96"
+        },
+        {
+          "path": "homebrew/icu4c@78@78.3/share/icu/78.3/LICENSE",
+          "sha256": "e55522d81edc687a341a4411e0776e54ca654e90147f354a90458aaced4116af"
+        },
+        {
+          "path": "homebrew/icu4c@78@78.3/.brew/icu4c@78.rb",
+          "sha256": "db6d475bc93d9138f6ec7272dcc2718614e3df68dc0edeb2ab63054493eec04b"
+        },
+        {
+          "path": "homebrew/icu4c@78@78.3/INSTALL_RECEIPT.json",
+          "sha256": "f8830077e2692675252d1dbae8533291d0cfaf764140b3fe73b8df08f3ebb6ae"
+        },
+        {
+          "path": "homebrew/icu4c@78@78.3/sbom.spdx.json",
+          "sha256": "6230a9586c2523c285a4bb1950a11265472bc1f492113397eed92d61fcf1d35e"
+        }
+      ],
+      "upstream_notice_count": 2,
+      "upstream_notice_sha256s": [
+        {
+          "path": "icu/license.html",
+          "sha256": "c62d7697c03979f5056d28b338fafc7a1152820f7b379adf4a9d88cd37160f96"
+        },
+        {
+          "path": "icu/LICENSE",
+          "sha256": "e55522d81edc687a341a4411e0776e54ca654e90147f354a90458aaced4116af"
+        }
+      ]
+    },
+    {
+      "package": "jpeg-turbo@3.2.0",
+      "source_archive_sha256": "6f30092cef9fb839779646608f4ee14ae3cbac989c47fa05e841b0841f09878e",
+      "source_url": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.2.0/libjpeg-turbo-3.2.0.tar.gz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-jpeg-turbo-src",
+      "source_sbom_license_concluded": "IJG AND Zlib AND BSD-3-Clause",
+      "sbom_sha256": "2912deefd8763e721b23627fe201741d201287d0ec4a751b56a9b2436948de43",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/jpeg-turbo@3.2.0/LICENSE.md",
+          "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579"
+        },
+        {
+          "path": "homebrew/jpeg-turbo@3.2.0/share/doc/libjpeg-turbo/LICENSE.md",
+          "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579"
+        },
+        {
+          "path": "homebrew/jpeg-turbo@3.2.0/.brew/jpeg-turbo.rb",
+          "sha256": "b1937813c7c67fa8a44a7a958f1496e9e237d942052b52d421c41e61df4b526b"
+        },
+        {
+          "path": "homebrew/jpeg-turbo@3.2.0/INSTALL_RECEIPT.json",
+          "sha256": "ec45142d176a6a57afbf7cdd56add6d454d6f301f6130c247487647664121dfe"
+        },
+        {
+          "path": "homebrew/jpeg-turbo@3.2.0/sbom.spdx.json",
+          "sha256": "2912deefd8763e721b23627fe201741d201287d0ec4a751b56a9b2436948de43"
+        }
+      ],
+      "upstream_notice_count": 5,
+      "upstream_notice_sha256s": [
+        {
+          "path": "libjpeg-turbo-3.2.0/LICENSE.md",
+          "sha256": "ba6bceebcba0fdd35488477c2cca8c4632ce82c74dbfbc87d886ce6fc4433579"
+        },
+        {
+          "path": "libjpeg-turbo-3.2.0/release/License.rtf",
+          "sha256": "d26120ab237f87dea10aa4fa7fd4243cadffd26e54eb2f3903d5fb0f8ed336b2"
+        },
+        {
+          "path": "libjpeg-turbo-3.2.0/src/spng/LICENSE",
+          "sha256": "0622b0794d0fecde47d743f1bb70a03e6fdf082be8e71f39de672ed995d96ff9"
+        },
+        {
+          "path": "libjpeg-turbo-3.2.0/src/spng/zlib/LICENSE",
+          "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+        },
+        {
+          "path": "libjpeg-turbo-3.2.0/testimages/LICENSE.txt",
+          "sha256": "1c4d5dfc985d5061ba11180a8ffb541cc1778bccf87fd9f0fb92cbae69d8a9cc"
+        }
+      ]
+    },
+    {
+      "package": "libb2@0.98.1",
+      "source_archive_sha256": "53626fddce753c454a3fea581cbbc7fe9bbcf0bc70416d48fdbbf5d87ef6c72e",
+      "source_url": "https://github.com/BLAKE2/libb2/releases/download/v0.98.1/libb2-0.98.1.tar.gz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-libb2-src",
+      "source_sbom_license_concluded": "CC0-1.0",
+      "sbom_sha256": "1e51e0ef4b1b49c1b9effb00feefe8058a4b064f69efd0946cd22c37f8048eac",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/libb2@0.98.1/COPYING",
+          "sha256": "6a1ee543e5282cd9061881edf462e6fdab181f328da71fc2c9a6950a80e94d01"
+        },
+        {
+          "path": "homebrew/libb2@0.98.1/.brew/libb2.rb",
+          "sha256": "35179ede9f32d4cb2ab8ea26eb08735e3cdbbbfa1537177bddc66a7b84b517cd"
+        },
+        {
+          "path": "homebrew/libb2@0.98.1/INSTALL_RECEIPT.json",
+          "sha256": "5d1e4aba28709639cfd672e1ce4baa440c2f7b4c9c1705bba56b7e129efed1b2"
+        },
+        {
+          "path": "homebrew/libb2@0.98.1/sbom.spdx.json",
+          "sha256": "1e51e0ef4b1b49c1b9effb00feefe8058a4b064f69efd0946cd22c37f8048eac"
+        }
+      ],
+      "upstream_notice_count": 1,
+      "upstream_notice_sha256s": [
+        {
+          "path": "libb2-0.98.1/COPYING",
+          "sha256": "6a1ee543e5282cd9061881edf462e6fdab181f328da71fc2c9a6950a80e94d01"
+        }
+      ]
+    },
+    {
+      "package": "libpng@1.6.58",
+      "source_archive_sha256": "28eb403f51f0f7405249132cecfe82ea5c0ef97f1b32c5a65828814ae0d34775",
+      "source_url": "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.58/libpng-1.6.58.tar.xz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-libpng-src",
+      "source_sbom_license_concluded": "libpng-2.0",
+      "sbom_sha256": "ead4b65682a702a045665c9cc77a4b27906610a139619c7b6b9e98aafa37a7d4",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/libpng@1.6.58/LICENSE",
+          "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+        },
+        {
+          "path": "homebrew/libpng@1.6.58/.brew/libpng.rb",
+          "sha256": "c125a77d8263e0fb215f8f5d693c53324caabb63801df7093d9f3c8e42f4dd22"
+        },
+        {
+          "path": "homebrew/libpng@1.6.58/INSTALL_RECEIPT.json",
+          "sha256": "9f3874554a9092368b6ea1d2f5ca3ebbb0f8e6ec01cd285c3587f090fa0b3af0"
+        },
+        {
+          "path": "homebrew/libpng@1.6.58/sbom.spdx.json",
+          "sha256": "ead4b65682a702a045665c9cc77a4b27906610a139619c7b6b9e98aafa37a7d4"
+        }
+      ],
+      "upstream_notice_count": 6,
+      "upstream_notice_sha256s": [
+        {
+          "path": "libpng-1.6.58/LICENSE",
+          "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
+        },
+        {
+          "path": "libpng-1.6.58/ci/LICENSE_MIT.txt",
+          "sha256": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1"
+        },
+        {
+          "path": "libpng-1.6.58/contrib/gregbook/COPYING",
+          "sha256": "d6cb0e9e560f51085556949a84af12b79a00f10ab8b66c752537faf7cd665572"
+        },
+        {
+          "path": "libpng-1.6.58/contrib/gregbook/LICENSE",
+          "sha256": "b6a03c1803eb58ffb1f1278d5c7d4096c4c116e66dce8a7553e8c77d163c3438"
+        },
+        {
+          "path": "libpng-1.6.58/contrib/pngexif/LICENSE_MIT.txt",
+          "sha256": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1"
+        },
+        {
+          "path": "libpng-1.6.58/contrib/pngminus/LICENSE.txt",
+          "sha256": "1806f1f10d393e9e377b3a8d1b968452b54f1a90378f14eeef45426946ace330"
+        }
+      ]
+    },
+    {
+      "package": "md4c@0.6.0",
+      "source_archive_sha256": "4d151298125a81da3b2efa2e0eed8bdb7a9318569804e4fa4d7a2375ab83ef70",
+      "source_url": "https://github.com/mity/md4c/archive/refs/tags/v0.6.0.tar.gz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-md4c-src",
+      "source_sbom_license_concluded": "MIT",
+      "sbom_sha256": "ce42a618f4bbff7f912d5f308185e53d486051c363f28b1d014f2e8c6be99792",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/md4c@0.6.0/LICENSE.md",
+          "sha256": "e547c9a66c120b19f9838a1f7c2f51137f5c71ba27b70c3611b673f2cdb4e02e"
+        },
+        {
+          "path": "homebrew/md4c@0.6.0/.brew/md4c.rb",
+          "sha256": "74346a540eeacdd467de96bb48067d5d5ce00b635b82ad26d85c03d6ad019a0a"
+        },
+        {
+          "path": "homebrew/md4c@0.6.0/INSTALL_RECEIPT.json",
+          "sha256": "c0b38c8f30739bf2fd87c00c2b0fa543ca761fe9f99a587ecc21675741cd72be"
+        },
+        {
+          "path": "homebrew/md4c@0.6.0/sbom.spdx.json",
+          "sha256": "ce42a618f4bbff7f912d5f308185e53d486051c363f28b1d014f2e8c6be99792"
+        }
+      ],
+      "upstream_notice_count": 2,
+      "upstream_notice_sha256s": [
+        {
+          "path": "md4c-0.6.0/LICENSE.md",
+          "sha256": "e547c9a66c120b19f9838a1f7c2f51137f5c71ba27b70c3611b673f2cdb4e02e"
+        },
+        {
+          "path": "md4c-0.6.0/test/LICENSE.md",
+          "sha256": "4a745999973a2333058d40e1b6acdd736af99b6a9be825dbe5476359a943ca7f"
+        }
+      ]
+    },
+    {
+      "package": "pcre2@10.48",
+      "source_archive_sha256": "b6c68fdf6f3ac31388b50aa89ff0fc49c00c987c16e7b5146491d12003f2c8ed",
+      "source_url": "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.48/pcre2-10.48.tar.bz2",
+      "source_sbom_spdx_id": "SPDXRef-Archive-pcre2-src",
+      "source_sbom_license_concluded": "BSD-3-Clause",
+      "sbom_sha256": "060f9b5bf6120bb8978e120f9ddfeed29312943f29192a1e6c6528f37d6ee180",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/pcre2@10.48/COPYING",
+          "sha256": "99272c55f3dcfa07a8a7e15a5c1a33096e4727de74241d65fa049fccfdd59507"
+        },
+        {
+          "path": "homebrew/pcre2@10.48/LICENCE.md",
+          "sha256": "197d8a73ffee0d6b09adba2f9c677b5f5aede24edf89258a68e48248d010d811"
+        },
+        {
+          "path": "homebrew/pcre2@10.48/share/doc/pcre2/COPYING",
+          "sha256": "99272c55f3dcfa07a8a7e15a5c1a33096e4727de74241d65fa049fccfdd59507"
+        },
+        {
+          "path": "homebrew/pcre2@10.48/share/doc/pcre2/LICENCE.md",
+          "sha256": "197d8a73ffee0d6b09adba2f9c677b5f5aede24edf89258a68e48248d010d811"
+        },
+        {
+          "path": "homebrew/pcre2@10.48/.brew/pcre2.rb",
+          "sha256": "493c6e81fa41064d8cdbb554f0884a9afe856f11c62d250ed747ce5f565a3f0d"
+        },
+        {
+          "path": "homebrew/pcre2@10.48/INSTALL_RECEIPT.json",
+          "sha256": "813fc6c888ae27143ebb74f62463f58373540c0226269e45bb9554ada27b9e0e"
+        },
+        {
+          "path": "homebrew/pcre2@10.48/sbom.spdx.json",
+          "sha256": "060f9b5bf6120bb8978e120f9ddfeed29312943f29192a1e6c6528f37d6ee180"
+        }
+      ],
+      "upstream_notice_count": 4,
+      "upstream_notice_sha256s": [
+        {
+          "path": "pcre2-10.48/COPYING",
+          "sha256": "99272c55f3dcfa07a8a7e15a5c1a33096e4727de74241d65fa049fccfdd59507"
+        },
+        {
+          "path": "pcre2-10.48/deps/sljit/LICENSE",
+          "sha256": "5f216505c0f6ea3273caec89e766eef93cdeb7bbb0c429f9360116d7c938feeb"
+        },
+        {
+          "path": "pcre2-10.48/cmake/COPYING-CMAKE-SCRIPTS",
+          "sha256": "c666ec2313dba24523ccad88f4c04ea4b24fad6545263a35b1d4ab2b08efe50a"
+        },
+        {
+          "path": "pcre2-10.48/LICENCE.md",
+          "sha256": "197d8a73ffee0d6b09adba2f9c677b5f5aede24edf89258a68e48248d010d811"
+        }
+      ]
+    },
+    {
+      "package": "zstd@1.5.7_1",
+      "source_archive_sha256": "37d7284556b20954e56e1ca85b80226768902e2edabd3b649e9e72c0c9012ee3",
+      "source_url": "https://github.com/facebook/zstd/archive/refs/tags/v1.5.7.tar.gz",
+      "source_sbom_spdx_id": "SPDXRef-Archive-zstd-src",
+      "source_sbom_license_concluded": "(BSD-3-Clause OR GPL-2.0-only) AND BSD-2-Clause AND MIT",
+      "sbom_sha256": "b6a26323fa486086610f98926dca677973ce65c8185ae5be9ccf58b3be9c2464",
+      "installed_notice_status": "installed_only_requires_review",
+      "installed_materials": [
+        {
+          "path": "homebrew/zstd@1.5.7_1/COPYING",
+          "sha256": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505"
+        },
+        {
+          "path": "homebrew/zstd@1.5.7_1/LICENSE",
+          "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+        },
+        {
+          "path": "homebrew/zstd@1.5.7_1/.brew/zstd.rb",
+          "sha256": "9a9b0183896886e82b915af4db576f27d34d1cee7757d6c5beb0e1eb74c68e0d"
+        },
+        {
+          "path": "homebrew/zstd@1.5.7_1/INSTALL_RECEIPT.json",
+          "sha256": "9f24b0c0010ef85fe3e310f57cfc451df2941ae9ce355bd3f81fc457a2888b65"
+        },
+        {
+          "path": "homebrew/zstd@1.5.7_1/sbom.spdx.json",
+          "sha256": "b6a26323fa486086610f98926dca677973ce65c8185ae5be9ccf58b3be9c2464"
+        }
+      ],
+      "upstream_notice_count": 3,
+      "upstream_notice_sha256s": [
+        {
+          "path": "zstd-1.5.7/COPYING",
+          "sha256": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505"
+        },
+        {
+          "path": "zstd-1.5.7/LICENSE",
+          "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+        },
+        {
+          "path": "zstd-1.5.7/build/LICENSE",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Source-archive SBOM licenseConcluded is an upstream aggregate for that archive, not a resolved license for each compiled library or redistribution terms.",
+    "Installed keg hash establishes local association; repackaging/signing changes bundle bytes, which are independently hashed and signed ad hoc.",
+    "Presence of source archives and notice texts does not prove build reproducibility or complete corresponding materials.",
+    "Qt mapping is separate; Go standard library, CGO inputs, OS system libraries, other-platform packages and legal review are outside this ledger.",
+    "The local bundle records vcs.modified=true and is a development artifact, not a supported release."
+  ]
+}
