@@ -9,26 +9,30 @@ import (
 )
 
 type workspace struct {
-	copyEvidence                        func(string)
-	window                              *qt.QMainWindow
-	model                               *qt.QAbstractTableModel
-	table                               *qt.QTableView
-	search                              *qt.QLineEdit
-	language, severity                  *qt.QComboBox
-	advanced                            *qt.QCheckBox
-	load, clear, copy                   *qt.QPushButton
-	intro, summary, count, notice       *qt.QLabel
-	languageMenu                        *qt.QMenu
-	italianAction, englishAction        *qt.QAction
-	preferencePath                      string
-	preferenceError                     bool
-	evidence                            *qt.QPlainTextEdit
-	fileMenu                            *qt.QMenu
+	copyEvidence                  func(string)
+	window                        *qt.QMainWindow
+	model                         *qt.QAbstractTableModel
+	table                         *qt.QTableView
+	search                        *qt.QLineEdit
+	language, severity            *qt.QComboBox
+	advanced                      *qt.QCheckBox
+	load, clear, copy             *qt.QPushButton
+	intro, summary, count, notice *qt.QLabel
+	searchLabel, severityLabel    *qt.QLabel
+	evidence                      *qt.QPlainTextEdit
+
+	fileMenu, viewMenu, languageMenu    *qt.QMenu
 	loadAction, clearAction, quitAction *qt.QAction
-	rows, visible                       []demo.Record
-	selectedID, locale                  string
-	variants                            map[string]*qt.QVariant
-	emptyVariant                        *qt.QVariant
+	searchAction, resultsAction         *qt.QAction
+	evidenceAction, advancedAction      *qt.QAction
+	italianAction, englishAction        *qt.QAction
+
+	preferencePath     string
+	preferenceError    bool
+	rows, visible      []demo.Record
+	selectedID, locale string
+	variants           map[string]*qt.QVariant
+	emptyVariant       *qt.QVariant
 }
 
 // MIQT 0.14 copies callback-returned QVariant values without freeing their
@@ -88,7 +92,13 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	w.search = qt.NewQLineEdit2()
 	w.severity = qt.NewQComboBox2()
 	w.severity.AddItems([]string{"", "", "", ""})
+	w.searchLabel = qt.NewQLabel2()
+	w.searchLabel.SetBuddy(w.search.QWidget)
+	w.severityLabel = qt.NewQLabel2()
+	w.severityLabel.SetBuddy(w.severity.QWidget)
+	filterLayout.AddWidget(w.searchLabel.QWidget)
 	filterLayout.AddWidget(w.search.QWidget)
+	filterLayout.AddWidget(w.severityLabel.QWidget)
 	filterLayout.AddWidget(w.severity.QWidget)
 	layout.AddWidget(filters)
 	w.count = qt.NewQLabel2()
@@ -150,6 +160,8 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	split.AddWidget(details)
 	split.SetSizes([]int{400, 220})
 	layout.AddWidget(split.QWidget)
+	w.fileMenu = w.window.MenuBar().AddMenuWithTitle("")
+	w.viewMenu = w.window.MenuBar().AddMenuWithTitle("")
 	w.languageMenu = w.window.MenuBar().AddMenuWithTitle("")
 	w.italianAction = w.languageMenu.AddActionWithText("Italiano")
 	w.englishAction = w.languageMenu.AddActionWithText("English")
@@ -163,7 +175,6 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	}
 	w.italianAction.OnTriggered(func() { w.language.SetCurrentIndex(0) })
 	w.englishAction.OnTriggered(func() { w.language.SetCurrentIndex(1) })
-	w.fileMenu = w.window.MenuBar().AddMenuWithTitle("")
 	w.loadAction = w.fileMenu.AddActionWithText("")
 	key := qt.NewQKeySequence2("Ctrl+O")
 	w.loadAction.SetShortcut(key)
@@ -195,7 +206,52 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		w.preferenceError = preferences.Save(w.preferencePath, w.locale) != nil
 		w.translate()
 	})
-	w.advanced.OnToggled(func(bool) { w.showEvidence() })
+	w.searchAction = w.viewMenu.AddActionWithText("")
+	w.resultsAction = w.viewMenu.AddActionWithText("")
+	w.evidenceAction = w.viewMenu.AddActionWithText("")
+	w.viewMenu.AddSeparator()
+	w.advancedAction = w.viewMenu.AddActionWithText("")
+	w.advancedAction.SetCheckable(true)
+	for _, pair := range []struct {
+		action   *qt.QAction
+		shortcut string
+	}{
+		{w.searchAction, "Ctrl+F"}, {w.resultsAction, "F6"},
+		{w.evidenceAction, "Ctrl+Shift+E"}, {w.advancedAction, "Ctrl+Shift+D"},
+	} {
+		key := qt.NewQKeySequence2(pair.shortcut)
+		pair.action.SetShortcut(key)
+		key.Delete()
+	}
+	w.searchAction.OnTriggered(func() {
+		w.search.SetFocusWithReason(qt.ShortcutFocusReason)
+		w.search.SelectAll()
+	})
+	w.resultsAction.OnTriggered(func() {
+		w.table.SetFocusWithReason(qt.ShortcutFocusReason)
+		if w.selectedID == "" && len(w.visible) > 0 {
+			w.table.SelectRow(0)
+		}
+	})
+	w.evidenceAction.OnTriggered(func() {
+		w.advanced.SetChecked(true)
+		w.evidence.SetFocusWithReason(qt.ShortcutFocusReason)
+	})
+	w.advancedAction.OnToggled(func(checked bool) { w.advanced.SetChecked(checked) })
+	w.advanced.OnToggled(func(checked bool) {
+		// Move focus before hiding the widget that currently owns it.
+		if !checked && (w.evidence.HasFocus() || w.copy.HasFocus()) {
+			w.advanced.SetFocusWithReason(qt.OtherFocusReason)
+		}
+		w.advancedAction.SetChecked(checked)
+		w.showEvidence()
+	})
+	chain := []*qt.QWidget{w.load.QWidget, w.clear.QWidget, w.advanced.QWidget,
+		w.language.QWidget, w.search.QWidget, w.severity.QWidget, w.table.QWidget,
+		w.summary.QWidget, w.evidence.QWidget, w.copy.QWidget}
+	for i := 1; i < len(chain); i++ {
+		qt.QWidget_SetTabOrder(chain[i-1], chain[i])
+	}
 	w.table.SelectionModel().OnCurrentRowChanged(func(current, previous *qt.QModelIndex) {
 		if current.IsValid() && current.Row() >= 0 && current.Row() < len(w.visible) {
 			w.selectedID = w.visible[current.Row()].ID
@@ -218,6 +274,8 @@ func (w *workspace) translate() {
 	w.clear.SetText(w.tr("clear"))
 	w.copy.SetText(w.tr("copy"))
 	w.advanced.SetText(w.tr("advanced"))
+	w.searchLabel.SetText(w.tr("search_label"))
+	w.severityLabel.SetText(w.tr("severity"))
 	w.search.SetPlaceholderText(w.tr("search"))
 	w.search.SetAccessibleName(w.tr("search"))
 	w.severity.SetAccessibleName(w.tr("severity"))
@@ -233,7 +291,22 @@ func (w *workspace) translate() {
 	w.loadAction.SetText(w.tr("load"))
 	w.clearAction.SetText(w.tr("clear"))
 	w.quitAction.SetText(w.tr("quit"))
-	w.filter()
+	w.viewMenu.SetTitle(w.tr("view"))
+	w.searchAction.SetText(w.tr("focus_search"))
+	w.resultsAction.SetText(w.tr("focus_results"))
+	w.evidenceAction.SetText(w.tr("focus_evidence"))
+	w.advancedAction.SetText(w.tr("advanced"))
+	// Translation changes data, not row identity or model structure.
+	w.model.HeaderDataChanged(qt.Horizontal, 0, 3)
+	if len(w.visible) > 0 {
+		parent := qt.NewQModelIndex()
+		first := w.model.Index(0, 0, parent)
+		last := w.model.Index(len(w.visible)-1, 3, parent)
+		w.model.DataChanged2(first, last, []int{int(qt.DisplayRole), int(qt.AccessibleTextRole)})
+		// Index() returns value wrappers already managed by MIQT finalizers.
+		parent.Delete()
+	}
+	w.updateDetails()
 }
 
 func (w *workspace) filter() {
@@ -249,6 +322,10 @@ func (w *workspace) filter() {
 			break
 		}
 	}
+	w.updateDetails()
+}
+
+func (w *workspace) updateDetails() {
 	w.count.SetText(w.tr("count", len(w.visible), len(w.rows)))
 	w.clear.SetEnabled(len(w.rows) > 0)
 	w.clearAction.SetEnabled(len(w.rows) > 0)
@@ -266,7 +343,9 @@ func (w *workspace) showEvidence() {
 	r, ok := w.selected()
 	if ok {
 		w.summary.SetText(w.tr("selected", r.ID) + "\n" + r.Path + "\n" + w.tr("example_summary"))
-		w.evidence.SetPlainText(r.Evidence())
+		if w.evidence.ToPlainText() != r.Evidence() {
+			w.evidence.SetPlainText(r.Evidence())
+		}
 	} else {
 		key := "select"
 		if len(w.visible) == 0 {

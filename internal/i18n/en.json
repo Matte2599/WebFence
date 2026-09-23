@@ -29,5 +29,10 @@
   "file": "File",
   "quit": "Quit",
   "example_summary": "GUI evaluation example. No verified vulnerability.",
-  "preference_error": "Unable to read or save the language preference. The selection remains active for this session."
+  "preference_error": "Unable to read or save the language preference. The selection remains active for this session.",
+  "view": "View",
+  "search_label": "Search",
+  "focus_search": "Go to search",
+  "focus_results": "Go to results",
+  "focus_evidence": "Read evidence"
 }

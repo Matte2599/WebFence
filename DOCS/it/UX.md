@@ -36,7 +36,7 @@ Errori: spiegare il problema, la conseguenza e l'azione disponibile; dettagli te
 
 Testare percorsi senza mouse, ordine del focus, nomi e stato dei controlli nello screen reader, copia/selezione del testo delle prove, ridimensionamento e DPI, contrasto e testi IT/EN. Valutare sia utenti inesperti sia professionisti su compiti concreti; non sono ancora stati condotti test di usabilità con partecipanti.
 
-Il prototipo M0 implementa barra comandi, filtri, tabella, pannello prove e lingua. È un laboratorio di fattibilità: wizard, workspace di scansione e gestione dei progetti sono **pianificati**. L'aspetto attuale usa il stile Qt del sistema; non è il design definitivo. Il [resoconto M0](M0-DESKTOP.md) registra un gate di accessibilità ancora aperto.
+Il prototipo M0 implementa barra comandi, filtri, tabella, pannello prove e lingua. È un laboratorio di fattibilità: wizard, workspace di scansione e gestione dei progetti sono **pianificati**. L'aspetto attuale usa lo stile Qt del sistema; non è il design definitivo. Il [resoconto M0](M0-DESKTOP.md) registra un gate di accessibilità ancora aperto.
 
 
-Qt è la scelta confermata: menu File/Lingua, scorciatoie IT/EN e vista semplice/avanzata sono implementati nel prototipo offline. [Stato e limiti](QT-DESKTOP.md).
+Qt è la scelta confermata: menu File/Visualizza/Lingua, etichette dei filtri, accesso diretto da tastiera a ricerca/risultati/evidenze, scorciatoie IT/EN e vista semplice/avanzata sono implementati nel prototipo offline. [Stato e limiti](QT-DESKTOP.md).

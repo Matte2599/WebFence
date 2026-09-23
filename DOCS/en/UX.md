@@ -39,4 +39,4 @@ Test mouse-free workflows, focus order, control names and states in screen reade
 The M0 prototype implements a command bar, filters, table, evidence pane and language selection. It is a feasibility laboratory: wizards, scanning workspace and project management are **planned**. Current styling uses Qt's system style; it is not the final design. The [M0 report](M0-DESKTOP.md) records an open accessibility gate.
 
 
-Qt is the confirmed choice: File/Language menus, IT/EN shortcuts and a simple/advanced view are implemented in the offline prototype. [State and limitations](QT-DESKTOP.md).
+Qt is the confirmed choice: File/View/Language menus, filter labels, direct keyboard access to search/results/evidence, IT/EN shortcuts and a simple/advanced view are implemented in the offline prototype. [State and limitations](QT-DESKTOP.md).

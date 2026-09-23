@@ -24,6 +24,25 @@ No scanner, target networking, CVE, AI, database or signed reports introduced. T
 
 Packaging reuses the build’s C++ flags, avoiding a second binding compilation. macOS CI uses `-O0 -g0`; cold compilation remains lengthy (about 11 minutes in the final run), while subsequent packaging finished in about 40 seconds. These are observations from this run, not product benchmarks. The default local `-O2 -g` build was checked separately.
 
+## Keyboard and accessibility checks — 2026-09-23
+
+The **View** menu provides direct access to search, results and evidence; File precedes View and Language. Search and severity have visible labels associated with their controls. Tab order follows commands → filters → table → summary → evidence/copy when visible. Hiding details while evidence or its copy button owns focus returns focus to “Advanced details”.
+
+| Action | Windows/Linux | macOS |
+| --- | --- | --- |
+| Search, selecting the current filter | Ctrl+F | Cmd+F |
+| Results; first row if nothing is selected | F6 | F6 (possibly Fn+F6) |
+| Open and read evidence | Ctrl+Shift+E | Cmd+Shift+E |
+| Show/hide advanced details | Ctrl+Shift+D | Cmd+Shift+D |
+
+Language changes emit data/header notifications without resetting the model. They preserve the current row and evidence text selection. Filters that change rows still use Qt’s model reset.
+
+The self-test checks action focus, menu/checkbox synchronization, stale-data prevention, text selection and `QAccessibleTableInterface` (dimensions and last-cell ID after loading, translation, filtering, restoring and clearing). In offscreen mode it explicitly activates Qt accessibility for the test only: without an active reader, Qt may not invalidate its cell cache on resets. The normal GUI retains system-managed activation. These checks do not measure the macOS bridge or VoiceOver announcements.
+
+The missing table node after filtering was reproduced through macOS AX inspection before this change. The new keyboard workflow and internal Qt checks are insufficient to declare that limitation resolved. To close the gate, repeat with VoiceOver, NVDA and Orca: load → filter → read headers/row → open evidence → change language → remove filter → clear; verify announcements, focus, original text and absence of stale cells. Record OS/Qt/reader versions, DPI and results per platform.
+
+Implementation references: [Qt focus](https://doc.qt.io/qt-6/focus.html), [model notifications](https://doc.qt.io/qt-6/qabstractitemmodel.html#dataChanged), [reset in Qt 6.11.2 source](https://github.com/qt/qtbase/blob/v6.11.2/src/widgets/itemviews/qabstractitemview.cpp). MIQT values returned by `Index()` and `TextCursor()` have automatic finalizers: do not manually free the same value without first removing its finalizer.
+
 ## Open gates
 
 The author's choice settles the toolkit decision, not product accessibility. The inconsistently exposed table node and menu actions from the [comparison](GUI-COMPARISON.md) still need isolation; VoiceOver, NVDA, Orca and DPI checks remain. Shortcuts provide an additional path, not assistive certification.

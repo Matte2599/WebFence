@@ -29,5 +29,10 @@
   "file": "File",
   "quit": "Esci",
   "example_summary": "Esempio per valutare la GUI. Nessuna vulnerabilità verificata.",
-  "preference_error": "Impossibile leggere o salvare la preferenza di lingua. La scelta resta valida per questa sessione."
+  "preference_error": "Impossibile leggere o salvare la preferenza di lingua. La scelta resta valida per questa sessione.",
+  "view": "Visualizza",
+  "search_label": "Ricerca",
+  "focus_search": "Vai alla ricerca",
+  "focus_results": "Vai ai risultati",
+  "focus_evidence": "Leggi evidenze"
 }

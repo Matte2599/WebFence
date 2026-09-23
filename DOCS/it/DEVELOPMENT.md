@@ -43,6 +43,8 @@ La sola preferenza salvata è il file `WebFence/ui-language` sotto `os.UserConfi
 
 Menu Lingua e selettore cambiano IT/EN; scorciatoie **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** su macOS). **Ctrl+O/Cmd+O** carica gli esempi. Tastiera e screen reader completi restano da convalidare.
 
+Il menu Visualizza aggiunge ricerca (Ctrl/Cmd+F), risultati (F6), evidenze (Ctrl/Cmd+Shift+E) e dettagli avanzati (Ctrl/Cmd+Shift+D). Vedi [tastiera, focus e limiti assistivi](QT-DESKTOP.md).
+
 ## Piattaforme e bundle
 
 Requisiti: macOS Apple Silicon, Windows 10/11 x86-64, Debian/derivati x86-64 e ARM64; nessun 32 bit. Versioni minime e mantenimento Windows 10 restano da verificare secondo [ADR-002](ADR-002-GUI.md). Build CI non equivalgono a uso assistivo sui sistemi richiesti.
