@@ -29,3 +29,5 @@ Problemi già osservati su macOS: nodo tabella AX intermittente e Tab nativo che
 ## Chiusura finale
 
 Completare prima i punti aperti con prove ripetibili. Eseguire poi suite Go/race, fuzzing limitato, vet, verifica moduli/advisory, build, self-test e collaudo dei pacchetti applicabili. Controllare traduzioni, collegamenti, licenze/notices e `git diff --check`. Aggiornare questo registro, ADR, README, memoria e roadmap; commit/push e CI sul codice conclusivo. Riportare esattamente i limiti residui: documentarli non equivale automaticamente a soddisfare un gate.
+
+Ricognizione packaging: il [bundle locale esaminato](M0-PACKAGING.md) contiene 19 Mach-O con minimo macOS 26 e 9 con minimo 14. Non prova supporto alle versioni precedenti; scelta del minimo richiesta all’autore. Inventario iniziale e SBOM upstream individuati, pacchetto conforme e prova su macchina pulita ancora aperti.

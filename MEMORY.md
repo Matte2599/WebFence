@@ -51,6 +51,10 @@ Task portachiavi M0: aggiunto `internal/credentials`, namespace fisso, ID minusc
 
 Prima CI portachiavi `aa722e3`: prove native macOS superate; Linux x86-64/ARM64 ha scoperto il MIME `text/plain` restituito da GNOME Keyring anche per segreti binari. Corretto il controllo: dati sempre opachi, restano controlli sessione/parametri/dimensione; launcher senza attivazione concorrente del daemon. Verifica successiva in attesa.
 
+Ricognizione packaging: [dossier](DOCS/it/M0-PACKAGING.md). Bundle locale preesistente c4ce9cab con vcs.modified=true, non HEAD: 28 Mach-O, 19 richiedono macOS 26 e 9 macOS 14; nessuna dipendenza assoluta esterna dopo esclusione LC_ID_DYLIB. Questo artefatto non è compatibile macOS 13/15 per semplice cambio flag. Individuate SBOM Homebrew/Qt installate e famiglie di dylib, non ancora inventario completo del prodotto. Chiesto all’autore minimo 13/15/26, risposta pendente.
+
+Prova aggiuntiva Windows predisposta: sottoprocesso e thread con token anonimo, ripristino del token, Get/Set/Delete devono negare accesso e voce sintetica originale deve restare integra. Cross-compilazione/vet superati; prova nativa in attesa. Non blocca la sessione OS personale.
+
 ### Prossimo lavoro
 
 1. Qt scelto: approfondire menu/focus, albero della tabella, lettori di schermo e stabilità; completare i gate M0 sul toolkit adottato.
@@ -109,6 +113,10 @@ M0 closure register: [matrix and desktop procedure](DOCS/en/M0-VALIDATION.md), s
 M0 credential task: added `internal/credentials`, fixed namespace, lowercase IDs, 1–2048 byte binary secrets, redacted errors and no fallback. macOS: classic Security.framework adapter, serialized/restored global UI control, deprecated APIs to reassess for signed apps. Windows: wincred v1.2.3; Linux: godbus v5.2.2, local Secret Service without prompts, private connection and three-second timeout. [ADR-005](DOCS/en/ADR-005-CREDENTIALS.md) records limits, including noninterruptible macOS/Windows API calls. Separate temporary macOS keychain tests passed, including locked/absent states; Go/vet/module checks passed. CI and isolated Linux launcher prepared; no Windows/Linux runtime result claimed yet. GUI unchanged.
 
 First credential CI `aa722e3`: native macOS tests passed; Linux x86-64/ARM64 exposed GNOME Keyring returning `text/plain` for binary secrets. Corrected the check: data stays opaque; session/parameter/size checks remain. Launcher no longer activates a concurrent daemon. Follow-up verification pending.
+
+Packaging investigation: [dossier](DOCS/en/M0-PACKAGING.md). Existing local c4ce9cab bundle with vcs.modified=true, not HEAD: 28 Mach-O files, 19 require macOS 26 and 9 macOS 14; no external absolute dependency after excluding LC_ID_DYLIB. This artifact cannot support macOS 13/15 through a flag change alone. Installed Homebrew/Qt SBOMs and dylib families identified, not yet a full product inventory. Asked author for minimum 13/15/26; answer pending.
+
+Additional Windows trial prepared: subprocess and thread with anonymous token, token restoration, Get/Set/Delete must deny access and original synthetic item must stay intact. Cross-compilation/vet passed; native test pending. Does not lock the personal OS session.
 
 ### Next work
 
