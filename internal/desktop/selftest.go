@@ -123,6 +123,7 @@ func selfTest(w *workspace) int {
 	originalWidth, originalHeight := w.window.Width(), w.window.Height()
 	w.window.Resize(756, 430)
 	qt.QCoreApplication_ProcessEvents()
+	fmt.Printf("compact_table_height=%d minimum=%d viewport=%d rows=%d header=%d scrollbar=%d frame=%d\n", w.table.Height(), w.table.MinimumHeight(), w.table.Viewport().Height(), w.table.RowHeight(0)+w.table.RowHeight(1), w.table.HorizontalHeader().Height(), w.table.HorizontalScrollBar().Height(), w.table.FrameWidth())
 	check(w.table.Viewport().Height() >= w.table.RowHeight(0)+w.table.RowHeight(1), "compact window retains two complete result rows")
 	metrics := w.evidence.FontMetrics()
 	runtime.SetFinalizer(metrics, nil)

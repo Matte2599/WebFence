@@ -148,6 +148,8 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	}
 	w.table.HorizontalHeader().SetStretchLastSection(true)
 	// Keep two complete rows available when high scaling reduces usable height.
+	// Native styles finalize font/section metrics during polish (before show).
+	w.table.EnsurePolished()
 	headerHint := w.table.HorizontalHeader().SizeHint()
 	scrollHint := w.table.HorizontalScrollBar().SizeHint()
 	runtime.SetFinalizer(headerHint, nil)

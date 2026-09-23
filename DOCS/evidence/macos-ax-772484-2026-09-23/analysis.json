@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "qt": "6.11.2",
+  "upstream_change": 772484,
+  "upstream_revision": "de050555112940ed643dfa7bd9ed16470adc5a09",
+  "upstream_status": "NEW",
+  "method": "Existing TabFocusAllControls probe executable; only Cocoa plugin replaced, isolated bundle name/identifier and ad hoc re-signing. CUA AX read during workload; not a screen-reader trial.",
+  "metadata": {
+    "schema": 1,
+    "executable_sha256": "d402d440f065ac4f29fc91b29f6376fb25b35a58c99e9cbcba661fae74037f94",
+    "system": "Darwin",
+    "release": "25.6.0",
+    "arch": "arm64",
+    "logical_cpus": 15,
+    "requested_seconds": 60,
+    "qt_platform_override": null,
+    "qt_scale_override": null,
+    "started_utc": "2026-09-23T15:47:41Z"
+  },
+  "result": {
+    "exit_code": 0,
+    "elapsed_seconds": 60.93342679203488,
+    "cycles": 20,
+    "qt_platform": "cocoa",
+    "rss_first_bytes": 32768,
+    "rss_last_bytes": 137003008,
+    "rss_peak_sampled_bytes": 176160768,
+    "samples": 13,
+    "scope": "workload completed; memory trend requires review; not an assistive trial"
+  },
+  "stderr_bytes": 0,
+  "plugin_sha256": "c76b858274c405f2e7b6024aac9678024c77402798bae6768214e86c86adfc3a",
+  "raw_hashes": {
+    "events.jsonl": "8a48cca827e4650750825791b8007f5a796673cdaff9e6b12a0a106f367e59c4",
+    "rss.jsonl": "a535fae82daad2bf32be20f6eeadd115909634a5b66ff1323f51d4e447375ace",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
