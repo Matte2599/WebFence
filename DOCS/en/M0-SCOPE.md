@@ -33,3 +33,7 @@ This check may recognize an explicitly listed private/loopback origin, but **doe
 This completes part of the M0 “synthetic lab and initial scope/network tests” gate. GUI, packaging, storage, signing and keychain gates remain open; neither M0 completion nor a scanning release is claimed.
 
 References: [net/url](https://pkg.go.dev/net/url), [net/netip](https://pkg.go.dev/net/netip), [HTTP client and redirects](https://pkg.go.dev/net/http#Client), [httptest](https://pkg.go.dev/net/http/httptest). Compatibility with the future browser's parsers requires dedicated tests.
+
+## Subsequent work
+
+The [ADR-003 lab transport](ADR-003-TRANSPORT.md) now exercises loopback connections with DNS/IP, TLS, budgets and cancellation. This package still provides URL comparison only; the historical `scope/lab_test.go` adapter remains test-only. These checks do not close the real-traffic limitations listed above.

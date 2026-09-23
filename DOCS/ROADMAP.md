@@ -41,7 +41,7 @@ Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi re
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
 - [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi.
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
-- [ ] Completare i test di confine scope/rete: laboratorio loopback e origini implementati; IP/DNS, connessioni, budget e cancellazione ancora da provare.
+- [x] Laboratorio sintetico e primi test scope/rete: origini, DNS/IP per connessione, TLS, redirect, budget condivisi e cancellazione verificati su loopback; [ADR-003 e limiti](it/ADR-003-TRANSPORT.md). Trasporto per target reali e policy complete restano in M1.
 - [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture.
 
 Uscita: prototipo distribuibile sulle piattaforme inizialmente dichiarate, lettura delle prove accessibile, rischi di packaging documentati e ADR aggiornato. Nessuna capacità di scansione professionale dichiarata.
@@ -154,7 +154,7 @@ These checks close the first task, not all of M0. Overall gates remain:
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.
 - [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access.
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
-- [ ] Complete scope/network boundary tests: loopback lab and origins implemented; IP/DNS, connections, budgets and cancellation still to verify.
+- [x] Synthetic lab and initial scope/network tests: origins, per-connection DNS/IP, TLS, redirects, shared budgets and cancellation checked on loopback; [ADR-003 and limitations](en/ADR-003-TRANSPORT.md). Real-target transport and complete policies remain in M1.
 - [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes.
 
 Exit: distributable prototype on initially declared platforms, accessible evidence reading, documented packaging risks and updated ADR. No professional scanning capability claimed.

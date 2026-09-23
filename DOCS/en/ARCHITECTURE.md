@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: planned product architecture. For the desktop, the entry point, Qt Widgets/MIQT workspace, IT/EN catalogs and offline fixtures described in [Qt M0](QT-DESKTOP.md) are implemented; the scanning diagram components remain unimplemented.
+Status: planned product architecture. For the desktop, the entry point, Qt Widgets/MIQT workspace, IT/EN catalogs and offline fixtures described in [Qt M0](QT-DESKTOP.md) are implemented; the complete scanning workflow remains unimplemented; M0 scope/transport foundations are described below.
 
 ## Initial structure
 
@@ -45,7 +45,7 @@ The broker represents a boundary to implement and test for browser traffic, redi
 | `report` | Snapshots, rendering, manifests and signing through a component with limited key access |
 | `storage` | Transactions, migrations, deletion and recovery |
 
-Names are proposed boundaries, not existing directories. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
+The table describes planned complete contracts. `internal/scope` and `internal/transport` implement only the M0 foundations described below; other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
 
 ## Persistence and external processes
 
@@ -68,3 +68,5 @@ Server mode, shared users, PostgreSQL and distributed workers require dedicated 
 ## Implemented scope foundation
 
 `internal/scope` implements only immutable HTTP(S) origin comparison, with no networking or Qt dependencies. A loopback laboratory exists exclusively in tests. It does not replace the planned broker’s IP/DNS, authorization and budget boundaries: [M0 contract](M0-SCOPE.md).
+
+`internal/transport` adds an HTTP/TLS broker confined to loopback grants, with pinned connection IPs and shared budgets/cancellation. M0 decision and production limitations: [ADR-003](ADR-003-TRANSPORT.md). No GUI calls.

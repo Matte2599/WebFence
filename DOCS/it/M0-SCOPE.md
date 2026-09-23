@@ -33,3 +33,7 @@ Questo controllo può riconoscere un’origine privata/loopback dichiarata, ma *
 Questa è una parte del gate M0 «laboratorio sintetico e primi test scope/rete». I gate GUI, packaging, storage, firma e keychain restano aperti; non viene dichiarata completata M0 o iniziata una release di scansione.
 
 Riferimenti: [net/url](https://pkg.go.dev/net/url), [net/netip](https://pkg.go.dev/net/netip), [client HTTP e redirect](https://pkg.go.dev/net/http#Client), [httptest](https://pkg.go.dev/net/http/httptest). La compatibilità dei parser del futuro browser richiederà prove dedicate.
+
+## Evoluzione successiva
+
+Il [trasporto di laboratorio ADR-003](ADR-003-TRANSPORT.md) ora prova connessioni loopback con DNS/IP, TLS, budget e cancellazione. Il contratto di questo pacchetto resta soltanto il confronto URL; l’adattatore storico di `scope/lab_test.go` resta solo di test. I limiti per traffico reale sopra elencati non sono chiusi da queste prove.

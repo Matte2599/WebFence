@@ -2,7 +2,7 @@
 
 [English](../en/ARCHITECTURE.md) · [Indice](../README.md)
 
-Stato: architettura del prodotto pianificata. Per il desktop sono implementati il punto di ingresso desktop, il workspace Qt Widgets/MIQT, i cataloghi IT/EN e le fixture offline descritte in [Qt M0](QT-DESKTOP.md); i componenti del diagramma di scansione restano da realizzare.
+Stato: architettura del prodotto pianificata. Per il desktop sono implementati il punto di ingresso desktop, il workspace Qt Widgets/MIQT, i cataloghi IT/EN e le fixture offline descritte in [Qt M0](QT-DESKTOP.md); il ciclo completo del diagramma di scansione resta da realizzare; le fondazioni scope/trasporto M0 sono descritte sotto.
 
 ## Struttura iniziale
 
@@ -45,7 +45,7 @@ Il broker rappresenta un confine da implementare e provare anche per traffico br
 | `report` | Snapshot, rendering, manifest e firma tramite componente con accesso limitato alle chiavi |
 | `storage` | Transazioni, migrazioni, cancellazione e ripristino |
 
-I nomi sono confini proposti, non directory già esistenti. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
+La tabella descrive i contratti completi pianificati. `internal/scope` e `internal/transport` implementano soltanto le fondazioni M0 descritte sotto; gli altri moduli del motore non sono ancora presenti. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
 
 ## Persistenza e processi esterni
 
@@ -68,3 +68,5 @@ La modalità server, utenti condivisi, PostgreSQL e worker distribuiti richiedon
 ## Fondazione scope implementata
 
 `internal/scope` realizza soltanto il confronto immutabile di origini HTTP(S), senza rete e senza dipendenze Qt. Un laboratorio loopback esiste esclusivamente nei test. Non sostituisce i confini IP/DNS, autorizzazioni e budget del broker pianificato: [contratto M0](M0-SCOPE.md).
+
+`internal/transport` aggiunge un broker HTTP/TLS confinato a grant loopback, con IP fissato alla connessione e budget/cancellazione condivisi. Decisione M0 e limiti di produzione: [ADR-003](ADR-003-TRANSPORT.md). Nessuna chiamata dalla GUI.

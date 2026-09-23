@@ -34,3 +34,7 @@ Se in futuro esiste una API di controllo, aggiungere autenticazione, autorizzazi
 Una macchina già compromessa può leggere la memoria dell'operatore e alterare il programma. Firma e cifratura non risolvono quel problema. L'isolamento browser va provato su ciascun sistema operativo; i meccanismi differiscono. L'applicazione non può garantire che un target arbitrario non attribuisca effetti a richieste apparentemente innocue.
 
 Prima di introdurre browser, AI, plugin, updater o multiutente, aggiornare questa matrice e i test negativi. Le vulnerabilità del programma seguono [SECURITY.md](../../SECURITY.md), quelle dei target restano riservate ai soggetti autorizzati.
+
+## Evidenze M0 del confine di rete
+
+[ADR-003](ADR-003-TRANSPORT.md) registra le prove sintetiche di DNS variabile/misto, peer effettivo, TLS, redirect, budget e arresto del broker loopback. Sono prove circoscritte, senza scansioni esterne; la matrice del prodotto non è integralmente verificata.

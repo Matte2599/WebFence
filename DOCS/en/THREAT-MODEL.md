@@ -34,3 +34,7 @@ A future control API requires authentication, resource authorization, origin/CSR
 A compromised operator machine may read process memory and alter the program. Signing and encryption do not solve that problem. Browser isolation must be tested on each operating system; mechanisms differ. The application cannot guarantee that an arbitrary target assigns no effects to apparently harmless requests.
 
 Before adding browsers, AI, plugins, an updater or shared users, update this matrix and negative tests. Product vulnerabilities follow [SECURITY.md](../../SECURITY.md); target vulnerabilities remain confidential to authorized parties.
+
+## M0 network-boundary evidence
+
+[ADR-003](ADR-003-TRANSPORT.md) records synthetic checks of changing/mixed DNS, actual peer, TLS, redirects, budgets and stopping the loopback broker. These are scoped checks with no external scanning; the complete product matrix remains unverified.

@@ -8,7 +8,7 @@
 
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Accessibilità completa e distribuzione restano gate aperti.
 
-Il core comprende un primo [controllo delle origini autorizzate](DOCS/it/M0-SCOPE.md), con laboratorio HTTP solo nei test su loopback. Non è ancora il trasporto di scansione; la GUI resta offline.
+Il core comprende un primo [controllo delle origini autorizzate](DOCS/it/M0-SCOPE.md), con laboratorio HTTP solo nei test su loopback. È stato aggiunto anche un [trasporto di laboratorio](DOCS/it/ADR-003-TRANSPORT.md) con DNS/IP verificati, TLS, budget e cancellazione, limitato a loopback. La GUI resta offline; nessuno scanner di produzione.
 
 ## Perché WebFence
 

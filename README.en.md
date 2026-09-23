@@ -8,7 +8,7 @@
 
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Full accessibility and distribution remain open gates.
 
-The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an HTTP lab confined to loopback tests. This is not yet the scanning transport; the GUI remains offline.
+The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an HTTP lab confined to loopback tests. A [lab transport](DOCS/en/ADR-003-TRANSPORT.md) now adds DNS/IP checks, TLS, budgets and cancellation, restricted to loopback. The GUI remains offline; no production scanner.
 
 ## Why WebFence
 

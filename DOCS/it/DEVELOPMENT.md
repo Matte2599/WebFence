@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/transport
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -77,4 +77,12 @@ Log locali redatti con ID di run, durata, limiti ed errori; niente telemetria pr
 ```sh
 go test -race -cover ./internal/scope
 go test ./internal/scope -run '^$' -fuzz '^FuzzCheck$' -fuzztime=20s -parallel=4
+```
+
+## Trasporto di laboratorio M0
+
+`internal/transport.NewLab` usa origini/IP loopback espliciti, resolver controllato e limiti obbligatori. Non è collegato al desktop. [Decisione, contratto e limiti](ADR-003-TRANSPORT.md).
+
+```sh
+go test -race -cover ./internal/transport
 ```
