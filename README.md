@@ -12,6 +12,8 @@ Il core comprende un primo [controllo delle origini autorizzate](DOCS/it/M0-SCOP
 
 Le fondazioni includono anche prove SQLite e un componente JWS Ed25519 limitato: [scelte e verifiche M0](DOCS/it/ADR-004-STORAGE-SIGNATURE.md). Persistenza dei progetti e report firmati nella GUI non sono ancora disponibili. Un [adattatore portachiavi nativo](DOCS/it/ADR-005-CREDENTIALS.md) separato è verificato nativamente sui quattro target CI, comprese condizioni di indisponibilità ([run](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 
+Il bundle macOS include una [correzione temporanea Qt Cocoa](DOCS/it/ADR-006-QT-COCOA.md) per il crash assistivo riprodotto; layout compatto verificato al 200% e [CI verde sui quattro target](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Restano aperti collaudi con lettori reali e distribuzione.
+
 ## Perché WebFence
 
 Gli strumenti AI permettono anche a sviluppatori singoli di realizzare applicazioni articolate. La velocità di sviluppo richiede verifiche di sicurezza altrettanto accessibili e rigorose. Questa è la motivazione del progetto, non una dimostrazione che il codice generato con AI sia sempre meno sicuro.

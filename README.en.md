@@ -12,6 +12,8 @@ The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an H
 
 The foundations also include SQLite experiments and a restricted Ed25519 JWS component: [M0 choices and checks](DOCS/en/ADR-004-STORAGE-SIGNATURE.md). Project persistence and signed reports in the GUI are not yet available. A separate [native credential adapter](DOCS/en/ADR-005-CREDENTIALS.md) is now verified natively on all four CI targets, including unavailable states ([run](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 
+The macOS bundle includes a [temporary Qt Cocoa correction](DOCS/en/ADR-006-QT-COCOA.md) for the reproduced assistive crash; compact layout checked at 200% and [CI passed on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Actual screen-reader and distribution trials remain open.
+
 ## Why WebFence
 
 AI tools allow individual developers to build substantial applications. Faster development calls for security checks that are equally accessible and rigorous. This is the project's motivation, not evidence that AI-generated code is invariably less secure.

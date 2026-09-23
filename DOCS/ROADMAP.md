@@ -37,7 +37,7 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 
 Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi sono riportati nella [matrice di verifica e collaudo](it/M0-VALIDATION.md):
 
-- [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive. [Correzione Cocoa](it/ADR-006-QT-COCOA.md) verificata sulla sequenza del crash; layout 200% corretto e provato; lettori, più monitor e stabilità prolungata restano aperti.
+- [ ] Desktop Go/Qt: finestra, tabella ampia, lettura prove, tastiera, DPI e tecnologie assistive. [Correzione Cocoa](it/ADR-006-QT-COCOA.md) verificata sulla sequenza del crash; layout 200% corretto e provato, [CI `953ed2d` verde](https://github.com/Matte2599/WebFence/actions/runs/35873709410); lettori, più monitor e stabilità prolungata restano aperti.
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale. [Ricognizione](it/M0-PACKAGING.md): il bundle locale richiede macOS 26; minimo desiderato da fissare e verificare.
 - [x] Selezione motivata di GUI, SQLite, JWS e portachiavi: [ADR-004](it/ADR-004-STORAGE-SIGNATURE.md), [ADR-005](it/ADR-005-CREDENTIALS.md); prove native completate sui quattro target, inclusa indisponibilità Windows con token anonimo ([CI](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
@@ -150,7 +150,7 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 
 These checks close the first task, not all of M0. Overall gates are tracked in the [verification and trial matrix](en/M0-VALIDATION.md):
 
-- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies. [Cocoa correction](en/ADR-006-QT-COCOA.md) verified against the crash sequence; 200% layout corrected and tested; readers, multi-monitor and prolonged stability remain open.
+- [ ] Go/Qt desktop: window, large table, evidence reading, keyboard, DPI and assistive technologies. [Cocoa correction](en/ADR-006-QT-COCOA.md) verified against the crash sequence; 200% layout corrected and tested, [CI `953ed2d` passed](https://github.com/Matte2599/WebFence/actions/runs/35873709410); readers, multi-monitor and prolonged stability remain open.
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix. [Investigation](en/M0-PACKAGING.md): local bundle requires macOS 26; intended minimum must be fixed and verified.
 - [x] Justified selection of GUI, SQLite, JWS and keychain: [ADR-004](en/ADR-004-STORAGE-SIGNATURE.md), [ADR-005](en/ADR-005-CREDENTIALS.md); native tests completed on all four targets, including Windows unavailability with an anonymous token ([CI](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.

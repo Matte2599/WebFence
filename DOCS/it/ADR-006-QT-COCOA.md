@@ -2,7 +2,7 @@
 
 [English](../en/ADR-006-QT-COCOA.md) · [Indice](../README.md)
 
-Data: 2026-09-23. Stato: adottata per il bundle di sviluppo macOS con Qt 6.11.2; verifica CI della nuova build ancora in corso. Non chiude il gate assistivo M0.
+Data: 2026-09-23. Stato: adottata per il bundle di sviluppo macOS con Qt 6.11.2; CI della nuova build completata sui quattro target. Non chiude il gate assistivo M0.
 
 ## Problema e decisione
 
@@ -30,4 +30,4 @@ Questa è una mitigazione verificata della sequenza di crash riprodotta, non una
 
 Controlli aggiuntivi: archivio invalido rifiutato prima dell’estrazione; dipendenze del plugin limitate a framework nel bundle e librerie di sistema. Il bundle ricompilato dalla nuova procedura passa anche la sequenza GUI a scala standard. Self-test offscreen del binario non confezionato superato. Il bundle include solo Cocoa: tentare offscreen termina perché manca quel plugin; puntarlo ai plugin Homebrew carica due copie Qt e fallisce. Non usare questa combinazione come test del bundle: provarlo tramite la GUI nativa.
 
-La prima CI della correzione (`9655816`, run 35872886041) ha superato Windows/Linux e i test macOS, ma la compilazione Cocoa richiedeva gli header MoltenVK assenti dal runner. Aggiunti MoltenVK e Vulkan headers ai prerequisiti espliciti. In seguito corretto anche il layout: margini interni ridotti, tabella con almeno due righe complete più spazio scrollbar, pannelli non collassabili. Prova visiva al 200% con due righe e ultima colonna raggiunta da tastiera; self-test con finestra logica 756×430 superato alle scale 1/1,5/2 e vet desktop superato. I valori Qt restituiti per copia hanno finalizer rimossi prima del rilascio esplicito; i test hanno intercettato e corretto una doppia liberazione durante lo sviluppo della modifica, prima del commit. CI successiva da verificare.
+La prima CI della correzione (`9655816`, run 35872886041) ha superato Windows/Linux e i test macOS, ma la compilazione Cocoa richiedeva gli header MoltenVK assenti dal runner. Aggiunti MoltenVK e Vulkan headers ai prerequisiti espliciti. In seguito corretto anche il layout: margini interni ridotti, tabella con almeno due righe complete più spazio scrollbar, pannelli non collassabili. Prova visiva al 200% con due righe e ultima colonna raggiunta da tastiera; self-test con finestra logica 756×430 superato alle scale 1/1,5/2 e vet desktop superato. I valori Qt restituiti per copia hanno finalizer rimossi prima del rilascio esplicito; i test hanno intercettato e corretto una doppia liberazione durante lo sviluppo della modifica, prima del commit. CI successiva `953ed2d` superata sui quattro target ([run 35873709410](https://github.com/Matte2599/WebFence/actions/runs/35873709410)), inclusi nuovo self-test e bundle Cocoa.

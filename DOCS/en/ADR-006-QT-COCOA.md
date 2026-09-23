@@ -2,7 +2,7 @@
 
 [Italiano](../it/ADR-006-QT-COCOA.md) · [Index](../README.md)
 
-Date: 2026-09-23. Status: adopted for the macOS development bundle using Qt 6.11.2; new build CI verification still in progress. Does not close the M0 assistive gate.
+Date: 2026-09-23. Status: adopted for the macOS development bundle using Qt 6.11.2; new build CI verification completed on all four targets. Does not close the M0 assistive gate.
 
 ## Problem and decision
 
@@ -30,4 +30,4 @@ This is a verified mitigation of the reproduced crash sequence, not a general ac
 
 Additional checks: invalid archive rejected before extraction; plugin dependencies limited to bundled frameworks and system libraries. The bundle rebuilt by the new procedure also passes the GUI sequence at standard scale. Unpackaged binary offscreen self-test passed. The bundle includes only Cocoa: attempting offscreen exits because that plugin is missing; pointing it at Homebrew plugins loads two Qt copies and fails. Do not use this combination to test the bundle: exercise its native GUI.
 
-The first correction CI (`9655816`, run 35872886041) passed Windows/Linux and macOS tests, but Cocoa compilation required MoltenVK headers missing from the runner. MoltenVK and Vulkan headers are now explicit prerequisites. The layout was subsequently corrected too: reduced internal margins, table space for at least two complete rows plus scrollbars, non-collapsible panels. Visual trial at 200% with two rows and the last column reached by keyboard; logical 756×430 window self-test passed at scales 1/1.5/2 and desktop vet passed. By-value Qt returns have finalizers removed before explicit destruction; tests caught and corrected a double release while developing this change, before commit. Follow-up CI to verify.
+The first correction CI (`9655816`, run 35872886041) passed Windows/Linux and macOS tests, but Cocoa compilation required MoltenVK headers missing from the runner. MoltenVK and Vulkan headers are now explicit prerequisites. The layout was subsequently corrected too: reduced internal margins, table space for at least two complete rows plus scrollbars, non-collapsible panels. Visual trial at 200% with two rows and the last column reached by keyboard; logical 756×430 window self-test passed at scales 1/1.5/2 and desktop vet passed. By-value Qt returns have finalizers removed before explicit destruction; tests caught and corrected a double release while developing this change, before commit. Follow-up CI `953ed2d` passed on all four targets ([run 35873709410](https://github.com/Matte2599/WebFence/actions/runs/35873709410)), including the new self-test and Cocoa bundle.
