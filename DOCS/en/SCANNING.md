@@ -2,7 +2,7 @@
 
 [Italiano](../it/SCANNING.md) · [Index](../README.md)
 
-Status: specification to implement. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
+Status: engine not implemented. Only the first [origin check and local M0 lab](M0-SCOPE.md) are available; no desktop target traffic. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
 
 ## Pipeline
 

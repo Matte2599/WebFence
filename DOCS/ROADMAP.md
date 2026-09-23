@@ -31,6 +31,7 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 - [x] Scelta autore: Qt Widgets/MIQT + Go; [ADR-002 accettato](it/ADR-002-GUI.md), integrazione principale e preferenza lingua indipendente dal toolkit; CI Qt con cache coerente fra build e packaging.
 - [x] CI della GUI Qt principale superata sui quattro target, inclusi self-test e bundle macOS ([run](https://github.com/Matte2599/WebFence/actions/runs/35853356437)); lingua persistente verificata anche con riavvio reale su macOS.
 - [x] Navigazione Qt: menu Visualizza, etichette filtri, scorciatoie di focus e cambio lingua senza reset; self-test con Tab/Shift+Tab e interfaccia accessibile Qt (limiti offscreen documentati). CI superata sui quattro target ([run](https://github.com/Matte2599/WebFence/actions/runs/35857456908)); la verifica con lettori reali resta aperta.
+- [x] Primo livello scope: origini HTTP(S) esatte, parser restrittivo, laboratorio HTTP loopback con redirect e destinazione esclusa, test concorrenti e fuzzing; [limiti](it/M0-SCOPE.md). Non è il broker di rete completo.
 - [ ] Completare verifiche Qt di menu/focus, lettori reali, stabilità e distribuzione; [stato corrente](it/QT-DESKTOP.md).
 - [x] Registrato Qt come alternativa a Fyne dopo confronto pratico; gate assistivo Qt ancora aperto.
 
@@ -40,7 +41,7 @@ Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi re
 - [ ] Build e packaging di prova sui sistemi candidati; matrice OS/architetture reale.
 - [ ] Selezione motivata di GUI, driver SQLite, libreria JWS e accesso al portachiavi.
 - [x] Versioni fissate, scheletro minimo, cataloghi IT/EN, CI per il codice introdotto.
-- [ ] Laboratorio sintetico isolato e primi test di scope/rete.
+- [ ] Completare i test di confine scope/rete: laboratorio loopback e origini implementati; IP/DNS, connessioni, budget e cancellazione ancora da provare.
 - [ ] Revisione legale del testo, canale privato di sicurezza e accordo contributori prima delle rispettive aperture.
 
 Uscita: prototipo distribuibile sulle piattaforme inizialmente dichiarate, lettura delle prove accessibile, rischi di packaging documentati e ADR aggiornato. Nessuna capacità di scansione professionale dichiarata.
@@ -143,6 +144,7 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 - [x] Author choice: Qt Widgets/MIQT + Go; [accepted ADR-002](en/ADR-002-GUI.md), main integration and toolkit-independent language preference; Qt CI with consistent build/packaging cache flags.
 - [x] Main Qt GUI CI passed on all four targets, including self-tests and macOS bundle ([run](https://github.com/Matte2599/WebFence/actions/runs/35853356437)); persistent language also checked through actual macOS restart.
 - [x] Qt navigation: View menu, filter labels, focus shortcuts and language change without reset; self-test covers Tab/Shift+Tab and the Qt accessible interface (offscreen limitations documented). CI passed on all four targets ([run](https://github.com/Matte2599/WebFence/actions/runs/35857456908)); actual screen-reader verification remains open.
+- [x] First scope layer: exact HTTP(S) origins, strict parser, loopback HTTP lab with redirects and an excluded destination, concurrent tests and fuzzing; [limitations](en/M0-SCOPE.md). Not the complete network broker.
 - [ ] Complete Qt menus/focus, actual readers, stability and distribution checks; [current state](en/QT-DESKTOP.md).
 - [x] Recorded Qt as the Fyne alternative after practical comparison; Qt assistive gate remains open.
 
@@ -152,7 +154,7 @@ These checks close the first task, not all of M0. Overall gates remain:
 - [ ] Trial builds and packaging on candidate systems; actual OS/architecture matrix.
 - [ ] Justified selection of GUI, SQLite driver, JWS library and keychain access.
 - [x] Pinned versions, minimal skeleton, IT/EN catalogs and CI for introduced code.
-- [ ] Isolated synthetic lab and initial scope/network tests.
+- [ ] Complete scope/network boundary tests: loopback lab and origins implemented; IP/DNS, connections, budgets and cancellation still to verify.
 - [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes.
 
 Exit: distributable prototype on initially declared platforms, accessible evidence reading, documented packaging risks and updated ADR. No professional scanning capability claimed.

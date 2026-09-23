@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -69,3 +69,12 @@ Ogni PR che cambia requisiti o funzioni aggiorna i documenti omologhi IT/EN. La 
 Prima di un rilascio: test dei rischi pertinenti, scansione dipendenze/segreti, SBOM, inventario licenze, checksum, firma dei pacchetti, note IT/EN e procedura di rollback. Prima di migrare dati creare un backup verificato; il rollback del binario non inverte automaticamente lo schema. Aggiornamenti di regole e modelli sono versionati separatamente e non cambiano una run già avviata.
 
 Log locali redatti con ID di run, durata, limiti ed errori; niente telemetria predefinita. In caso di spazio insufficiente, feed scaduto, chiave bloccata, runtime assente o OOM, mostrare il componente interessato e ciò che resta utilizzabile. Non convertire una degradazione in successo silenzioso.
+
+## Primo livello scope (M0)
+
+`internal/scope` contiene la policy immutabile delle origini; il laboratorio HTTP è soltanto in `lab_test.go`. [Contratto e limiti](M0-SCOPE.md). Il desktop non effettua richieste.
+
+```sh
+go test -race -cover ./internal/scope
+go test ./internal/scope -run '^$' -fuzz '^FuzzCheck$' -fuzztime=20s -parallel=4
+```

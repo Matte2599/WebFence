@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: planned product architecture. Only the desktop entry point, Qt Widgets/MIQT workspace, IT/EN catalogs and offline fixtures described in [Qt M0](QT-DESKTOP.md) are implemented; the scanning diagram components remain unimplemented.
+Status: planned product architecture. For the desktop, the entry point, Qt Widgets/MIQT workspace, IT/EN catalogs and offline fixtures described in [Qt M0](QT-DESKTOP.md) are implemented; the scanning diagram components remain unimplemented.
 
 ## Initial structure
 
@@ -64,3 +64,7 @@ All long operations propagate cancellation. The GUI thread stays responsive; eve
 ## Future growth
 
 Server mode, shared users, PostgreSQL and distributed workers require dedicated ADRs and authorization boundaries. Do not deploy distributed infrastructure for one desktop application. A company license does not automatically imply multi-user functionality.
+
+## Implemented scope foundation
+
+`internal/scope` implements only immutable HTTP(S) origin comparison, with no networking or Qt dependencies. A loopback laboratory exists exclusively in tests. It does not replace the planned broker’s IP/DNS, authorization and budget boundaries: [M0 contract](M0-SCOPE.md).

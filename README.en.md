@@ -8,6 +8,8 @@
 
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Full accessibility and distribution remain open gates.
 
+The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an HTTP lab confined to loopback tests. This is not yet the scanning transport; the GUI remains offline.
+
 ## Why WebFence
 
 AI tools allow individual developers to build substantial applications. Faster development calls for security checks that are equally accessible and rigorous. This is the project's motivation, not evidence that AI-generated code is invariably less secure.

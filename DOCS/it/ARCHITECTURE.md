@@ -2,7 +2,7 @@
 
 [English](../en/ARCHITECTURE.md) · [Indice](../README.md)
 
-Stato: architettura del prodotto pianificata. Implementati soltanto il punto di ingresso desktop, il workspace Qt Widgets/MIQT, i cataloghi IT/EN e le fixture offline descritte in [Qt M0](QT-DESKTOP.md); i componenti del diagramma di scansione restano da realizzare.
+Stato: architettura del prodotto pianificata. Per il desktop sono implementati il punto di ingresso desktop, il workspace Qt Widgets/MIQT, i cataloghi IT/EN e le fixture offline descritte in [Qt M0](QT-DESKTOP.md); i componenti del diagramma di scansione restano da realizzare.
 
 ## Struttura iniziale
 
@@ -64,3 +64,7 @@ Tutte le operazioni lunghe propagano un contesto di cancellazione. Il thread GUI
 ## Crescita futura
 
 La modalità server, utenti condivisi, PostgreSQL e worker distribuiti richiedono ADR e confini di autorizzazione dedicati. Non installare infrastruttura distribuita per una singola applicazione desktop. Una licenza aziendale non implica automaticamente una modalità multiutente.
+
+## Fondazione scope implementata
+
+`internal/scope` realizza soltanto il confronto immutabile di origini HTTP(S), senza rete e senza dipendenze Qt. Un laboratorio loopback esiste esclusivamente nei test. Non sostituisce i confini IP/DNS, autorizzazioni e budget del broker pianificato: [contratto M0](M0-SCOPE.md).

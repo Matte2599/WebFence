@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -69,3 +69,12 @@ Every PR changing requirements or behavior updates matching IT/EN documents. Lan
 Before release: relevant risk tests, dependency/secret scans, SBOM, license inventory, checksums, package signing, IT/EN notes and rollback procedure. Create a verified backup before data migration; binary rollback does not automatically reverse schema changes. Rule/model updates are separately versioned and do not alter running scans.
 
 Keep redacted local logs with run IDs, duration, limits and errors; no default telemetry. On insufficient disk, stale feeds, locked keys, missing runtime or OOM, identify the affected component and remaining capabilities. Do not silently turn degraded operation into success.
+
+## First scope layer (M0)
+
+`internal/scope` contains the immutable origin policy; the HTTP lab exists only in `lab_test.go`. [Contract and limitations](M0-SCOPE.md). The desktop performs no requests.
+
+```sh
+go test -race -cover ./internal/scope
+go test ./internal/scope -run '^$' -fuzz '^FuzzCheck$' -fuzztime=20s -parallel=4
+```
