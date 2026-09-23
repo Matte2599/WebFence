@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "package": "libb2@0.98.1",
+  "url": "https://raw.githubusercontent.com/Homebrew/formula-patches/03cf8088210822aa2c1ab544ed58ea04c897d9c4/libtool/configure-big_sur.diff",
+  "sha256": "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c",
+  "hash_basis": "installed .brew/libb2.rb",
+  "size_bytes": 960,
+  "verification": "SHA-256 and no-fuzz patch dry-run on verified upstream 0.98.1 configure passed",
+  "distribution_ready": false
+}

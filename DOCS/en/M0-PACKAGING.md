@@ -48,7 +48,7 @@ Added `.deb`/Windows ZIP packaging and separate-runtime checks: [ADR-007 and com
 
 The manifest sets `distribution_ready: false`. The local probe matched 28 total Mach-O files (executable, rebuilt Cocoa and 26 originals) to 15 Homebrew packages. GLib supplies no installed notices; installed Qt notices concern CMake tools and do not suffice for Qt runtime. Complete source archives, embedded components, further notices and replacement materials remain to collect/verify. Upstream SBOMs are retained as sources, not declared product SBOMs. Script success alone grants no distribution approval.
 
-Verified rejection of an unrelated Mach-O component and preservation of an existing inventory. Local bundle integration completed: ad hoc signature verified, 28 records/15 packages checked, bundled documentation links valid. Local build from code `e683437` with declared modifications; [CI `9f87c49`: six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35881924949). The GLib recipe also references a Homebrew patch absent from the keg: it remains among source materials to acquire.
+Verified rejection of an unrelated Mach-O component and preservation of an existing inventory. Local bundle integration completed: ad hoc signature verified, 28 records/15 packages checked, bundled documentation links valid. Local build from code `e683437` with declared modifications; [CI `9f87c49`: six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35881924949). The GLib recipe also references a Homebrew patch absent from the keg: subsequently identified and acquired in the [source supplement](M0-SOURCE-MATERIALS.md), still to integrate.
 
 ## Collected source materials
 

@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "revision": "8d3053fbe90c6101bb336493c149c9cc91f31cf0",
+  "dirty": false,
+  "executable_sha256": "33ad7886d8195463b7a9fd9cbc5325f3107b562c0d9d1ed498b0865a038bb137",
+  "qt": "6.11.2 with patch 772484 revision de050555112940ed643dfa7bd9ed16470adc5a09",
+  "host": {
+    "os": "macOS 26.6.2 (25G83)",
+    "arch": "arm64",
+    "cpu": "Apple M5 Pro",
+    "logical_cpus": 15,
+    "ram_gib": 24
+  },
+  "build": {
+    "go": "1.27.1",
+    "cgo_cxxflags": "-O2 -g -std=c++17"
+  },
+  "result": {
+    "exit_code": 0,
+    "elapsed_seconds": 1803.0540240000119,
+    "cycles": 584,
+    "qt_platform": "cocoa",
+    "rss_first_bytes": 32768,
+    "rss_last_bytes": 118374400,
+    "rss_peak_sampled_bytes": 176439296,
+    "samples": 360,
+    "scope": "workload completed; memory trend requires review; not an assistive trial"
+  },
+  "last_event": {
+    "event": "passed",
+    "detail": "completed whole cycles",
+    "elapsed_seconds": 1802.339929375,
+    "requested_seconds": 1800,
+    "cycles": 584,
+    "phase": 0,
+    "go_heap_alloc_bytes": 4309480,
+    "go_sys_bytes": 18647304,
+    "go_gc_count": 1167,
+    "variant_cache_entries": 265,
+    "qt_platform": "cocoa"
+  },
+  "rss_windows": [
+    {
+      "from_seconds": 60,
+      "to_seconds": 300,
+      "samples": 48,
+      "min_bytes": 114180096,
+      "median_bytes": 117907456.0,
+      "max_bytes": 171622400
+    },
+    {
+      "from_seconds": 300,
+      "to_seconds": 600,
+      "samples": 60,
+      "min_bytes": 116932608,
+      "median_bytes": 118161408.0,
+      "max_bytes": 118996992
+    },
+    {
+      "from_seconds": 600,
+      "to_seconds": 900,
+      "samples": 60,
+      "min_bytes": 117506048,
+      "median_bytes": 118415360.0,
+      "max_bytes": 119275520
+    },
+    {
+      "from_seconds": 900,
+      "to_seconds": 1200,
+      "samples": 60,
+      "min_bytes": 118456320,
+      "median_bytes": 119357440.0,
+      "max_bytes": 119521280
+    },
+    {
+      "from_seconds": 1200,
+      "to_seconds": 1500,
+      "samples": 60,
+      "min_bytes": 118489088,
+      "median_bytes": 118595584.0,
+      "max_bytes": 119668736
+    },
+    {
+      "from_seconds": 1500,
+      "to_seconds": 1803,
+      "samples": 60,
+      "min_bytes": 118046720,
+      "median_bytes": 118276096.0,
+      "max_bytes": 118571008
+    }
+  ],
+  "max_rss_sample_gap_seconds": 5.02671620901674,
+  "max_five_cycle_event_interval_seconds": 38.426150667,
+  "timing_scope": "250 ms requested timer phase; observed five-cycle intervals are not constant. Cause not established; not a latency benchmark or proof of no UI stalls. Other task work occurred on the host.",
+  "stderr_bytes": 0,
+  "raw_hashes": {
+    "events.jsonl": "784cd8e77606e7437c1eca11154a970da0da13085318f27c43fde557bbc287aa",
+    "rss.jsonl": "859fe2e0cbb65da412cea9159cbd8f69e81d20b5d9636f6c69a8077b957b99a5",
+    "metadata.json": "70d9ac3c063afd61305758b024f929d3cd1f677e8cee3264a48d60d03984c87a",
+    "summary.json": "b208b849847b12177b0ba2163a9ddd56db13cd3d2cbfd150b609939bb119566b",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

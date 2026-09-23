@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "package": "glib@2.90.0",
+  "homebrew_commit": "550d1a4e5c2da2dd3c8c630e43b1ef9a84afd700",
+  "distribution_ready": false,
+  "scope": "Supplementary source materials; not installed, executed or a complete reconstruction of the bottle build",
+  "files": [
+    {
+      "path": "glib.rb",
+      "url": "https://raw.githubusercontent.com/Homebrew/homebrew-core/550d1a4e5c2da2dd3c8c630e43b1ef9a84afd700/Formula/g/glib.rb",
+      "size_bytes": 7984,
+      "sha256": "b1e77191c8a81816e4451be8159f571d744b0380318fc57c32f675e14796578f",
+      "hash_basis": "downloaded from pinned Homebrew Git tree"
+    },
+    {
+      "path": "hardcoded-paths.diff",
+      "url": "https://raw.githubusercontent.com/Homebrew/homebrew-core/550d1a4e5c2da2dd3c8c630e43b1ef9a84afd700/Patches/glib/hardcoded-paths.diff",
+      "size_bytes": 1523,
+      "sha256": "d846efd0bf62918350da94f850db33b0f8727fece9bfaf8164566e3094e80c97",
+      "hash_basis": "downloaded from pinned Homebrew Git tree"
+    },
+    {
+      "path": "gobject-introspection-1.86.0.tar.xz",
+      "url": "https://download.gnome.org/sources/gobject-introspection/1.86/gobject-introspection-1.86.0.tar.xz",
+      "size_bytes": 1083172,
+      "sha256": "920d1a3fcedeadc32acff95c2e203b319039dd4b4a08dd1a2dfd283d19c0b9ae",
+      "hash_basis": "installed recipe"
+    }
+  ],
+  "installed_recipe_sha256": "eb964bd9d934f92a1e271e84085c58541770d41f5698e7e5f17094375bb46d2a",
+  "recipe_match": "Exact byte match after removal of the upstream bottle stanza; all other source lines match"
+}

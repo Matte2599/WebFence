@@ -49,8 +49,12 @@ RSS medians in the 60–300, 300–600, 600–900, 900–1200, 1200–1500 and 1
 
 The workload completed without crash or deadline expiry, but stderr contains **17,730 AX warnings**, concerning `QComboBoxListView` children and invalid Cocoa notifications. These are not ignored: the assistive gate remains open. This trial uses the stated commit, before the TabFocusAllControls correction, and does not validate that change for 30 minutes.
 
-## New session with patch 772484 — running
+## Session with patch 772484 — completed
 
 Started on 2026-09-23 at 16:04:37 UTC, requested duration 1,800 s, revision `8d3053fbe90c6101bb336493c149c9cc91f31cf0` with `vcs.modified=false`. Same host and flags as the earlier trial, new Cocoa patch 772484 and Tab/geometry corrections. Isolated `WebFence Stability Current` copy, identifier `io.github.Matte2599.WebFence.StabilityCurrent`, signed ad hoc. Executable SHA-256 `33ad7886d8195463b7a9fd9cbc5325f3107b562c0d9d1ed498b0865a038bb137`.
 
-Logs in `/tmp/webfence-soak-macos-8d3053f-30m/`. CUA AX read during cycles to exercise the bridge; no input changing the workload. Outcome still open: verify final event, exit code, RSS and stderr before claiming the result. Do not confuse this session with the earlier 600-cycle trial.
+Logs in `/tmp/webfence-soak-macos-8d3053f-30m/`. CUA AX read during cycles to exercise the bridge; no input changing the workload. Completed 584 cycles in 1,802.340 s of workload (1,803.054 s externally), exit zero, 360 RSS samples, no INCOMPLETE marker and **empty stderr**. Processes terminated. Do not confuse this session with the earlier 600-cycle trial.
+
+[New session logs and analysis](../evidence/macos-soak-8d3053f-2026-09-23/analysis.json). RSS medians in the 60–300, 300–600, 600–900, 900–1200, 1200–1500 and 1500–1803 s windows: 112.45 / 112.69 / 112.93 / 113.83 / 113.10 / 112.80 MiB. Sampled peak 168.27 MiB, last sample 112.89 MiB. Final Go heap 4,309,480 bytes; cache 265 entries from the 30 s sample onward. No sustained RSS growth or recurrence of AX warnings observed in this window; this does not prove general absence of leaks.
+
+Timer intervals are not constant: the largest interval between samples five cycles apart is 38.426 s versus a nominal 15 s; maximum RSS collector gap 5.027 s. Cause undetermined. Other work continued on the same host, including archive collection; a lower cycle count alone does not establish a crash or freeze, but the trial does not certify latency or absence of UI stalls. Actual readers and multiple monitors still need trials. Desktop/Cocoa code is unchanged between `8d3053f` and `39c48ef`, which only adds build tools/materials and documentation.

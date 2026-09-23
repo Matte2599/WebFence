@@ -18,7 +18,7 @@ Il bundle macOS raccoglie ora [provenienza e attribuzioni disponibili](DOCS/it/M
 
 Disponibili anche procedure di [packaging Debian e Windows](DOCS/it/ADR-007-PACKAGING.md). Verificati `.deb` amd64/arm64 in runtime Debian separati e ZIP Windows con PATH di solo sistema; [CI `32655b0`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35877356234). Pacchetti di sviluppo: collaudo desktop reale e revisione completa dei materiali di distribuzione ancora aperti.
 
-La [procedura di stabilità prolungata](DOCS/it/M0-STABILITY.md) ripete i flussi della GUI e registra memoria Go/RSS. Prove brevi verificate in CI; prima sessione macOS completata: 600 cicli in 30 minuti, senza crash o crescita RSS sostenuta osservata. Nuova patch AX positiva nelle prove brevi e in [CI](https://github.com/Matte2599/WebFence/actions/runs/35885936443); sessione prolungata aggiornata in corso, collaudo lettori ancora aperto.
+La [procedura di stabilità prolungata](DOCS/it/M0-STABILITY.md) ripete i flussi GUI e registra memoria Go/RSS. Sessione Cocoa aggiornata completata: oltre 30 minuti senza crash o avvisi AX e senza crescita RSS sostenuta osservata. Cadenza irregolare e limiti documentati; collaudo con lettori reali ancora aperto.
 
 
 ## Perché WebFence

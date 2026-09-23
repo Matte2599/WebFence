@@ -49,8 +49,12 @@ Le mediane RSS nelle finestre 60–300, 300–600, 600–900, 900–1200, 1200�
 
 Il carico è completato senza crash o deadline superata, ma stderr contiene **17.730 avvisi AX**, relativi a figli `QComboBoxListView` e notifiche Cocoa invalide. Non sono ignorati: il gate assistivo resta aperto. Questa prova usa il commit indicato, precedente alla correzione TabFocusAllControls, e non convalida quella modifica per 30 minuti.
 
-## Nuova sessione con patch 772484 — in corso
+## Sessione con patch 772484 — completata
 
 Avviata il 2026-09-23 alle 16:04:37 UTC, durata richiesta 1.800 s, revisione `8d3053fbe90c6101bb336493c149c9cc91f31cf0` con `vcs.modified=false`. Stesso host e flag del collaudo precedente, nuova patch Cocoa 772484 e correzioni Tab/geometria. Copia isolata `WebFence Stability Current`, identificativo `io.github.Matte2599.WebFence.StabilityCurrent`, firmata ad hoc. SHA-256 eseguibile `33ad7886d8195463b7a9fd9cbc5325f3107b562c0d9d1ed498b0865a038bb137`.
 
-Log in `/tmp/webfence-soak-macos-8d3053f-30m/`. Lettura AX eseguita con CUA durante i cicli per esercitare il bridge; nessun input che modifica il carico. Esito ancora aperto: verificare evento finale, exit code, RSS e stderr prima di dichiarare il risultato. Non confondere questa sessione con la precedente da 600 cicli.
+Log in `/tmp/webfence-soak-macos-8d3053f-30m/`. Lettura AX eseguita con CUA durante i cicli per esercitare il bridge; nessun input che modifica il carico. Completati 584 cicli in 1.802,340 s di workload (1.803,054 s esterni), uscita zero, 360 campioni RSS, nessun INCOMPLETE e **stderr vuoto**. Processi terminati. Non confondere questa sessione con la precedente da 600 cicli.
+
+[Log e analisi della nuova sessione](../evidence/macos-soak-8d3053f-2026-09-23/analysis.json). Mediane RSS nelle finestre 60–300, 300–600, 600–900, 900–1200, 1200–1500 e 1500–1803 s: 112,45 / 112,69 / 112,93 / 113,83 / 113,10 / 112,80 MiB. Picco campionato 168,27 MiB, ultimo campione 112,89 MiB. Heap Go finale 4.309.480 byte; cache 265 voci dal campione a 30 s in poi. Non si osserva crescita RSS sostenuta né ritorno degli avvisi AX nella finestra misurata; non prova assenza generale di leak.
+
+Gli intervalli del timer non sono costanti: il maggiore fra due campioni distanti cinque cicli è 38,426 s, a fronte di 15 s nominali; intervallo massimo del raccoglitore RSS 5,027 s. Causa non determinata. Sullo stesso host sono proseguiti altri lavori, inclusa raccolta degli archivi; il conteggio inferiore non equivale da solo a crash o freeze, ma la prova non certifica latenza o assenza di blocchi UI. Lettori reali e più monitor restano da collaudare. Il codice desktop/Cocoa non cambia tra `8d3053f` e `39c48ef`, che aggiunge solo strumenti/materiali di build e documentazione.

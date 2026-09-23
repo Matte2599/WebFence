@@ -42,4 +42,4 @@ Copia isolata con lo stesso eseguibile e nuovo plugin: 20 cicli in 60,003 s, usc
 
 [Log sintetici e metadati della prova breve](../evidence/macos-ax-772484-2026-09-23/analysis.json).
 
-La patch 772484 e la correzione di geometria sono verificate nella [CI `8d3053f`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35885936443), inclusi bundle Cocoa, self-test nativo e smoke di stabilità. Sessione prolungata aggiornata ancora in corso (M0-STABILITY).
+La patch 772484 e la correzione di geometria sono verificate nella [CI `8d3053f`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35885936443), inclusi bundle Cocoa, self-test nativo e smoke di stabilità. Sessione prolungata aggiornata completata: 584 cicli in oltre 30 minuti, stderr vuoto; andamento RSS e limiti di cadenza in M0-STABILITY.
