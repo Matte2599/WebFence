@@ -6,7 +6,7 @@ Updated: 2026-09-23. **M0 remains open.** This register tracks exit criteria, no
 
 | ID | Criterion | State and evidence | Required for closure |
 | --- | --- | --- | --- |
-| M0-01 | Native desktop, large table, evidence, IT/EN | Partial: main Qt app, 10,000 fixtures, filters, persistent language, long text, menus/focus and four-target self-tests. [Qt status](QT-DESKTOP.md). | Assistive, visual DPI and extended stability trials below. |
+| M0-01 | Native desktop, large table, evidence, IT/EN | Partial: main Qt app, 10,000 fixtures, filters, persistent language, long text, menus/focus and four-target self-tests. [Qt status](QT-DESKTOP.md). | Actual readers and transitions between monitors with different scales; prolonged trial completed with documented limitations. |
 | M0-02 | Builds and packaging on requested targets | Partial: macOS bundle, [Debian amd64/arm64 packages and Windows ZIP](ADR-007-PACKAGING.md) with verified launch outside the toolchain. | Complete inventory/notices/sources, minimum OS versions, real Windows 10/11 and Debian desktops; explicit remaining risks. |
 | M0-03 | GUI, SQLite, JWS, keychain | Complete: Qt, SQLite/JWS and [native credentials](ADR-005-CREDENTIALS.md) selected; [four-target CI passed](https://github.com/Matte2599/WebFence/actions/runs/35870058803), including Windows anonymous-token denial. | Retain regressions; GUI integration and key lifecycle remain future work. |
 | M0-04 | Versions, skeleton, catalogs, CI | Complete on code `f46768d`: [six passing CI jobs](https://github.com/Matte2599/WebFence/actions/runs/35920813028), including Debian and Windows packages with separate runtimes. | Repeat on the final M0 code commit and verify the remote. |
