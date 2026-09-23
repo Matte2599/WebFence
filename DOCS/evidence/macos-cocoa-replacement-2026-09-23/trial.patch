@@ -1,0 +1,11 @@
+
+--- a/src/plugins/platforms/cocoa/qcocoaintegration.mm
++++ b/src/plugins/platforms/cocoa/qcocoaintegration.mm
+@@ -114,6 +114,7 @@
+     , mNativeInterface(new QCocoaNativeInterface)
+     , mKeyboardMapper(new QAppleKeyMapper)
+ {
+     logVersionInformation();
++    qWarning("WEBFENCE_QT_REPLACEMENT_TRIAL");
+ 
+     if (mInstance)

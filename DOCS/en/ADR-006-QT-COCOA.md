@@ -43,3 +43,5 @@ Isolated copy with the same executable and new plugin: 20 cycles in 60.003 s, ex
 [Synthetic logs and short-trial metadata](../evidence/macos-ax-772484-2026-09-23/analysis.json).
 
 Patch 772484 and the geometry correction are verified in [CI `8d3053f`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35885936443), including the Cocoa bundle, native self-test and stability smoke. Updated prolonged session completed: 584 cycles in over 30 minutes, empty stderr; RSS trend and cadence limitations in M0-STABILITY.
+
+Rebuilding and replacing the Cocoa plugin with a diagnostic modification: [procedure and evidence](M0-QT-REPLACEMENT.md). Shipped bundle materials reused, same Go build ID, self-test and four Cocoa cycles passed locally; originals preserved. This proves replacement of the plugin only, not the entire distribution.

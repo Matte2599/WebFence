@@ -141,6 +141,15 @@ jobs:
         run: |
           ./dist/WebFence.app/Contents/MacOS/webfence --self-test
           ./dist/WebFence.app/Contents/MacOS/webfence --soak-test=10s
+      - name: Rebuild and replace Cocoa using packaged materials
+        if: runner.os == 'macOS'
+        run: |
+          python3 dist/WebFence.app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py \
+            dist/WebFence.app "$(brew --prefix qtbase)" "$RUNNER_TEMP/cocoa-replacement-trial" || {
+              tail -n 60 "$RUNNER_TEMP/cocoa-replacement-trial/"*.log
+              exit 1
+            }
+          cat "$RUNNER_TEMP/cocoa-replacement-trial/result.json"
 
   windows:
     runs-on: windows-2022

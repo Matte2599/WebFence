@@ -12,7 +12,7 @@ from urllib.parse import unquote, urlsplit
 
 FILES = ('LICENSE', 'README.md', 'README.en.md', 'AGENTS.md', 'MEMORY.md',
          'CONTRIBUTING.md', 'SECURITY.md', 'experiments/qt/README.md',
-         'scripts/build-qt-cocoa.sh')
+         'scripts/build-qt-cocoa.sh', 'scripts/test-qt-cocoa-replacement.py')
 TREES = ('DOCS', 'scripts/qt-cocoa')
 
 

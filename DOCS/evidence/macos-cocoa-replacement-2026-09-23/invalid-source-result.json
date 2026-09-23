@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "passed": false,
+  "distribution_ready": false,
+  "scope": "Modified Cocoa plugin only; not a complete Qt rebuild or legal review",
+  "system": "26.6.2",
+  "architecture": "arm64",
+  "base_inventory_sha256": "5f2a4b16b706c74106cecb76fe881502f9c0b6ef0667a6134a1ee47bba3dad0e",
+  "base_executable_sha256": "c707ae7d77760d6728cbac8205063aafebff4ad57a64562e702b729a26980b18",
+  "base_plugin_sha256": "c76b858274c405f2e7b6024aac9678024c77402798bae6768214e86c86adfc3a",
+  "marker": "WEBFENCE_QT_REPLACEMENT_TRIAL",
+  "original_bundle_preserved": true,
+  "installed_plugin_preserved": true,
+  "personal_language_preserved": true
+}

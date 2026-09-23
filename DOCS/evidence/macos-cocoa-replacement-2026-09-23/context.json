@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-23",
+  "repository_head_at_trial": "a1f71c43cc17759b5b9235130aca248adebcbcd9",
+  "base_bundle_go_revision": "f64f534c361130ad4128a9251cd754ea5df46d9e",
+  "base_bundle_go_modified": true,
+  "base_bundle_note": "Existing local bundle from macOS minimum work, before commit 3593dcc; not a build of the replacement trial commit.",
+  "harness_location": "working repository; Cocoa rebuild uses the existing bundle shipped materials only",
+  "harness_sha256": "14baee0aad27c45ff02a995556342800557e0873a52fb26d873ca088255a119c",
+  "qt_version": "6.11.2",
+  "negative_checks": {
+    "invalid_archive_rejected_before_extraction": true,
+    "existing_output_rejected_and_previous_result_preserved": true
+  },
+  "initial_trial_failure": "Resolved Qt prefix to Cellar; linker-name validation correctly rejected opt framework names. Harness fixed to preserve Homebrew prefix spelling; successful rerun recorded.",
+  "distribution_ready": false
+}

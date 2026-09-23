@@ -55,3 +55,5 @@ Bundle corretto verificato localmente a scale 1/1,5/2: minimo tabella 100 punti,
 Conferma dal log Cocoa macOS 15: viewport 60 punti per due righe da 60, minimo tabella 98; anche regressione intestazione, Tab/Shift+Tab e quattro cicli di stabilità Cocoa superati. La nuova [sessione da 30 minuti](M0-STABILITY.md) sullo stesso codice è completata: 584 cicli, nessun crash, stderr vuoto e nessuna crescita RSS sostenuta osservata. Cadenza non uniforme documentata; non chiude il gate assistivo.
 
 Il [minimo del singolo bundle](M0-PACKAGING.md#versione-minima-dichiarata-dallartefatto) ora viene ricavato da tutti i Mach-O e dichiarato nel plist: locale 26.0.0, CI macOS 15 15.0.0. Entrambi verificati con vtool; questa correzione dei metadati non chiude la scelta del minimo ufficiale o i collaudi su desktop puliti.
+
+Ricompilazione e sostituzione del plugin Cocoa con una modifica diagnostica: [procedura e prove](M0-QT-REPLACEMENT.md). Materiali del bundle riutilizzati, stesso Go build ID, self-test e quattro cicli Cocoa superati localmente; originali preservati. È una prova del solo plugin, non dell’intera distribuzione.

@@ -46,6 +46,8 @@ Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi so
 
 Uscita: prototipo distribuibile sulle piattaforme inizialmente dichiarate, lettura delle prove accessibile, rischi di packaging documentati e ADR aggiornato. Nessuna capacità di scansione professionale dichiarata.
 
+Progresso aggiuntivo M0-02: Ricompilazione/sostituzione Cocoa: nuovo collaudo nativo usa script/patch/CMake inclusi nel bundle e una modifica diagnostica solo nella copia privata. Prova locale macOS 26.6.2 superata: stesso Go build ID, firma ad hoc, self-test e quattro cicli/12,003 s, marker caricato due volte. Bundle originale completo, plugin installato e lingua preservati; archivio invalido e output esistente rifiutati. Primo tentativo intercetta risoluzione opt→Cellar errata nel collaudo; prefisso ora preservato. Evidenza distingue bundle f64f534+dirty dal nuovo script; procedura IT/EN M0-QT-REPLACEMENT. Collaudo incluso nei materiali confezionati e CI macOS; CI nuovo codice ancora da verificare. Prova del solo plugin, nessuna chiusura generale M0/distribuzione/legale.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -158,6 +160,8 @@ These checks close the first task, not all of M0. Overall gates are tracked in t
 - [ ] Legal review, private security channel and contributor agreement before opening the corresponding processes. GitHub private channel enabled and verified on 2026-09-23; review and agreement remain open.
 
 Exit: distributable prototype on initially declared platforms, accessible evidence reading, documented packaging risks and updated ADR. No professional scanning capability claimed.
+
+Additional M0-02 progress: Cocoa rebuild/replacement: new native trial uses scripts/patch/CMake shipped in the bundle and a diagnostic modification only in the private copy. Local macOS 26.6.2 trial passed: same Go build ID, ad hoc signature, self-test and four cycles/12.003 s, marker loaded twice. Entire original bundle, installed plugin and language preserved; invalid archive and existing output rejected. First attempt caught incorrect opt→Cellar resolution in the trial; prefix now preserved. Evidence distinguishes f64f534+dirty bundle from new script; IT/EN procedure M0-QT-REPLACEMENT. Trial included in packaged materials and macOS CI; CI on new code remains to be verified. Plugin-only proof, no general M0/distribution/legal closure.
 
 ### M1 — Controlled traditional alpha
 

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "distribution_ready": false,
+  "scope": "Modified Cocoa plugin only; not a complete Qt rebuild or legal review",
+  "system": "26.6.2",
+  "architecture": "arm64",
+  "base_inventory_sha256": "5f2a4b16b706c74106cecb76fe881502f9c0b6ef0667a6134a1ee47bba3dad0e",
+  "base_executable_sha256": "c707ae7d77760d6728cbac8205063aafebff4ad57a64562e702b729a26980b18",
+  "base_plugin_sha256": "c76b858274c405f2e7b6024aac9678024c77402798bae6768214e86c86adfc3a",
+  "marker": "WEBFENCE_QT_REPLACEMENT_TRIAL",
+  "trial_patch_sha256": "5600332d3c74d46df940b36ecdd3486c6ca09521139f410d50152ffc0422164c",
+  "replacement_plugin_sha256_before_bundle_signing": "aaf2be8ec93463dc40f3c8b1f35cf0bbd9a1c26850c6c82f968edeb2acf06233",
+  "go_build_id": "799k3AKKVdY7bXmz3Ykd/5_zJFN5S8nAT3plHnU6D/yWkxcmElriKrBoHS_W6i/SWIHeXa9f-sZ1RgHkcqg",
+  "go_build_id_preserved": true,
+  "replacement_plugin_sha256_signed": "aaf2be8ec93463dc40f3c8b1f35cf0bbd9a1c26850c6c82f968edeb2acf06233",
+  "self-test": {
+    "exit_code": 0,
+    "loaded_plugin_marker_count": 1
+  },
+  "soak": {
+    "exit_code": 0,
+    "loaded_plugin_marker_count": 1
+  },
+  "original_bundle_preserved": true,
+  "installed_plugin_preserved": true,
+  "personal_language_preserved": true
+}

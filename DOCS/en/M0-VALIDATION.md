@@ -55,3 +55,5 @@ Corrected bundle verified locally at scales 1/1.5/2: table minimum 100 points, v
 Confirmation from the macOS 15 Cocoa log: viewport 60 points for two rows requiring 60, table minimum 98; taller-header regression, Tab/Shift+Tab and four Cocoa stability cycles also passed. The new [30-minute session](M0-STABILITY.md) on the same code completed: 584 cycles, no crash, empty stderr and no observed sustained RSS growth. Uneven cadence documented; this does not close the assistive gate.
 
 The [individual bundle minimum](M0-PACKAGING.md#artifact-declared-minimum-system-version) is now derived from all Mach-O files and declared in its plist: local 26.0.0, macOS 15 CI 15.0.0. Both checked with vtool; this metadata correction does not close the official minimum decision or clean-desktop trials.
+
+Rebuilding and replacing the Cocoa plugin with a diagnostic modification: [procedure and evidence](M0-QT-REPLACEMENT.md). Shipped bundle materials reused, same Go build ID, self-test and four Cocoa cycles passed locally; originals preserved. This proves replacement of the plugin only, not the entire distribution.

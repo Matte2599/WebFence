@@ -1,0 +1,50 @@
+WEBFENCE_QT_REPLACEMENT_TRIAL
+qt_accessibility_active=true
+PASS initial empty state
+PASS test window activated before keyboard checks
+PASS Qt accessible dimensions: empty
+load_10000_ms=10.193
+PASS 10000 rows loaded
+PASS Qt accessible dimensions: loaded
+PASS Qt accessible last ID: loaded
+PASS repeated model reads do not grow owned variant cache
+PASS last row and inert evidence
+PASS evidence action reveals and focuses details
+PASS translation preserves model and evidence text selection
+PASS Qt accessible dimensions: translated
+PASS Qt accessible last ID: translated
+PASS language action persists English
+PASS language action persists Italian
+PASS language preserves identity and evidence
+PASS hiding details returns focus to advanced control
+PASS advanced menu and checkbox stay synchronized
+compact_table_height=100 minimum=100 viewport=77 rows=60 header=21 scrollbar=17 frame=1
+PASS compact window retains two complete result rows
+PASS header geometry change preserves two complete rows
+PASS compact window retains readable evidence viewport
+PASS explicit copy preserves evidence
+PASS save error remains visible without blocking language change
+PASS successful save clears preference warning
+PASS severity preserves matching selection
+filter_last_ms=12.698
+PASS filter last row
+PASS Qt accessible dimensions: filtered
+PASS Qt accessible last ID: filtered
+PASS search action focuses and selects query
+PASS results action preserves matching selection
+PASS no stale evidence on empty results
+PASS empty results focus does not select stale data
+PASS Qt accessible dimensions: no matches
+PASS results action selects first row when none selected
+PASS Qt accessible dimensions: restored
+PASS Qt accessible last ID: restored
+PASS Tab leaves results for summary
+PASS Tab reaches visible evidence
+PASS Tab leaves evidence for copy
+PASS Shift+Tab returns to evidence
+PASS hide details after keyboard navigation
+PASS Tab skips hidden evidence and copy
+PASS long evidence exact text roundtrip
+long_evidence_bytes=624640
+PASS clear dataset
+PASS Qt accessible dimensions: cleared
