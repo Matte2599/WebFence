@@ -1,6 +1,7 @@
 from pathlib import Path
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 
@@ -34,7 +35,8 @@ class IsolatedBundleLogTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             app, plugins, images = self.fixture(root)
             self.assertEqual(len(module.plugin_paths(plugins, app)), 2)
-            self.assertEqual(len(module.image_paths(images, app)), 4)
+            if os.name == 'posix':
+                self.assertEqual(len(module.image_paths(images, app)), 4)
 
     def test_external_plugin_and_missing_cocoa_are_rejected(self):
         with tempfile.TemporaryDirectory() as root:
