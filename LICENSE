@@ -1,0 +1,291 @@
+WebFence Community License 1.0
+Personal and Independent Professional Use
+License identifier: LicenseRef-WebFence-Community-1.0
+Copyright (c) 2026 Matteo Luigi Feroldi
+
+ENGLISH — GOVERNING TEXT
+
+1. Scope and definitions
+
+This license applies to the WebFence source code, executables and documentation
+expressly offered under it (the "Software"). "Author" means Matteo Luigi
+Feroldi. Third-party components, datasets and model weights remain subject to
+their own licenses and are not relicensed by this document.
+
+An "Individual" is a natural person acting on their own account. An
+"Independent Professional" is an Individual personally performing professional
+services for clients, including as a self-employed practitioner or sole
+professional proprietor. This does not include a company, an incorporated
+practice, or a person using the Software in their capacity as an employee,
+officer or internal operator of a Company.
+
+A "Company" is an incorporated business, commercial partnership or other
+organization operating a business, including a business sole proprietorship
+other than the Independent Professional described above. Merely employing a
+person does not prevent that person's unrelated personal use from qualifying.
+
+2. Free grant
+
+Subject to these terms, each copyright holder offering their work under this
+license grants Individuals a worldwide, non-exclusive, royalty-free copyright
+license to access, download, run, reproduce, study, modify and create forks or
+derivative works of the Software for:
+
+(a) personal noncommercial use, learning, experimentation and research; and
+(b) use by an Independent Professional to perform professional assessments,
+    including paid assignments for clients that are Companies.
+
+An Independent Professional may operate their own copy on equipment they
+control, including rented infrastructure. This permission does not permit a
+client Company to install, operate, control or access the Software itself.
+Assessing a Company's target and delivering the resulting report do not, by
+themselves, constitute Company use of the Software.
+
+3. Free redistribution and forks
+
+Individuals may share original or modified source code and executables without
+charge with other Individuals for the purposes in section 2. Distributions
+must include this license and existing copyright and attribution notices,
+identify modifications, and not claim that a modified version is an official
+release. Recipients obtain rights to the original work under this license;
+redistributors may not remove its restrictions or grant broader rights to it.
+Contributions distributed as part of a modified version must be offered under
+these terms to the extent the distributor has the necessary rights.
+
+Public source-code hosting, viewing and repository forks through GitHub or a
+comparable source hosting service are permitted, including incidental copies
+needed to provide that service. A public repository does not authorize Company
+operation of the Software or commercial redistribution. Rights independently
+granted by a hosting platform's applicable terms are not withdrawn here.
+
+4. Uses requiring separate written authorization
+
+Prior written authorization from Matteo Luigi Feroldi is required for:
+
+(a) installation or use of the Software by a Company, including internal use,
+    use by its employees or contractors as its internal operators, and use of
+    a modified version;
+(b) distribution, licensing or provision of the Software to a Company for its
+    use, even without charge;
+(c) selling, renting, sublicensing for a fee or otherwise commercially
+    distributing the Software or derivatives containing it; and
+(d) offering third parties hosted, managed, automated or API access to the
+    Software, including scanner-as-a-service offerings.
+
+Charging for an Independent Professional's own assessment and delivering its
+results under section 2(b) is expressly allowed and is not prohibited by (c)
+or (d). Giving a client access to operate the scanner is a separate use.
+Any other use outside the grants above requires separate permission from the
+relevant rights holders.
+
+5. Commercial agreements and royalties
+
+The Author may grant separate written licenses for rights the Author controls.
+Such agreements may be free or may specify fees, royalties, scope, duration,
+support and redistribution rights. No royalty rate, payment obligation or
+commercial authorization arises merely from this public license or from
+submitting a request. Payment alone does not establish a license without an
+agreement. A separate agreement overrides these terms only to the extent it
+expressly provides and the granting party controls the relevant rights.
+
+6. Reports and user data
+
+This license does not claim ownership of targets, user data, findings or
+reports generated through permitted use. To the extent a generated report
+contains copyrightable WebFence report-template material, permission is
+granted to reproduce, modify and deliver that material as part of the report,
+including commercially. This exception does not cover Software executables
+or source code included outside normal report-template content. Third-party
+rights in evidence and data remain unaffected.
+
+7. Authorized assessment
+
+Use the Software only against targets you own or are authorized to assess,
+within the permitted scope. This license grants no access rights to third-party
+systems and does not replace the target owner's authorization.
+
+8. Attribution, trademarks and contributions
+
+Preserve copyright and license notices. No trademark rights or endorsement by
+the Author are granted beyond factual attribution. Contributors retain their
+copyrights. This license alone does not transfer their ownership or give the
+Author the right to relicense their contributions commercially. Any additional
+contribution agreement must be accepted separately and explicitly.
+
+9. No warranty
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NON-INFRINGEMENT. NO SCAN, AI OUTPUT OR SIGNED REPORT GUARANTEES SECURITY,
+COMPLETENESS OR THE ABSENCE OF VULNERABILITIES.
+
+10. Limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE AUTHOR AND CONTRIBUTORS
+ARE NOT LIABLE FOR CLAIMS, DAMAGES OR OTHER LIABILITY ARISING FROM THE SOFTWARE
+OR ITS USE, WHETHER IN CONTRACT, TORT OR OTHERWISE. NOTHING IN THIS LICENSE
+EXCLUDES LIABILITY OR RIGHTS THAT CANNOT LAWFULLY BE EXCLUDED.
+
+11. Termination and existing rights
+
+The grants apply while you comply with these terms. A material breach ends
+your grants. On the first breach, the grants are reinstated if you stop the
+violation and remedy it within 30 days after written notice from the relevant
+rights holder. Later reinstatement requires that holder's written consent.
+Compliant recipients retain their own grants. The Author's later release of
+different license terms does not revoke compliant grants for copies already
+received under this version.
+
+12. Interpretation
+
+Rights and exceptions that cannot be restricted under applicable law remain
+unaffected. If a provision is unenforceable, the remaining provisions continue
+to the extent permitted by law. No additional rights are implied. This is a
+custom source-available license, not an OSI-approved open source license and
+not a standard SPDX-listed license. The LicenseRef identifier is local to this
+project. In a conflict between translations, this English text governs, subject
+to mandatory applicable law.
+
+ITALIANO — TRADUZIONE
+
+1. Ambito e definizioni
+
+Questa licenza si applica a codice sorgente, eseguibili e documentazione di
+WebFence espressamente offerti con essa (il "Software"). "Autore" indica
+Matteo Luigi Feroldi. Componenti, dati e pesi di modelli di terzi restano
+soggetti alle rispettive licenze e non sono rilicenziati da questo documento.
+
+Una "Persona" è una persona fisica che agisce per proprio conto. Un
+"Professionista indipendente" è una Persona che svolge personalmente servizi
+professionali per clienti, anche come lavoratore autonomo o titolare di uno
+studio professionale individuale. Non comprende società, studi costituiti in
+forma societaria o persone che usano il Software nella loro qualità di
+dipendenti, amministratori o operatori interni di un'Azienda.
+
+Un'"Azienda" è una società, società commerciale di persone o altra
+organizzazione che esercita un'attività d'impresa, compresa l'impresa
+individuale diversa dal Professionista indipendente sopra definito. Il solo
+fatto di essere dipendenti non esclude l'uso personale estraneo al lavoro.
+
+2. Concessione gratuita
+
+Nel rispetto di questi termini, ogni titolare che offre la propria opera con
+questa licenza concede alle Persone una licenza di diritto d'autore mondiale,
+non esclusiva e senza royalties per accedere, scaricare, eseguire, riprodurre,
+studiare, modificare e creare fork o opere derivate del Software per:
+
+(a) uso personale non commerciale, apprendimento, sperimentazione e ricerca;
+(b) uso da parte di un Professionista indipendente per analisi professionali,
+    compresi incarichi retribuiti per clienti che siano Aziende.
+
+Un Professionista indipendente può usare la propria copia su apparecchiature
+che controlla, anche infrastrutture noleggiate. Ciò non consente al cliente
+Azienda di installare, usare, controllare o accedere al Software stesso.
+Analizzare il target di un'Azienda e consegnarle il report non costituiscono,
+di per sé, uso aziendale del Software.
+
+3. Ridistribuzione gratuita e fork
+
+Le Persone possono condividere gratuitamente sorgenti ed eseguibili originali
+o modificati con altre Persone per gli scopi della sezione 2. Le distribuzioni
+devono includere questa licenza e gli avvisi di copyright e attribuzione
+esistenti, identificare le modifiche e non presentare versioni modificate come
+rilasci ufficiali. I destinatari ricevono i diritti sull'opera originale con
+questa licenza; chi ridistribuisce non può rimuoverne i vincoli o concedere
+diritti più ampi. I contributi distribuiti in una versione modificata devono
+essere offerti con questi termini nei limiti dei diritti del distributore.
+
+Sono consentiti hosting pubblico dei sorgenti, consultazione e fork tramite
+GitHub o servizi comparabili, comprese le copie incidentali necessarie al
+servizio. Un repository pubblico non autorizza l'uso aziendale del Software o
+la ridistribuzione commerciale. Non sono revocati i diritti autonomamente
+concessi dai termini applicabili della piattaforma di hosting.
+
+4. Usi che richiedono autorizzazione scritta separata
+
+È necessaria la preventiva autorizzazione scritta di Matteo Luigi Feroldi per:
+
+(a) installazione o uso del Software da parte di un'Azienda, anche interno,
+    da parte dei suoi dipendenti o collaboratori come operatori interni e
+    anche di una versione modificata;
+(b) distribuzione, concessione in licenza o fornitura del Software a un'Azienda
+    per il suo uso, anche senza corrispettivo;
+(c) vendita, noleggio, sublicenza a pagamento o altra distribuzione commerciale
+    del Software o di derivati che lo contengano;
+(d) offerta a terzi di accesso al Software ospitato, gestito, automatizzato o
+    tramite API, compresi servizi di scanner-as-a-service.
+
+Far pagare un'analisi svolta personalmente da un Professionista indipendente
+e consegnarne i risultati ai sensi della sezione 2(b) è espressamente consentito
+e non è vietato da (c) o (d). Dare al cliente accesso per operare lo scanner è
+un uso distinto. Altri usi estranei alle concessioni sopra indicate richiedono
+permesso separato dei titolari dei diritti pertinenti.
+
+5. Accordi commerciali e royalties
+
+L'Autore può concedere licenze scritte separate sui diritti che controlla.
+Gli accordi possono essere gratuiti o stabilire corrispettivi, royalties,
+ambito, durata, supporto e diritti di ridistribuzione. Questa licenza pubblica
+e la semplice richiesta non stabiliscono aliquote, obblighi di pagamento o
+autorizzazioni commerciali. Il solo pagamento non costituisce licenza senza
+accordo. Un accordo separato prevale soltanto nei limiti espressamente previsti
+e dei diritti controllati dalla parte concedente.
+
+6. Report e dati dell'utente
+
+Questa licenza non rivendica la proprietà di target, dati dell'utente,
+risultati o report generati tramite uso consentito. Per le parti di template
+WebFence tutelabili presenti nei report generati, è consentito riprodurle,
+modificarle e consegnarle come parte del report, anche commercialmente.
+L'eccezione non comprende eseguibili o sorgenti inclusi al di fuori del normale
+contenuto del template. Restano salvi i diritti di terzi su prove e dati.
+
+7. Analisi autorizzate
+
+Usare il Software soltanto su target propri o autorizzati, entro il perimetro
+consentito. Questa licenza non concede accesso a sistemi di terzi e non
+sostituisce l'autorizzazione del proprietario del target.
+
+8. Attribuzione, marchi e contributi
+
+Conservare gli avvisi di copyright e licenza. Non sono concessi diritti sui
+marchi o approvazione dell'Autore oltre l'attribuzione fattuale. I contributori
+mantengono i propri diritti. Questa licenza da sola non trasferisce la loro
+proprietà né consente all'Autore di rilicenziarne commercialmente i contributi.
+Un accordo aggiuntivo sui contributi richiede accettazione esplicita e separata.
+
+9. Esclusione di garanzie
+
+NELLA MISURA MASSIMA CONSENTITA DALLA LEGGE APPLICABILE, IL SOFTWARE È FORNITO
+"COSÌ COM'È", SENZA GARANZIE O CONDIZIONI ESPRESSE O IMPLICITE, COMPRESE
+COMMERCIABILITÀ, IDONEITÀ A UNO SCOPO PARTICOLARE E NON VIOLAZIONE DI DIRITTI.
+NESSUNA SCANSIONE, RISPOSTA AI O REPORT FIRMATO GARANTISCE SICUREZZA,
+COMPLETEZZA O ASSENZA DI VULNERABILITÀ.
+
+10. Limitazione di responsabilità
+
+NELLA MISURA MASSIMA CONSENTITA DALLA LEGGE APPLICABILE, AUTORE E CONTRIBUTORI
+NON RISPONDONO DI PRETESE, DANNI O ALTRE RESPONSABILITÀ DERIVANTI DAL SOFTWARE
+O DAL SUO USO, CONTRATTUALI, EXTRACONTRATTUALI O DI ALTRA NATURA. NON SONO
+ESCLUSI RESPONSABILITÀ O DIRITTI CHE NON POSSANO ESSERLO LEGITTIMAMENTE.
+
+11. Cessazione e diritti esistenti
+
+Le concessioni valgono nel rispetto di questi termini. Una violazione
+sostanziale le fa cessare. Alla prima violazione, sono ripristinate se la
+violazione cessa e viene rimediata entro 30 giorni dalla comunicazione scritta
+del titolare pertinente. Ripristini successivi richiedono il suo consenso
+scritto. I destinatari conformi conservano le proprie concessioni. Il successivo
+rilascio di termini diversi non revoca le concessioni conformi per copie già
+ricevute con questa versione.
+
+12. Interpretazione
+
+Restano salvi diritti ed eccezioni non limitabili dalla legge. Se una clausola
+non è applicabile, le altre restano efficaci nei limiti consentiti. Non si
+presumono ulteriori diritti. È una licenza source-available personalizzata,
+non una licenza open source approvata OSI né una licenza standard nell'elenco
+SPDX. L'identificativo LicenseRef è locale al progetto. In caso di divergenza
+tra traduzioni prevale il testo inglese, fatti salvi i vincoli inderogabili
+della legge applicabile.

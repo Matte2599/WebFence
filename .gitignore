@@ -1,0 +1,31 @@
+# Runtime data and secrets / Dati di esecuzione e segreti
+.env
+.env.*
+!.env.example
+/data/
+/reports/
+/evidence/
+/models/
+/backups/
+*.key
+*.pem
+*.p12
+*.pfx
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.log
+
+# Build outputs / Artefatti di compilazione
+/bin/
+/dist/
+/coverage/
+/target/
+node_modules/
+__pycache__/
+.venv/
+.DS_Store
+._*
+.idea/
+.vscode/
