@@ -1,0 +1,15 @@
+# Debian AT-SPI bridge trial / Prova del bridge AT-SPI Debian
+
+[Roadmap](../ROADMAP.md) · [Matrice IT](../it/M0-VALIDATION.md) · [EN matrix](../en/M0-VALIDATION.md)
+
+## Italiano
+
+Il 2026-09-24 è stato ricostruito da `fcc2da6` il `.deb` ARM64 di sviluppo; SHA-256 `3caf2485a1cf5da36b89f655a3b07be247154cf798282773a98aac5510906e14`. In Debian 12 bookworm-slim su Docker Desktop ARM64, senza rete verso target, un utente non privilegiato ha avviato WebFence normale su Xvfb/Openbox e D-Bus privati, con Qt 6.4.2 di Debian. Il client Python `pyatspi` ha trovato i controlli e la tabella tramite il bridge del sistema, in entrambe le lingue. Per EN e IT ha letto 0 righe iniziali, poi 10.000 (`DEMO-00001`), 1 (`DEMO-10000`), 0 e di nuovo 10.000 (`DEMO-00001`). Le quattro colonne e i nomi localizzati dei controlli erano presenti. Le preferenze lingua sono state create sotto `XDG_CONFIG_HOME` temporaneo; nessuna preferenza personale è stata modificata.
+
+La prova è integrata in `packaging/debian/test-atspi.sh` e `test-atspi.py`, richiamati da `packaging/debian/Dockerfile` dopo i self-test offscreen/XCB e prima del purge. Le dipendenze Python/AT-SPI/D-Bus sono installate soltanto nel container di collaudo. Il log esportato è `atspi.log`. Il Dockerfile integrato, con attesa limitata anche della prima cella dopo il reset, ha superato localmente installazione, self-test offscreen/XCB, prova AT-SPI EN/IT e purge. Le due architetture CI restano da verificare sul nuovo commit. L'esito verifica l'interfaccia OS su Debian ARM64 in Xvfb, **non** l'annuncio di Orca, un desktop reale, Wayland, Debian amd64 o il difetto AX Cocoa su macOS.
+
+## English
+
+On 2026-09-24 the development ARM64 `.deb` was rebuilt from `fcc2da6`; SHA-256 `3caf2485a1cf5da36b89f655a3b07be247154cf798282773a98aac5510906e14`. On Debian 12 bookworm-slim in ARM64 Docker Desktop, without target network access, an unprivileged user ran the normal WebFence app under private Xvfb/Openbox and D-Bus, using Debian Qt 6.4.2. The Python `pyatspi` client found the controls and table through the OS bridge in both languages. In EN and IT it read 0 initial rows, then 10,000 (`DEMO-00001`), 1 (`DEMO-10000`), 0 and 10,000 again (`DEMO-00001`). Four columns and localized control names were present. Language preferences lived under a temporary `XDG_CONFIG_HOME`; no personal preference was changed.
+
+The trial is integrated in `packaging/debian/test-atspi.sh` and `test-atspi.py`, invoked by `packaging/debian/Dockerfile` after offscreen/XCB self-tests and before purge. Python/AT-SPI/D-Bus dependencies are installed only in the test container. Exported log: `atspi.log`. The integrated Dockerfile, including a bounded wait for the first cell after reset, passed local installation, offscreen/XCB self-tests, EN/IT AT-SPI trial and purge. Both CI architectures remain to be verified on the new commit. This verifies the OS interface on Debian ARM64/Xvfb, **not** Orca announcements, a real desktop, Wayland, Debian amd64 or the Cocoa AX defect on macOS.
