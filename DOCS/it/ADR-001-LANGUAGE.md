@@ -2,7 +2,7 @@
 
 [English](../en/ADR-001-LANGUAGE.md) · [Indice](../README.md)
 
-Data: 2026-09-23. Stato: scelta iniziale raccomandata; toolkit GUI subordinato al prototipo M0. Requisito confermato dall'autore: applicazione desktop nativa.
+Data: 2026-09-23. Stato: Go confermato; proposta iniziale Fyne superata dall’ADR-002 accettato. Requisito confermato dall'autore: applicazione desktop nativa.
 
 ## Contesto
 

@@ -19,8 +19,8 @@ No scanner, target networking, CVE, AI, database or signed reports introduced. T
 - Race-enabled Go tests for fixtures, catalogs and preferences passed: repeated language changes, fallback, corrupt data and I/O errors.
 - Main build, C++17-enabled `go vet ./...` and module verification passed on macOS ARM64.
 - Qt offscreen self-test passed: 10,000 rows, selection identity, filters, empty state, persistent language actions, long text, intercepted copying and recoverable error warning. Uses a temporary directory rather than user preferences; does not alter the clipboard.
-- Main bundle script updated for Qt. Bundle verification and native interaction to be recorded after completion.
-- CI replaced with builds, pure tests and Qt self-tests on macOS ARM64, Ubuntu x86-64/ARM64 and Windows Server x86-64 through MSYS2 UCRT64. Remote outcomes to be recorded after push; a workflow's presence does not prove success.
+- Main Qt bundle generated, plist and local ad hoc signature verified. GUI opened: 10,000 rows, last-row filter, selection and advanced evidence; Cmd+2 switches to English preserving evidence, closing/reopening restores English, Cmd+1 restores Italian and Cmd+O loads examples. No Developer ID signature/notarization.
+- CI replaced with builds, pure tests and Qt self-tests on macOS ARM64, Ubuntu x86-64/ARM64 and Windows Server x86-64 through MSYS2 UCRT64. Initial run [35851005927](https://github.com/Matte2599/WebFence/actions/runs/35851005927), code `d41aba5`: build, vet and self-test passed on all four targets; Windows and Linux jobs completed. macOS packaging unnecessarily repeated compilation by duplicating the C++17 flag: script corrected, local dry run confirms binding reuse; final run to be recorded. A workflow’s presence does not prove success.
 
 ## Open gates
 

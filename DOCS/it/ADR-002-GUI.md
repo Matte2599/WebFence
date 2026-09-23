@@ -19,7 +19,7 @@ Adottare **Qt Widgets tramite MIQT per Go** come base di sviluppo del desktop. I
 
 La licenza WebFence resta invariata e copre il nostro codice. MIQT è MIT. Per Qt Core/Gui/Widgets la proposta è collegamento dinamico con rispetto della LGPLv3: avvisi, sorgenti Qt, possibilità di sostituzione e diritti richiesti; collegare dinamicamente da solo non basta. La distribuzione richiede un inventario dei moduli e delle dipendenze, una verifica delle condizioni e delle eventuali eccezioni necessarie nei termini del pacchetto. Se incompatibili con la distribuzione voluta, valutare una licenza Qt commerciale. Nessun acquisto o revisione legale è stato effettuato. Non estendere le restrizioni WebFence ai componenti LGPL/MIT. Vedi [licenze Qt](https://doc.qt.io/qt-6/licensing.html) e [obblighi LGPL](https://www.qt.io/development/open-source-lgpl-obligations).
 
-Qt 6.11 dichiara Windows 10 da 1809 e Windows 11 x86-64, macOS da 13 e configurazioni Linux x86-64/ARM64. **Qt 6.12 è annunciata come ultima versione con supporto Windows 10**: prima dell’adozione serve un piano per aggiornamenti e durata del supporto richiesto. La matrice upstream non certifica WebFence né MIQT. [Piattaforme Qt](https://doc.qt.io/qt-6/supported-platforms.html).
+Qt 6.11 dichiara Windows 10 da 1809 e Windows 11 x86-64, macOS da 13 e configurazioni Linux x86-64/ARM64. **Qt 6.12 è annunciata come ultima versione con supporto Windows 10**: prima di dichiarare supportato il prodotto serve un piano per aggiornamenti e durata del supporto richiesto. La matrice upstream non certifica WebFence né MIQT. [Piattaforme Qt](https://doc.qt.io/qt-6/supported-platforms.html).
 
 ## Gate M0 ancora aperti
 

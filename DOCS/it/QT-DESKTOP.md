@@ -19,8 +19,8 @@ Nessuno scanner, networking verso target, CVE, AI, database o report firmato int
 - Test Go con race detector su fixture, cataloghi e preferenze superati: cambio ripetuto lingua, fallback, dati corrotti e errori I/O.
 - Build principale, `go vet ./...` con C++17 e verifica moduli superati su macOS ARM64.
 - Self-test Qt offscreen superato: 10.000 righe, identità della selezione, filtri, stato vuoto, azioni lingua persistenti, testo lungo, copia intercettata e avviso di errore recuperabile. Usa una directory temporanea, non la preferenza dell’utente; non modifica gli appunti.
-- Script bundle principale aggiornato per Qt. Verifica del bundle e interazione nativa da registrare al termine.
-- CI sostituita con build, test puri e self-test Qt su macOS ARM64, Ubuntu x86-64/ARM64 e Windows Server x86-64 con MSYS2 UCRT64. Esiti remoti da registrare dopo il push; la presenza del workflow non prova successo.
+- Bundle principale Qt generato, plist e firma locale ad hoc verificati. GUI aperta: 10.000 righe, filtro ultima riga, selezione ed evidenze avanzate; Cmd+2 cambia in inglese preservando le prove, chiusura/riapertura ripristina inglese, Cmd+1 torna in italiano e Cmd+O carica gli esempi. Nessuna firma Developer ID/notarizzazione.
+- CI sostituita con build, test puri e self-test Qt su macOS ARM64, Ubuntu x86-64/ARM64 e Windows Server x86-64 con MSYS2 UCRT64. Run iniziale [35851005927](https://github.com/Matte2599/WebFence/actions/runs/35851005927), codice `d41aba5`: build, vet e self-test superati sui quattro target; job Windows e Linux completati. Il packaging macOS ripeteva inutilmente la compilazione perché duplicava il flag C++17: script corretto, dry run locale conferma il riuso dei binding; run finale da registrare. La presenza del workflow non prova successo.
 
 ## Gate aperti
 
