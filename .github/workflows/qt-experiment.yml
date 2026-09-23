@@ -1,0 +1,53 @@
+name: Qt feasibility experiment
+
+on:
+  push:
+    paths:
+      - 'experiments/qt/**'
+      - 'internal/demo/**'
+      - 'internal/i18n/**'
+      - '.github/workflows/qt-experiment.yml'
+  pull_request:
+    paths:
+      - 'experiments/qt/**'
+      - 'internal/demo/**'
+      - 'internal/i18n/**'
+      - '.github/workflows/qt-experiment.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qt-experiment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux-model-and-widgets:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: experiments/qt
+    env:
+      CGO_ENABLED: '1'
+      CGO_CXXFLAGS: '-O2 -g -std=c++17'
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: experiments/qt/go.mod
+          cache-dependency-path: experiments/qt/go.sum
+      - name: Qt Widgets build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ pkg-config qt6-base-dev
+      - run: test -z "$(gofmt -l .)"
+      - run: go mod download && go mod verify
+      - run: go build -o ../../bin/webfence-qt .
+      - run: go vet ./...
+      - run: ../../bin/webfence-qt --self-test

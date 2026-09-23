@@ -37,3 +37,5 @@ Errori: spiegare il problema, la conseguenza e l'azione disponibile; dettagli te
 Testare percorsi senza mouse, ordine del focus, nomi e stato dei controlli nello screen reader, copia/selezione del testo delle prove, ridimensionamento e DPI, contrasto e testi IT/EN. Valutare sia utenti inesperti sia professionisti su compiti concreti; non sono ancora stati condotti test di usabilità con partecipanti.
 
 Il prototipo M0 implementa barra comandi, filtri, tabella, pannello prove e lingua. È un laboratorio di fattibilità: menu completi, wizard, sezioni avanzate, workspace di scansione e gestione dei progetti sono **pianificati**. L'aspetto attuale usa il tema Fyne del sistema; non è il design definitivo. Il [resoconto M0](M0-DESKTOP.md) registra un gate di accessibilità ancora aperto.
+
+Aggiornamento M0: [confronto pratico Qt/Fyne](GUI-COMPARISON.md) e [ADR-002 proposto](ADR-002-GUI.md). L’esperimento Qt è separato; scelta dell’autore e gate di adozione ancora aperti.

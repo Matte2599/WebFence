@@ -34,3 +34,5 @@ Riaprire l'ADR se il prototipo GUI non soddisfa requisiti essenziali, se il grup
 Prima implementazione M0: Go 1.27.1 e Fyne 2.8.1 fissati in `go.mod`/`go.sum`; CI legge la versione Go dal modulo. Build e bundle di sviluppo verificati su macOS 26.6.2 ARM64 con Xcode 27. La prova di accessibilità non supera il gate: albero incompleto e interazione assistita non verificata. **Fyne rimane candidato; la valutazione deve essere riaperta su questo limite prima di confermarlo per il prodotto.** Dettagli e alternative da confrontare nel [resoconto M0](M0-DESKTOP.md).
 
 Fonti: [Go FAQ](https://go.dev/doc/faq), [Rust ownership](https://doc.rust-lang.org/nomicon/ownership.html), [Fyne](https://github.com/fyne-io/fyne), [Iced](https://github.com/iced-rs/iced). Verifiche del 2026-09-23.
+
+Aggiornamento M0: [confronto pratico Qt/Fyne](GUI-COMPARISON.md) e [ADR-002 proposto](ADR-002-GUI.md). L’esperimento Qt è separato; scelta dell’autore e gate di adozione ancora aperti.

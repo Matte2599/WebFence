@@ -26,6 +26,8 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 - [x] Finestra, 10.000 righe, filtri, dettaglio/copiatore evidenze e preferenza lingua persistente.
 - [x] Build e bundle locale di sviluppo su macOS Apple Silicon; CI verificata con test e quattro build native superate ([run](https://github.com/Matte2599/WebFence/actions/runs/35845953673)).
 - [x] Piattaforme richieste e direzione UX confermate dall’autore: [specifica UX](it/UX.md).
+- [x] Confronto locale Fyne/Qt su fixture comuni, self-test Qt e prova assistiva preliminare; [risultati e limiti](it/GUI-COMPARISON.md), [ADR-002 proposto](it/ADR-002-GUI.md).
+- [ ] Scelta dell’autore sul candidato GUI; approfondire menu/focus, lettori reali e stabilità.
 - [ ] Risolvere il gate di accessibilità Fyne o registrare un toolkit alternativo dopo confronto pratico.
 
 Le spunte precedenti chiudono il primo task, non tutta M0. I gate complessivi restano:
@@ -132,6 +134,8 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 - [x] Window, 10,000 rows, filters, evidence reader/copy and persistent language preference.
 - [x] Local development build and bundle on Apple Silicon macOS; verified CI with tests and four passing native builds ([run](https://github.com/Matte2599/WebFence/actions/runs/35845953673)).
 - [x] Author-confirmed requested platforms and UX direction: [UX specification](en/UX.md).
+- [x] Local Fyne/Qt comparison with shared fixtures, Qt self-test and preliminary assistive trial; [results and limitations](en/GUI-COMPARISON.md), [proposed ADR-002](en/ADR-002-GUI.md).
+- [ ] Author’s GUI candidate choice; investigate menus/focus, actual readers and stability.
 - [ ] Resolve Fyne’s accessibility gate or record an alternative toolkit after practical comparison.
 
 These checks close the first task, not all of M0. Overall gates remain:

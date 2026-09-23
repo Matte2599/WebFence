@@ -77,3 +77,5 @@ Every PR changing requirements or behavior updates matching IT/EN documents. Lan
 Before release: relevant risk tests, dependency/secret scans, SBOM, license inventory, checksums, package signing, IT/EN notes and rollback procedure. Create a verified backup before data migration; binary rollback does not automatically reverse schema changes. Rule/model updates are separately versioned and do not alter running scans.
 
 Keep redacted local logs with run IDs, duration, limits and errors; no default telemetry. On insufficient disk, stale feeds, locked keys, missing runtime or OOM, identify the affected component and remaining capabilities. Do not silently turn degraded operation into success.
+
+M0 update: [practical Qt/Fyne comparison](GUI-COMPARISON.md) and [proposed ADR-002](ADR-002-GUI.md). The Qt experiment is separate; the author’s choice and adoption gates remain open.

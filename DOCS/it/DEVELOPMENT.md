@@ -77,3 +77,5 @@ Ogni PR che cambia requisiti o funzioni aggiorna i documenti omologhi IT/EN. La 
 Prima di un rilascio: test dei rischi pertinenti, scansione dipendenze/segreti, SBOM, inventario licenze, checksum, firma dei pacchetti, note IT/EN e procedura di rollback. Prima di migrare dati creare un backup verificato; il rollback del binario non inverte automaticamente lo schema. Aggiornamenti di regole e modelli sono versionati separatamente e non cambiano una run già avviata.
 
 Log locali redatti con ID di run, durata, limiti ed errori; niente telemetria predefinita. In caso di spazio insufficiente, feed scaduto, chiave bloccata, runtime assente o OOM, mostrare il componente interessato e ciò che resta utilizzabile. Non convertire una degradazione in successo silenzioso.
+
+Aggiornamento M0: [confronto pratico Qt/Fyne](GUI-COMPARISON.md) e [ADR-002 proposto](ADR-002-GUI.md). L’esperimento Qt è separato; scelta dell’autore e gate di adozione ancora aperti.

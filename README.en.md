@@ -6,6 +6,8 @@
 
 **Status: M0 in progress — first runnable desktop prototype, using synthetic examples only.** The Go/Fyne GUI loads 10,000 rows, filters them and displays evidence in IT/EN. The scanning engine is not implemented; there are no supported releases or security benchmarks. See the [M0 report](DOCS/en/M0-DESKTOP.md).
 
+A [practical Qt Widgets comparison](DOCS/en/GUI-COMPARISON.md) is available, with a separate experiment and [proposed ADR](DOCS/en/ADR-002-GUI.md). The author’s choice remains open; the main command still uses Fyne.
+
 ## Why WebFence
 
 AI tools allow individual developers to build substantial applications. Faster development calls for security checks that are equally accessible and rigorous. This is the project's motivation, not evidence that AI-generated code is invariably less secure.

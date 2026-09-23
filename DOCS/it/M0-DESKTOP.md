@@ -55,3 +55,5 @@ Prossimo task: verificare se il limite è risolvibile con API pubbliche e suppor
 Accessibilità e scelta finale GUI; prove DPI e testo lungo; packaging sulle altre piattaforme e versioni minime; selezione e prove SQLite/JWS/keychain; laboratorio isolato e policy di rete. I task legali, CLA e canale privato restano distinti dalle verifiche tecniche. La [specifica UX](UX.md) guida il design successivo.
 
 Fonti tecniche: [Fyne 2.8.1](https://github.com/fyne-io/fyne/releases/tag/v2.8.1), [bridge macOS](https://github.com/fyne-io/fyne/blob/v2.8.1/internal/driver/glfw/accessibility_darwin.go), [build senza bridge](https://github.com/fyne-io/fyne/blob/v2.8.1/internal/driver/glfw/accessibility_notdarwin.go), [runner GitHub](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). Le osservazioni WebFence sono prove locali, non garanzie attribuite a queste fonti.
+
+Aggiornamento M0: [confronto pratico Qt/Fyne](GUI-COMPARISON.md) e [ADR-002 proposto](ADR-002-GUI.md). L’esperimento Qt è separato; scelta dell’autore e gate di adozione ancora aperti.
