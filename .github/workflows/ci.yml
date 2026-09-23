@@ -99,6 +99,9 @@ jobs:
         with:
           msystem: UCRT64
           path-type: inherit
+          # This action runs pacman -Scc after saving its cache. Keep downloaded
+          # packages available for DLL/BUILDINFO provenance verification.
+          cache: false
           update: true
           install: >-
             mingw-w64-ucrt-x86_64-gcc
