@@ -33,6 +33,8 @@ Per winpthreads, [supplemento offline](../evidence/windows-sources-2026-09-23/wi
 
 Restano mappatura dei componenti incorporati e relativi avvisi, ambiente e istruzioni di ricompilazione/sostituzione, assemblaggio della distribuzione e revisione legale. La raccolta non chiude M0-02 né autorizza una release.
 
+Un [registro tecnico dei metadati licenza delle 21 ricette](../evidence/windows-license-metadata-2026-09-24.md) ricontrolla gli hash degli archivi e dei 42 file `PKGBUILD`/`.SRCINFO`, distingue il campo specifico di `libiconv` e indica i casi `custom` o composti da esaminare. I metadati delle ricette non assegnano automaticamente una licenza ai binari o al codice incorporato; la mappatura ai notices inclusi nello ZIP e la revisione legale restano aperte.
+
 ## Includere i sorgenti nello ZIP
 
 In MSYS2 UCRT64, aggiungere una delle due opzioni al comando di packaging:

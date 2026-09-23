@@ -33,6 +33,8 @@ For winpthreads, an [offline supplement](../evidence/windows-sources-2026-09-23/
 
 Embedded component/notice mapping, rebuild/replacement environment and instructions, distribution assembly and legal review remain open. Collection does not close M0-02 or authorize a release.
 
+A [technical ledger of license metadata in all 21 recipes](../evidence/windows-license-metadata-2026-09-24.md) rechecks the archive and 42 `PKGBUILD`/`.SRCINFO` hashes, distinguishes the package-specific `libiconv` field and flags `custom` and compound declarations for review. Recipe metadata does not automatically assign a license to binaries or embedded code; mapping to notices in the ZIP and legal review remain open.
+
 ## Include sources in the ZIP
 
 In MSYS2 UCRT64, add one of these options to the packaging command:

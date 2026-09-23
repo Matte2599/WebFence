@@ -68,6 +68,8 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [Difetto AX dopo reset dei filtri](evidence/macos-ax-table-reset-2026-09-24.md): su una copia privata del bundle, la sequenza 10.000 → 1 → 0 → 10.000 righe lascia `AXRows` con 10.000 riferimenti ma la prima riga non valida (`kAXErrorInvalidUIElement`). Confermato a stato fermo da un nuovo client AX; self-test Qt interno e soak non lo rilevano. Due varianti private del plugin non hanno corretto il difetto; la terza è inconcludente. Un controllo UI successivo ha segnalato Mac bloccato, senza stabilire da quando: ricontrollare a schermo sbloccato, poi correggere se confermato e provare un lettore reale. Bundle originale e preferenza personale preservati; M0-01 aperto.
 
+[Metadati licenza Windows](evidence/windows-license-metadata-2026-09-24.md): hash di 21 archivi sorgente e 42 ricette/metadati ricontrollati; campi `license` delle ricette indicizzati per i 22 pacchetti binari, con distinzione `libiconv`. Nessuna conclusione sulla licenza effettiva delle 43 DLL o sui componenti incorporati; notices, firme PGP SKIP, sostituzione e revisione legale ancora aperti. M0-02/06 invariati.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -202,6 +204,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 [Isolated macOS runtime trial](evidence/macos-isolated-runtime-2026-09-24.md): a signed private copy, child environment with a system-only PATH, Cocoa self-test with two plugins loaded from the bundle, and a traced soak with 24 app images/1,127 total, none outside the bundle or Apple system. [CI `bc217a2`: six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35929219514), 57 Python regressions on native targets; macOS 15 runner observed two plugins, 24 app images/1,033 total and four cycles in 12.102 s. A self-test with simultaneous dyld tracing failed five Tab assertions; the separate checks do not replace a clean Mac, readers or legal review.
 
 [AX defect after filter reset](evidence/macos-ax-table-reset-2026-09-24.md): on a private bundle copy, the 10,000 → 1 → 0 → 10,000 row sequence leaves `AXRows` reporting 10,000 references while the first row is invalid (`kAXErrorInvalidUIElement`). Confirmed in an idle state from a fresh AX client; the internal Qt self-test and soak miss it. Two private plugin variants did not fix it; the third result is inconclusive. A later UI check reported the Mac locked without establishing when: retest with the screen unlocked, then fix if confirmed and try a real reader. Original bundle and personal preference preserved; M0-01 open.
+
+[Windows license metadata](evidence/windows-license-metadata-2026-09-24.md): hashes of 21 source archives and 42 recipe/metadata files rechecked; recipe `license` fields indexed for the 22 binary packages, distinguishing `libiconv`. No conclusion about effective licenses of the 43 DLLs or embedded components; notices, SKIP PGP signatures, replacement and legal review remain open. M0-02/06 unchanged.
 
 ### M1 — Controlled traditional alpha
 
