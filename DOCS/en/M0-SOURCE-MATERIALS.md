@@ -112,3 +112,26 @@ Parent-directory references are allowed only within the same archive root; absol
 [Verification against real sources](../evidence/qt-notice-references-2026-09-23.json): same 15 archives/170,920,531 bytes, now **258 notices**, with all previous 247 unchanged. All archive and notice hashes were independently rechecked; the 11 additional texts compared directly against the Qt archive. Collection and separate attachment succeeded in `/tmp/webfence-native-sources-3598b5f-qt-references/`. Updated attachment rejects older Qt collections lacking these files: recollect into a new directory using `--reuse-archive`, without manually changing manifests.
 
 The regression was reproduced with the previous collector omitting an explicitly referenced text. New tests cover order, shared references, malformed metadata, traversal, links, duplicates, budgets and ledger tampering. Local bundle rebuilt from `3598b5f` with declared modifications: 258 notices rechecked, current-inventory binding, Homebrew supplements present, ad hoc signature and Cocoa self-test passed; personal language preserved. 41 local Python tests passed; [CI `98478f2`](https://github.com/Matte2599/WebFence/actions/runs/35918855381) completed: six passing jobs and 41 Python regressions on four native targets. macOS bundle/Cocoa/plugin replacement, Windows ZIP with sources and preservation on failure, and Debian amd64/arm64 packages passed. The actual 258 notices are verified in the local bundle; macOS bundle CI still does not acquire the full optional collection. These notices also include unshipped platforms: coverage of source-tree references does not close binary mapping or legal review.
+
+## macOS source package accompanying the bundle
+
+After collecting sources and preparing a bundle with Homebrew supplements, from the project checkout:
+
+```sh
+python3 scripts/package-macos-sources.py \
+  dist/WebFence.app /tmp/webfence-source-materials \
+  dist/WebFence-native-sources.zip
+shasum -a 256 dist/WebFence-native-sources.zip
+```
+
+The source directory must be the updated 258-notice collection described above. The ZIP destination must be new and outside the app and collection. The script performs no downloads, executes no recipes and does not modify the bundle. It requires macOS to verify signing with `codesign --verify --deep --strict` before and after assembly. Inputs are trusted materials in builder-controlled directories without concurrent writers.
+
+The ZIP contains `WebFence-native-sources/notices/`: the app's notices and IT/EN documents, installed recipes/SBOMs, Cocoa patch and tools, all original upstream archives under `upstream-source/archives/`, 258 regenerated notices and Homebrew supplements regenerated from verified inputs. Archive paths in the copied manifest now resolve inside the ZIP. Loose files from the previous collection do not replace texts inside the verified archive.
+
+`source-package.json` records SHA-256 hashes of included files, the current native inventory, Go provenance and **post-signing** hashes of binaries listed in the app inventory. These associate materials with the specific bundle; ad hoc signing and hashes do not authenticate the publisher. The manifest retains `distribution_ready=false` and `corresponding_sources_complete=false`: it contains available native materials, not all WebFence/Go source code or a complete product SBOM.
+
+Limits: at most 10,000 files/128 MiB of notices copied from the bundle, in addition to the documented source/supplement limits. Non-regular files and links in notices are rejected. ZIP/CRCs and every hash are read back before publication. Output is published with an atomic hard link from staging on the same filesystem; a filesystem without that capability returns an error, without a fallback that overwrites existing files.
+
+Synthetic tests cover content and app binding, input preservation, existing output, paths inside inputs, incomplete collection, altered patch, signature failure, concurrent binary changes, budgets and links. Cross-platform tests simulate `codesign`; the native trial is recorded separately. Remaining build resources/environments, embedded-component mapping, complete product sources, other-platform procedures and legal review remain open.
+
+[Local trial evidence](../evidence/macos-source-package-2026-09-23.json). Separate macOS native-material package: `scripts/package-macos-sources.py` verifies the app signature, regenerates notices/supplements, includes original archives and records post-signing hashes to associate the bundle. No downloads or app modification; ZIP read back and published without overwriting. Actual trial: 173,236,303 bytes, 15 archives, 258 notices, four supplements, 464 material files and 28 associated binaries; macOS unzip and existing-ZIP preservation passed. 46 local Python tests passed. Local output dist/WebFence-native-sources-local.zip; evidence DOCS/evidence/macos-source-package-2026-09-23.json. CI extended to actual collection and assembly on macOS, outcome pending verification. Available materials assembled, not complete corresponding sources or legal approval; Go/product, further resources, mapping and external gates remain open.

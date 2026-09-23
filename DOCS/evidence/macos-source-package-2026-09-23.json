@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "distribution_ready": false,
+  "corresponding_sources_complete": false,
+  "scope": "Available native upstream archives, reviewed supplements and packaged notices; not full WebFence/Go sources or a complete product SBOM.",
+  "native_inventory_sha256": "70c949869c1914ba06a3f259fb010e0ed80819b05083102bcefd8ca4a3015b01",
+  "webfence_build": {
+    "CGO_CXXFLAGS": "-O2 -g -std=c++17",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "vcs.revision": "3598b5fc70a8e337d4ed81bf8b354104e775dbc9",
+    "vcs.time": "2026-09-23T20:44:17Z",
+    "vcs.modified": "true"
+  },
+  "signed_bundle_files": [
+    {
+      "path": "Contents/Frameworks/QtCore.framework/Versions/A/QtCore",
+      "sha256": "2ba1be1a475a042dbfcc249e3d0ceb6ed531bc04c17917fa1219e592c038817e"
+    },
+    {
+      "path": "Contents/Frameworks/QtDBus.framework/Versions/A/QtDBus",
+      "sha256": "f7277a7fe86e5090967399f3495192d6e941a1e0290be3258d8cd87ec7f06363"
+    },
+    {
+      "path": "Contents/Frameworks/QtGui.framework/Versions/A/QtGui",
+      "sha256": "5d6facf02bbdcb26b63c9424f633bea5ec08dbaa42aca9cd0b275f5ecd8e0043"
+    },
+    {
+      "path": "Contents/Frameworks/QtWidgets.framework/Versions/A/QtWidgets",
+      "sha256": "f9d3c4a863974d98e6e6715772a3b8081d8742b63cd269e846526d1f7d3523ff"
+    },
+    {
+      "path": "Contents/Frameworks/libb2.1.dylib",
+      "sha256": "8d33f4da64a3c352d8adb082f9238e4d122ccb2be3115786905ec78119c43dc9"
+    },
+    {
+      "path": "Contents/Frameworks/libdbus-1.3.dylib",
+      "sha256": "09b1bc7b040682767e61f811c489e7fa356b7ca3152dc087217e00da5e0614fe"
+    },
+    {
+      "path": "Contents/Frameworks/libdouble-conversion.3.dylib",
+      "sha256": "4a538ef7415fce8b12bbf8b5ef6cd07ba25c49b8ad9909b8bf0151ac0fb6cd57"
+    },
+    {
+      "path": "Contents/Frameworks/libfreetype.6.dylib",
+      "sha256": "5c5741c1c704a2a179ba5b9d1663daf57fe22d2c62d667d1ebe17e65d540b81d"
+    },
+    {
+      "path": "Contents/Frameworks/libglib-2.0.0.dylib",
+      "sha256": "c4f8492ecc1e3cf7900c019ce280a36fa8de4d8f28269632bb7f9aecc1e147c2"
+    },
+    {
+      "path": "Contents/Frameworks/libgraphite2.3.dylib",
+      "sha256": "37022034602d8564f03c3a40988d0dbc5076ee763b902088a0b18b3f9fd0e422"
+    },
+    {
+      "path": "Contents/Frameworks/libgthread-2.0.0.dylib",
+      "sha256": "b942ce463a8b02bbf3bf1a7134a2dc9eb123a87656b7c4dd9c1f8b8c5a3676eb"
+    },
+    {
+      "path": "Contents/Frameworks/libharfbuzz.0.dylib",
+      "sha256": "1fc27c4bed03b00891153f748390517d8fd4130ab37e1ba1f6dc3650b77a7e12"
+    },
+    {
+      "path": "Contents/Frameworks/libicudata.78.dylib",
+      "sha256": "cf300df7a626011c57097b17d4714d0b7d0f234aaac50fa60a070268a550cc50"
+    },
+    {
+      "path": "Contents/Frameworks/libicui18n.78.dylib",
+      "sha256": "12567fbfeebd82d036c9c7231891f26d516e2b53a49b970d5b389f5e15f3df49"
+    },
+    {
+      "path": "Contents/Frameworks/libicuuc.78.dylib",
+      "sha256": "aa574b6a868fb3f289bdfa5b4c6ae4dc9acbe2d4ab2331af387f5eac8e05192a"
+    },
+    {
+      "path": "Contents/Frameworks/libintl.8.dylib",
+      "sha256": "61dc283ec7aa7f6cb7d4c393af55ea22ed122b4a475a060b28b65a435c77883d"
+    },
+    {
+      "path": "Contents/Frameworks/libjpeg.8.dylib",
+      "sha256": "050a896492f06ab91a7fa3003f52579f4596f0570b33f57e86c5ebb3e8e0f396"
+    },
+    {
+      "path": "Contents/Frameworks/libmd4c.0.dylib",
+      "sha256": "07cf8cef1adb020c792f538dfddd0e6a2ee000e3e0c1f147b7c7a9cde922f20c"
+    },
+    {
+      "path": "Contents/Frameworks/libpcre2-16.0.dylib",
+      "sha256": "6ca0f87b3dc630c0e09627ec55dccbc32901647aa01470b32f3026c94b2c025e"
+    },
+    {
+      "path": "Contents/Frameworks/libpcre2-8.0.dylib",
+      "sha256": "d74a9c6f9e5bb0d32bc06c06049332d5ced65072b53c292bab50c512781d4e90"
+    },
+    {
+      "path": "Contents/Frameworks/libpng16.16.dylib",
+      "sha256": "e9b614de013e19f6acf6f6df7959662654d85fae2ae76e8c4bd3428ff7b33c7f"
+    },
+    {
+      "path": "Contents/Frameworks/libzstd.1.dylib",
+      "sha256": "0f917511c2873917457a41d4aa284f1759fafdc425093fa8c8d50ff4e29da878"
+    },
+    {
+      "path": "Contents/MacOS/webfence",
+      "sha256": "55022d491cc0fb168bf2b3726bdf179b92eeecbec0ac2bc1faf85152a1274efc"
+    },
+    {
+      "path": "Contents/PlugIns/imageformats/libqgif.dylib",
+      "sha256": "b4c88c4b0ca51cba028b7afa6c54f06189a411a2c09ddaa1ad4e5ae26c5f33f5"
+    },
+    {
+      "path": "Contents/PlugIns/imageformats/libqico.dylib",
+      "sha256": "d3fba017460932ef913b64f406a829d3304507fc1b87e418e12b3d8c03102d12"
+    },
+    {
+      "path": "Contents/PlugIns/imageformats/libqjpeg.dylib",
+      "sha256": "55e74a0ba901f32cd7d2de3e8f7d27eb31a2bba2412c67e5fd8768d4e64d7f41"
+    },
+    {
+      "path": "Contents/PlugIns/platforms/libqcocoa.dylib",
+      "sha256": "c76b858274c405f2e7b6024aac9678024c77402798bae6768214e86c86adfc3a"
+    },
+    {
+      "path": "Contents/PlugIns/styles/libqmacstyle.dylib",
+      "sha256": "0d7d293b4f9bb470fa95c37cf651ba70361286122cb2b31971bfa03743fc45e7"
+    }
+  ],
+  "archive_count": 15,
+  "archive_bytes": 170920531,
+  "notice_count": 258,
+  "supplement_file_count": 4,
+  "open_items": [
+    "Remaining recipe resources and exact build environments",
+    "Embedded component mapping and legal review",
+    "Complete WebFence/Go source delivery and cross-platform replacement procedures"
+  ],
+  "date": "2026-09-23",
+  "assembler_repository_head": "05415d74134b14aa971ec52c271fad39f2f9f7e2",
+  "assembler_has_local_changes": true,
+  "zip_size_bytes": 173236303,
+  "zip_sha256": "505e05c33fe7bf18c45623d94cb508637bffafd8ceb41207535d60f9e751d3ef",
+  "source_package_manifest_sha256": "d72f4ec45e18b761e9e8f84f6e469d2a838b9b9c01e3cc16f4f6d812b9677fcb",
+  "packaged_file_count": 464,
+  "native_codesign_passed": true,
+  "system_unzip_crc_check_passed": true,
+  "existing_output_rejected_and_hash_preserved": true,
+  "all_28_signed_binary_hashes_independently_compared": true,
+  "synthetic_python_tests_passed": 46
+}

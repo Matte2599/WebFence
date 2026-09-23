@@ -83,6 +83,8 @@ Disponibile anche l’inclusione nel bundle macOS dei [supplementi Homebrew GLib
 
 Verificata localmente e in [CI su macOS 15](https://github.com/Matte2599/WebFence/actions/runs/35916839178) la [ricompilazione e sostituzione del plugin Cocoa](DOCS/it/M0-QT-REPLACEMENT.md) dai materiali inclusi nel bundle, mantenendo la stessa build Go.
 
+Disponibile l’assemblaggio di un [pacchetto sorgenti nativi macOS](DOCS/it/M0-SOURCE-MATERIALS.md#pacchetto-sorgenti-macos-affiancabile-al-bundle) separato, con archivi, patch e hash collegati al bundle.
+
 La documentazione IT/EN è inclusa nei pacchetti di sviluppo; il packaging controlla i collegamenti ai file locali.
 
 ## Licenza e autore

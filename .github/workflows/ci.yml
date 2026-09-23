@@ -150,6 +150,23 @@ jobs:
               exit 1
             }
           cat "$RUNNER_TEMP/cocoa-replacement-trial/result.json"
+      - name: Assemble native macOS sources beside the signed bundle
+        if: runner.os == 'macOS'
+        run: |
+          python3 scripts/collect-native-sources.py \
+            dist/WebFence.app/Contents/Resources/notices/native-build.json "$RUNNER_TEMP/macos-source-materials"
+          python3 scripts/package-macos-sources.py \
+            dist/WebFence.app "$RUNNER_TEMP/macos-source-materials" dist/WebFence-native-sources.zip
+          unzip -tq dist/WebFence-native-sources.zip
+          python3 - <<'PY'
+          import json, zipfile
+          with zipfile.ZipFile('dist/WebFence-native-sources.zip') as source:
+              record = json.loads(source.read('WebFence-native-sources/source-package.json'))
+              assert record['distribution_ready'] is False and record['corresponding_sources_complete'] is False
+              assert record['archive_count'] == 15 and record['notice_count'] == 258
+              assert record['supplement_file_count'] == 4 and len(record['signed_bundle_files']) == 28
+              print('PASS native source ZIP: 15 archives, 258 notices, 4 supplements, 28 signed binary identities')
+          PY
 
   windows:
     runs-on: windows-2022

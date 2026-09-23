@@ -83,6 +83,8 @@ The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-S
 
 Verified locally and in [macOS 15 CI](https://github.com/Matte2599/WebFence/actions/runs/35916839178) [Cocoa plugin rebuilding and replacement](DOCS/en/M0-QT-REPLACEMENT.md) using materials shipped in the bundle, retaining the same Go build.
 
+A separate [macOS native source package](DOCS/en/M0-SOURCE-MATERIALS.md#macos-source-package-accompanying-the-bundle) can now assemble archives, patches and hashes bound to the bundle.
+
 Development packages include IT/EN documentation; packaging checks local file links.
 
 ## License and author
