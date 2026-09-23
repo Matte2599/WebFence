@@ -2,7 +2,7 @@
 
 [Indice / Index](README.md) · [Italiano](#italiano) · [English](#english)
 
-Aggiornamento / Updated: 2026-09-23. Responsabile / Owner: Matteo Luigi Feroldi.
+Aggiornamento / Updated: 2026-09-24. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
@@ -59,6 +59,8 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 [CI `f345a1f`](https://github.com/Matte2599/WebFence/actions/runs/35923685155) conclusa con sei job verdi, tentativo 2: il primo job macOS era fallito per timeout DNS scaricando D-Bus, dopo test GUI/Cocoa e sostituzione plugin riusciti. Ritentato soltanto macOS, senza modifiche al codice; raccolta finale 15 archivi/258 avvisi/quattro supplementi/28 binari associati superata. Gli altri cinque job erano già verdi; 46 regressioni Python sui quattro target nativi e pacchetti Windows/Debian superati. Documentazione della build: 76 Markdown/629 collegamenti locali. Matrice aggiornata per richiamare il collaudo Cocoa già completato di oltre 30 minuti, distinto dalla prova con lettore reale. M0 resta aperta.
 
 [Registro non Qt](evidence/macos-nonqt-component-review-2026-09-23.md). Verificata la provenienza tecnica dei 19 Mach-O non Qt del bundle macOS locale: 18 librerie di 14 pacchetti Homebrew più l’eseguibile Go. Con i nove file Qt già mappati, tutti i 28 file inventariati hanno un’associazione tecnica per questa build. Hash di librerie/keg, 14 archivi originali, ricette/SBOM e 90 avvisi sorgente confrontati con app e ZIP; firma ad hoc valida. Le espressioni SBOM riguardano archivi sorgente, non assegnano automaticamente licenze ai singoli binari. Completezza dei sorgenti, codice incorporato e revisione legale restano aperti.
+
+[Controllo Mach-O](evidence/macos-linkage-closure-2026-09-24.md). Controllo di chiusura Mach-O integrato nel packaging macOS: sei LC_RPATH esterni eliminati nello staging prima di inventario/firma, quindi rifiuto di dipendenze non Apple fuori dal bundle. Prova su copia privata: 28 binari, 194 riferimenti (148 Apple, 46 interni), firma ad hoc, self-test Cocoa e soak 10 s superati; originali preservati. 53 regressioni Python locali verdi, di cui sette nuove. La CI sul codice integrato è in attesa; la prova non copre dlopen o Mac puliti. [Evidenza](evidence/macos-linkage-closure-2026-09-24.md).
 
 ### M1 — Alpha tradizionale controllata
 
@@ -186,6 +188,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 [CI `f345a1f`](https://github.com/Matte2599/WebFence/actions/runs/35923685155) completed with six passing jobs, attempt 2: the first macOS job failed on a DNS timeout while downloading D-Bus, after passing GUI/Cocoa and plugin replacement trials. Retried macOS only, without code changes; final collection of 15 archives/258 notices/four supplements/28 associated binaries passed. The other five jobs had already passed; 46 Python regressions on four native targets and Windows/Debian packages passed. Built documentation: 76 Markdown files/629 local links. Matrix updated to reference the already completed Cocoa trial exceeding 30 minutes, separately from actual reader testing. M0 remains open.
 
 [Non-Qt ledger](evidence/macos-nonqt-component-review-2026-09-23.md). Verified technical provenance for the 19 non-Qt Mach-O files in the local macOS bundle: 18 libraries from 14 Homebrew packages plus the Go executable. Together with nine mapped Qt files, all 28 inventoried files have a technical association for this build. Library/keg hashes, 14 original archives, recipes/SBOMs and 90 source notices were compared with the app and ZIP; ad hoc signature valid. SBOM expressions cover source archives and do not automatically assign licenses to individual binaries. Source completeness, embedded code and legal review remain open.
+
+[Mach-O check](evidence/macos-linkage-closure-2026-09-24.md). Mach-O closure check integrated into macOS packaging: six external LC_RPATH entries removed in staging before inventory/signing, then rejection of non-Apple dependencies outside the bundle. Private-copy trial: 28 binaries, 194 references (148 Apple, 46 internal), ad hoc signature, Cocoa self-test and 10-second soak passed; originals preserved. 53 local Python regressions passed, including seven new ones. CI for the integrated code is pending; the trial does not cover dlopen or clean Macs. [Evidence](evidence/macos-linkage-closure-2026-09-24.md).
 
 ### M1 — Controlled traditional alpha
 

@@ -14,6 +14,7 @@ Status: technical preparation, **no professional legal opinion obtained**. This 
 - [Review of 15 macOS recipes](../evidence/homebrew-recipe-review-2026-09-23.md), distinguishing build patches/resources from test fixtures and Linux branches.
 - [Mapping of nine macOS Qt binaries and upstream attributions](../evidence/qt-component-review-2026-09-23.md): verified technical associations, not a complete embedded inventory or legal approval.
 - [Ledger of 18 non-Qt libraries and Go executable](../evidence/macos-nonqt-component-review-2026-09-23.md): technical provenance and upstream declarations; individual binary terms still require review.
+- [libintl follow-up](../evidence/macos-nonqt-component-review-2026-09-23.md): recipe and source indicate LGPL 2.1 or later for the component, but exact binary composition and distribution obligations still require review.
 - [Reporting](REPORTING.md): operator signatures, no security certification, template rights separate from user data.
 
 Author requirements to preserve: free individual/independent professional use including paid engagements; companies require authorization, including internal use; commercial/company distribution requires agreement; delivery of reports to clients allowed; optional negotiated royalties, never automatic. The product is source-available, not OSI open source.

@@ -2,7 +2,7 @@
 
 [Italiano](../it/M0-PACKAGING.md) · [Validation](M0-VALIDATION.md) · [Index](../README.md)
 
-Date: 2026-09-23. Development artifacts only; no supported release or completed distribution review.
+Updated: 2026-09-24. Development artifacts only; no supported release or completed distribution review.
 
 ## Inspected macOS artifact
 
@@ -11,6 +11,8 @@ The first inspected `dist/WebFence.app` was a development bundle predating the c
 A read-only scan of every Mach-O file, excluding symlink duplicates, found **28 binaries/libraries/plugins**. `otool -l` reports minimum macOS **14.0 for 9** and **26.0 for 19**, including the main binary. QtCore itself declares 14.0; glib and ICU in this bundle declare 26.0. Thus this artifact requires macOS 26 despite Qt's broader upstream platform support. Changing Info.plist or the Go executable's deployment target cannot lower requirements embedded in its bundled libraries.
 
 `otool -L` found no non-system absolute dependency paths after excluding each library's own `LC_ID_DYLIB` identity (`otool -D`). Some Qt framework identities still contain Homebrew paths; those are not an external dependency edge by themselves. This check does not prove all runtime plugin loading, code-signature behavior or clean-machine launch. Existing local ad hoc signature validation passed; Developer ID signing and notarization are not provided.
+
+A [later `LC_RPATH` review](../evidence/macos-linkage-closure-2026-09-24.md) found six external search paths despite no explicit Homebrew dependency edges. Packaging now removes them in staging **before** inventory and signing, checks Mach-O load-reference closure, and fails before replacing the app if a reference escapes the bundle. On a private copy: 28 binaries, 194 references, 148 Apple and 46 resolving in the app; signing and Cocoa self-test passed. CI checks the produced bundle again. Runtime loading and launch on a clean Mac remain to be tested.
 
 For a lower supported minimum, build or acquire every native dependency for that baseline, set consistent deployment flags, inspect all resulting load commands, and test on that OS. Do not patch minimum-version load commands to conceal incompatible code. The author has been asked whether the intended minimum should be macOS 13, 15 or 26; no answer or support promise is presumed.
 

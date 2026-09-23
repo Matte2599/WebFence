@@ -1,6 +1,6 @@
 # Memoria del progetto / Project memory
 
-Aggiornato / Updated: 2026-09-23. Documento persistente per riprendere il lavoro; nessun segreto o dato di target reali.
+Aggiornato / Updated: 2026-09-24. Documento persistente per riprendere il lavoro; nessun segreto o dato di target reali.
 
 ## Italiano
 
@@ -107,6 +107,8 @@ Questioni aperte: minimo macOS/Debian, collaudo assistivo, hardware misurato, pr
 
 - Verificata la provenienza tecnica dei 19 Mach-O non Qt del bundle macOS locale: 18 librerie di 14 pacchetti Homebrew più l’eseguibile Go. Con i nove file Qt già mappati, tutti i 28 file inventariati hanno un’associazione tecnica per questa build. Hash di librerie/keg, 14 archivi originali, ricette/SBOM e 90 avvisi sorgente confrontati con app e ZIP; firma ad hoc valida. Le espressioni SBOM riguardano archivi sorgente, non assegnano automaticamente licenze ai singoli binari. Completezza dei sorgenti, codice incorporato e revisione legale restano aperti. [Evidenza](DOCS/evidence/macos-nonqt-component-review-2026-09-23.md).
 
+- Controllo di chiusura Mach-O integrato nel packaging macOS: sei LC_RPATH esterni eliminati nello staging prima di inventario/firma, quindi rifiuto di dipendenze non Apple fuori dal bundle. Prova su copia privata: 28 binari, 194 riferimenti (148 Apple, 46 interni), firma ad hoc, self-test Cocoa e soak 10 s superati; originali preservati. 53 regressioni Python locali verdi, di cui sette nuove. La CI sul codice integrato è in attesa; la prova non copre dlopen o Mac puliti. [Evidenza](DOCS/evidence/macos-linkage-closure-2026-09-24.md).
+
 ## English
 
 ### Author-confirmed facts
@@ -211,3 +213,5 @@ Open issues: macOS/Debian minimum, assistive trials, measured hardware, provider
 - [CI `f345a1f`](https://github.com/Matte2599/WebFence/actions/runs/35923685155) completed with six passing jobs, attempt 2: the first macOS job failed on a DNS timeout while downloading D-Bus, after passing GUI/Cocoa and plugin replacement trials. Retried macOS only, without code changes; final collection of 15 archives/258 notices/four supplements/28 associated binaries passed. The other five jobs had already passed; 46 Python regressions on four native targets and Windows/Debian packages passed. Built documentation: 76 Markdown files/629 local links. Matrix updated to reference the already completed Cocoa trial exceeding 30 minutes, separately from actual reader testing. M0 remains open.
 
 - Verified technical provenance for the 19 non-Qt Mach-O files in the local macOS bundle: 18 libraries from 14 Homebrew packages plus the Go executable. Together with nine mapped Qt files, all 28 inventoried files have a technical association for this build. Library/keg hashes, 14 original archives, recipes/SBOMs and 90 source notices were compared with the app and ZIP; ad hoc signature valid. SBOM expressions cover source archives and do not automatically assign licenses to individual binaries. Source completeness, embedded code and legal review remain open. [Evidence](DOCS/evidence/macos-nonqt-component-review-2026-09-23.md).
+
+- Mach-O closure check integrated into macOS packaging: six external LC_RPATH entries removed in staging before inventory/signing, then rejection of non-Apple dependencies outside the bundle. Private-copy trial: 28 binaries, 194 references (148 Apple, 46 internal), ad hoc signature, Cocoa self-test and 10-second soak passed; originals preserved. 53 local Python regressions passed, including seven new ones. CI for the integrated code is pending; the trial does not cover dlopen or clean Macs. [Evidence](DOCS/evidence/macos-linkage-closure-2026-09-24.md).

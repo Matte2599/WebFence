@@ -49,7 +49,9 @@ plutil -lint "$bundle/Contents/Info.plist"
 qt_prefix=$(brew --prefix qtbase)
 "$qt_prefix/bin/macdeployqt" "$bundle" -always-overwrite
 sh scripts/build-qt-cocoa.sh "$qt_prefix" "$bundle/Contents/PlugIns/platforms/libqcocoa.dylib"
+python3 scripts/check-macos-linkage.py --sanitize "$bundle"
 python3 scripts/package-macos-notices.py "$bundle" "$qt_prefix"
+python3 scripts/check-macos-linkage.py "$bundle"
 if [ -n "${WEBFENCE_NATIVE_SOURCE_MATERIALS:-}" ]; then
   python3 scripts/attach-native-sources.py \
     "$bundle/Contents/Resources/notices/native-build.json" \

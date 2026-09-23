@@ -56,6 +56,8 @@ open dist/WebFence.app
 
 The script produces the local `0.0.1` bundle, validates the plist and uses `macdeployqt` for libraries/plugins. Requires Homebrew Qt and Apple Silicon. No Developer ID signature or notarization; clean-machine testing remains open. `bin/` and `dist/` are Git-ignored. WebFence's license remains unchanged; Qt/MIQT have separate rights and obligations to verify before distribution.
 
+In the private staging bundle the script removes external `LC_RPATH` entries, then checks that explicit Mach-O dependencies resolve in the bundle or Apple system libraries before signing. Recheck the published artifact with `python3 scripts/check-macos-linkage.py dist/WebFence.app`; [scope and evidence](../evidence/macos-linkage-closure-2026-09-24.md).
+
 ## IT/EN
 
 String catalogs with stable keys and complete Italian/English coverage. Use the system language initially if supported, otherwise English; provide a persistent desktop selector. Report language is separately configurable. Do not concatenate translated sentences; format plurals, numbers and dates in presentation. Persistence uses UTC; status codes and IDs stay canonical.

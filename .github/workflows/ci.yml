@@ -85,6 +85,9 @@ jobs:
         env:
           WEBFENCE_NATIVE_SUPPLEMENT_PLAN: packaging/macos/homebrew-supplements.json
         run: sh scripts/package-macos.sh
+      - name: Verify published macOS dependency closure
+        if: runner.os == 'macOS'
+        run: python3 scripts/check-macos-linkage.py dist/WebFence.app
       - name: Verify packaged Homebrew supplements
         if: runner.os == 'macOS'
         run: |
