@@ -6,7 +6,7 @@
 
 First offline M0 prototype: native window, on-demand synthetic dataset, filters, virtualized table, evidence detail, explicit copy and persistent language. No crawler, network engine, database, CVE, signing or AI. Read the [M0 report](M0-DESKTOP.md) and [UX direction](UX.md).
 
-Prerequisites: Go **1.27.1**, Fyne **2.8.1** pinned in `go.mod`, C compiler and graphics libraries. macOS requires Xcode/Command Line Tools; Debian derivatives require `gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev`; Windows requires 64-bit GCC/MinGW-w64 on PATH. Go dependencies are downloaded on the first toolchain run; the application does not scan or download anything.
+Prerequisites: Go **1.27.1**, Fyne **2.8.1** pinned in `go.mod`, C compiler and graphics libraries. macOS requires Xcode/Command Line Tools; Debian derivatives require `gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev`; Windows requires 64-bit GCC/MinGW-w64 on PATH. Go dependencies are downloaded on the first toolchain run; the application does not scan or download anything.
 
 ```sh
 git clone https://github.com/Matte2599/WebFence.git

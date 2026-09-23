@@ -24,7 +24,7 @@ Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offlin
 
 - [x] Modulo Go/Fyne fissato, cataloghi IT/EN, fixture offline e test GUI con race detector.
 - [x] Finestra, 10.000 righe, filtri, dettaglio/copiatore evidenze e preferenza lingua persistente.
-- [x] Build e bundle locale di sviluppo su macOS Apple Silicon; workflow CI introdotto.
+- [x] Build e bundle locale di sviluppo su macOS Apple Silicon; workflow CI introdotto e prerequisiti Wayland Linux corretti dopo la prima run.
 - [x] Piattaforme richieste e direzione UX confermate dall’autore: [specifica UX](it/UX.md).
 - [ ] Risolvere il gate di accessibilità Fyne o registrare un toolkit alternativo dopo confronto pratico.
 
@@ -130,7 +130,7 @@ Depends on the documentation foundation. **In progress.** First task: offline pr
 
 - [x] Pinned Go/Fyne module, IT/EN catalogs, offline fixtures and GUI tests with race detector.
 - [x] Window, 10,000 rows, filters, evidence reader/copy and persistent language preference.
-- [x] Local development build and bundle on Apple Silicon macOS; CI workflow introduced.
+- [x] Local development build and bundle on Apple Silicon macOS; CI workflow introduced and Linux Wayland prerequisites corrected after the first run.
 - [x] Author-confirmed requested platforms and UX direction: [UX specification](en/UX.md).
 - [ ] Resolve Fyne’s accessibility gate or record an alternative toolkit after practical comparison.
 

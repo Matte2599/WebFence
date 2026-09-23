@@ -2,7 +2,11 @@ name: Go desktop prototype
 
 on:
   push:
+    paths-ignore:
+      - '**/*.md'
   pull_request:
+    paths-ignore:
+      - '**/*.md'
 
 permissions:
   contents: read
@@ -55,7 +59,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev
+          sudo apt-get install -y gcc libgl1-mesa-dev xorg-dev libxkbcommon-dev libwayland-dev
       - name: Windows C compiler
         if: runner.os == 'Windows'
         run: echo 'C:\msys64\mingw64\bin' >> "$GITHUB_PATH"

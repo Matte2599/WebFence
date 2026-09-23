@@ -26,6 +26,8 @@ There is no scanner, scope/network engine, persistent projects, keychain, CVE, s
 
 Neither Intel macOS nor 32-bit architectures were requested. This is a support plan, not certification. Remote run outcomes are on the [Actions page](https://github.com/Matte2599/WebFence/actions); a workflow's existence does not establish a passing run.
 
+The first CI run passed tests and the macOS build, but Linux builds also required Wayland headers (`wayland-client-core.h`): added `libwayland-dev` to prerequisites and the workflow. Remote revalidation is in progress. Markdown-only changes do not rerun builds.
+
 ## Local verification
 
 Go 1.27.1, Fyne 2.8.1, macOS 26.6.2 ARM64 host:
