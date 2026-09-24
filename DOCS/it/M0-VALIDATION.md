@@ -21,6 +21,8 @@ M0-02, Windows: [registro SHA-256 pubblicati](../evidence/windows-binary-checksu
 
 M0-02, sidecar Windows: [selezione estesa e confronto con l'archivio](../evidence/windows-attribution-sidecars-2026-09-24.md) provati localmente sui 22 pacchetti vincolati: 136 file di avviso/attribuzione, 62 in più rispetto alla regola precedente; 62 test Python verdi. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168): sei job superati al primo tentativo, incluso lo ZIP Windows estratto. L'inclusione dei metadati non prova licenze complete né presenza dei protocolli Wayland nel runtime Windows.
 
+M0-02, riferimenti Qt Windows: il packaging verifica che i `LicenseFile`/`LicenseFiles` dei JSON selezionati puntino a testi inclusi e non escano dalla sottocartella dei protocolli; il test dello ZIP richiede 27 riferimenti per Qt 6.11.2-2. Prova locale sui file reali e 64 test Python superati; CI in attesa. Non è un giudizio legale né una prova del contenuto delle DLL.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.

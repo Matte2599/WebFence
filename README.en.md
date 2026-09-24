@@ -77,11 +77,11 @@ Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and deriv
 
 Dependency materials: [source and notice collector](DOCS/en/M0-SOURCE-MATERIALS.md) verified against 15 upstream archives; optional attachment of 258 notices before macOS bundle signing. Each new macOS bundle also declares the [minimum OS derived from its own binaries](DOCS/en/M0-PACKAGING.md#artifact-declared-minimum-system-version). Distribution review remains open.
 
-Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with recipes bound to binaries and documented integrity checks; optional original archive attachment in the ZIP. [Windows CI](https://github.com/Matte2599/WebFence/actions/runs/35933571589) verifies that 74 selected notices match MSYS2 binary archives; completeness and legal review remain open.
+Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with recipes bound to binaries and documented integrity checks; optional original archive attachment in the ZIP. [Initial Windows CI](https://github.com/Matte2599/WebFence/actions/runs/35933571589) checked 74 notices; selection now covers 136 files bound to MSYS2 archives; completeness and legal review remain open.
 
 A [published-checksum lock](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) now binds the exact versions of 22 Windows binary packages: dependency changes require explicit review. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) passed six jobs on the first attempt; the lock does not establish PGP signatures or legal compliance.
 
-The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) passed six jobs on the first attempt; license completeness and legal review remain open.
+The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) passed six jobs on the first attempt. The new check of 27 Qt license-text references passes locally and awaits CI; license completeness and legal review remain open.
 
 The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
 

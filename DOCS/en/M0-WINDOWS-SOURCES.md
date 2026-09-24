@@ -43,6 +43,8 @@ The [verified ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) fi
 
 The [trial against 22 checksum-locked archives](../evidence/windows-attribution-sidecars-2026-09-24.md) expanded notice and attribution selection from 74 to 136 files: 62 additions (PCRE2's `AUTHORS.md` and 61 Qt sidecars). Packaging now compares paths selected from the installation with those in the binary archive, in addition to checking hashes; omitted, duplicate or nonregular files fail the build. All 27 `LicenseFile` references in the selected Qt JSON files resolve to included files. The 62 local Python regressions and trial on all 22 archives pass; [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168): six jobs passed on the first attempt, including Windows packaging and the extracted ZIP. This improves materials for review without establishing that Wayland protocols are embedded in Windows DLLs or closing the legal gate.
 
+Packaging now also verifies `LicenseFile`/`LicenseFiles` references in selected Qt JSON files: paths must remain within the protocol subtree and point to included texts. The inventory records the count and the extracted-ZIP trial requires 27 references for the locked Qt version. Local trial on the original archive and 64 Python tests passed; changed-code CI is pending. This checks presence of referenced texts, not distribution terms.
+
 ## Include sources in the ZIP
 
 In MSYS2 UCRT64, add one of these options to the packaging command:

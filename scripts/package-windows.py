@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
+import posixpath
 import re
 import shutil
 import subprocess
@@ -39,6 +40,40 @@ def notice_relative(path):
             or re.fullmatch(r"(?:LGPL|GPL|AGPL)-[A-Za-z0-9.+-]+\.txt", location.name, flags=re.I)):
         return relative
     return None
+
+
+def qt_license_references(notice_sources):
+    """Require every selected Qt attribution to retain its referenced license text."""
+    root = 'ucrt64/share/qt6/wayland/protocols/'
+    count = 0
+    for member, source in notice_sources.items():
+        if not (member.startswith(root) and member.endswith('/qt_attribution.json')):
+            continue
+        if source.stat().st_size > 1024 * 1024:
+            raise ValueError('Qt attribution metadata exceeds size budget')
+        data = json.loads(source.read_text(encoding='utf-8'))
+        entries = data if isinstance(data, list) else [data]
+        if not entries or any(not isinstance(entry, dict) for entry in entries):
+            raise ValueError('Invalid Qt attribution metadata: ' + member)
+        for entry in entries:
+            references = []
+            for field in ('LicenseFile', 'LicenseFiles'):
+                if field not in entry:
+                    continue
+                value = entry[field]
+                references.extend(value if isinstance(value, list) else [value])
+            if not references:
+                raise ValueError('Qt attribution has no license text reference: ' + member)
+            for reference in references:
+                if (not isinstance(reference, str) or not 1 <= len(reference) <= 512
+                        or reference.startswith('/') or '\\' in reference or ':' in reference
+                        or any(ord(char) < 32 for char in reference)):
+                    raise ValueError('Unsafe Qt license text reference: ' + member)
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(member), reference))
+                if not target.startswith(root) or target not in notice_sources:
+                    raise ValueError('Missing selected Qt license text: ' + member + ' -> ' + reference)
+                count += 1
+    return count
 
 
 def package(prefix, executable, source_materials=None, collect_sources=None):
@@ -112,7 +147,7 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 if (len(identity) != 2 or identity[0] != owner
                         or not re.fullmatch(r'[A-Za-z0-9._+~-]+', identity[1])):
                     raise ValueError('Invalid installed UCRT64 package version')
-                licenses, license_records = [], []
+                licenses, license_records, notice_sources = [], [], {}
                 for line in run("pacman", "-Ql", owner).splitlines():
                     _, path = line.split(" ", 1)
                     relative = notice_relative(path)
@@ -128,13 +163,15 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                             member = local.relative_to(prefix.parent).as_posix()
                             notice_hash = sha(target)
                             required_notices.setdefault(owner, {})[member] = notice_hash
+                            notice_sources[member] = target
                             licenses.append(published)
                             license_records.append({'path': published, 'sha256': notice_hash,
                                                     'binary_package_member': member})
                 if not licenses:
                     raise ValueError("Missing packaged license notices for " + owner)
                 owners[owner] = {"pacman_metadata": metadata, "version": identity[1],
-                                 "license_files": licenses, "license_file_records": license_records}
+                                 "license_files": licenses, "license_file_records": license_records,
+                                 "qt_license_reference_count": qt_license_references(notice_sources)}
             member = source.relative_to(prefix.parent).as_posix()
             required.setdefault(owner, {})[member] = sha(source)
             files.append({"path": binary.relative_to(bundle).as_posix(), "sha256": digest(binary),

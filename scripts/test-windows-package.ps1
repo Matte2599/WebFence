@@ -78,7 +78,11 @@ try {
             $noticeCount++
         }
     }
-    Write-Output "PASS extracted ZIP native notices and published checksum lock: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices"
+    $qtOwner = $native.packages.PSObject.Properties['mingw-w64-ucrt-x86_64-qt6-base'].Value
+    if ($null -eq $qtOwner -or $qtOwner.qt_license_reference_count -ne 27) {
+        throw 'Qt attribution license references were not verified during packaging'
+    }
+    Write-Output "PASS extracted ZIP native notices and published checksum lock: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices, 27 Qt license references"
     $sourceRoot = Join-Path $bundle 'msys2-sources'
     if ($RequireSources -or (Test-Path -LiteralPath $sourceRoot)) {
         $attachment = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot 'attachment.json') | ConvertFrom-Json
