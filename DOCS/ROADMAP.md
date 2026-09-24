@@ -90,6 +90,8 @@ Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/wind
 
 [Import Qt Windows](evidence/windows-qt-system-imports-2026-09-24.md): `PKGBUILD` del sorgente collegato a `.BUILDINFO` del binario firmato; otto opzioni di libreria di sistema hanno import PE dinamici corrispondenti nei componenti del pacchetto esaminati. Lettura locale senza esecuzione. Da confrontare con l'inventario dei plugin nello ZIP; incorporati e revisione legale restano aperti. M0-02/06 invariati.
 
+[Inventario PE dello ZIP Windows](evidence/windows-pe-import-inventory-2026-09-24.md): `native-build.json` registra gli import statici di 44 PE, il test dello ZIP estratto confronta 43 DLL con l'inventario e controlla la chiusura. [CI `e4247b3`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35949425830): 15 file Qt effettivamente inclusi, `qjpeg.dll` presente e `qsqlite.dll` assente; 21 archivi sorgente e runtime isolato passati. Caricamento dinamico, componenti incorporati, desktop puliti, minimi OS e revisione legale restano aperti; M0-02/06 parziali.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -246,6 +248,8 @@ Windows source signatures on 2026-09-24: [eight offline OpenPGP checks](evidence
 Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-binary-signatures-2026-09-24.md) on original archives already bound to published SHA-256 values, using a public key derived from the reviewed MSYS2 keyring. Packaging repeats verification before creating the ZIP and includes lock, key, signatures and evidence; 77 Python tests and the local 22-archive trial passed. [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust/revocation, embedded components, licenses and real desktop trials remain open; M0-02/06 remain partial.
 
 [Windows Qt imports](evidence/windows-qt-system-imports-2026-09-24.md): source `PKGBUILD` linked to the signed binary's `.BUILDINFO`; eight system-library options have matching dynamic PE imports in examined package components. Local read-only trial. Compare with the ZIP plugin inventory; embedded code and legal review remain open. M0-02/06 unchanged.
+
+[Windows ZIP PE inventory](evidence/windows-pe-import-inventory-2026-09-24.md): `native-build.json` records static imports for 44 PE files; the extracted-ZIP trial compares 43 DLLs with the inventory and checks closure. [CI `e4247b3`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35949425830): 15 Qt files actually shipped, `qjpeg.dll` included and `qsqlite.dll` absent; 21 source archives and isolated runtime passed. Dynamic loads, embedded code, clean desktops, OS minima and legal review remain open; M0-02/06 partial.
 
 ### M1 — Controlled traditional alpha
 

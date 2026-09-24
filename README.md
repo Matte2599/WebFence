@@ -85,6 +85,8 @@ Un [registro dei checksum pubblicati](DOCS/evidence/windows-binary-checksum-lock
 
 Le [22 firme dei pacchetti binari Windows](DOCS/evidence/windows-binary-signatures-2026-09-24.md) passano la verifica OpenPGP offline sugli archivi originali, con chiave pubblica ricavata dalla keyring MSYS2 vincolata; il packaging ora ripete il controllo e conserva le prove nello ZIP. Prova locale e 77 test Python superati; [CI `589fa48`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Fiducia indipendente, licenze e collaudi desktop restano aperti.
 
+L'[inventario PE dello ZIP Windows](DOCS/evidence/windows-pe-import-inventory-2026-09-24.md) registra gli import statici dei 44 file PE e verifica tutte le 43 DLL nel pacchetto estratto; [CI `e4247b3`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35949425830). Sono identificati 15 file Qt distribuiti; resta da verificare codice incorporato, caricamenti dinamici e desktop Windows 10/11 puliti.
+
 La [selezione dei sidecar Windows](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) include ora 136 file di avviso e attribuzione collegati agli archivi binari, con controllo delle omissioni durante il packaging. La [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) ha superato sei job al primo tentativo. Il controllo dei 27 riferimenti ai testi Qt passa localmente e nella [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509), sei job verdi; completezza delle licenze e revisione legale restano aperte.
 
 Disponibile anche l’inclusione nel bundle macOS dei [supplementi Homebrew GLib/libb2](DOCS/it/M0-SOURCE-MATERIALS.md#supplementi-homebrew-nel-bundle-macos), vincolati agli hash delle ricette installate.

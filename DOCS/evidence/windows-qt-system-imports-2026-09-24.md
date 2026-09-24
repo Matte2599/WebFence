@@ -23,6 +23,8 @@ Gli hash SHA-256 dei componenti esaminati sono: `Qt6Core.dll` `a54f0e354ff38670d
 
 **Limiti:** il collegamento tra ricetta, `.BUILDINFO` e import PE indica dipendenze dinamiche per questi componenti del pacchetto Qt; non dimostra che ogni componente sia incluso nello ZIP, che non esistano altri componenti incorporati, o che il solo import rappresenti una scelta di licenza. In particolare `qsqlite.dll` è un plugin del pacchetto Qt, non è qui dichiarato distribuito da WebFence. La mappatura deve essere confrontata con un inventario concreto dello ZIP e sottoposta a revisione legale; M0-02/06 restano aperti.
 
+**Prova successiva:** l'[inventario dello ZIP verificato in CI](windows-pe-import-inventory-2026-09-24.md) conferma `qjpeg.dll` incluso e `qsqlite.dll` assente in questa build; i limiti su codice incorporato, caricamento dinamico e licenze restano.
+
 ## English
 
 **Partial technical trial on 2026-09-24.** Source package `mingw-w64-qt6-base-6.11.2-2` (SHA-256 `81a47ca828f9f2f9f88e2d341233fddf2073ae824fa34c123fe3f3911344a0e6`) matches the [verified Windows manifest](windows-signatures-2026-09-24/source-materials.json). Its `PKGBUILD` SHA-256 `42bd77bdf7d864af917e4cf415736a4f23ce708ef9809135125d64a6d9999c65` equals `pkgbuild_sha256sum` in `.BUILDINFO` from the [locked and signed Qt 6.11.2-2 binary archive](windows-binary-signatures-2026-09-24.md), SHA-256 `ccc98698391f78419de72640175508a68b7ba9e25a43a54e01a05b51079ad6a2`. Neither recipe nor binary was executed to collect this evidence.
@@ -43,3 +45,5 @@ The recipe sets `FEATURE_system_*=ON` for eight dependencies. Regular PE members
 SHA-256 values for inspected components: `Qt6Core.dll` `a54f0e354ff38670df336267333333117d623f7d7a6811e98c345fd68f339b1f`, `Qt6Gui.dll` `2b12d68d2dbd2171b9dc221884baf2e7a5769984156a42ef1572ad298d427a68`, `qjpeg.dll` `ec2965dd10bde9e5253ea6496e168aac4fe69eac87b8565416661536b0bfc5d0` and `qsqlite.dll` `21618638663f338ac67776537907b96b899d96585106b67f69b6faada2bd797b`. `Qt6Core.dll` also imports `libzstd.dll`. These hashes identify members of the original archive, not by themselves files actually shipped in the WebFence ZIP.
 
 **Limits:** recipe, `.BUILDINFO` and PE imports show dynamic dependencies for these Qt package components; they do not prove that every component is in the ZIP, rule out other embedded code, or determine a license choice from an import alone. In particular `qsqlite.dll` is a plugin in the Qt package and is not claimed here as distributed by WebFence. Compare this mapping against an actual ZIP inventory and obtain legal review; M0-02/06 remain open.
+
+**Subsequent trial:** the [CI-verified ZIP inventory](windows-pe-import-inventory-2026-09-24.md) confirms `qjpeg.dll` is included and `qsqlite.dll` is absent from this build; embedded-code, dynamic-loading and licensing limits remain.

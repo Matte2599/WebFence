@@ -29,7 +29,9 @@ M0-02, Windows source signatures: [eight detached signatures verified offline](.
 
 M0-02, Windows binary signatures: [22 detached signatures verified offline](../evidence/windows-binary-signatures-2026-09-24.md) against 22 archives/55,884,975 bytes already bound to published SHA-256 values. Packaging verifies key, fingerprint, signature and archive before creating the ZIP and retains evidence; the extracted-package test checks its integrity. All 77 Python tests and the local 22-archive trial passed; [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust/revocation, licenses and embedded components, real desktops and legal review remain open: M0-02/06 partial.
 
-M0-02, Windows Qt imports: [technical comparison](../evidence/windows-qt-system-imports-2026-09-24.md) of `PKGBUILD`, `.BUILDINFO` and PE imports from components in the original binary archive; eight system-library options have matching dynamic imports. This is not yet an inventory of plugins in the ZIP or a complete mapping of embedded code. No gate changes status.
+M0-02, Windows Qt imports: [technical comparison](../evidence/windows-qt-system-imports-2026-09-24.md) of `PKGBUILD`, `.BUILDINFO` and PE imports from components in the original binary archive; eight system-library options have matching dynamic imports. This package-only trial did not identify the ZIP plugins or embedded code; the ZIP comparison follows below. No gate changes status.
+
+M0-02, Windows ZIP inventory: [trial of static PE imports and actual packaged files](../evidence/windows-pe-import-inventory-2026-09-24.md). [CI `e4247b3`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35949425830): the extracted package verifies 43 DLLs/44 PE files and import closure, lists 15 Qt files, includes `qjpeg.dll` and excludes `qsqlite.dll` in this build. The 77 Python tests, 21 source archives and offscreen/Windows trials with a system-only PATH also pass. This does not cover dynamic loads, embedded components or clean Windows 10/11 desktops; M0-02/06 remain partial.
 
 ## Reproducible desktop trial
 

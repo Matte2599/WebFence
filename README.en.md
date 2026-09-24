@@ -85,6 +85,8 @@ A [published-checksum lock](DOCS/evidence/windows-binary-checksum-lock-2026-09-2
 
 The [22 Windows binary package signatures](DOCS/evidence/windows-binary-signatures-2026-09-24.md) verify offline against the original archives, using a public key derived from the pinned MSYS2 keyring; packaging now repeats the check and retains evidence in the ZIP. Local trial and 77 Python tests passed; [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust, licensing and real desktop trials remain open.
 
+The [Windows ZIP PE inventory](DOCS/evidence/windows-pe-import-inventory-2026-09-24.md) records static imports of all 44 PE files and verifies all 43 DLLs in the extracted package; [CI `e4247b3`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35949425830). Fifteen shipped Qt files are identified; embedded code, dynamic loads and clean Windows 10/11 desktop trials still require review.
+
 The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) passed six jobs on the first attempt. The check of 27 Qt license-text references passes locally and in [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509), six green jobs; license completeness and legal review remain open.
 
 The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
