@@ -85,6 +85,10 @@ func inspect(_ window: AXUIElement, expectedCount: Int, expectedID: String?) thr
         return
     }
     guard let first = rows.first else { throw TrialError.failed("AXRows has no first row") }
+    if let last = rows.last, rows.count > 1 {
+        print("DIAG AXRows first-last equal=\(CFEqual(first, last)), " +
+              "hashes=\(CFHash(first))/\(CFHash(last))")
+    }
 
     // Give Cocoa time to settle; the historical defect persisted at rest.
     Thread.sleep(forTimeInterval: 0.5)

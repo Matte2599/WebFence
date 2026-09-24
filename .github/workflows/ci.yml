@@ -188,6 +188,23 @@ jobs:
               exit 1
             }
           cat "$RUNNER_TEMP/cocoa-replacement-trial/result.json"
+      - name: Trial synthesized Cocoa AX identity on macOS 26
+        if: matrix.os == 'macos-26'
+        continue-on-error: true
+        run: |
+          python3 dist/WebFence.app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py \
+            dist/WebFence.app "$(brew --prefix qtbase)" "$RUNNER_TEMP/cocoa-ax-distinct-identity" \
+            --ax-distinct-identity || {
+              tail -n 60 "$RUNNER_TEMP/cocoa-ax-distinct-identity/"*.log
+              exit 1
+            }
+          cat "$RUNNER_TEMP/cocoa-ax-distinct-identity/result.json"
+      - name: Diagnose synthesized Cocoa AX identity on macOS 26
+        if: matrix.os == 'macos-26'
+        continue-on-error: true
+        run: |
+          "$RUNNER_TEMP/webfence-ax-reset" \
+            "$RUNNER_TEMP/cocoa-ax-distinct-identity/WebFence replacement trial.app"
       - name: Assemble native macOS sources beside the signed bundle
         if: runner.os == 'macOS'
         run: |

@@ -42,6 +42,33 @@ AX_DIRECT_ROWS_PATCH = '''
      }
      return nil;
 '''
+AX_DISTINCT_IDENTITY_PATCH = '''
+--- a/src/plugins/platforms/cocoa/qcocoaaccessibilityelement.mm
++++ b/src/plugins/platforms/cocoa/qcocoaaccessibilityelement.mm
+@@ -270,12 +270,20 @@
+ - (BOOL)isEqual:(id)object {
+     if ([object isKindOfClass:[QMacAccessibilityElement class]]) {
+         QMacAccessibilityElement *other = object;
+-        return other->axid == axid && other->synthesizedRole == synthesizedRole;
++        if (other->axid != axid || other->synthesizedRole != synthesizedRole)
++            return NO;
++        return !synthesizedRole || (other->m_rowIndex == m_rowIndex
++                                    && other->m_columnIndex == m_columnIndex);
+     } else {
+         return NO;
+     }
+ }
+
+ - (NSUInteger)hash {
+-    return axid;
++    if (!synthesizedRole)
++        return axid;
++    NSUInteger value = axid;
++    value = value * 131 + synthesizedRole.hash;
++    value = value * 131 + static_cast<NSUInteger>(m_rowIndex + 1);
++    return value * 131 + static_cast<NSUInteger>(m_columnIndex + 1);
+ }
+'''
 
 
 def sha(path):
@@ -71,7 +98,7 @@ def run(command, output, env=None, timeout=180):
     return output.read_text(errors='replace')
 
 
-def trial(bundle, qt, output, ax_direct_rows=False):
+def trial(bundle, qt, output, ax_direct_rows=False, ax_distinct_identity=False):
     # Keep the Qt prefix spelling: framework install names use Homebrew's opt
     # path, not its resolved Cellar directory.
     bundle, qt, output = bundle.resolve(), qt.absolute(), output.absolute()
@@ -96,6 +123,7 @@ def trial(bundle, qt, output, ax_direct_rows=False):
     record = {'schema_version': 1, 'passed': False, 'distribution_ready': False,
               'scope': 'Modified Cocoa plugin only; not a complete Qt rebuild or legal review',
               'ax_direct_rows': ax_direct_rows,
+              'ax_distinct_identity': ax_distinct_identity,
               'system': platform.mac_ver()[0], 'architecture': platform.machine(),
               'base_inventory_sha256': sha(inventory),
               'base_executable_sha256': sha(bundle / exe_rel),
@@ -109,7 +137,11 @@ def trial(bundle, qt, output, ax_direct_rows=False):
         local_scripts.mkdir()
         shutil.copy2(scripts / 'build-qt-cocoa.sh', local_scripts)
         shutil.copytree(scripts / 'qt-cocoa', local_scripts / 'qt-cocoa')
-        trial_patch = PATCH + (AX_DIRECT_ROWS_PATCH if ax_direct_rows else '')
+        trial_patch = PATCH
+        if ax_direct_rows:
+            trial_patch += AX_DIRECT_ROWS_PATCH
+        if ax_distinct_identity:
+            trial_patch += AX_DISTINCT_IDENTITY_PATCH
         (output / 'trial.patch').write_text(trial_patch)
         with (local_scripts / 'qt-cocoa/accessibility.patch').open('a') as patch:
             patch.write(trial_patch)
@@ -168,11 +200,15 @@ if __name__ == '__main__':
     parser.add_argument('bundle', type=Path)
     parser.add_argument('qt_prefix', type=Path)
     parser.add_argument('new_output_directory', type=Path)
-    parser.add_argument('--ax-direct-rows', action='store_true',
-                        help='Privately test direct Cocoa AX row arrays; not a product patch')
+    variants = parser.add_mutually_exclusive_group()
+    variants.add_argument('--ax-direct-rows', action='store_true',
+                          help='Privately test direct Cocoa AX row arrays; not a product patch')
+    variants.add_argument('--ax-distinct-identity', action='store_true',
+                          help='Privately test synthesized Cocoa AX row/cell identity; not a product patch')
     args = parser.parse_args()
     try:
-        trial(args.bundle, args.qt_prefix, args.new_output_directory, args.ax_direct_rows)
+        trial(args.bundle, args.qt_prefix, args.new_output_directory,
+              args.ax_direct_rows, args.ax_distinct_identity)
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         print('Cocoa replacement trial failed: ' + str(error), file=sys.stderr)
         sys.exit(1)
