@@ -49,6 +49,8 @@ M0-02, moduli runtime Windows: [campionamento del processo nello ZIP estratto](.
 
 M0-01, la [CI `18c513e` al secondo tentativo](https://github.com/Matte2599/WebFence/actions/runs/35961360935) ha sette job verdi; il primo tentativo macOS 26 era fallito solo per timeout del mirror sorgenti. L'AX rilanciato su 26 fallisce ancora sei stadi ed è non bloccante. La [prova `2904f5f`](../evidence/macos-ax-table-reset-2026-09-24.md) della variante privata che restituisce direttamente le righe Cocoa fallisce quanto il bundle normale: tre stadi su macOS 15 e sei su 26, pur superando compilazione, firma, self-test e soak. La variante non è una correzione ed è rimossa dalla CI ordinaria; gate invariato.
 
+M0-01, [CI `0a568ff`, sette job verdi](https://github.com/Matte2599/WebFence/actions/runs/35967360307): la variante privata con identità Cocoa distinta supera build/firma/self-test/soak ma fallisce gli stessi sei stadi AX su nove del bundle normale su macOS 26. La diagnostica AX è non bloccante e segnala ancora `-25202`; nessuna patch di prodotto adottata. La prova extra è rimossa dalla CI ordinaria; gate parziale.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.

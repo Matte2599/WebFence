@@ -49,6 +49,8 @@ M0-02, Windows runtime modules: [process sampling in the extracted ZIP](../evide
 
 M0-01, [CI `18c513e` on attempt two](https://github.com/Matte2599/WebFence/actions/runs/35961360935) has seven green jobs; the first macOS 26 attempt failed only on a source-mirror timeout. The rerun AX diagnostic on 26 still fails six nonblocking stages. The [private direct-row trial in `2904f5f`](../evidence/macos-ax-table-reset-2026-09-24.md) fails as often as the normal bundle: three stages on macOS 15 and six on 26, despite passing build, signing, self-test and soak. The variant is not a fix and is removed from routine CI; gate unchanged.
 
+M0-01, [CI `0a568ff`, seven green jobs](https://github.com/Matte2599/WebFence/actions/runs/35967360307): the private distinct Cocoa identity variant passes build/signing/self-test/soak but fails the same six of nine AX stages as the normal bundle on macOS 26. The nonblocking AX diagnostic still reports `-25202`; no product patch adopted. The extra trial is removed from routine CI; gate partial.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.
