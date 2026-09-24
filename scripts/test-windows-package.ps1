@@ -34,6 +34,32 @@ try {
     if ($binaryLock.schema_version -ne 1 -or $lockedPackages.Count -ne $packageNames.Count) {
         throw 'Reviewed binary package set differs from native inventory'
     }
+    $signatureLockPath = Join-Path $bundle 'notices/native/msys2-binary-signature-lock.json'
+    if (-not (Test-Path -LiteralPath $signatureLockPath -PathType Leaf) -or
+        (Get-FileHash -Algorithm SHA256 -LiteralPath $signatureLockPath).Hash -ne $native.binary_signature_lock_sha256) {
+        throw 'Missing or changed reviewed MSYS2 binary signature lock'
+    }
+    $binarySignatureLock = Get-Content -Raw -LiteralPath $signatureLockPath | ConvertFrom-Json
+    $signer = $binarySignatureLock.key
+    $signingKeyPath = Join-Path $bundle 'notices/native/msys2-binary-signing-key.asc'
+    if ($binarySignatureLock.schema -ne 1 -or
+        $signer.fingerprint -ne '5F944B027F7FE2091985AA2EFA11531AA0AA7F57' -or
+        -not (Test-Path -LiteralPath $signingKeyPath -PathType Leaf) -or
+        (Get-FileHash -Algorithm SHA256 -LiteralPath $signingKeyPath).Hash -ne $signer.public_key_sha256) {
+        throw 'Missing or changed MSYS2 binary signing key'
+    }
+    $signaturePins = @{}
+    foreach ($pin in @($binarySignatureLock.packages)) {
+        if ($signaturePins.ContainsKey($pin.name) -or -not $lockedPackages.ContainsKey($pin.name) -or
+            $pin.version -ne $lockedPackages[$pin.name].version -or
+            $pin.archive_sha256 -ne $lockedPackages[$pin.name].sha256) {
+            throw "Unreviewed binary package signature: $($pin.name)"
+        }
+        $signaturePins[$pin.name] = $pin
+    }
+    if ($signaturePins.Count -ne $packageNames.Count) {
+        throw 'Binary signature set differs from packaged owners'
+    }
     foreach ($file in $native.files) {
         if ($packageNames -notcontains $file.package -or $file.path.Contains('\') -or
             $file.path.Split('/') -contains '..') {
@@ -53,6 +79,20 @@ try {
             $record.binary_package.sha256 -ne $lockedPackages[$owner].sha256 -or
             $record.binary_package.published_sha256_source -ne $lockedPackages[$owner].source_page) {
             throw "Unreviewed MSYS2 binary archive: $owner"
+        }
+        $signaturePin = $signaturePins[$owner]
+        $signatureEvidence = $record.binary_package.signature_verification
+        $signatureRelative = "notices/native/$owner/build/package.sig"
+        $signaturePath = Join-Path $bundle $signatureRelative
+        if ($record.binary_package.signature_file -ne $signatureRelative -or
+            $signatureEvidence.method -ne 'offline_openpgp_detached_signature' -or
+            $signatureEvidence.signer_fingerprint -ne $signer.fingerprint -or
+            $signatureEvidence.public_key_sha256 -ne $signer.public_key_sha256 -or
+            $signatureEvidence.signature_sha256 -ne $signaturePin.signature_sha256 -or
+            $signatureEvidence.archive_sha256 -ne $signaturePin.archive_sha256 -or
+            -not (Test-Path -LiteralPath $signaturePath -PathType Leaf) -or
+            (Get-FileHash -Algorithm SHA256 -LiteralPath $signaturePath).Hash -ne $signaturePin.signature_sha256) {
+            throw "Missing or changed offline binary signature evidence: $owner"
         }
         $notices = @($record.license_file_records)
         $paths = @($record.license_files)
@@ -82,7 +122,7 @@ try {
     if ($null -eq $qtOwner -or $qtOwner.qt_license_reference_count -ne 27) {
         throw 'Qt attribution license references were not verified during packaging'
     }
-    Write-Output "PASS extracted ZIP native notices and published checksum lock: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices, 27 Qt license references"
+    Write-Output "PASS extracted ZIP native notices, checksums and package signature evidence: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices, 27 Qt license references"
     $sourceRoot = Join-Path $bundle 'msys2-sources'
     if ($RequireSources -or (Test-Path -LiteralPath $sourceRoot)) {
         $attachment = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot 'attachment.json') | ConvertFrom-Json

@@ -1,3 +1,6 @@
 packaging/windows/source-signing-keys/*.asc -text
 packaging/windows/source-signature-lock.json -text
 scripts/tests/fixtures/windows-signature/* -text
+packaging/windows/binary-signing-keys/*.asc -text
+packaging/windows/binary-package-signatures/*.sig -text
+packaging/windows/msys2-binary-signature-lock.json -text

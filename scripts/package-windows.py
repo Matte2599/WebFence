@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 from msys2_binary_metadata import inspect, load_binary_lock, sha, verify_binary_lock
+from verify_windows_binary_signatures import load_lock as load_signature_lock, verify_signature as verify_binary_signature
 from attach_windows_sources import attach
 from collect_windows_sources import collect
 
@@ -85,6 +86,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
     repo = Path(__file__).resolve().parent.parent
     binary_lock_path = repo / 'packaging/windows/msys2-binary-lock.json'
     binary_lock = load_binary_lock(binary_lock_path)
+    signature_lock_path = repo / 'packaging/windows/msys2-binary-signature-lock.json'
+    signing_key, signature_lock = load_signature_lock(signature_lock_path, binary_lock)
     dist = repo / "dist"
     dist.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".webfence-windows-", dir=dist) as temporary:
@@ -188,6 +191,9 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                                                notice_selector=lambda member: notice_relative('/' + member) is not None)
             binary_record['published_sha256_source'] = verify_binary_lock(
                 binary_lock, owner, record['version'], binary_record['sha256'])
+            binary_record['signature_verification'] = verify_binary_signature(
+                candidates[0], signature_lock[owner], signing_key,
+                key_root=repo / 'packaging/windows')
             destination = notices / 'native' / owner / 'build'
             destination.mkdir()
             binary_record['metadata_files'] = []
@@ -195,6 +201,12 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 target = destination / name
                 target.write_bytes(raw)
                 binary_record['metadata_files'].append({'path': target.relative_to(bundle).as_posix(), 'sha256': sha(target)})
+            signature_target = destination / 'package.sig'
+            shutil.copyfile(repo / 'packaging/windows' / signature_lock[owner]['signature_file'],
+                            signature_target)
+            if sha(signature_target) != signature_lock[owner]['signature_sha256']:
+                raise ValueError('Copied Windows binary package signature differs from lock')
+            binary_record['signature_file'] = signature_target.relative_to(bundle).as_posix()
             record['binary_package'] = binary_record
             print(f"Verified {owner} {record['version']}: {len(required[owner])} DLLs, "
                   f"{binary_record['verified_notice_count']} notices; source {binary_record['source_package']}; "
@@ -203,11 +215,19 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
             raise ValueError('Windows binary package set differs from reviewed checksum lock')
         published_lock = notices / 'native/msys2-binary-lock.json'
         shutil.copyfile(binary_lock_path, published_lock)
+        published_signature_lock = notices / 'native/msys2-binary-signature-lock.json'
+        shutil.copyfile(signature_lock_path, published_signature_lock)
+        published_signing_key = notices / 'native/msys2-binary-signing-key.asc'
+        shutil.copyfile(repo / 'packaging/windows' / signing_key['public_key_file'],
+                        published_signing_key)
+        if sha(published_signing_key) != signing_key['public_key_sha256']:
+            raise ValueError('Copied Windows binary signing key differs from lock')
         (bundle / "native-build.json").write_text(json.dumps({"schema": 1, "files": files,
             "distribution_ready": False,
             "binary_lock_sha256": sha(published_lock),
+            "binary_signature_lock_sha256": sha(published_signature_lock),
             "packages": owners, "system_imports": sorted(system_imports),
-            "scope": "PE import closure, installed notice/attribution sidecars and DLL/build metadata matched to cached MSYS2 archives and reviewed published SHA-256 checksums; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
+            "scope": "PE import closure, installed notice/attribution sidecars and DLL/build metadata matched to cached MSYS2 archives, reviewed SHA-256 checksums and offline package signatures; not full source compliance, independent signer identity or dynamic-load coverage"}, indent=2) + "\n")
         if collect_sources:
             collect(bundle / 'native-build.json', collect_sources, zstd=str(prefix / 'bin/zstd.exe'))
             source_materials = collect_sources

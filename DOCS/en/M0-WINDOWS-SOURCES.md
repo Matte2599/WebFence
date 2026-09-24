@@ -41,6 +41,10 @@ Embedded component/notice mapping, rebuild/replacement environment and instructi
 
 The [evidence ledger](../evidence/windows-signatures-2026-09-24.md) records seven pinned public keys for the eight `SKIP` inputs, including the GCC and PCRE2 signing subkeys. The collector requires GnuPG on PATH, verifies recipe-declared fingerprints and signature/payload offline without executing sources. Complete local collection: **21 archives, 112 verified inputs, zero unverified in the current plan**; regenerated attachment with lock and keys, older collection rejected. **73 local Python tests** and complete collection/attachment trials passed; [CI `2cd9022`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35945996095). Cryptographic validity does not independently identify signers or approve licenses or distribution.
 
+## Signatures of the 22 binary packages
+
+The [22 detached binary signatures](../evidence/windows-binary-signatures-2026-09-24.md) were retrieved from the MSYS2 mirror and verified offline against original archives already bound to the SHA-256 lock. Packaging requires the public key derived from the reviewed MSYS2 keyring package, checks the fingerprint and signature with isolated GnuPG, and retains the lock, key, signatures and per-package evidence in the ZIP. The extracted-ZIP test rechecks bytes and inventory; original binary archives are absent from the ZIP, so cryptographic verification happens during packaging. **77 local Python regressions** and the real 22-archive verification passed; changed-code CI pending. Independent signer identity, key revocation/trust, keyring terms and component licenses still require review.
+
 A [technical ledger of license metadata in all 21 recipes](../evidence/windows-license-metadata-2026-09-24.md) rechecks the archive and 42 `PKGBUILD`/`.SRCINFO` hashes, distinguishes the package-specific `libiconv` field and flags `custom` and compound declarations for review. Recipe metadata does not automatically assign a license to binaries or embedded code; mapping to notices in the ZIP and legal review remain open.
 
 ## Bind binaries to published SHA-256 checksums

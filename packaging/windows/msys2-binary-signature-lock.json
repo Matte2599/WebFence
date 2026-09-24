@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "reviewed_on": "2026-09-24",
+  "key": {
+    "fingerprint": "5F944B027F7FE2091985AA2EFA11531AA0AA7F57",
+    "public_key_file": "binary-signing-keys/5F944B027F7FE2091985AA2EFA11531AA0AA7F57.asc",
+    "public_key_sha256": "1c32ec73f6a89c09f5cd0b23d59727ebc671946e2cf2f3710f61326dee16a49c",
+    "official_key_page": "https://www.msys2.org/dev/keyring/",
+    "keyring_package_url": "https://mirror.msys2.org/msys/x86_64/msys2-keyring-1~20260814-1-any.pkg.tar.zst",
+    "keyring_package_sha256": "a9a02c41bc14eb0965fb23b7e7d43a1d0eb20d9e70cbfeb193fcbf68bb0dc5d0",
+    "keyring_member": "usr/share/pacman/keyrings/msys2.gpg",
+    "keyring_member_sha256": "1257d4ccc536c53333445a618039af4c3ea3f56b96601de9af89151ea529c19a"
+  },
+  "packages": [
+    {
+      "name": "mingw-w64-ucrt-x86_64-brotli",
+      "version": "1.2.0-1",
+      "archive_sha256": "9cc89665496ea504751476eafba15c71c554aaf3004babc2004f7c07ffd60514",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-brotli-1.2.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "7240b29d455849753ee40a1922c46150737ae423e889296a00e8fc3a89fbec5b",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-brotli-1.2.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-bzip2",
+      "version": "1.0.8-4",
+      "archive_sha256": "f03a2174034ddd2d96cecd34f617c5f8e2ef86c812b8d2bb3b8875257f2c8bfa",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-bzip2-1.0.8-4-any.pkg.tar.zst.sig",
+      "signature_sha256": "fa2198d8b839edad658a38a364a90036439ccade817f450085be2a65c0f7fe5b",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-bzip2-1.0.8-4-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-double-conversion",
+      "version": "3.4.0-1",
+      "archive_sha256": "b3abc4326bc695fe97cf29389513badf65a1ac3dc2841c71a1340edd483af17c",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-double-conversion-3.4.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "aacfe0719c01c90cb0e2760463507e99ffd6cc05bc554ec36c057db8c3dac368",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-double-conversion-3.4.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-freetype",
+      "version": "2.14.3-1",
+      "archive_sha256": "f502bdf9ed07aa95e223e1aba17ce8cb2d975aab5066eec17a2d7dc4fb8a1c20",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-freetype-2.14.3-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "c0686c7f4a323b2556a36ea78fc57a648bbe19cab3a236fee354b92338318d71",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-freetype-2.14.3-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-gettext-runtime",
+      "version": "1.0-1",
+      "archive_sha256": "ba693dda4ac375af76ce481ff3a6e7481286546cc7dc6d56c7021dae34084157",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-gettext-runtime-1.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "4754e870d55cacb5e7e3707313b68edb29d2598cc7a1ee399c74715007f38c4d",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-gettext-runtime-1.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-glib2",
+      "version": "2.90.0-1",
+      "archive_sha256": "877259a47d98b73473c5ea0729ad8297ca31a545c41de2b372e726ebed314b1c",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-glib2-2.90.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "f3822d6be05510b1a8b2ab895dd9c349eeda46662a5942adf57f99b52223d0d5",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-glib2-2.90.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-graphite2",
+      "version": "1.3.15-1",
+      "archive_sha256": "34ca1f88bff10ef182a6b1c8e5622d5029f13b05748e361af13b552b422ea849",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-graphite2-1.3.15-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "c9e3dacf81d1bb2926baae8ec2ac0f3836a1681238ce5ba864d5d2ffce8921c2",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-graphite2-1.3.15-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-harfbuzz",
+      "version": "14.5.0-1",
+      "archive_sha256": "e011726c446ad91c28eb8e6d4c456498bf9eae59408c15377d1d4165eb60aa52",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-harfbuzz-14.5.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "52f88a76c0cd58eea0531f86ce986e7ac75b193686593dd39394fa6e340d3a3c",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-harfbuzz-14.5.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-icu",
+      "version": "78.3-4",
+      "archive_sha256": "db9282bbd0a2e74c31d66af6bd89eb68d647a09f721eef4c661768588dca4324",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-icu-78.3-4-any.pkg.tar.zst.sig",
+      "signature_sha256": "468986abd678682c14ff6de77fc716a0a0176db9d39357a537f79b3ae5f774c3",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-icu-78.3-4-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libb2",
+      "version": "0.98.1-3",
+      "archive_sha256": "dfb554635119d3c46adb00c9d0c589bb38d1cb0781b10ecf31de07ce388bd0c0",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libb2-0.98.1-3-any.pkg.tar.zst.sig",
+      "signature_sha256": "fc45f4e1186cc9be0f83faa6310e6f22424e5eb68da8f38247d8c978b0818790",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libb2-0.98.1-3-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libffi",
+      "version": "3.8.0-1",
+      "archive_sha256": "99ad12f4ecfa00a889ef9c5c0188592368a5bac109d0c508ce4e04f29ea95a76",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libffi-3.8.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "a49e13cb3d5030cfcf47b3dc911f4a0937c1e2fb20ee9ec3244a8732047193a8",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libffi-3.8.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libgcc",
+      "version": "16.2.0-4",
+      "archive_sha256": "de65b4adae899d9278427402e29d03860bacba481794460f3a1d078610cbb783",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libgcc-16.2.0-4-any.pkg.tar.zst.sig",
+      "signature_sha256": "8c9ca5809497695399c13331bb92850329658a2f6dfa6b95eeb07f68e0e99081",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libgcc-16.2.0-4-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libiconv",
+      "version": "1.19-1",
+      "archive_sha256": "9a500f38c2b91808741c62fae746b3e9110b33a1ecf5c30fa0c66dbedddf7e16",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libiconv-1.19-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "e18abd753c47dbed046cf619f0855c2bc05ae17a7f3eabba8a2e841478a4f6b2",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libiconv-1.19-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libjpeg-turbo",
+      "version": "3.2.0-1",
+      "archive_sha256": "7c001d00df557cfee969ad43d37b9c31ae22869e8aac4091a89dc3ae6d95e11d",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libjpeg-turbo-3.2.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "aed8e731a0e62326023ebebe6e3830936298289d1d9e08d584b328c657aa0b44",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libjpeg-turbo-3.2.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libpng",
+      "version": "1.6.58-1",
+      "archive_sha256": "bbfb6eb6246b01df90d82d6cff84f0a4e98dad029a4a2753898c96fcaadb66c7",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libpng-1.6.58-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "aeb489876e586c1fd82951f94b6a33149372dedf28ebb2b3b9965408a9a2beb8",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libpng-1.6.58-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libstdc++",
+      "version": "16.2.0-4",
+      "archive_sha256": "2211dbbf1220287e49f5d66bb6cb09ee5a157901a485197553c9a940cc902d5b",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libstdc++-16.2.0-4-any.pkg.tar.zst.sig",
+      "signature_sha256": "c322e067be871c57e0ae9a347a6a0be1e2149d9bda3c47d20db3c8b4f7792977",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libstdc++-16.2.0-4-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-libwinpthread",
+      "version": "14.0.0.r420.g61d40c4c0-1",
+      "archive_sha256": "7357dcd5e1d4044b167d596b89e87bd2bffa55d3a3ddd009a0ac252f51a0d8af",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-libwinpthread-14.0.0.r420.g61d40c4c0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "db564363c8ce4b38407574a07727580645e6ead2f52e1bf2fa11cde29f649bd5",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libwinpthread-14.0.0.r420.g61d40c4c0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-md4c",
+      "version": "0.6.0-1",
+      "archive_sha256": "a8e5aa7b84ba26047dad56301e821fb4efbed4ced9fce83cd86377a175172476",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-md4c-0.6.0-1-any.pkg.tar.zst.sig",
+      "signature_sha256": "2ee65914361394c8a3bdcb25cd4abf9494988e57af2fa7875f5726b2a21cf262",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-md4c-0.6.0-1-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-pcre2",
+      "version": "10.48-3",
+      "archive_sha256": "f1aae310be1c65ec0e2265d283ba01fcf322208bc19c96cfa52801fcc1c11746",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-pcre2-10.48-3-any.pkg.tar.zst.sig",
+      "signature_sha256": "12ffa79b80e7b4bcda87cc4aba433ec4c3919d8d28c8be4111f8253326a6a97e",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-pcre2-10.48-3-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-qt6-base",
+      "version": "6.11.2-2",
+      "archive_sha256": "ccc98698391f78419de72640175508a68b7ba9e25a43a54e01a05b51079ad6a2",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-qt6-base-6.11.2-2-any.pkg.tar.zst.sig",
+      "signature_sha256": "df1cbe5c8f4066f1c47ff8f3024c1ef62f26b95daa90507aebe823e4e5072c8c",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-qt6-base-6.11.2-2-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-zlib",
+      "version": "1.3.2-2",
+      "archive_sha256": "841401182976d2f9e17e5c0ebaac51f2a8014140ea53d67625e91c8fb3c85ea0",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-zlib-1.3.2-2-any.pkg.tar.zst.sig",
+      "signature_sha256": "3c21e4ca62ae9544f37ad41b0910f64d60f4f0c4c4113bc5c9287ce2b6396acb",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-zlib-1.3.2-2-any.pkg.tar.zst.sig"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-zstd",
+      "version": "1.5.7-2",
+      "archive_sha256": "dbdb8427280046a2b41697780aa4c52983b708082b0da4755951dc3bea96ca89",
+      "signature_file": "binary-package-signatures/mingw-w64-ucrt-x86_64-zstd-1.5.7-2-any.pkg.tar.zst.sig",
+      "signature_sha256": "97b4fe48e37ed32bc8a952c01737b6263dceb5a9c2c6f6b3a2def8e22f4e8b35",
+      "signature_size_bytes": 566,
+      "signature_source": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-zstd-1.5.7-2-any.pkg.tar.zst.sig"
+    }
+  ]
+}
