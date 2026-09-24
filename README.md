@@ -10,7 +10,7 @@ Il [primo blocco M1](DOCS/it/M1-PROJECT-AUTHORIZATION.md) aggiunge un modello di
 
 Il [laboratorio M1](DOCS/it/M1-AUTHORIZED-LAB.md) applica quello snapshot al trasporto HTTP solo loopback, anche dopo i redirect e alla scadenza.
 
-Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLite e li rilegge dopo la riapertura; la GUI non lo usa ancora.
+Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLite, migra la v1 alla v2 e registra rinnovi di autorizzazione versionati; la GUI non lo usa ancora.
 
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 

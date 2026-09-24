@@ -18,7 +18,7 @@ import (
 )
 
 const driverName = "webfence-project-store"
-const schemaVersion = 1
+const schemaVersion = 2
 
 // Errors are stable codes and never include a database path or project data.
 var (
@@ -28,6 +28,7 @@ var (
 	ErrCorrupt           = errors.New("storage_corrupt_data")
 	ErrAlreadyExists     = errors.New("storage_project_exists")
 	ErrNotFound          = errors.New("storage_project_not_found")
+	ErrRevisionConflict  = errors.New("storage_revision_conflict")
 )
 
 func init() {
@@ -41,7 +42,7 @@ func init() {
 // must keep the file and its parent directory on a trusted local filesystem.
 type Store struct{ db *sql.DB }
 
-// Open creates a private database file if absent, initializes schema v1, and
+// Open creates a private database file if absent, initializes schema v2, and
 // refuses an unknown future schema or an existing non-WebFence database.
 // The parent directory must already exist; this function never chooses it.
 func Open(ctx context.Context, path string) (*Store, error) {
@@ -131,8 +132,12 @@ func (s *Store) initialize(ctx context.Context) error {
 		if objects != 0 {
 			return ErrUnsupportedSchema
 		}
+	case 1:
+		if err := s.checkTablesV1(ctx); err != nil {
+			return err
+		}
 	case schemaVersion:
-		if err := s.checkTables(ctx); err != nil {
+		if err := s.checkTablesV2(ctx); err != nil {
 			return err
 		}
 	default:
@@ -166,19 +171,65 @@ func (s *Store) initialize(ctx context.Context) error {
 		if _, err := tx.ExecContext(ctx, `CREATE TABLE projects (
 			id TEXT PRIMARY KEY NOT NULL,
 			name TEXT NOT NULL,
+			current_revision INTEGER NOT NULL CHECK (current_revision >= 1)
+		);
+		CREATE TABLE authorization_revisions (
+			project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+			revision INTEGER NOT NULL CHECK (revision >= 1),
 			target_owner TEXT NOT NULL,
 			authorization_reference TEXT NOT NULL,
 			authorization_confirmed INTEGER NOT NULL CHECK (authorization_confirmed = 1),
-			expires_at TEXT NOT NULL
+			expires_at TEXT NOT NULL,
+			PRIMARY KEY (project_id, revision)
 		);
-		CREATE TABLE project_origins (
-			project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+		CREATE TABLE authorization_origins (
+			project_id TEXT NOT NULL,
+			revision INTEGER NOT NULL,
 			position INTEGER NOT NULL CHECK (position >= 0 AND position < 32),
 			origin TEXT NOT NULL,
-			PRIMARY KEY (project_id, position),
-			UNIQUE (project_id, origin)
+			PRIMARY KEY (project_id, revision, position),
+			UNIQUE (project_id, revision, origin),
+			FOREIGN KEY (project_id, revision) REFERENCES authorization_revisions(project_id, revision) ON DELETE CASCADE
 		);
-		PRAGMA user_version = 1`); err != nil {
+		PRAGMA user_version = 2`); err != nil {
+			return storageError(ctx, err)
+		}
+	case 1:
+		// DDL and data copy are one transaction: failure preserves readable v1.
+		if _, err := tx.ExecContext(ctx, `ALTER TABLE projects RENAME TO projects_legacy;
+		CREATE TABLE projects (
+			id TEXT PRIMARY KEY NOT NULL,
+			name TEXT NOT NULL,
+			current_revision INTEGER NOT NULL CHECK (current_revision >= 1)
+		);
+		CREATE TABLE authorization_revisions (
+			project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+			revision INTEGER NOT NULL CHECK (revision >= 1),
+			target_owner TEXT NOT NULL,
+			authorization_reference TEXT NOT NULL,
+			authorization_confirmed INTEGER NOT NULL CHECK (authorization_confirmed = 1),
+			expires_at TEXT NOT NULL,
+			PRIMARY KEY (project_id, revision)
+		);
+		CREATE TABLE authorization_origins (
+			project_id TEXT NOT NULL,
+			revision INTEGER NOT NULL,
+			position INTEGER NOT NULL CHECK (position >= 0 AND position < 32),
+			origin TEXT NOT NULL,
+			PRIMARY KEY (project_id, revision, position),
+			UNIQUE (project_id, revision, origin),
+			FOREIGN KEY (project_id, revision) REFERENCES authorization_revisions(project_id, revision) ON DELETE CASCADE
+		);
+		INSERT INTO projects (id, name, current_revision)
+			SELECT id, name, 1 FROM projects_legacy;
+		INSERT INTO authorization_revisions
+			(project_id, revision, target_owner, authorization_reference, authorization_confirmed, expires_at)
+			SELECT id, 1, target_owner, authorization_reference, authorization_confirmed, expires_at FROM projects_legacy;
+		INSERT INTO authorization_origins (project_id, revision, position, origin)
+			SELECT project_id, 1, position, origin FROM project_origins;
+		DROP TABLE project_origins;
+		DROP TABLE projects_legacy;
+		PRAGMA user_version = 2`); err != nil {
 			return storageError(ctx, err)
 		}
 	case schemaVersion:
@@ -188,7 +239,7 @@ func (s *Store) initialize(ctx context.Context) error {
 	if err := tx.Commit(); err != nil {
 		return storageError(ctx, err)
 	}
-	if err := s.checkTables(ctx); err != nil {
+	if err := s.checkTablesV2(ctx); err != nil {
 		return err
 	}
 	var integrity string
@@ -214,7 +265,7 @@ func (s *Store) initialize(ctx context.Context) error {
 	return nil
 }
 
-func (s *Store) checkTables(ctx context.Context) error {
+func (s *Store) checkTablesV1(ctx context.Context) error {
 	for _, query := range []string{
 		"SELECT id, name, target_owner, authorization_reference, authorization_confirmed, expires_at FROM projects LIMIT 0",
 		"SELECT project_id, position, origin FROM project_origins LIMIT 0",
@@ -259,6 +310,59 @@ func (s *Store) checkTables(ctx context.Context) error {
 	return nil
 }
 
+func (s *Store) checkTablesV2(ctx context.Context) error {
+	for _, query := range []string{
+		"SELECT id, name, current_revision FROM projects LIMIT 0",
+		"SELECT project_id, revision, target_owner, authorization_reference, authorization_confirmed, expires_at FROM authorization_revisions LIMIT 0",
+		"SELECT project_id, revision, position, origin FROM authorization_origins LIMIT 0",
+	} {
+		rows, err := s.db.QueryContext(ctx, query)
+		if err != nil {
+			if ctxErr := ctx.Err(); ctxErr != nil {
+				return ctxErr
+			}
+			return ErrUnsupportedSchema
+		}
+		if err := rows.Close(); err != nil {
+			return storageError(ctx, err)
+		}
+	}
+	for _, table := range []string{"authorization_revisions", "authorization_origins"} {
+		rows, err := s.db.QueryContext(ctx, "PRAGMA foreign_key_list("+table+")")
+		if err != nil {
+			return storageError(ctx, err)
+		}
+		var count int
+		for rows.Next() {
+			var id, seq int
+			var parent, from, to, onUpdate, onDelete, match string
+			if err := rows.Scan(&id, &seq, &parent, &from, &to, &onUpdate, &onDelete, &match); err != nil {
+				_ = rows.Close()
+				return storageError(ctx, err)
+			}
+			if onDelete != "CASCADE" || table == "authorization_revisions" && (parent != "projects" || from != "project_id" || to != "id") ||
+				table == "authorization_origins" && (parent != "authorization_revisions" || from != "project_id" && from != "revision") {
+				_ = rows.Close()
+				return ErrUnsupportedSchema
+			}
+			count++
+		}
+		err = rows.Err()
+		closeErr := rows.Close()
+		if err != nil || closeErr != nil {
+			return storageError(ctx, err)
+		}
+		want := 1
+		if table == "authorization_origins" {
+			want = 2
+		}
+		if count != want {
+			return ErrUnsupportedSchema
+		}
+	}
+	return nil
+}
+
 func storageError(ctx context.Context, err error) error {
 	if ctxErr := ctx.Err(); ctxErr != nil {
 		return ctxErr
@@ -276,14 +380,13 @@ func (s *Store) Close() error {
 	return nil
 }
 
-// CreateProject atomically records one immutable project and its origins.
-// A later authorization renewal will require a separate versioned contract.
+// CreateProject atomically records revision 1 and its origins.
 func (s *Store) CreateProject(ctx context.Context, p project.Project) error {
 	if s == nil || s.db == nil {
 		return ErrUnavailable
 	}
 	d := p.Record()
-	if d.ID == "" {
+	if d.ID == "" || p.Revision() != 1 {
 		return project.ErrInvalidProject
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -291,10 +394,8 @@ func (s *Store) CreateProject(ctx context.Context, p project.Project) error {
 		return storageError(ctx, err)
 	}
 	defer tx.Rollback()
-	_, err = tx.ExecContext(ctx, `INSERT INTO projects
-		(id, name, target_owner, authorization_reference, authorization_confirmed, expires_at)
-		VALUES (?, ?, ?, ?, 1, ?)`, d.ID, d.Name, d.TargetOwner, d.AuthorizationReference,
-		d.AuthorizationExpiresAt.UTC().Format(time.RFC3339Nano))
+	_, err = tx.ExecContext(ctx, `INSERT INTO projects (id, name, current_revision)
+		VALUES (?, ?, 1)`, d.ID, d.Name)
 	if err != nil {
 		var sqliteErr sqlite3.Error
 		if errors.As(err, &sqliteErr) && sqliteErr.Code == sqlite3.ErrConstraint {
@@ -302,16 +403,74 @@ func (s *Store) CreateProject(ctx context.Context, p project.Project) error {
 		}
 		return storageError(ctx, err)
 	}
-	for i, origin := range d.Origins {
-		if _, err := tx.ExecContext(ctx, `INSERT INTO project_origins (project_id, position, origin)
-			VALUES (?, ?, ?)`, d.ID, i, origin); err != nil {
-			return storageError(ctx, err)
-		}
+	if err := insertRevision(ctx, tx, p); err != nil {
+		return err
 	}
 	if err := tx.Commit(); err != nil {
 		return storageError(ctx, err)
 	}
 	return nil
+}
+
+func insertRevision(ctx context.Context, tx *sql.Tx, p project.Project) error {
+	d := p.Record()
+	if _, err := tx.ExecContext(ctx, `INSERT INTO authorization_revisions
+		(project_id, revision, target_owner, authorization_reference, authorization_confirmed, expires_at)
+		VALUES (?, ?, ?, ?, 1, ?)`, d.ID, p.Revision(), d.TargetOwner,
+		d.AuthorizationReference, d.AuthorizationExpiresAt.UTC().Format(time.RFC3339Nano)); err != nil {
+		return storageError(ctx, err)
+	}
+	for i, origin := range d.Origins {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO authorization_origins (project_id, revision, position, origin)
+			VALUES (?, ?, ?, ?)`, d.ID, p.Revision(), i, origin); err != nil {
+			return storageError(ctx, err)
+		}
+	}
+	return nil
+}
+
+// ReviseAuthorization atomically stores a fresh declaration and moves the
+// current pointer only when the caller saw the expected revision. An expired
+// project can be renewed, but the new declaration itself must be unexpired.
+func (s *Store) ReviseAuthorization(ctx context.Context, id string, expectedRevision uint64, change project.AuthorizationDraft) (project.Project, error) {
+	if s == nil || s.db == nil {
+		return project.Project{}, ErrUnavailable
+	}
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return project.Project{}, storageError(ctx, err)
+	}
+	defer tx.Rollback()
+	current, err := loadProject(ctx, tx, id)
+	if err != nil {
+		return project.Project{}, err
+	}
+	if current.Revision() != expectedRevision {
+		return project.Project{}, ErrRevisionConflict
+	}
+	next, err := current.ReviseAuthorization(change)
+	if err != nil {
+		return project.Project{}, err
+	}
+	if err := insertRevision(ctx, tx, next); err != nil {
+		return project.Project{}, err
+	}
+	result, err := tx.ExecContext(ctx, `UPDATE projects SET current_revision = ?
+		WHERE id = ? AND current_revision = ?`, next.Revision(), id, expectedRevision)
+	if err != nil {
+		return project.Project{}, storageError(ctx, err)
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return project.Project{}, storageError(ctx, err)
+	}
+	if count != 1 {
+		return project.Project{}, ErrRevisionConflict
+	}
+	if err := tx.Commit(); err != nil {
+		return project.Project{}, storageError(ctx, err)
+	}
+	return next, nil
 }
 
 // LoadProject returns a complete immutable project even after authorization
@@ -336,48 +495,165 @@ func (s *Store) LoadProject(ctx context.Context, id string) (project.Project, er
 }
 
 func loadProject(ctx context.Context, tx *sql.Tx, id string) (project.Project, error) {
-	d := project.Draft{ID: id}
-	var expiry string
-	var confirmed int
-	err := tx.QueryRowContext(ctx, `SELECT name, target_owner, authorization_reference,
-		authorization_confirmed, expires_at FROM projects WHERE id = ?`, id).
-		Scan(&d.Name, &d.TargetOwner, &d.AuthorizationReference, &confirmed, &expiry)
+	var name string
+	var revision int64
+	err := tx.QueryRowContext(ctx, `SELECT name, current_revision FROM projects WHERE id = ?`, id).
+		Scan(&name, &revision)
 	if errors.Is(err, sql.ErrNoRows) {
 		return project.Project{}, ErrNotFound
 	}
 	if err != nil {
 		return project.Project{}, storageError(ctx, err)
 	}
-	if confirmed != 1 {
+	if revision < 1 {
 		return project.Project{}, ErrCorrupt
+	}
+	var latest sql.NullInt64
+	if err := tx.QueryRowContext(ctx, `SELECT max(revision) FROM authorization_revisions WHERE project_id = ?`, id).Scan(&latest); err != nil {
+		return project.Project{}, storageError(ctx, err)
+	}
+	if !latest.Valid || latest.Int64 != revision {
+		return project.Project{}, ErrCorrupt
+	}
+	d, err := loadRevision(ctx, tx, id, uint64(revision))
+	if errors.Is(err, ErrNotFound) {
+		return project.Project{}, ErrCorrupt
+	}
+	if err != nil {
+		return project.Project{}, err
+	}
+	d.Name = name
+	p, err := project.RestoreRevision(d, uint64(revision))
+	if err != nil {
+		return project.Project{}, ErrCorrupt
+	}
+	return p, nil
+}
+
+func loadRevision(ctx context.Context, tx *sql.Tx, id string, revision uint64) (project.Draft, error) {
+	d := project.Draft{ID: id}
+	var expiry string
+	var confirmed int
+	err := tx.QueryRowContext(ctx, `SELECT target_owner, authorization_reference,
+		authorization_confirmed, expires_at FROM authorization_revisions
+		WHERE project_id = ? AND revision = ?`, id, revision).
+		Scan(&d.TargetOwner, &d.AuthorizationReference, &confirmed, &expiry)
+	if errors.Is(err, sql.ErrNoRows) {
+		return project.Draft{}, ErrNotFound
+	}
+	if err != nil {
+		return project.Draft{}, storageError(ctx, err)
+	}
+	if confirmed != 1 {
+		return project.Draft{}, ErrCorrupt
 	}
 	d.AuthorizationConfirmed = true
 	d.AuthorizationExpiresAt, err = time.Parse(time.RFC3339Nano, expiry)
 	if err != nil {
-		return project.Project{}, ErrCorrupt
+		return project.Draft{}, ErrCorrupt
 	}
-	rows, err := tx.QueryContext(ctx, `SELECT origin FROM project_origins WHERE project_id = ? ORDER BY position`, id)
+	rows, err := tx.QueryContext(ctx, `SELECT origin FROM authorization_origins
+		WHERE project_id = ? AND revision = ? ORDER BY position`, id, revision)
 	if err != nil {
-		return project.Project{}, storageError(ctx, err)
+		return project.Draft{}, storageError(ctx, err)
 	}
 	for rows.Next() {
 		var origin string
 		if err := rows.Scan(&origin); err != nil {
 			_ = rows.Close()
-			return project.Project{}, storageError(ctx, err)
+			return project.Draft{}, storageError(ctx, err)
 		}
 		d.Origins = append(d.Origins, origin)
 	}
 	err = rows.Err()
 	closeErr := rows.Close()
 	if err != nil || closeErr != nil {
-		return project.Project{}, storageError(ctx, err)
+		return project.Draft{}, storageError(ctx, err)
 	}
-	p, err := project.Restore(d)
+	return d, nil
+}
+
+// AuthorizationRevision is descriptive audit data, not a runnable scope.
+type AuthorizationRevision struct {
+	Revision               uint64
+	TargetOwner            string
+	AuthorizationReference string
+	ExpiresAt              time.Time
+	Origins                []string
+}
+
+// ListAuthorizationRevisions returns validated history in revision order.
+// Only LoadProject returns the current revision for starting a new run.
+func (s *Store) ListAuthorizationRevisions(ctx context.Context, id string) ([]AuthorizationRevision, error) {
+	if s == nil || s.db == nil {
+		return nil, ErrUnavailable
+	}
+	tx, err := s.db.BeginTx(ctx, &sql.TxOptions{ReadOnly: true})
 	if err != nil {
-		return project.Project{}, ErrCorrupt
+		return nil, storageError(ctx, err)
 	}
-	return p, nil
+	defer tx.Rollback()
+	var name string
+	var currentRevision int64
+	if err := tx.QueryRowContext(ctx, `SELECT name, current_revision FROM projects WHERE id = ?`, id).Scan(&name, &currentRevision); errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrNotFound
+	} else if err != nil {
+		return nil, storageError(ctx, err)
+	}
+	rows, err := tx.QueryContext(ctx, `SELECT revision FROM authorization_revisions WHERE project_id = ? ORDER BY revision`, id)
+	if err != nil {
+		return nil, storageError(ctx, err)
+	}
+	var revisions []uint64
+	for rows.Next() {
+		var revision int64
+		if err := rows.Scan(&revision); err != nil {
+			_ = rows.Close()
+			return nil, storageError(ctx, err)
+		}
+		if revision < 1 {
+			_ = rows.Close()
+			return nil, ErrCorrupt
+		}
+		revisions = append(revisions, uint64(revision))
+	}
+	err = rows.Err()
+	closeErr := rows.Close()
+	if err != nil || closeErr != nil {
+		return nil, storageError(ctx, err)
+	}
+	if len(revisions) == 0 {
+		return nil, ErrCorrupt
+	}
+	if revisions[len(revisions)-1] != uint64(currentRevision) {
+		return nil, ErrCorrupt
+	}
+	for i, revision := range revisions {
+		if revision != uint64(i+1) {
+			return nil, ErrCorrupt
+		}
+	}
+	result := make([]AuthorizationRevision, 0, len(revisions))
+	for _, revision := range revisions {
+		d, err := loadRevision(ctx, tx, id, revision)
+		if err != nil {
+			return nil, err
+		}
+		d.Name = name
+		p, err := project.RestoreRevision(d, revision)
+		if err != nil {
+			return nil, ErrCorrupt
+		}
+		result = append(result, AuthorizationRevision{
+			Revision: revision, TargetOwner: d.TargetOwner,
+			AuthorizationReference: d.AuthorizationReference,
+			ExpiresAt:              d.AuthorizationExpiresAt, Origins: p.Origins(),
+		})
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, storageError(ctx, err)
+	}
+	return result, nil
 }
 
 // ListProjects reads one consistent snapshot in ID order.
@@ -422,7 +698,7 @@ func (s *Store) ListProjects(ctx context.Context) ([]project.Project, error) {
 	return projects, nil
 }
 
-// DeleteProject removes only this schema's project metadata and origins.
+// DeleteProject removes this schema's project metadata and revision history.
 // It is not secure erasure of SQLite pages, WAL, backups or future artifacts.
 func (s *Store) DeleteProject(ctx context.Context, id string) error {
 	if s == nil || s.db == nil {

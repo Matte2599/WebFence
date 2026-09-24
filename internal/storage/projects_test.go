@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/Matte2599/WebFence/internal/project"
+	"github.com/Matte2599/WebFence/internal/scope"
 )
 
 func syntheticProject(t *testing.T, id string, origins []string) project.Project {
@@ -88,7 +89,7 @@ func TestProjectStoreReopenListAndDelete(t *testing.T) {
 		t.Fatalf("deleted project was loaded: %v", err)
 	}
 	var childCount int
-	if err := s.db.QueryRowContext(t.Context(), "SELECT count(*) FROM project_origins WHERE project_id = ?", first.ID()).Scan(&childCount); err != nil || childCount != 0 {
+	if err := s.db.QueryRowContext(t.Context(), "SELECT count(*) FROM authorization_revisions WHERE project_id = ?", first.ID()).Scan(&childCount); err != nil || childCount != 0 {
 		t.Fatalf("origins remained after delete: count=%d err=%v", childCount, err)
 	}
 	if err := s.DeleteProject(t.Context(), first.ID()); !errors.Is(err, ErrNotFound) {
@@ -128,7 +129,7 @@ func TestExpiredProjectRemainsReadableButCannotRun(t *testing.T) {
 
 func TestCreateRollbackAfterOriginFailure(t *testing.T) {
 	s := openFixture(t, filepath.Join(t.TempDir(), "rollback.sqlite"))
-	_, err := s.db.ExecContext(t.Context(), `CREATE TRIGGER fail_second_origin BEFORE INSERT ON project_origins
+	_, err := s.db.ExecContext(t.Context(), `CREATE TRIGGER fail_second_origin BEFORE INSERT ON authorization_origins
 		WHEN NEW.position = 1 BEGIN SELECT RAISE(ABORT, 'synthetic failure'); END`)
 	if err != nil {
 		t.Fatal(err)
@@ -226,7 +227,7 @@ func TestCorruptProjectRecordIsNeverAuthorized(t *testing.T) {
 	if err := s.CreateProject(t.Context(), p); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := s.db.ExecContext(t.Context(), "UPDATE project_origins SET origin = ? WHERE project_id = ?", "https://outside.invalid/path", p.ID()); err != nil {
+	if _, err := s.db.ExecContext(t.Context(), "UPDATE authorization_origins SET origin = ? WHERE project_id = ?", "https://outside.invalid/path", p.ID()); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := s.LoadProject(t.Context(), p.ID()); !errors.Is(err, ErrCorrupt) {
@@ -251,5 +252,194 @@ func TestOpenAndCreateHonorCancellation(t *testing.T) {
 	}
 	if _, err := s.LoadProject(t.Context(), p.ID()); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("canceled create persisted data: %v", err)
+	}
+}
+
+func TestRenewalIsAtomicVersionedAndDoesNotWidenRunningScope(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "renewal.sqlite")
+	s := openFixture(t, path)
+	old := syntheticProject(t, "renewal", []string{"https://old.invalid"})
+	if err := s.CreateProject(t.Context(), old); err != nil {
+		t.Fatal(err)
+	}
+	running, err := old.BeginRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	change := project.AuthorizationDraft{
+		TargetOwner: "New fixture owner", AuthorizationReference: "renewal-2",
+		AuthorizationConfirmed: true, AuthorizationExpiresAt: time.Now().Add(2 * time.Hour),
+		Origins: []string{"https://new.invalid"},
+	}
+	next, err := s.ReviseAuthorization(t.Context(), old.ID(), 1, change)
+	if err != nil || next.Revision() != 2 {
+		t.Fatalf("renewal: revision=%d err=%v", next.Revision(), err)
+	}
+	if _, err := s.ReviseAuthorization(t.Context(), old.ID(), 1, change); !errors.Is(err, ErrRevisionConflict) {
+		t.Fatalf("stale revision accepted: %v", err)
+	}
+	if _, err := running.CheckOrigin("https://new.invalid"); !errors.Is(err, scope.ErrOutOfScope) {
+		t.Fatalf("running revision acquired new origin: %v", err)
+	}
+	if _, err := running.CheckOrigin("https://old.invalid"); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.Close(); err != nil {
+		t.Fatal(err)
+	}
+	s = openFixture(t, path)
+	current, err := s.LoadProject(t.Context(), old.ID())
+	if err != nil || current.Revision() != 2 || current.Record().AuthorizationReference != "renewal-2" {
+		t.Fatalf("current revision after reopen: %+v %v", current.Record(), err)
+	}
+	currentRun, err := current.BeginRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := currentRun.CheckOrigin("https://new.invalid"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := currentRun.CheckOrigin("https://old.invalid"); !errors.Is(err, scope.ErrOutOfScope) {
+		t.Fatalf("removed origin still in current scope: %v", err)
+	}
+	history, err := s.ListAuthorizationRevisions(t.Context(), old.ID())
+	if err != nil || len(history) != 2 || history[0].Revision != 1 || history[1].Revision != 2 ||
+		history[0].Origins[0] != "https://old.invalid:443" || history[1].Origins[0] != "https://new.invalid:443" {
+		t.Fatalf("revision history: %+v %v", history, err)
+	}
+	if err := s.DeleteProject(t.Context(), old.ID()); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.ListAuthorizationRevisions(t.Context(), old.ID()); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("deleted history remained: %v", err)
+	}
+}
+
+func TestExpiredAuthorizationCanBeRenewedButNotExtendedWithoutConfirmation(t *testing.T) {
+	s := openFixture(t, filepath.Join(t.TempDir(), "expired-renewal.sqlite"))
+	p, err := project.Restore(project.Draft{
+		ID: "expired-renewal", Name: "Expired fixture", TargetOwner: "Fixture owner",
+		AuthorizationReference: "old approval", AuthorizationConfirmed: true,
+		AuthorizationExpiresAt: time.Now().Add(-time.Hour), Origins: []string{"https://old.invalid"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.CreateProject(t.Context(), p); err != nil {
+		t.Fatal(err)
+	}
+	change := project.AuthorizationDraft{
+		TargetOwner: "Fixture owner", AuthorizationReference: "new approval",
+		AuthorizationExpiresAt: time.Now().Add(time.Hour), Origins: []string{"https://new.invalid"},
+	}
+	if _, err := s.ReviseAuthorization(t.Context(), p.ID(), 1, change); !errors.Is(err, project.ErrAuthorizationMissing) {
+		t.Fatalf("unconfirmed renewal accepted: %v", err)
+	}
+	change.AuthorizationConfirmed = true
+	change.AuthorizationExpiresAt = time.Now().Add(-time.Hour)
+	if _, err := s.ReviseAuthorization(t.Context(), p.ID(), 1, change); !errors.Is(err, project.ErrAuthorizationExpired) {
+		t.Fatalf("already expired renewal accepted: %v", err)
+	}
+	change.AuthorizationExpiresAt = time.Now().Add(time.Hour)
+	if _, err := s.ReviseAuthorization(t.Context(), p.ID(), 1, change); err != nil {
+		t.Fatal(err)
+	}
+	loaded, err := s.LoadProject(t.Context(), p.ID())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := loaded.BeginRun(); err != nil {
+		t.Fatalf("renewed project cannot run: %v", err)
+	}
+}
+
+func TestRevisionRollbackWhenOriginWriteFails(t *testing.T) {
+	s := openFixture(t, filepath.Join(t.TempDir(), "revision-rollback.sqlite"))
+	p := syntheticProject(t, "revision-rollback", []string{"https://old.invalid"})
+	if err := s.CreateProject(t.Context(), p); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.db.ExecContext(t.Context(), `CREATE TRIGGER fail_revised_origin BEFORE INSERT ON authorization_origins
+		WHEN NEW.revision = 2 AND NEW.position = 1 BEGIN SELECT RAISE(ABORT, 'synthetic failure'); END`); err != nil {
+		t.Fatal(err)
+	}
+	change := project.AuthorizationDraft{
+		TargetOwner: "Fixture owner", AuthorizationReference: "new approval", AuthorizationConfirmed: true,
+		AuthorizationExpiresAt: time.Now().Add(time.Hour), Origins: []string{"https://first.invalid", "https://second.invalid"},
+	}
+	if _, err := s.ReviseAuthorization(t.Context(), p.ID(), 1, change); !errors.Is(err, ErrUnavailable) {
+		t.Fatalf("origin write failure: %v", err)
+	}
+	current, err := s.LoadProject(t.Context(), p.ID())
+	if err != nil || current.Revision() != 1 {
+		t.Fatalf("partial revision survived: %d %v", current.Revision(), err)
+	}
+	var count int
+	if err := s.db.QueryRowContext(t.Context(), `SELECT count(*) FROM authorization_revisions WHERE project_id = ?`, p.ID()).Scan(&count); err != nil || count != 1 {
+		t.Fatalf("partial history survived: count=%d err=%v", count, err)
+	}
+}
+
+func TestV1ProjectStoreMigratesToRevisionOne(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "v1.sqlite")
+	db, err := sql.Open("sqlite3", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = db.ExecContext(t.Context(), `CREATE TABLE projects (
+		id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL, target_owner TEXT NOT NULL,
+		authorization_reference TEXT NOT NULL, authorization_confirmed INTEGER NOT NULL CHECK (authorization_confirmed = 1),
+		expires_at TEXT NOT NULL);
+		CREATE TABLE project_origins (
+		project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+		position INTEGER NOT NULL CHECK (position >= 0 AND position < 32), origin TEXT NOT NULL,
+		PRIMARY KEY (project_id, position), UNIQUE (project_id, origin));
+		INSERT INTO projects VALUES ('migrated', 'Migrated fixture', 'Fixture owner', 'v1 approval', 1, '2027-01-01T00:00:00Z');
+		INSERT INTO project_origins VALUES ('migrated', 0, 'https://lab.invalid:443');
+		PRAGMA user_version = 1`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(path, 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	s := openFixture(t, path)
+	loaded, err := s.LoadProject(t.Context(), "migrated")
+	if err != nil || loaded.Revision() != 1 || loaded.Record().AuthorizationReference != "v1 approval" {
+		t.Fatalf("migrated project: %+v %v", loaded.Record(), err)
+	}
+	var version int
+	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 2 {
+		t.Fatalf("schema version after migration: %d %v", version, err)
+	}
+	history, err := s.ListAuthorizationRevisions(t.Context(), "migrated")
+	if err != nil || len(history) != 1 || history[0].Origins[0] != "https://lab.invalid:443" {
+		t.Fatalf("migrated history: %+v %v", history, err)
+	}
+}
+
+func TestRevisionPointerRollbackIsRejected(t *testing.T) {
+	s := openFixture(t, filepath.Join(t.TempDir(), "pointer.sqlite"))
+	p := syntheticProject(t, "pointer", []string{"https://old.invalid"})
+	if err := s.CreateProject(t.Context(), p); err != nil {
+		t.Fatal(err)
+	}
+	_, err := s.ReviseAuthorization(t.Context(), p.ID(), 1, project.AuthorizationDraft{
+		TargetOwner: "Fixture owner", AuthorizationReference: "new approval", AuthorizationConfirmed: true,
+		AuthorizationExpiresAt: time.Now().Add(time.Hour), Origins: []string{"https://new.invalid"},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.db.ExecContext(t.Context(), `UPDATE projects SET current_revision = 1 WHERE id = ?`, p.ID()); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.LoadProject(t.Context(), p.ID()); !errors.Is(err, ErrCorrupt) {
+		t.Fatalf("rolled-back pointer accepted: %v", err)
 	}
 }

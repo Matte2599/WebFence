@@ -133,3 +133,51 @@ func TestDraftRequiresExplicitBoundedClaim(t *testing.T) {
 		})
 	}
 }
+
+func TestAuthorizationRevisionKeepsPreviousRunSnapshot(t *testing.T) {
+	base := fixture(time.Now())
+	old, err := New(base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	run, err := old.BeginRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	change := AuthorizationDraft{
+		TargetOwner: "New fixture owner", AuthorizationReference: "renewal-2",
+		AuthorizationConfirmed: true, AuthorizationExpiresAt: time.Now().Add(2 * time.Hour),
+		Origins: []string{"https://new.invalid"},
+	}
+	next, err := old.ReviseAuthorization(change)
+	if err != nil {
+		t.Fatal(err)
+	}
+	change.Origins[0] = "https://mutated.invalid"
+	if old.Revision() != 1 || run.Revision() != 1 || next.Revision() != 2 {
+		t.Fatal("revision identity changed or was lost")
+	}
+	if _, err := run.CheckOrigin("https://new.invalid"); !errors.Is(err, scope.ErrOutOfScope) {
+		t.Fatalf("prior run acquired new origin: %v", err)
+	}
+	if _, err := run.CheckOrigin("https://lab.invalid"); err != nil {
+		t.Fatalf("prior run lost its original origin: %v", err)
+	}
+	nextRun, err := next.BeginRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := nextRun.CheckOrigin("https://new.invalid"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := nextRun.CheckOrigin("https://lab.invalid"); !errors.Is(err, scope.ErrOutOfScope) {
+		t.Fatalf("new revision kept removed origin: %v", err)
+	}
+	change.AuthorizationConfirmed = false
+	if _, err := next.ReviseAuthorization(change); !errors.Is(err, ErrAuthorizationMissing) {
+		t.Fatalf("unconfirmed revision accepted: %v", err)
+	}
+	if _, err := RestoreRevision(base, 0); !errors.Is(err, ErrInvalidProject) {
+		t.Fatalf("invalid revision restored: %v", err)
+	}
+}

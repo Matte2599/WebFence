@@ -10,7 +10,7 @@ The [first M1 block](DOCS/en/M1-PROJECT-AUTHORIZATION.md) adds a project model a
 
 The [M1 lab](DOCS/en/M1-AUTHORIZED-LAB.md) enforces that snapshot in the loopback-only HTTP transport, including after redirects and at expiry.
 
-The [M1 project store](DOCS/en/M1-PROJECT-STORE.md) keeps metadata in SQLite and reloads it after reopening; the GUI does not use it yet.
+The [M1 project store](DOCS/en/M1-PROJECT-STORE.md) keeps metadata in SQLite, migrates v1 to v2 and records versioned authorization renewals; the GUI does not use it yet.
 
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 
