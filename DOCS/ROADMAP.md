@@ -100,6 +100,8 @@ Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/wind
 
 [CI `41256ae`, sette job verdi](https://github.com/Matte2599/WebFence/actions/runs/35956499419): introdotto runner Apple Silicon macOS 26; build, bundle, Cocoa, sostituzione plugin e sorgenti superati su macOS 15 e 26. La diagnostica AX **non bloccante fallisce su entrambi**: riga ripristinata invalida su 15, titolo ID vuoto dopo filtro a una riga su 26. Il precedente passaggio AX su 15 non è costante. [Dettagli e prossima verifica](evidence/macos-ax-table-reset-2026-09-24.md). M0-01 resta aperto; i sette job verdi non certificano l'accessibilità.
 
+[Diagnostica ripetuta `b66aefd`](evidence/macos-ax-table-reset-2026-09-24.md): su macOS 15 quattro stadi falliscono in tre cicli, su 26 sei; gli snapshot mostrano `AXError -25202` su righe/celle. In prova locale il filtro usa ora un modello sorgente stabile e un proxy che emette rimozioni/inserimenti di righe, senza reset completo a ogni ricerca. Go, race, vet, self-test e soak offscreen passano; efficacia AX nativa ancora da verificare su un nuovo bundle. La cache Go CI distingue le immagini macOS 15/26. M0-01 resta parziale, come M0-02 e M0-06; M0-03/04/05 sono completi secondo la [matrice](it/M0-VALIDATION.md).
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -266,6 +268,8 @@ Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-
 [Cocoa AX diagnostic](evidence/macos-ax-table-reset-2026-09-24.md): the Swift test in `4635117` checks row role and cells after 10,000 → 1 → 0 → 10,000 and compiles locally; CI runs it without blocking other jobs and distinguishes absent AX permission from an app defect. The [macOS 15 and five other jobs](https://github.com/Matte2599/WebFence/actions/runs/35954825284) passed; the AX step actually passed all four stages. [New clean local `d92c20e` bundle](evidence/macos-current-bundle-2026-09-24.md) with native materials/associated ZIP: signing, linkage and soak passed; focus self-test and AX require an unlocked Mac. M0-01/02 unchanged.
 
 [CI `41256ae`, seven passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35956499419): an Apple Silicon macOS 26 runner now exercises build, bundle, Cocoa, plugin replacement and sources alongside macOS 15. The **nonblocking AX diagnostic fails on both**: an invalid restored row on 15 and an empty ID title after filtering to one row on 26. The earlier macOS 15 AX pass is not consistent. [Evidence and next check](evidence/macos-ax-table-reset-2026-09-24.md). M0-01 remains open; seven green jobs do not certify accessibility.
+
+[Repeated diagnostic `b66aefd`](evidence/macos-ax-table-reset-2026-09-24.md): on macOS 15 four stages fail across three cycles and on 26 six; snapshots show `AXError -25202` for rows/cells. In a local trial filtering now uses a stable source model and a proxy that emits row removal/insertion, without a full reset on every query. Go, race, vet, offscreen self-test and soak pass; native AX efficacy still needs a new-bundle trial. CI Go cache distinguishes macOS 15/26 runner images. M0-01 remains partial, as do M0-02 and M0-06; M0-03/04/05 are complete in the [matrix](en/M0-VALIDATION.md).
 
 ### M1 — Controlled traditional alpha
 

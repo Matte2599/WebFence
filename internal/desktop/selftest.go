@@ -62,6 +62,8 @@ func selfTest(w *workspace) int {
 		}
 		check(table.RowCount() == len(w.visible) && table.ColumnCount() == 4, "Qt accessible dimensions: "+stage)
 		if len(w.visible) > 0 {
+			first := table.CellAt(0, 0)
+			check(first != nil && first.Text(qt.QAccessible__Name) == w.visible[0].ID, "Qt accessible first ID: "+stage)
 			row := len(w.visible) - 1
 			cell := table.CellAt(row, 0)
 			check(cell != nil && cell.Text(qt.QAccessible__Name) == w.visible[row].ID, "Qt accessible last ID: "+stage)
@@ -77,6 +79,10 @@ func selfTest(w *workspace) int {
 	fmt.Printf("load_10000_ms=%.3f\n", float64(time.Since(start).Microseconds())/1000)
 	check(len(w.visible) == 10000, "10000 rows loaded")
 	checkAccessible("loaded")
+	proxyResets, removedRows, insertedRows := 0, 0, 0
+	w.proxy.OnModelReset(func() { proxyResets++ })
+	w.proxy.OnRowsRemoved(func(parent *qt.QModelIndex, first, last int) { removedRows += last - first + 1 })
+	w.proxy.OnRowsInserted(func(parent *qt.QModelIndex, first, last int) { insertedRows += last - first + 1 })
 	parent := qt.NewQModelIndex()
 	defer parent.Delete()
 	// Rendering/accessibility can request the same model data repeatedly.
@@ -173,6 +179,7 @@ func selfTest(w *workspace) int {
 	w.resultsAction.Trigger()
 	check(w.selectedID == "DEMO-00001", "results action selects first row when none selected")
 	checkAccessible("restored")
+	check(proxyResets == 0 && removedRows > 0 && insertedRows > 0, "filter changes emit row deltas without model reset")
 	pressTab(false)
 	check(w.summary.HasFocus(), "Tab leaves results for summary")
 	pressTab(false)

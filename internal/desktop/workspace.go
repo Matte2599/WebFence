@@ -13,6 +13,7 @@ type workspace struct {
 	copyEvidence                  func(string)
 	window                        *qt.QMainWindow
 	model                         *qt.QAbstractTableModel
+	proxy                         *qt.QSortFilterProxyModel
 	table                         *qt.QTableView
 	search                        *qt.QLineEdit
 	language, severity            *qt.QComboBox
@@ -31,6 +32,8 @@ type workspace struct {
 	preferencePath     string
 	preferenceError    bool
 	rows, visible      []demo.Record
+	allowed            map[string]struct{}
+	filtering          bool
 	selectedID, locale string
 	variants           map[string]*qt.QVariant
 	emptyVariant       *qt.QVariant
@@ -51,6 +54,7 @@ func (w *workspace) variant(value string) *qt.QVariant {
 func (w *workspace) dispose() {
 	w.window.Close()
 	w.window.Delete()
+	w.proxy.Delete()
 	w.model.Delete()
 	for _, v := range w.variants {
 		v.Delete()
@@ -132,7 +136,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		if parent.IsValid() {
 			return 0
 		}
-		return len(w.visible)
+		return len(w.rows)
 	})
 	w.model.OnColumnCount(func(parent *qt.QModelIndex) int {
 		if parent.IsValid() {
@@ -141,13 +145,13 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		return 4
 	})
 	w.model.OnData(func(idx *qt.QModelIndex, role int) *qt.QVariant {
-		if !idx.IsValid() || idx.Row() < 0 || idx.Row() >= len(w.visible) || idx.Column() < 0 || idx.Column() > 3 {
+		if !idx.IsValid() || idx.Row() < 0 || idx.Row() >= len(w.rows) || idx.Column() < 0 || idx.Column() > 3 {
 			return w.emptyVariant
 		}
 		if role != int(qt.DisplayRole) && role != int(qt.AccessibleTextRole) {
 			return w.emptyVariant
 		}
-		r := w.visible[idx.Row()]
+		r := w.rows[idx.Row()]
 		values := []string{r.ID, w.tr(r.Severity), r.Path, w.tr("synthetic")}
 		return w.variant(values[idx.Column()])
 	})
@@ -157,8 +161,19 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		}
 		return w.emptyVariant
 	})
+	// Keep the source model stable while the user filters. The proxy emits row
+	// changes to Qt's accessibility bridge instead of a full model reset.
+	w.proxy = qt.NewQSortFilterProxyModel()
+	w.proxy.OnFilterAcceptsRow(func(super func(int, *qt.QModelIndex) bool, sourceRow int, parent *qt.QModelIndex) bool {
+		if parent.IsValid() || sourceRow < 0 || sourceRow >= len(w.rows) {
+			return false
+		}
+		_, ok := w.allowed[w.rows[sourceRow].ID]
+		return ok
+	})
+	w.proxy.SetSourceModel(w.model.QAbstractItemModel)
 	w.table = qt.NewQTableView2()
-	w.table.SetModel(w.model.QAbstractItemModel)
+	w.table.SetModel(w.proxy.QAbstractItemModel)
 	w.table.SetSelectionBehavior(qt.QAbstractItemView__SelectRows)
 	w.table.SetSelectionMode(qt.QAbstractItemView__SingleSelection)
 	w.table.SetEditTriggers(qt.QAbstractItemView__NoEditTriggers)
@@ -219,8 +234,8 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	w.fileMenu.AddSeparator()
 	w.quitAction = w.fileMenu.AddActionWithText("")
 	w.quitAction.SetShortcutsWithShortcuts(qt.QKeySequence__Quit)
-	load := func() { w.rows = demo.Records(); w.filter() }
-	clear := func() { w.rows = nil; w.filter() }
+	load := func() { w.replaceRows(demo.Records()) }
+	clear := func() { w.replaceRows(nil) }
 	w.load.OnClicked(load)
 	w.loadAction.OnTriggered(load)
 	w.clear.OnClicked(clear)
@@ -289,6 +304,9 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		qt.QWidget_SetTabOrder(chain[i-1], chain[i])
 	}
 	w.table.SelectionModel().OnCurrentRowChanged(func(current, previous *qt.QModelIndex) {
+		if w.filtering {
+			return
+		}
 		if current.IsValid() && current.Row() >= 0 && current.Row() < len(w.visible) {
 			w.selectedID = w.visible[current.Row()].ID
 		} else {
@@ -334,10 +352,10 @@ func (w *workspace) translate() {
 	w.advancedAction.SetText(w.tr("advanced"))
 	// Translation changes data, not row identity or model structure.
 	w.model.HeaderDataChanged(qt.Horizontal, 0, 3)
-	if len(w.visible) > 0 {
+	if len(w.rows) > 0 {
 		parent := qt.NewQModelIndex()
 		first := w.model.Index(0, 0, parent)
-		last := w.model.Index(len(w.visible)-1, 3, parent)
+		last := w.model.Index(len(w.rows)-1, 3, parent)
 		w.model.DataChanged2(first, last, []int{int(qt.DisplayRole), int(qt.AccessibleTextRole)})
 		// Index() returns value wrappers already managed by MIQT finalizers.
 		parent.Delete()
@@ -347,9 +365,35 @@ func (w *workspace) translate() {
 
 func (w *workspace) filter() {
 	id := w.selectedID
+	w.setVisible(demo.Filter(w.rows, w.search.Text(), []string{"", "info", "low", "medium"}[w.severity.CurrentIndex()]))
+	w.proxy.InvalidateRowsFilter()
+	w.filtering = false
+	w.restoreSelection(id)
+}
+
+func (w *workspace) replaceRows(rows []demo.Record) {
+	id := w.selectedID
+	w.filtering = true
 	w.model.BeginResetModel()
-	w.visible = demo.Filter(w.rows, w.search.Text(), []string{"", "info", "low", "medium"}[w.severity.CurrentIndex()])
+	w.rows = rows
+	w.setVisible(demo.Filter(rows, w.search.Text(), []string{"", "info", "low", "medium"}[w.severity.CurrentIndex()]))
 	w.model.EndResetModel()
+	w.filtering = false
+	w.restoreSelection(id)
+}
+
+func (w *workspace) setVisible(rows []demo.Record) {
+	w.filtering = true
+	w.visible = rows
+	// Synthetic fixture IDs are unique; this mirrors demo.Filter without doing
+	// the string work once per Qt filter callback.
+	w.allowed = make(map[string]struct{}, len(rows))
+	for _, row := range rows {
+		w.allowed[row.ID] = struct{}{}
+	}
+}
+
+func (w *workspace) restoreSelection(id string) {
 	w.selectedID = ""
 	for i, r := range w.visible {
 		if r.ID == id {
