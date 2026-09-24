@@ -29,6 +29,8 @@ M0-02, Windows source signatures: [eight detached signatures verified offline](.
 
 M0-02, Windows binary signatures: [22 detached signatures verified offline](../evidence/windows-binary-signatures-2026-09-24.md) against 22 archives/55,884,975 bytes already bound to published SHA-256 values. Packaging verifies key, fingerprint, signature and archive before creating the ZIP and retains evidence; the extracted-package test checks its integrity. All 77 Python tests and the local 22-archive trial passed; [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust/revocation, licenses and embedded components, real desktops and legal review remain open: M0-02/06 partial.
 
+M0-02, Windows Qt imports: [technical comparison](../evidence/windows-qt-system-imports-2026-09-24.md) of `PKGBUILD`, `.BUILDINFO` and PE imports from components in the original binary archive; eight system-library options have matching dynamic imports. This is not yet an inventory of plugins in the ZIP or a complete mapping of embedded code. No gate changes status.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.

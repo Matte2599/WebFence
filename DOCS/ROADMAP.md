@@ -88,6 +88,8 @@ Firme sorgenti Windows del 2026-09-24: [otto verifiche OpenPGP offline](evidence
 
 Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/windows-binary-signatures-2026-09-24.md) sugli archivi originali già vincolati agli SHA-256 pubblicati, con una chiave pubblica ricavata dalla keyring MSYS2 revisionata. Il packaging ripete le verifiche prima dello ZIP e include lock, chiave, firme ed evidenze; 77 test Python e prova locale dei 22 archivi superati. [CI `589fa48`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Fiducia/revoca indipendenti, componenti incorporati, licenze e collaudi desktop ancora aperti; M0-02/06 restano parziali.
 
+[Import Qt Windows](evidence/windows-qt-system-imports-2026-09-24.md): `PKGBUILD` del sorgente collegato a `.BUILDINFO` del binario firmato; otto opzioni di libreria di sistema hanno import PE dinamici corrispondenti nei componenti del pacchetto esaminati. Lettura locale senza esecuzione. Da confrontare con l'inventario dei plugin nello ZIP; incorporati e revisione legale restano aperti. M0-02/06 invariati.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -242,6 +244,8 @@ Windows source signatures on 2026-09-24: [eight offline OpenPGP checks](evidence
 [First Windows-signature CI for `2417662`](https://github.com/Matte2599/WebFence/actions/runs/35945431893): new tests failed on macOS and Windows due to signed-file checkout and GnuPG temporary-directory portability. Byte-preserving checkout and a short temporary path are in the correction; 73 local regressions pass. [CI `2cd9022`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35945996095); M0-02 remains open for distribution gates.
 
 Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-binary-signatures-2026-09-24.md) on original archives already bound to published SHA-256 values, using a public key derived from the reviewed MSYS2 keyring. Packaging repeats verification before creating the ZIP and includes lock, key, signatures and evidence; 77 Python tests and the local 22-archive trial passed. [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust/revocation, embedded components, licenses and real desktop trials remain open; M0-02/06 remain partial.
+
+[Windows Qt imports](evidence/windows-qt-system-imports-2026-09-24.md): source `PKGBUILD` linked to the signed binary's `.BUILDINFO`; eight system-library options have matching dynamic PE imports in examined package components. Local read-only trial. Compare with the ZIP plugin inventory; embedded code and legal review remain open. M0-02/06 unchanged.
 
 ### M1 — Controlled traditional alpha
 

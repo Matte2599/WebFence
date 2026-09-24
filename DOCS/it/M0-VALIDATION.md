@@ -29,6 +29,8 @@ M0-02, firme sorgenti Windows: [otto firme distaccate verificate offline](../evi
 
 M0-02, firme binarie Windows: [22 firme distaccate verificate offline](../evidence/windows-binary-signatures-2026-09-24.md) contro 22 archivi/55.884.975 byte già vincolati agli SHA-256 pubblicati. Il packaging verifica chiave, fingerprint, firma e archivio prima dello ZIP e conserva le prove; il test estratto ne controlla l'integrità. 77 test Python e verifica locale dei 22 archivi passati; [CI `589fa48`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Fiducia/revoca indipendenti, licenze e componenti incorporati, desktop reali e revisione legale restano aperti: M0-02/06 parziali.
 
+M0-02, import Qt Windows: [confronto tecnico](../evidence/windows-qt-system-imports-2026-09-24.md) tra `PKGBUILD`, `.BUILDINFO` e import PE di componenti dell'archivio binario originale; otto opzioni di libreria di sistema hanno import dinamici corrispondenti. Non è ancora un inventario dei plugin nello ZIP né una mappatura completa del codice incorporato. Nessun gate cambia stato.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.
