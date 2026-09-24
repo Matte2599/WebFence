@@ -1,6 +1,6 @@
 // Package scanner contains bounded M1 scanning experiments. HeaderLab only
-// visits explicit loopback seeds through a managed, authorized transport; it
-// is not a production scanner or a discovery engine.
+// visits explicit loopback seeds through a managed, authorized transport; its
+// HTML discovery observes destinations but does not visit them.
 package scanner
 
 import (
@@ -59,6 +59,18 @@ type Check struct {
 	EvidenceCode string
 }
 
+// DiscoverySummary contains counts only; candidate URLs and form actions
+// remain ephemeral and are never copied into a Report.
+type DiscoverySummary struct {
+	SeedIndex  int
+	Status     string // observed, skipped or incomplete
+	ReasonCode string
+	Links      int
+	Forms      int
+	OutOfScope int
+	Invalid    int
+}
+
 type Report struct {
 	ProjectID             string
 	AuthorizationRevision uint64
@@ -68,6 +80,7 @@ type Report struct {
 	SeedsComplete         bool // all explicit seeds returned; not site-wide coverage
 	StopCode              string
 	Checks                []Check
+	Discovery             []DiscoverySummary
 }
 
 // RunHeaderLab begins a managed Store run, validates every explicit seed
@@ -127,9 +140,58 @@ func RunHeaderLab(ctx context.Context, store *storage.Store, plan HeaderLabPlan)
 		}
 		report.CompletedSeeds++
 		report.Checks = append(report.Checks, checkXContentTypeOptions(index, response))
+		discovery, observeErr := observeResponse(run.Scope(), index, response)
+		if observeErr == nil {
+			observeErr = run.Scope().Validate()
+		}
+		if observeErr != nil {
+			stopped := safeStopError(observeErr)
+			report.StopCode = stopped.Error()
+			return report, stopped
+		}
+		report.Discovery = append(report.Discovery, discovery)
 	}
 	report.SeedsComplete = true
 	return report, nil
+}
+
+func observeResponse(permit project.RunScope, index int, response transport.Result) (DiscoverySummary, error) {
+	summary := DiscoverySummary{SeedIndex: index, Status: "skipped"}
+	if response.StatusCode < 200 || response.StatusCode >= 300 ||
+		response.StatusCode == 204 || response.StatusCode == 205 {
+		summary.ReasonCode = "http_status_not_applicable"
+		return summary, nil
+	}
+	types := response.Header.Values("Content-Type")
+	if len(types) != 1 {
+		summary.Status, summary.ReasonCode = "incomplete", "content_type_unknown"
+		return summary, nil
+	}
+	mediaType, params, err := mime.ParseMediaType(types[0])
+	if err != nil {
+		summary.Status, summary.ReasonCode = "incomplete", "content_type_unknown"
+		return summary, nil
+	}
+	if mediaType != "text/html" {
+		summary.ReasonCode = "non_html_response"
+		return summary, nil
+	}
+	if charset := params["charset"]; charset != "" && !strings.EqualFold(charset, "utf-8") {
+		summary.Status, summary.ReasonCode = "incomplete", "unsupported_charset"
+		return summary, nil
+	}
+	surface, err := ObserveHTML(permit, response.FinalURL, response.Body)
+	if err != nil {
+		return DiscoverySummary{}, err
+	}
+	summary.Links, summary.Forms = len(surface.Links), len(surface.Forms)
+	summary.OutOfScope, summary.Invalid = surface.OutOfScope, surface.Invalid
+	if surface.Incomplete {
+		summary.Status, summary.ReasonCode = "incomplete", "parser_limit_or_encoding"
+	} else {
+		summary.Status, summary.ReasonCode = "observed", "html_observed"
+	}
+	return summary, nil
 }
 
 func checkXContentTypeOptions(index int, response transport.Result) Check {

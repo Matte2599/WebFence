@@ -37,7 +37,7 @@ On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w6
 - `internal/i18n`: embedded IT/EN JSON catalogs.
 - `internal/preferences`: language only, independent of toolkit.
 - `internal/project` and `internal/storage`: authorization model, SQLite metadata-only store and [managed runs with local revocation](M1-MANAGED-RUNS.md), still disconnected from the GUI.
-- `internal/scanner`: [first laboratory HTTP check](M1-HEADER-LAB.md) on explicit seeds, with no persistent data or external networking.
+- `internal/scanner`: [first laboratory HTTP check](M1-HEADER-LAB.md) on explicit seeds and [observational HTML discovery](M1-DISCOVERY-LAB.md), with no persistent data or external networking.
 
 Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
 

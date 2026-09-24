@@ -34,6 +34,7 @@
 | Store progetti M1 / M1 project store | [IT](it/M1-PROJECT-STORE.md) | [EN](en/M1-PROJECT-STORE.md) |
 | Run gestite e revoca M1 / M1 managed runs and revocation | [IT](it/M1-MANAGED-RUNS.md) | [EN](en/M1-MANAGED-RUNS.md) |
 | Primo controllo HTTP M1 / First M1 HTTP check | [IT](it/M1-HEADER-LAB.md) | [EN](en/M1-HEADER-LAB.md) |
+| Discovery HTML M1 / M1 HTML discovery | [IT](it/M1-DISCOVERY-LAB.md) | [EN](en/M1-DISCOVERY-LAB.md) |
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
 | Pacchetti Debian/Windows / Debian/Windows packages | [ADR-007 IT](it/ADR-007-PACKAGING.md) | [ADR-007 EN](en/ADR-007-PACKAGING.md) |
 | Sorgenti Windows / Windows sources | [IT](it/M0-WINDOWS-SOURCES.md) | [EN](en/M0-WINDOWS-SOURCES.md) |

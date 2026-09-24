@@ -1,0 +1,13 @@
+# M1 — HTML discovery in the lab
+
+[Italiano](../it/M1-DISCOVERY-LAB.md) · [First HTTP check](M1-HEADER-LAB.md) · [Roadmap](../ROADMAP.md)
+
+`scanner.RunHeaderLab` still sends GET requests **only to the plan's explicit seeds**. On each `2xx` response with UTF-8 `Content-Type: text/html`, it observes `<a href>` links and `<form>` actions through `scanner.ObserveHTML`. It does not follow links, submit forms, read field values or widen scope. Discovery is not connected to the desktop or persisted yet.
+
+The observer uses the broker-verified final URL after redirects to resolve relative references. It honors the first `<base href>` even when external: relative references outside scope are then excluded, while authorized absolute URLs remain candidates. A form without an `action` uses the document URL. The managed run's origin policy rechecks every destination. Duplicate links are deduplicated by canonical URL without reordering queries or collapsing paths that might be distinct. Form actions are classified `GET`, `POST` or `OTHER`, without requesting them. URLs, actions and queries are **sensitive ephemeral data** returned only by the internal `ObserveHTML` API; the `Report` contains per-seed status and counts of links, forms, out-of-scope and invalid references only. Do not serialize or log a `Surface` value.
+
+Observer limits: at most 8 MiB of body (the broker may impose less), 64 KiB per HTML token, 100,000 tokens and 512 references per page. Reaching parser limits, invalid UTF-8, unsupported character sets or an unparseable MIME type yields `incomplete`, never a claim of complete coverage. A body beyond the broker limit stops the run with an error and partial report. Non-HTML responses or inapplicable statuses yield `skipped`. `observed` means only that the delivered HTML was examined within these limits; it does not show that the whole site was discovered. Resources at other origins are counted as uncovered. Transport errors or revocation stop the run and leave a redacted partial report.
+
+Synthetic loopback tests cover redirects and base URLs, escaped paths and query order, deduplication, rejection of external origins and non-HTTP schemes, forms never submitted, parser limits, and absence of URLs, queries and form values from the report. The HTML parser is `golang.org/x/net/html` v0.59.0; its [tokenizer contract](https://pkg.go.dev/golang.org/x/net/html) assumes UTF-8 input. This module also updates `golang.org/x/sys` to v0.48.0.
+
+M1 still needs method/path/exclusion policy, explicit safe visit planning, a production broker and rate limits, persisted/redacted evidence, an IT/EN UI and visible incomplete coverage. Human prerequisites are in the [M1 plan](M1-PREREQUISITES.md).

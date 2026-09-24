@@ -40,6 +40,8 @@ Quinto blocco tecnico: [run gestite e revoca locale](it/M1-MANAGED-RUNS.md) su r
 
 Sesto blocco tecnico: [primo controllo HTTP su seed espliciti](it/M1-HEADER-LAB.md), collegando progetto salvato, run gestita e broker solo loopback; osserva un header senza conservare URL/body/header grezzi nei risultati. Non realizza ancora discovery, persistenza degli esiti o UI.
 
+Settimo blocco tecnico: [discovery HTML osservativa](it/M1-DISCOVERY-LAB.md) sulle risposte dei seed; estrae link e azioni di form sotto scope e limiti, senza nuove richieste. Il report espone conteggi e copertura parziale; pianificazione delle visite, dati persistenti e UI restano aperti.
+
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
 - [ ] Persistenza, ripristino dopo crash, limiti disco e cancellazione base del progetto.
@@ -142,6 +144,8 @@ Fourth technical block: [authorization revisions and renewal](en/M1-PROJECT-STOR
 Fifth technical block: [managed runs and local revocation](en/M1-MANAGED-RUNS.md) on renewal, persistent explicit revocation, deletion, close and expiry; SQLite v2→v3 migration. The HTTP lab interrupts in-flight requests. Cross-process coordination and desktop integration remain open.
 
 Sixth technical block: [first HTTP check on explicit seeds](en/M1-HEADER-LAB.md), connecting saved project, managed run and loopback-only broker; it observes one header without retaining raw URLs/bodies/headers in results. Discovery, result persistence and UI are still missing.
+
+Seventh technical block: [observational HTML discovery](en/M1-DISCOVERY-LAB.md) on seed responses; it extracts links and form actions under scope and parser limits, without new requests. The report exposes counts and partial coverage; visit planning, persistent data and UI remain open.
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.
