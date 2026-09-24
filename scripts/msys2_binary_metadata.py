@@ -1,6 +1,7 @@
 """Inspect trusted cached MSYS2 packages without installing or extracting code."""
 from contextlib import contextmanager
 import hashlib
+import json
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
@@ -9,6 +10,41 @@ import tarfile
 MAX_ARCHIVE = 512 * 1024 * 1024
 MAX_UNPACKED = 2 * 1024 * 1024 * 1024
 MAX_METADATA = 1024 * 1024
+
+
+def load_binary_lock(path):
+    """Read reviewed hashes from MSYS2 package pages; no network or code execution."""
+    path = Path(path)
+    if not path.is_file() or path.is_symlink() or path.stat().st_size > MAX_METADATA:
+        raise ValueError('Invalid Windows binary checksum lock')
+    data = json.loads(path.read_text(encoding='utf-8'))
+    if (not isinstance(data, dict) or set(data) != {'schema_version', 'reviewed_on', 'packages'}
+            or data['schema_version'] != 1
+            or not isinstance(data['reviewed_on'], str)
+            or not re.fullmatch(r'20\d\d-\d\d-\d\d', data['reviewed_on'])
+            or not isinstance(data['packages'], list)
+            or not 1 <= len(data['packages']) <= 64):
+        raise ValueError('Invalid Windows binary checksum lock schema')
+    result = {}
+    for item in data['packages']:
+        if not isinstance(item, dict) or set(item) != {'name', 'version', 'sha256', 'source_page'}:
+            raise ValueError('Invalid Windows binary checksum entry')
+        name, version, digest = item['name'], item['version'], item['sha256']
+        if (not isinstance(name, str) or not re.fullmatch(r'mingw-w64-ucrt-x86_64-[a-z0-9+_.-]+', name)
+                or not isinstance(version, str) or not re.fullmatch(r'[A-Za-z0-9._+~-]+', version)
+                or not isinstance(digest, str) or not re.fullmatch(r'[0-9a-f]{64}', digest)
+                or item['source_page'] != 'https://packages.msys2.org/packages/' + name
+                or name in result):
+            raise ValueError('Invalid or duplicate Windows binary checksum entry')
+        result[name] = item
+    return result
+
+
+def verify_binary_lock(lock, name, version, actual_sha256):
+    item = lock.get(name)
+    if item is None or item['version'] != version or item['sha256'] != actual_sha256:
+        raise ValueError('Unreviewed Windows binary archive: ' + name + ' ' + version)
+    return item['source_page']
 
 
 def sha(path):

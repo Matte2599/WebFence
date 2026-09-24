@@ -74,6 +74,8 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [Bridge AT-SPI Debian](evidence/debian-atspi-2026-09-24.md): sul `.deb` ARM64 ricostruito da `fcc2da6`, in container Debian 12 con Xvfb/Openbox/D-Bus e senza rete target, il client OS verifica in IT/EN controlli, quattro colonne e reset 10.000 → 1 → 0 → 10.000 con prima cella valida. Regressione integrata nel packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) conclusa al primo tentativo con sei job verdi, inclusi Debian amd64/arm64. Questo non verifica Orca, desktop reale o AX Cocoa; M0-01 resta aperto.
 
+[Checksum binari Windows](evidence/windows-binary-checksum-lock-2026-09-24.md): 22 archivi MSYS2 originali/55.884.975 byte confrontati con gli SHA-256 delle pagine ufficiali; registro revisionato vincola proprietari, versioni e checksum nel packaging e nello ZIP estratto. 59 regressioni Python locali passate; CI sul nuovo codice in attesa. Firme PGP, selezione completa dei notices, componenti incorporati e revisione legale restano aperti, quindi M0-02 non è chiuso.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -214,6 +216,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 [Windows notices](evidence/windows-notice-linkage-2026-09-24.md): packaging compares selected notices with members of cached MSYS2 binary archives, records their hashes in the inventory and rechecks them alongside DLLs in the extracted ZIP. [CI `8a8ea85`](https://github.com/Matte2599/WebFence/actions/runs/35933571589) completed: six green jobs on the first attempt, 58 Windows Python tests, 43 DLLs/22 packages/74 notices checked, 21 source archives rechecked, Windows/offscreen self-tests and soaks passed. Notice coverage, signatures and legal review remain open, so M0-02 status is unchanged.
 
 [Debian AT-SPI bridge](evidence/debian-atspi-2026-09-24.md): on the ARM64 `.deb` rebuilt from `fcc2da6`, in a Debian 12 container with Xvfb/Openbox/D-Bus and no target network, an OS client checks controls, four columns and the 10,000 → 1 → 0 → 10,000 reset with a valid first cell in EN/IT. Regression integrated into packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) passed six jobs on the first attempt, including Debian amd64/arm64. This does not verify Orca, a real desktop or Cocoa AX; M0-01 remains open.
+
+[Published Windows binary checksums](evidence/windows-binary-checksum-lock-2026-09-24.md): 22 original MSYS2 archives/55,884,975 bytes compared with official page SHA-256 values; reviewed lock binds owners, versions and checksums during packaging and in the extracted ZIP. 59 local Python regressions passed; changed-code CI pending. PGP signatures, complete notice selection, embedded components and legal review remain open, so M0-02 is not closed.
 
 ### M1 — Controlled traditional alpha
 

@@ -17,6 +17,23 @@ try {
     if ($native.schema -ne 1 -or @($native.files).Count -lt 1 -or $packageNames.Count -lt 1) {
         throw 'Invalid packaged native inventory'
     }
+    $lockPath = Join-Path $bundle 'notices/native/msys2-binary-lock.json'
+    if (-not (Test-Path -LiteralPath $lockPath -PathType Leaf) -or
+        (Get-FileHash -Algorithm SHA256 -LiteralPath $lockPath).Hash -ne $native.binary_lock_sha256) {
+        throw 'Missing or changed reviewed MSYS2 binary checksum lock'
+    }
+    $binaryLock = Get-Content -Raw -LiteralPath $lockPath | ConvertFrom-Json
+    $lockedPackages = @{}
+    foreach ($pin in @($binaryLock.packages)) {
+        if ($lockedPackages.ContainsKey($pin.name) -or
+            $pin.source_page -ne ('https://packages.msys2.org/packages/' + $pin.name)) {
+            throw "Duplicate or invalid reviewed binary entry: $($pin.name)"
+        }
+        $lockedPackages[$pin.name] = $pin
+    }
+    if ($binaryLock.schema_version -ne 1 -or $lockedPackages.Count -ne $packageNames.Count) {
+        throw 'Reviewed binary package set differs from native inventory'
+    }
     foreach ($file in $native.files) {
         if ($packageNames -notcontains $file.package -or $file.path.Contains('\') -or
             $file.path.Split('/') -contains '..') {
@@ -31,6 +48,12 @@ try {
     $noticeCount = 0
     foreach ($owner in $packageNames) {
         $record = $native.packages.PSObject.Properties[$owner].Value
+        if (-not $lockedPackages.ContainsKey($owner) -or
+            $record.version -ne $lockedPackages[$owner].version -or
+            $record.binary_package.sha256 -ne $lockedPackages[$owner].sha256 -or
+            $record.binary_package.published_sha256_source -ne $lockedPackages[$owner].source_page) {
+            throw "Unreviewed MSYS2 binary archive: $owner"
+        }
         $notices = @($record.license_file_records)
         $paths = @($record.license_files)
         if ($notices.Count -lt 1 -or $notices.Count -ne $paths.Count -or
@@ -55,7 +78,7 @@ try {
             $noticeCount++
         }
     }
-    Write-Output "PASS extracted ZIP native notices: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices"
+    Write-Output "PASS extracted ZIP native notices and published checksum lock: $($native.files.Count) DLLs, $($packageNames.Count) owners, $noticeCount source-matched notices"
     $sourceRoot = Join-Path $bundle 'msys2-sources'
     if ($RequireSources -or (Test-Path -LiteralPath $sourceRoot)) {
         $attachment = Get-Content -Raw -LiteralPath (Join-Path $sourceRoot 'attachment.json') | ConvertFrom-Json

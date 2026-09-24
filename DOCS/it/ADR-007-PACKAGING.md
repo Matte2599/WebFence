@@ -18,6 +18,8 @@ Il `.deb` contiene LICENSE, README IT/EN, metadata Go, versioni native usate per
 
 Lo ZIP registra ogni DLL con hash del file copiato e dell’originale, pacchetto MSYS2 proprietario, metadati `pacman -Qi` e copie dei relativi avvisi. I notices selezionati sono confrontati per hash con i membri degli archivi binari MSYS2 e ricontrollati dopo l'estrazione dello ZIP: [43 DLL, 22 pacchetti e 74 notices verificati nella CI](../evidence/windows-notice-linkage-2026-09-24.md). I file Qt riscritti da windeployqt possono avere hash differente dall’originale. Le licenze delle dipendenze non vengono sostituite dalla licenza WebFence. Inventario completo dei componenti incorporati, sorgenti corrispondenti e materiali richiesti per la distribuzione restano da completare. La CI costruisce e prova i pacchetti senza pubblicarli come release o caricare automaticamente artefatti binari.
 
+Gli SHA-256 dei 22 archivi binari originali sono ora [vincolati ai checksum pubblicati sulle pagine MSYS2](../evidence/windows-binary-checksum-lock-2026-09-24.md). Il registro revisionato è incluso nello ZIP e la prova sull'archivio estratto ne ricontrolla il legame con `native-build.json`. Le versioni nuove richiedono riesame esplicito; il controllo non sostituisce firme PGP, inventario del codice incorporato o revisione legale.
+
 ## Comandi presenti
 
 Su un host con Docker, build e collaudo Debian dell’architettura nativa:

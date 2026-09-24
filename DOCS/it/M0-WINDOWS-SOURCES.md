@@ -35,6 +35,10 @@ Restano mappatura dei componenti incorporati e relativi avvisi, ambiente e istru
 
 Un [registro tecnico dei metadati licenza delle 21 ricette](../evidence/windows-license-metadata-2026-09-24.md) ricontrolla gli hash degli archivi e dei 42 file `PKGBUILD`/`.SRCINFO`, distingue il campo specifico di `libiconv` e indica i casi `custom` o composti da esaminare. I metadati delle ricette non assegnano automaticamente una licenza ai binari o al codice incorporato; la mappatura ai notices inclusi nello ZIP e la revisione legale restano aperte.
 
+## Vincolo agli SHA-256 pubblicati dei binari
+
+Il [registro verificato](../evidence/windows-binary-checksum-lock-2026-09-24.md) fissa nome, versione e SHA-256 pubblicato dei 22 pacchetti MSYS2 che forniscono le 43 DLL. I 22 archivi originali, 55.884.975 byte, sono stati scaricati dalle pagine ufficiali e confrontati con il registro. Durante il packaging, gli archivi della cache devono corrispondere ai checksum revisionati e l'insieme dei proprietari non può cambiare senza aggiornamento esplicito. Lo ZIP conserva il registro e il test PowerShell lo confronta con l'inventario estratto. È un vincolo tecnico sugli artefatti, non una verifica delle firme PGP o della completezza dei notices. Un aggiornamento dei pacchetti MSYS2 può richiedere di rivedere il registro e ricollaudare la build; la CI del codice modificato è ancora da verificare.
+
 ## Includere i sorgenti nello ZIP
 
 In MSYS2 UCRT64, aggiungere una delle due opzioni al comando di packaging:

@@ -17,6 +17,8 @@ M0-02, avvisi Windows: [confronto dei file selezionati con gli archivi binari e 
 
 M0-01, Debian: [prova del bridge AT-SPI](../evidence/debian-atspi-2026-09-24.md) IT/EN dopo reset della tabella integrata nel packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) conclusa con sei job verdi al primo tentativo, inclusi `.deb` amd64/arm64. Il gate assistivo resta parziale: mancano annunci Orca, lettori delle altre piattaforme e verifiche desktop reali.
 
+M0-02, Windows: [registro SHA-256 pubblicati](../evidence/windows-binary-checksum-lock-2026-09-24.md) dei 22 pacchetti binari revisionato contro gli archivi originali e integrato nel packaging. Rifiuta versioni, proprietari e checksum non revisionati; 59 regressioni Python locali e verifica dei 22 archivi superate. CI del codice modificato da verificare. Firme PGP, notices completi, componenti incorporati e desktop reali ancora aperti.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.

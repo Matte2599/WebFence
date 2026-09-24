@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import io
+import json
 from pathlib import Path
 import tarfile
 import tempfile
@@ -76,6 +77,31 @@ class MSYS2MetadataTest(unittest.TestCase):
                            (self.notice_member, self.notice_payload)])
         with self.assertRaisesRegex(ValueError, 'Duplicate'):
             self.inspect(notices=self.required_notices)
+
+    def test_published_binary_checksum_lock_rejects_unreviewed_archives(self):
+        self.write()
+        binary, _ = self.inspect()
+        page = 'https://packages.msys2.org/packages/' + self.name
+        entry = {'name': self.name, 'version': '1.2-3', 'sha256': binary['sha256'],
+                 'source_page': page}
+        lock_path = Path(self.temp.name) / 'binary-lock.json'
+        data = {'schema_version': 1, 'reviewed_on': '2026-09-24', 'packages': [entry]}
+        lock_path.write_text(json.dumps(data))
+        lock = metadata.load_binary_lock(lock_path)
+        self.assertEqual(metadata.verify_binary_lock(lock, self.name, '1.2-3', binary['sha256']), page)
+        for owner, version, digest in [(self.name, '1.2-4', binary['sha256']),
+                                       (self.name, '1.2-3', '0' * 64),
+                                       (self.name + '-other', '1.2-3', binary['sha256'])]:
+            with self.subTest(owner=owner, version=version, digest=digest), self.assertRaisesRegex(ValueError, 'Unreviewed'):
+                metadata.verify_binary_lock(lock, owner, version, digest)
+        data['packages'].append(dict(entry))
+        lock_path.write_text(json.dumps(data))
+        with self.assertRaisesRegex(ValueError, 'duplicate'):
+            metadata.load_binary_lock(lock_path)
+        data['packages'] = [dict(entry, source_page='https://example.invalid/unreviewed')]
+        lock_path.write_text(json.dumps(data))
+        with self.assertRaisesRegex(ValueError, 'Invalid'):
+            metadata.load_binary_lock(lock_path)
 
     def test_changed_or_missing_dll_rejected(self):
         self.write(payload=b'changed after installation')

@@ -10,7 +10,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from msys2_binary_metadata import inspect, sha
+from msys2_binary_metadata import inspect, load_binary_lock, sha, verify_binary_lock
 from attach_windows_sources import attach
 from collect_windows_sources import collect
 
@@ -42,6 +42,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
         raise ValueError('Select existing source materials or new collection, not both')
     prefix, executable = Path(prefix).resolve(), Path(executable).resolve()
     repo = Path(__file__).resolve().parent.parent
+    binary_lock_path = repo / 'packaging/windows/msys2-binary-lock.json'
+    binary_lock = load_binary_lock(binary_lock_path)
     dist = repo / "dist"
     dist.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".webfence-windows-", dir=dist) as temporary:
@@ -140,6 +142,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
             binary_record, metadata = inspect(candidates[0], owner, record['version'], required[owner],
                                                str(prefix / 'bin/zstd.exe'),
                                                required_notices=required_notices[owner])
+            binary_record['published_sha256_source'] = verify_binary_lock(
+                binary_lock, owner, record['version'], binary_record['sha256'])
             destination = notices / 'native' / owner / 'build'
             destination.mkdir()
             binary_record['metadata_files'] = []
@@ -151,10 +155,15 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
             print(f"Verified {owner} {record['version']}: {len(required[owner])} DLLs, "
                   f"{binary_record['verified_notice_count']} notices; source {binary_record['source_package']}; "
                   f"PKGBUILD {binary_record['pkgbuild_sha256']}")
+        if set(owners) != set(binary_lock):
+            raise ValueError('Windows binary package set differs from reviewed checksum lock')
+        published_lock = notices / 'native/msys2-binary-lock.json'
+        shutil.copyfile(binary_lock_path, published_lock)
         (bundle / "native-build.json").write_text(json.dumps({"schema": 1, "files": files,
             "distribution_ready": False,
+            "binary_lock_sha256": sha(published_lock),
             "packages": owners, "system_imports": sorted(system_imports),
-            "scope": "PE import closure, installed notices and DLL/build metadata matched to cached MSYS2 archives; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
+            "scope": "PE import closure, installed notices and DLL/build metadata matched to cached MSYS2 archives and reviewed published SHA-256 checksums; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
         if collect_sources:
             collect(bundle / 'native-build.json', collect_sources, zstd=str(prefix / 'bin/zstd.exe'))
             source_materials = collect_sources

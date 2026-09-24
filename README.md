@@ -79,6 +79,8 @@ Materiali delle dipendenze: [raccoglitore sorgenti e avvisi](DOCS/it/M0-SOURCE-M
 
 Raccolti anche [21 pacchetti sorgente Windows](DOCS/it/M0-WINDOWS-SOURCES.md), con ricette collegate ai binari e controlli di integrità documentati; inclusione facoltativa degli archivi originali nello ZIP. La [CI Windows](https://github.com/Matte2599/WebFence/actions/runs/35933571589) verifica la corrispondenza di 74 notices selezionati con gli archivi binari MSYS2; completezza e revisione legale restano aperte.
 
+Un [registro dei checksum pubblicati](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) vincola ora le versioni esatte dei 22 pacchetti binari Windows: le modifiche alle dipendenze richiedono riesame esplicito. La CI di questa modifica è in verifica; il registro non prova firme PGP o conformità legale.
+
 Disponibile anche l’inclusione nel bundle macOS dei [supplementi Homebrew GLib/libb2](DOCS/it/M0-SOURCE-MATERIALS.md#supplementi-homebrew-nel-bundle-macos), vincolati agli hash delle ricette installate.
 
 Verificata localmente e in [CI su macOS 15](https://github.com/Matte2599/WebFence/actions/runs/35916839178) la [ricompilazione e sostituzione del plugin Cocoa](DOCS/it/M0-QT-REPLACEMENT.md) dai materiali inclusi nel bundle, mantenendo la stessa build Go.

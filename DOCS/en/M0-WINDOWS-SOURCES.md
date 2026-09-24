@@ -35,6 +35,10 @@ Embedded component/notice mapping, rebuild/replacement environment and instructi
 
 A [technical ledger of license metadata in all 21 recipes](../evidence/windows-license-metadata-2026-09-24.md) rechecks the archive and 42 `PKGBUILD`/`.SRCINFO` hashes, distinguishes the package-specific `libiconv` field and flags `custom` and compound declarations for review. Recipe metadata does not automatically assign a license to binaries or embedded code; mapping to notices in the ZIP and legal review remain open.
 
+## Bind binaries to published SHA-256 checksums
+
+The [verified ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) fixes the name, version and published SHA-256 for the 22 MSYS2 packages providing the 43 DLLs. All 22 original archives, 55,884,975 bytes, were downloaded from the official package pages and compared with the lock. During packaging, cached archives must match the reviewed checksums and the owner set cannot change without an explicit update. The ZIP retains the lock and the PowerShell trial compares it with the extracted inventory. This is a technical artifact constraint, not PGP-signature verification or proof that notices are complete. An MSYS2 package update may require reviewing the lock and retesting the build; CI on the changed code is still pending.
+
 ## Include sources in the ZIP
 
 In MSYS2 UCRT64, add one of these options to the packaging command:
