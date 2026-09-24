@@ -94,7 +94,7 @@ Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/wind
 
 [Moduli runtime Windows](evidence/windows-runtime-modules-2026-09-24.md): lo ZIP estratto campiona i moduli durante i soak offscreen e nativo, dopo `Process.Refresh()`, e li confronta con l'inventario. [CI `a9a8e5c`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110/109 campioni, plugin Qt attesi osservati e nessun percorso esterno registrato. Il tentativo `18c223a` aveva fallito la verifica senza refresh; caricamenti transitori e desktop puliti ancora aperti. M0-02/06 parziali.
 
-[Orca Debian headless](evidence/debian-orca-headless-2026-09-24.md): configurazione privata Speech Dispatcher/ALSA `null` permette la prova locale con voce attiva IT/EN; Orca invia i comandi localizzati della riga sintetica senza errori WebFence. `test-orca.sh` inserito nel packaging e build completa ARM64 locale superata. Non è audio ascoltato: desktop reale, VoiceOver/NVDA e riesame AX Cocoa restano necessari; M0-01 parziale.
+[Orca Debian headless](evidence/debian-orca-headless-2026-09-24.md): configurazione privata Speech Dispatcher/ALSA `null` permette la prova locale con voce attiva IT/EN; Orca invia i comandi localizzati della riga sintetica senza errori WebFence. `test-orca.sh` inserito nel packaging; build completa ARM64 locale e [CI `a7afdeb`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35953580914) superate, inclusi Debian amd64/ARM64. Non è audio ascoltato: desktop reale, VoiceOver/NVDA e riesame AX Cocoa restano necessari; M0-01 parziale.
 
 ### M1 — Alpha tradizionale controllata
 
@@ -257,7 +257,7 @@ Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-
 
 [Windows runtime modules](evidence/windows-runtime-modules-2026-09-24.md): the extracted ZIP samples modules during offscreen and native soaks, after `Process.Refresh()`, and compares them with the inventory. [CI `a9a8e5c`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110/109 samples, expected Qt plugins observed and no external paths recorded. The `18c223a` attempt failed this check without refresh; transient loads and clean desktops remain open. M0-02/06 partial.
 
-[Headless Debian Orca](evidence/debian-orca-headless-2026-09-24.md): private Speech Dispatcher/ALSA `null` configuration enables a local speech-on EN/IT trial; Orca sends localized synthetic-row commands without WebFence errors. `test-orca.sh` is integrated into packaging and the full local ARM64 build passed. This is not heard audio: real desktop, VoiceOver/NVDA and Cocoa AX recheck remain necessary; M0-01 partial.
+[Headless Debian Orca](evidence/debian-orca-headless-2026-09-24.md): private Speech Dispatcher/ALSA `null` configuration enables a local speech-on EN/IT trial; Orca sends localized synthetic-row commands without WebFence errors. `test-orca.sh` is integrated into packaging; the full local ARM64 build and [CI `a7afdeb`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35953580914) passed, including Debian amd64/ARM64. This is not heard audio: real desktop, VoiceOver/NVDA and Cocoa AX recheck remain necessary; M0-01 partial.
 
 ### M1 — Controlled traditional alpha
 
