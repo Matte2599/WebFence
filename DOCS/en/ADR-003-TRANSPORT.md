@@ -52,6 +52,6 @@ A dial fence independent of the code under test restricts tests to owned endpoin
 
 ## Consequences and remaining limitations
 
-This task covers the M0 lab and **initial** scope/network test gate. M0 remains open for GUI/accessibility, packaging and other foundation decisions. Real traffic still requires authorization/expiry, internal-service exclusions, IP/CIDR and public/private-network policies, methods and paths, rate limiting, redaction, recovery and scan lifecycle integration. The lab does not establish Internet DNS behavior, enterprise proxies, browser/WebSocket containment, actual private-network behavior or resilience to every OS failure.
+This task covers the M0 lab and **initial** scope/network test gate; see the [matrix](M0-VALIDATION.md) for M0 status. The [later M1 block](M1-AUTHORIZED-LAB.md) applies a project declaration and expiry to the still loopback-only broker. Real traffic still requires internal-service exclusions, IP/CIDR and public/private-network policies, methods and paths, rate limiting, redaction, recovery and scan lifecycle integration. The lab does not establish Internet DNS behavior, enterprise proxies, browser/WebSocket containment, actual private-network behavior or resilience to every OS failure.
 
 Verified references: [Go HTTP transport](https://pkg.go.dev/net/http#Transport), [resolver](https://pkg.go.dev/net#Resolver.LookupNetIP), [contexts](https://pkg.go.dev/context), [TLS verification](https://pkg.go.dev/crypto/tls#Config).

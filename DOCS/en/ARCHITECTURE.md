@@ -45,7 +45,7 @@ The broker represents a boundary to implement and test for browser traffic, redi
 | `report` | Snapshots, rendering, manifests and signing through a component with limited key access |
 | `storage` | Transactions, migrations, deletion and recovery |
 
-The table describes planned complete contracts. `internal/scope` and `internal/transport` implement only the M0 foundations described below; `internal/project` adds the [first M1 authorization snapshot](M1-PROJECT-AUTHORIZATION.md), in memory and without networking. Other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
+The table describes planned complete contracts. `internal/scope` and `internal/transport` implement the M0 foundations; `internal/project` adds the [M1 authorization snapshot](M1-PROJECT-AUTHORIZATION.md), in memory and with no networking of its own. The [M1 authorized broker](M1-AUTHORIZED-LAB.md) connects the components for loopback only. Other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
 
 ## Persistence and external processes
 
@@ -70,5 +70,7 @@ Server mode, shared users, PostgreSQL and distributed workers require dedicated 
 `internal/scope` implements only immutable HTTP(S) origin comparison, with no networking or Qt dependencies. A loopback laboratory exists exclusively in tests. It does not replace the planned broker’s IP/DNS, authorization and budget boundaries: [M0 contract](M0-SCOPE.md).
 
 `internal/transport` adds an HTTP/TLS broker confined to loopback grants, with pinned connection IPs and shared budgets/cancellation. M0 decision and production limitations: [ADR-003](ADR-003-TRANSPORT.md). No GUI calls.
+
+`NewAuthorizedLab` applies the project snapshot on every hop of the same broker and uses its expiry to stop in-progress requests. It remains a lab: [M1 contract](M1-AUTHORIZED-LAB.md).
 
 SQLite and the JWS profile are selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): SQLite feasibility tests and the `internal/signature` component, without a project store or GUI reports.
