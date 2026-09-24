@@ -37,7 +37,7 @@ A [technical ledger of license metadata in all 21 recipes](../evidence/windows-l
 
 ## Bind binaries to published SHA-256 checksums
 
-The [verified ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) fixes the name, version and published SHA-256 for the 22 MSYS2 packages providing the 43 DLLs. All 22 original archives, 55,884,975 bytes, were downloaded from the official package pages and compared with the lock. During packaging, cached archives must match the reviewed checksums and the owner set cannot change without an explicit update. The ZIP retains the lock and the PowerShell trial compares it with the extracted inventory. This is a technical artifact constraint, not PGP-signature verification or proof that notices are complete. An MSYS2 package update may require reviewing the lock and retesting the build; CI on the changed code is still pending.
+The [verified ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) fixes the name, version and published SHA-256 for the 22 MSYS2 packages providing the 43 DLLs. All 22 original archives, 55,884,975 bytes, were downloaded from the official package pages and compared with the lock. During packaging, cached archives must match the reviewed checksums and the owner set cannot change without an explicit update. The ZIP retains the lock and the PowerShell trial compares it with the extracted inventory. This is a technical artifact constraint, not PGP-signature verification or proof that notices are complete. An MSYS2 package update may require reviewing the lock and retesting the build; [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) passed six jobs on the first attempt, including the extracted Windows ZIP check.
 
 ## Include sources in the ZIP
 

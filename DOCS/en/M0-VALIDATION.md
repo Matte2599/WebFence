@@ -17,7 +17,7 @@ M0-02, Windows notices: [comparison of selected files with cached binary archive
 
 M0-01, Debian: [IT/EN AT-SPI bridge trial](../evidence/debian-atspi-2026-09-24.md) after table reset integrated into packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) completed with six passing jobs on the first attempt, including amd64/arm64 `.deb` jobs. The accessibility gate remains partial: Orca announcements, other-platform readers and real-desktop trials are still needed.
 
-M0-02, Windows: [published SHA-256 ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) for 22 binary packages reviewed against original archives and integrated into packaging. Unreviewed versions, owners and checksums are rejected; 59 local Python regressions and checks of all 22 archives passed. Changed-code CI remains pending. PGP signatures, complete notices, embedded components and real desktops remain open.
+M0-02, Windows: [published SHA-256 ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) for 22 binary packages reviewed against original archives and integrated into packaging. Unreviewed versions, owners and checksums are rejected; 59 local Python regressions and checks of all 22 archives passed. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381): six jobs passed on the first attempt, including the extracted Windows ZIP. PGP signatures, complete notices, embedded components and real desktops remain open.
 
 ## Reproducible desktop trial
 
