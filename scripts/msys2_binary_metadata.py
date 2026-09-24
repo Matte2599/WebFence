@@ -98,7 +98,8 @@ def tar_stream(path, zstd):
         process.wait(timeout=10)
 
 
-def inspect(archive_path, name, version, required_files, zstd='zstd', *, required_notices=None):
+def inspect(archive_path, name, version, required_files, zstd='zstd', *, required_notices=None,
+            notice_selector=None):
     archive_path = Path(archive_path)
     if (not archive_path.is_file() or archive_path.is_symlink()
             or archive_path.stat().st_size > MAX_ARCHIVE):
@@ -108,7 +109,7 @@ def inspect(archive_path, name, version, required_files, zstd='zstd', *, require
     required_notices = {} if required_notices is None else required_notices
     if set(required_files) & set(required_notices):
         raise ValueError('A package member cannot be both a DLL and a notice')
-    metadata, matched, matched_notices = {}, set(), set()
+    metadata, matched, matched_notices, candidate_notices = {}, set(), set(), set()
     total = 0
     with tar_stream(archive_path, zstd) as archive:
         for count, member in enumerate(archive, 1):
@@ -123,6 +124,10 @@ def inspect(archive_path, name, version, required_files, zstd='zstd', *, require
             if (PurePosixPath(path).is_absolute() or '\\' in path or ':' in path
                     or any(p in {'', '.', '..'} for p in path.split('/'))):
                 raise ValueError('Unsafe package path')
+            if notice_selector is not None and not member.isdir() and notice_selector(path):
+                if not member.isfile() or path in candidate_notices:
+                    raise ValueError('Duplicate or nonregular selected notice in cached package')
+                candidate_notices.add(path)
             if (path not in {'.PKGINFO', '.BUILDINFO'} and path not in required_files
                     and path not in required_notices):
                 continue
@@ -150,6 +155,8 @@ def inspect(archive_path, name, version, required_files, zstd='zstd', *, require
         raise ValueError('Missing DLL or build metadata in cached package')
     if matched_notices != set(required_notices):
         raise ValueError('Missing notice in cached package')
+    if notice_selector is not None and candidate_notices != set(required_notices):
+        raise ValueError('Installed notice selection differs from cached package')
     package, build = fields(metadata['.PKGINFO']), fields(metadata['.BUILDINFO'])
     base = single(package, 'pkgbase')
     if not re.fullmatch(r'mingw-w64-[a-z0-9+_.-]+', base):

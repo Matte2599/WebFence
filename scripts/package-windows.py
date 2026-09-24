@@ -24,13 +24,19 @@ def digest(path):
 
 
 def notice_relative(path):
-    """Select package-owned notices, including ICU's versioned share directory."""
+    """Select installed notice and attribution sidecars, including ICU's versioned share directory."""
     location = PurePosixPath(path)
-    if path.endswith("/") or ".." in location.parts or not path.startswith("/ucrt64/share/"):
+    if (path.endswith("/") or "\\" in path or ".." in location.parts
+            or not path.startswith("/ucrt64/share/")):
         return None
     relative = location.relative_to("/ucrt64/share")
     if relative.parts[0] == "licenses" or re.fullmatch(
-            r"(?:licen[cs]e|copying|copyright|notice)(?:[._-].*)?", location.name, flags=re.I):
+            r"(?:licen[cs]e|copying|copyright|notice|authors)(?:[._-].*)?", location.name, flags=re.I):
+        return relative
+    if relative.parts[:3] == ("qt6", "wayland", "protocols") and (
+            location.name in {"qt_attribution.json", "REUSE.toml", "README"}
+            or re.fullmatch(r"(?:[A-Za-z0-9-]+_)?licen[cs]e(?:[._-].*)?", location.name, flags=re.I)
+            or re.fullmatch(r"(?:LGPL|GPL|AGPL)-[A-Za-z0-9.+-]+\.txt", location.name, flags=re.I)):
         return relative
     return None
 
@@ -141,7 +147,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 raise ValueError('Retain exactly one cached binary package for ' + owner + ' ' + record['version'])
             binary_record, metadata = inspect(candidates[0], owner, record['version'], required[owner],
                                                str(prefix / 'bin/zstd.exe'),
-                                               required_notices=required_notices[owner])
+                                               required_notices=required_notices[owner],
+                                               notice_selector=lambda member: notice_relative('/' + member) is not None)
             binary_record['published_sha256_source'] = verify_binary_lock(
                 binary_lock, owner, record['version'], binary_record['sha256'])
             destination = notices / 'native' / owner / 'build'
@@ -163,7 +170,7 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
             "distribution_ready": False,
             "binary_lock_sha256": sha(published_lock),
             "packages": owners, "system_imports": sorted(system_imports),
-            "scope": "PE import closure, installed notices and DLL/build metadata matched to cached MSYS2 archives and reviewed published SHA-256 checksums; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
+            "scope": "PE import closure, installed notice/attribution sidecars and DLL/build metadata matched to cached MSYS2 archives and reviewed published SHA-256 checksums; not full source compliance, signature verification or dynamic-load coverage"}, indent=2) + "\n")
         if collect_sources:
             collect(bundle / 'native-build.json', collect_sources, zstd=str(prefix / 'bin/zstd.exe'))
             source_materials = collect_sources

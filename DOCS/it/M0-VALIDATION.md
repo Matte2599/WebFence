@@ -19,6 +19,8 @@ M0-01, Debian: [prova del bridge AT-SPI](../evidence/debian-atspi-2026-09-24.md)
 
 M0-02, Windows: [registro SHA-256 pubblicati](../evidence/windows-binary-checksum-lock-2026-09-24.md) dei 22 pacchetti binari revisionato contro gli archivi originali e integrato nel packaging. Rifiuta versioni, proprietari e checksum non revisionati; 59 regressioni Python locali e verifica dei 22 archivi superate. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381): sei job superati al primo tentativo, compreso lo ZIP Windows estratto. Firme PGP, notices completi, componenti incorporati e desktop reali ancora aperti.
 
+M0-02, sidecar Windows: [selezione estesa e confronto con l'archivio](../evidence/windows-attribution-sidecars-2026-09-24.md) provati localmente sui 22 pacchetti vincolati: 136 file di avviso/attribuzione, 62 in più rispetto alla regola precedente; 62 test Python verdi. CI del codice modificato in attesa. L'inclusione dei metadati non prova licenze complete né presenza dei protocolli Wayland nel runtime Windows.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.

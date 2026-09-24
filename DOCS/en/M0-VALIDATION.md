@@ -19,6 +19,8 @@ M0-01, Debian: [IT/EN AT-SPI bridge trial](../evidence/debian-atspi-2026-09-24.m
 
 M0-02, Windows: [published SHA-256 ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) for 22 binary packages reviewed against original archives and integrated into packaging. Unreviewed versions, owners and checksums are rejected; 59 local Python regressions and checks of all 22 archives passed. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381): six jobs passed on the first attempt, including the extracted Windows ZIP. PGP signatures, complete notices, embedded components and real desktops remain open.
 
+M0-02, Windows sidecars: [expanded selection and archive-set comparison](../evidence/windows-attribution-sidecars-2026-09-24.md) passed locally on all 22 locked packages: 136 notice/attribution files, 62 more than the prior rule; 62 Python tests passed. Changed-code CI is pending. Inclusion of metadata does not establish complete licensing or presence of Wayland protocols in the Windows runtime.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.

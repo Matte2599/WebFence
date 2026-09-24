@@ -39,6 +39,10 @@ Un [registro tecnico dei metadati licenza delle 21 ricette](../evidence/windows-
 
 Il [registro verificato](../evidence/windows-binary-checksum-lock-2026-09-24.md) fissa nome, versione e SHA-256 pubblicato dei 22 pacchetti MSYS2 che forniscono le 43 DLL. I 22 archivi originali, 55.884.975 byte, sono stati scaricati dalle pagine ufficiali e confrontati con il registro. Durante il packaging, gli archivi della cache devono corrispondere ai checksum revisionati e l'insieme dei proprietari non può cambiare senza aggiornamento esplicito. Lo ZIP conserva il registro e il test PowerShell lo confronta con l'inventario estratto. È un vincolo tecnico sugli artefatti, non una verifica delle firme PGP o della completezza dei notices. Un aggiornamento dei pacchetti MSYS2 può richiedere di rivedere il registro e ricollaudare la build; la [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) ha superato sei job al primo tentativo, incluso il controllo dello ZIP Windows estratto.
 
+## Sidecar di attribuzione
+
+La [prova sui 22 archivi vincolati](../evidence/windows-attribution-sidecars-2026-09-24.md) ha ampliato la selezione dei file di avviso e attribuzione da 74 a 136: 62 aggiunte (PCRE2 `AUTHORS.md` e 61 sidecar Qt). Il packaging confronta ora i percorsi scelti dall'installazione con quelli presenti nell'archivio binario, oltre a verificarne gli hash; file omessi, duplicati o non regolari bloccano la build. I 27 riferimenti `LicenseFile` dei JSON Qt selezionati risolvono a file inclusi. Le 62 regressioni Python locali e la prova dei 22 archivi passano; CI del nuovo codice da verificare. Questo migliora i materiali per la revisione, senza dimostrare che i protocolli Wayland siano incorporati nelle DLL Windows o chiudere il gate legale.
+
 ## Includere i sorgenti nello ZIP
 
 In MSYS2 UCRT64, aggiungere una delle due opzioni al comando di packaging:

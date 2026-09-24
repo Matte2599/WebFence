@@ -81,6 +81,8 @@ Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with
 
 A [published-checksum lock](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) now binds the exact versions of 22 Windows binary packages: dependency changes require explicit review. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) passed six jobs on the first attempt; the lock does not establish PGP signatures or legal compliance.
 
+The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. CI for this change is pending; license completeness and legal review remain open.
+
 The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
 
 Verified locally and in [macOS 15 CI](https://github.com/Matte2599/WebFence/actions/runs/35916839178) [Cocoa plugin rebuilding and replacement](DOCS/en/M0-QT-REPLACEMENT.md) using materials shipped in the bundle, retaining the same Go build.

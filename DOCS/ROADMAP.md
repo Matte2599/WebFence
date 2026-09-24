@@ -76,6 +76,8 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [Checksum binari Windows](evidence/windows-binary-checksum-lock-2026-09-24.md): 22 archivi MSYS2 originali/55.884.975 byte confrontati con gli SHA-256 delle pagine ufficiali; registro revisionato vincola proprietari, versioni e checksum nel packaging e nello ZIP estratto. 59 regressioni Python locali passate; [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381): sei job superati al primo tentativo, incluso Windows. Firme PGP, selezione completa dei notices, componenti incorporati e revisione legale restano aperti, quindi M0-02 non è chiuso.
 
+[Sidecar Windows](evidence/windows-attribution-sidecars-2026-09-24.md): regola estesa da 74 a 136 file di avviso/attribuzione nei 22 archivi vincolati; il packaging confronta l'insieme selezionato nell'installazione con quello dell'archivio, rifiutando omissioni. 62 test Python locali e verifica dei 22 archivi passati; CI del codice in attesa. Resta da mappare il codice effettivamente incorporato e ottenere revisione legale; M0-02 aperto.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -218,6 +220,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 [Debian AT-SPI bridge](evidence/debian-atspi-2026-09-24.md): on the ARM64 `.deb` rebuilt from `fcc2da6`, in a Debian 12 container with Xvfb/Openbox/D-Bus and no target network, an OS client checks controls, four columns and the 10,000 → 1 → 0 → 10,000 reset with a valid first cell in EN/IT. Regression integrated into packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) passed six jobs on the first attempt, including Debian amd64/arm64. This does not verify Orca, a real desktop or Cocoa AX; M0-01 remains open.
 
 [Published Windows binary checksums](evidence/windows-binary-checksum-lock-2026-09-24.md): 22 original MSYS2 archives/55,884,975 bytes compared with official page SHA-256 values; reviewed lock binds owners, versions and checksums during packaging and in the extracted ZIP. 59 local Python regressions passed; [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381): six jobs passed on the first attempt, including Windows. PGP signatures, complete notice selection, embedded components and legal review remain open, so M0-02 is not closed.
+
+[Windows sidecars](evidence/windows-attribution-sidecars-2026-09-24.md): selection expanded from 74 to 136 notice/attribution files in the 22 locked archives; packaging compares the installed selection with the archive set and rejects omissions. 62 local Python tests and checks of all 22 archives passed; changed-code CI pending. Mapping of actually embedded code and legal review remain open; M0-02 is not closed.
 
 ### M1 — Controlled traditional alpha
 

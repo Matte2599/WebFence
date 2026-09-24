@@ -45,9 +45,9 @@ class MSYS2MetadataTest(unittest.TestCase):
                     entry.size = len(data)
                     archive.addfile(entry, io.BytesIO(data))
 
-    def inspect(self, required=None, notices=None):
+    def inspect(self, required=None, notices=None, selector=None):
         return metadata.inspect(self.archive, self.name, '1.2-3', self.required if required is None else required,
-                                required_notices=notices)
+                                required_notices=notices, notice_selector=selector)
 
     def test_binding_preserves_metadata_without_extracting_code(self):
         self.write(extras=[('install.sh', b'never execute')])
@@ -77,6 +77,16 @@ class MSYS2MetadataTest(unittest.TestCase):
                            (self.notice_member, self.notice_payload)])
         with self.assertRaisesRegex(ValueError, 'Duplicate'):
             self.inspect(notices=self.required_notices)
+
+    def test_archive_notice_selection_detects_missing_installed_sidecar(self):
+        selector = lambda member: member == self.notice_member
+        self.write(extras=[(self.notice_member, self.notice_payload)])
+        self.inspect(notices=self.required_notices, selector=selector)
+        with self.assertRaisesRegex(ValueError, 'selection differs'):
+            self.inspect(notices={}, selector=selector)
+        self.write(extras=[(self.notice_member, ('outside',))])
+        with self.assertRaisesRegex(ValueError, 'nonregular selected notice'):
+            self.inspect(notices={}, selector=selector)
 
     def test_published_binary_checksum_lock_rejects_unreviewed_archives(self):
         self.write()
