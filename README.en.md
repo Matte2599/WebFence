@@ -4,24 +4,9 @@
 
 [Italiano](README.md) · [Documentation](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [License](LICENSE)
 
-**Status: M0 in progress — first runnable desktop prototype, using synthetic examples only.** The Go/Qt Widgets GUI loads 10,000 rows, filters them and displays evidence in IT/EN. The scanning engine is not implemented; there are no supported releases or security benchmarks. See the [M0 report](DOCS/en/QT-DESKTOP.md).
+The Go/Qt Widgets desktop prototype uses synthetic fixtures only: it loads 10,000 rows, filters them and displays evidence in Italian and English. The production scanning engine is not implemented, and there are no supported releases or security benchmarks. For the M0 closure report, verification and prerequisites before M1, see the [validation matrix](DOCS/en/M0-VALIDATION.md).
 
-**The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Full accessibility and distribution remain open gates.
-
-The core includes a first [allowed-origin check](DOCS/en/M0-SCOPE.md), with an HTTP lab confined to loopback tests. A [lab transport](DOCS/en/ADR-003-TRANSPORT.md) now adds DNS/IP checks, TLS, budgets and cancellation, restricted to loopback. The GUI remains offline; no production scanner.
-
-The foundations also include SQLite experiments and a restricted Ed25519 JWS component: [M0 choices and checks](DOCS/en/ADR-004-STORAGE-SIGNATURE.md). Project persistence and signed reports in the GUI are not yet available. A separate [native credential adapter](DOCS/en/ADR-005-CREDENTIALS.md) is now verified natively on all four CI targets, including unavailable states ([run](https://github.com/Matte2599/WebFence/actions/runs/35870058803)).
-
-The macOS bundle includes a [temporary Qt Cocoa correction](DOCS/en/ADR-006-QT-COCOA.md) for the reproduced assistive crash; compact layout checked at 200% and [CI passed on all four targets](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Actual screen-reader and distribution trials remain open.
-
-The new Cocoa extension with stable AX references passed a local 10,000 → 1 → 0 → 10,000 filter sequence for 30 rounds, with focus and press on the first cell. [macOS 15/26 CI](https://github.com/Matte2599/WebFence/actions/runs/35975333332) passes the blocking AX test; actual VoiceOver remains open; [evidence](DOCS/evidence/macos-ax-table-reset-2026-09-24.md).
-
-The macOS bundle now collects [provenance and available notices](DOCS/en/M0-PACKAGING.md), explicitly recording materials still missing for distribution.
-
-Procedures for [Debian and Windows packaging](DOCS/en/ADR-007-PACKAGING.md) are also available. Verified amd64/arm64 `.deb` files in separate Debian runtimes and the Windows ZIP with system-only PATH; [CI `32655b0`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35877356234). Development packages: real-desktop trials and full distribution-material review remain open.
-
-The [prolonged stability procedure](DOCS/en/M0-STABILITY.md) repeats GUI flows and records Go memory/RSS. Updated Cocoa session completed: over 30 minutes without crashes or AX warnings and without observed sustained RSS growth. Uneven cadence and limitations documented; actual reader trials remain open.
-
+**The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 
 ## Why WebFence
 
@@ -48,7 +33,7 @@ All these capabilities are **planned**. Milestones and acceptance criteria are i
 
 **Go is the recommended language for the core and native desktop application**, with Qt Widgets/MIQT selected for the GUI. The first deployment will target a single operator. SQLite is the proposed local store. The scanning browser and AI inference will run as separate components when needed; a CLI can reuse the core later.
 
-Rust remains an option for bounded components if measurements justify it. The comparison and reconsideration criteria are in the [language ADR](DOCS/en/ADR-001-LANGUAGE.md). Desktop delivery is confirmed; the toolkit still needs accessibility, performance and packaging validation.
+Rust remains an option for bounded components if measurements justify it. The comparison and reconsideration criteria are in the [language ADR](DOCS/en/ADR-001-LANGUAGE.md). Desktop delivery is confirmed; consult the [M0 matrix](DOCS/en/M0-VALIDATION.md) for toolkit verification.
 
 ## Product principles
 
@@ -75,29 +60,7 @@ CGO_CXXFLAGS='-O2 -g -std=c++17' go run ./cmd/webfence
 
 On Apple Silicon macOS, create a local bundle with `sh scripts/package-macos.sh`. This is a GUI laboratory: `.invalid` URLs are inert text. The development build is not a signed/notarized installer.
 
-Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and derivatives on x86-64/ARM64. Actual support depends on the [M0 matrix](DOCS/en/QT-DESKTOP.md). The [UX direction](DOCS/en/UX.md) calls for a restrained, traditional desktop, guided workflow and progressively available advanced tools.
-
-Dependency materials: [source and notice collector](DOCS/en/M0-SOURCE-MATERIALS.md) verified against 15 upstream archives; optional attachment of 258 notices before macOS bundle signing. Each new macOS bundle also declares the [minimum OS derived from its own binaries](DOCS/en/M0-PACKAGING.md#artifact-declared-minimum-system-version). Distribution review remains open.
-
-Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with recipes bound to binaries and documented integrity checks; optional original archive attachment in the ZIP. The winpthreads Git source has an [automated offline check](DOCS/evidence/windows-vcs-2026-09-24.md) passed locally and in [CI `8391cf8`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35942924645). [Initial Windows CI](https://github.com/Matte2599/WebFence/actions/runs/35933571589) checked 74 notices; selection now covers 136 files bound to MSYS2 archives; completeness and legal review remain open.
-
-The [eight detached Windows source signatures](DOCS/evidence/windows-signatures-2026-09-24.md) pass offline OpenPGP verification with pinned public keys; [CI `2cd9022`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35945996095). Signer identity and legal review remain open.
-
-A [published-checksum lock](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) now binds the exact versions of 22 Windows binary packages: dependency changes require explicit review. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) passed six jobs on the first attempt; the lock does not establish PGP signatures or legal compliance.
-
-The [22 Windows binary package signatures](DOCS/evidence/windows-binary-signatures-2026-09-24.md) verify offline against the original archives, using a public key derived from the pinned MSYS2 keyring; packaging now repeats the check and retains evidence in the ZIP. Local trial and 77 Python tests passed; [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust, licensing and real desktop trials remain open.
-
-The [Windows ZIP PE inventory](DOCS/evidence/windows-pe-import-inventory-2026-09-24.md) records static imports of all 44 PE files and verifies all 43 DLLs in the extracted package; [CI `e4247b3`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35949425830). Fifteen shipped Qt files are identified; embedded code, dynamic loads and clean Windows 10/11 desktop trials still require review.
-
-The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) passed six jobs on the first attempt. The check of 27 Qt license-text references passes locally and in [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509), six green jobs; license completeness and legal review remain open.
-
-The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
-
-Verified locally and in [macOS 15 CI](https://github.com/Matte2599/WebFence/actions/runs/35916839178) [Cocoa plugin rebuilding and replacement](DOCS/en/M0-QT-REPLACEMENT.md) using materials shipped in the bundle, retaining the same Go build.
-
-A separate [macOS native source package](DOCS/en/M0-SOURCE-MATERIALS.md#macos-source-package-accompanying-the-bundle) can now assemble archives, patches and hashes bound to the bundle.
-
-Development packages include IT/EN documentation; packaging checks local file links.
+Requested platforms: Apple Silicon macOS, Windows 10/11 x86-64, Debian and derivatives on x86-64/ARM64. The [UX direction](DOCS/en/UX.md) calls for a restrained, traditional desktop, guided workflow and progressively available advanced tools. Verification status, distribution materials and human prerequisites are in the [M0 matrix](DOCS/en/M0-VALIDATION.md).
 
 ## License and author
 
