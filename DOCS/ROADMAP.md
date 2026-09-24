@@ -80,7 +80,7 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 Riferimenti Qt Windows: controllo automatico di 27 percorsi `LicenseFile`/`LicenseFiles` nei sidecar selezionati, confinati alla sottocartella dei protocolli e legati ai testi inclusi. Prova sul pacchetto originale e 64 test Python locali superati; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): sei job verdi al primo tentativo, incluso Windows. M0-02 resta aperto per componenti incorporati, desktop reali, firme e revisione legale.
 
-Verifica Git Windows del 2026-09-24: [winpthreads verificato offline in modo automatico](evidence/windows-vcs-2026-09-24.md) tramite lock di archivio, ricetta, pack, commit e tar. Nuova raccolta locale dei 21 archivi: 104 input verificati, otto firme `SKIP` ancora non verificate; allegato completo e rifiuto della raccolta precedente con VCS non verificato. 68 test Python locali superati; CI del codice in attesa. M0-02/06 restano aperti per firme, componenti incorporati, revisione legale e collaudi desktop reali.
+Verifica Git Windows del 2026-09-24: [winpthreads verificato offline in modo automatico](evidence/windows-vcs-2026-09-24.md) tramite lock di archivio, ricetta, pack, commit e tar. Nuova raccolta locale dei 21 archivi: 104 input verificati, otto firme `SKIP` ancora non verificate; allegato completo e rifiuto della raccolta precedente con VCS non verificato. 68 test Python locali superati; [CI `8391cf8`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35942924645), incluso lo ZIP Windows estratto. M0-02/06 restano aperti per firme, componenti incorporati, revisione legale e collaudi desktop reali.
 
 ### M1 — Alpha tradizionale controllata
 
@@ -229,7 +229,7 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 
 Windows Qt references: automated check of 27 `LicenseFile`/`LicenseFiles` paths in selected sidecars, confined to the protocol subtree and bound to included texts. Trial on the original package and 64 local Python tests passed; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): six jobs passed on the first attempt, including Windows. M0-02 remains open for embedded components, real desktops, signatures and legal review.
 
-Windows Git verification on 2026-09-24: [winpthreads verified automatically offline](evidence/windows-vcs-2026-09-24.md) using an archive, recipe, pack, commit and tar lock. New local collection of the 21 archives: 104 verified inputs, eight `SKIP` signatures still unverified; full attachment and rejection of the earlier collection with unverified VCS. 68 local Python tests passed; changed-code CI is pending. M0-02/06 remain open for signatures, embedded components, legal review and real desktop trials.
+Windows Git verification on 2026-09-24: [winpthreads verified automatically offline](evidence/windows-vcs-2026-09-24.md) using an archive, recipe, pack, commit and tar lock. New local collection of the 21 archives: 104 verified inputs, eight `SKIP` signatures still unverified; full attachment and rejection of the earlier collection with unverified VCS. 68 local Python tests passed; [CI `8391cf8` passed six jobs](https://github.com/Matte2599/WebFence/actions/runs/35942924645), including the extracted Windows ZIP. M0-02/06 remain open for signatures, embedded components, legal review and real desktop trials.
 
 ### M1 — Controlled traditional alpha
 
