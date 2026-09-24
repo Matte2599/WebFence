@@ -111,7 +111,7 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
         shutil.copyfile(source_for("qoffscreen.dll"), bundle / "platforms/qoffscreen.dll")
         (bundle / "qt.conf").write_text("[Paths]\nPrefix=.\nPlugins=.\n", encoding="utf-8")
         queue = [bundle / "webfence.exe", *bundle.rglob("*.dll")]
-        seen, system_imports = set(), set()
+        seen, system_imports, pe_imports = set(), set(), {}
         system = Path(os.environ["SystemRoot"]) / "System32"
         while queue:
             binary = queue.pop()
@@ -123,7 +123,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 raise ValueError("Expected an x86-64 PE file: " + str(binary))
             if binary.name == "webfence.exe" and "(Windows GUI)" not in description:
                 raise ValueError("Build the desktop executable with -ldflags=-H=windowsgui")
-            for name in re.findall(r"DLL Name:\s*(\S+)", description):
+            imports = re.findall(r"DLL Name:\s*(\S+)", description)
+            for name in imports:
                 if not re.fullmatch(r"[a-zA-Z0-9_.+-]+\.dll", name, flags=re.I):
                     raise ValueError("Invalid imported DLL name")
                 lower = name.lower()
@@ -134,6 +135,7 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                 if not target.exists():
                     shutil.copyfile(source_for(name), target)
                 queue.append(target)
+            pe_imports[binary.relative_to(bundle).as_posix()] = sorted({name.lower() for name in imports})
 
         notices = bundle / "notices"
         subprocess.run([sys.executable, str(repo / "scripts/package-go-notices.py"),
@@ -177,8 +179,12 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
                                  "qt_license_reference_count": qt_license_references(notice_sources)}
             member = source.relative_to(prefix.parent).as_posix()
             required.setdefault(owner, {})[member] = sha(source)
-            files.append({"path": binary.relative_to(bundle).as_posix(), "sha256": digest(binary),
-                          "source_sha256": required[owner][member], "package": owner, "binary_package_member": member})
+            relative = binary.relative_to(bundle).as_posix()
+            files.append({"path": relative, "sha256": digest(binary),
+                          "source_sha256": required[owner][member], "package": owner,
+                          "binary_package_member": member, "imports": pe_imports[relative]})
+        if set(pe_imports) != {'webfence.exe', *(item['path'] for item in files)}:
+            raise ValueError('PE import inventory differs from packaged executable and DLLs')
         cache = Path(run('cygpath', '-w', '/var/cache/pacman/pkg'))
         for owner, record in owners.items():
             candidates = [p for p in cache.glob(owner + '-' + record['version'] + '-*.pkg.tar.*')
@@ -227,7 +233,8 @@ def package(prefix, executable, source_materials=None, collect_sources=None):
             "binary_lock_sha256": sha(published_lock),
             "binary_signature_lock_sha256": sha(published_signature_lock),
             "packages": owners, "system_imports": sorted(system_imports),
-            "scope": "PE import closure, installed notice/attribution sidecars and DLL/build metadata matched to cached MSYS2 archives, reviewed SHA-256 checksums and offline package signatures; not full source compliance, independent signer identity or dynamic-load coverage"}, indent=2) + "\n")
+            "executable_imports": pe_imports['webfence.exe'],
+            "scope": "PE import closure and recorded static imports, installed notice/attribution sidecars and DLL/build metadata matched to cached MSYS2 archives, reviewed SHA-256 checksums and offline package signatures; not full source compliance, independent signer identity or dynamic-load coverage"}, indent=2) + "\n")
         if collect_sources:
             collect(bundle / 'native-build.json', collect_sources, zstd=str(prefix / 'bin/zstd.exe'))
             source_materials = collect_sources

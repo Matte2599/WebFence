@@ -60,17 +60,63 @@ try {
     if ($signaturePins.Count -ne $packageNames.Count) {
         throw 'Binary signature set differs from packaged owners'
     }
+    $recordedDlls = @{}
+    $rootDlls = @{}
     foreach ($file in $native.files) {
         if ($packageNames -notcontains $file.package -or $file.path.Contains('\') -or
-            $file.path.Split('/') -contains '..') {
+            $file.path.Split('/') -contains '..' -or $recordedDlls.ContainsKey($file.path) -or
+            $null -eq $file.PSObject.Properties['imports']) {
             throw "Invalid DLL package mapping: $($file.path)"
         }
+        $recordedDlls[$file.path] = $true
+        if (-not $file.path.Contains('/')) { $rootDlls[$file.path.ToLowerInvariant()] = $true }
         $binary = Join-Path $bundle $file.path
         if (-not (Test-Path -LiteralPath $binary -PathType Leaf) -or
             (Get-FileHash -Algorithm SHA256 -LiteralPath $binary).Hash -ne $file.sha256) {
             throw "Packaged DLL checksum mismatch: $($file.path)"
         }
     }
+    $actualDlls = @(Get-ChildItem -LiteralPath $bundle -Recurse -File -Filter '*.dll')
+    if ($actualDlls.Count -ne $recordedDlls.Count) {
+        throw 'Extracted DLL count differs from native inventory'
+    }
+    foreach ($binary in $actualDlls) {
+        $relative = [IO.Path]::GetRelativePath($bundle, $binary.FullName).Replace('\', '/')
+        if (-not $recordedDlls.ContainsKey($relative)) {
+            throw "Uninventoried DLL in extracted ZIP: $relative"
+        }
+    }
+    if ($null -eq $native.PSObject.Properties['executable_imports']) {
+        throw 'Missing executable import inventory'
+    }
+    $systemImports = @{}
+    foreach ($name in @($native.system_imports)) {
+        if ($name -cnotmatch '^[a-z0-9_.+-]+\.dll$' -or $systemImports.ContainsKey($name)) {
+            throw "Invalid system import: $name"
+        }
+        $systemImports[$name] = $true
+    }
+    $importRecords = @(@{ path = 'webfence.exe'; names = $native.executable_imports })
+    foreach ($file in $native.files) {
+        $importRecords += @{ path = $file.path; names = $file.imports }
+    }
+    foreach ($record in $importRecords) {
+        $seenImports = @{}
+        foreach ($name in @($record.names)) {
+            if ($name -cnotmatch '^[a-z0-9_.+-]+\.dll$' -or $seenImports.ContainsKey($name)) {
+                throw "Invalid or duplicate PE import in $($record.path): $name"
+            }
+            $seenImports[$name] = $true
+            if (-not $systemImports.ContainsKey($name) -and -not $rootDlls.ContainsKey($name)) {
+                throw "Unresolved PE import in $($record.path): $name"
+            }
+        }
+    }
+    $qtFiles = @($native.files | Where-Object { $_.package -eq 'mingw-w64-ucrt-x86_64-qt6-base' } |
+        ForEach-Object { $_.path } | Sort-Object)
+    if ($qtFiles.Count -lt 1) { throw 'No Qt DLLs in the extracted ZIP inventory' }
+    Write-Output "PASS extracted ZIP DLL and static-import inventory: $($actualDlls.Count) DLLs, $($importRecords.Count) PE files"
+    Write-Output "Qt files in extracted ZIP: $($qtFiles -join ', ')"
     $noticeCount = 0
     foreach ($owner in $packageNames) {
         $record = $native.packages.PSObject.Properties[$owner].Value
