@@ -1,0 +1,19 @@
+# Debian Orca headless trial / Prova Orca Debian senza display fisico
+
+[Roadmap](../ROADMAP.md) · [Matrice IT](../it/M0-VALIDATION.md) · [EN matrix](../en/M0-VALIDATION.md) · [AT-SPI baseline](debian-atspi-2026-09-24.md)
+
+## Italiano
+
+Il 2026-09-24 il `.deb` ARM64 di sviluppo già usato per la prova AT-SPI (SHA-256 `3caf2485a1cf5da36b89f655a3b07be247154cf798282773a98aac5510906e14`) è stato avviato, come utente non privilegiato, in Debian 12.15 ARM64 su Docker Desktop, senza rete. L'ambiente temporaneo usava Xvfb, Openbox, D-Bus privato, Qt 6.4.2, Orca 43.1 e xdotool. `HOME`, `XDG_CONFIG_HOME` e `XDG_RUNTIME_DIR` erano isolati; nessuna preferenza personale è stata modificata. La sola destinazione visibile nelle fixture è `example.invalid`, non contattata.
+
+Con `orca --disable=speech --debug-file=…`, per EN e IT il client AT-SPI ha ripetuto la sequenza 0 → 10.000 → 1 → 0 → 10.000 righe e ha letto di nuovo la prima cella `DEMO-00001`. Dopo F6, Home e Freccia giù inviati via xdotool, il debug di Orca ha registrato il focus sulla cella `DEMO-00002`, il nome localizzato della tabella e la generazione del contenuto della riga: `Low`/`Synthetic` in EN, `Bassa`/`Sintetica` in IT, oltre a ID e URL sintetico. Il log applicativo era vuoto in entrambe le prove. Questi dati mostrano che Orca riceve e interpreta eventi/celle in questo ambiente; **non** attestano un annuncio udibile, perché la voce era disattivata.
+
+Due tentativi separati con `orca --enable=speech`, il secondo con Speech Dispatcher 0.11.4 avviato in configurazione privata e modulo `dummy`, hanno generato nel log un comando vocale per la finestra iniziale, ma non per la navigazione della riga. WebFence ha scritto tre errori `QSpiApplication::keyEventError` con `org.freedesktop.DBus.Error.NoReply`; la causa non è isolata. Lo stesso input senza Orca non ha prodotto errori. Non si attribuisce il timeout al prodotto o al backend audio senza una prova ulteriore. Questa prova headless non sostituisce Orca su un desktop Debian reale, né VoiceOver/NVDA o il riesame del difetto AX Cocoa. M0-01 resta parziale.
+
+## English
+
+On 2026-09-24, the ARM64 development `.deb` already used for the AT-SPI trial (SHA-256 `3caf2485a1cf5da36b89f655a3b07be247154cf798282773a98aac5510906e14`) ran as an unprivileged user on Debian 12.15 ARM64 in Docker Desktop, with no network. The temporary environment used Xvfb, Openbox, private D-Bus, Qt 6.4.2, Orca 43.1 and xdotool. `HOME`, `XDG_CONFIG_HOME` and `XDG_RUNTIME_DIR` were isolated; no personal preference was changed. The fixtures displayed only `example.invalid`, which was not contacted.
+
+With `orca --disable=speech --debug-file=…`, the AT-SPI client repeated the 0 → 10,000 → 1 → 0 → 10,000 row sequence in EN and IT and again read the first `DEMO-00001` cell. After xdotool sent F6, Home and Down, Orca's debug log recorded focus on cell `DEMO-00002`, the localized table name and generation of the row content: `Low`/`Synthetic` in EN, `Bassa`/`Sintetica` in IT, plus the synthetic ID and URL. The application log was empty in both trials. This shows Orca receiving and interpreting events/cells in this environment; it **does not** establish audible announcements because speech was disabled.
+
+Two separate `orca --enable=speech` attempts, the second with Speech Dispatcher 0.11.4 in a private configuration using its `dummy` module, logged a speech command for the initial window but not row navigation. WebFence logged three `QSpiApplication::keyEventError` errors with `org.freedesktop.DBus.Error.NoReply`; the cause has not been isolated. The same input without Orca produced no errors. The timeout is not attributed to the product or audio backend without more evidence. This headless trial does not replace Orca on a real Debian desktop, VoiceOver/NVDA, or rechecking the Cocoa AX defect. M0-01 remains partial.

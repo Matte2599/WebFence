@@ -92,6 +92,10 @@ Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/wind
 
 [Inventario PE dello ZIP Windows](evidence/windows-pe-import-inventory-2026-09-24.md): `native-build.json` registra gli import statici di 44 PE, il test dello ZIP estratto confronta 43 DLL con l'inventario e controlla la chiusura. [CI `e4247b3`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35949425830): 15 file Qt effettivamente inclusi, `qjpeg.dll` presente e `qsqlite.dll` assente; 21 archivi sorgente e runtime isolato passati. Caricamento dinamico, componenti incorporati, desktop puliti, minimi OS e revisione legale restano aperti; M0-02/06 parziali.
 
+[Moduli runtime Windows](evidence/windows-runtime-modules-2026-09-24.md): lo ZIP estratto campiona i moduli durante i soak offscreen e nativo, dopo `Process.Refresh()`, e li confronta con l'inventario. [CI `a9a8e5c`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110/109 campioni, plugin Qt attesi osservati e nessun percorso esterno registrato. Il tentativo `18c223a` aveva fallito la verifica senza refresh; caricamenti transitori e desktop puliti ancora aperti. M0-02/06 parziali.
+
+[Orca Debian headless](evidence/debian-orca-headless-2026-09-24.md): prova locale IT/EN con voce disattivata sul `.deb` ARM64; Orca riceve il focus e genera i contenuti localizzati della riga sintetica. Con voce attiva il test incontra timeout D-Bus; nessun annuncio udibile verificato. Desktop reale e riesame AX Cocoa restano necessari; M0-01 parziale.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -250,6 +254,10 @@ Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-
 [Windows Qt imports](evidence/windows-qt-system-imports-2026-09-24.md): source `PKGBUILD` linked to the signed binary's `.BUILDINFO`; eight system-library options have matching dynamic PE imports in examined package components. Local read-only trial. Compare with the ZIP plugin inventory; embedded code and legal review remain open. M0-02/06 unchanged.
 
 [Windows ZIP PE inventory](evidence/windows-pe-import-inventory-2026-09-24.md): `native-build.json` records static imports for 44 PE files; the extracted-ZIP trial compares 43 DLLs with the inventory and checks closure. [CI `e4247b3`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35949425830): 15 Qt files actually shipped, `qjpeg.dll` included and `qsqlite.dll` absent; 21 source archives and isolated runtime passed. Dynamic loads, embedded code, clean desktops, OS minima and legal review remain open; M0-02/06 partial.
+
+[Windows runtime modules](evidence/windows-runtime-modules-2026-09-24.md): the extracted ZIP samples modules during offscreen and native soaks, after `Process.Refresh()`, and compares them with the inventory. [CI `a9a8e5c`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110/109 samples, expected Qt plugins observed and no external paths recorded. The `18c223a` attempt failed this check without refresh; transient loads and clean desktops remain open. M0-02/06 partial.
+
+[Headless Debian Orca](evidence/debian-orca-headless-2026-09-24.md): local EN/IT trial with speech disabled on the ARM64 `.deb`; Orca receives focus and generates localized synthetic row content. With speech enabled the trial encounters D-Bus timeouts; no audible announcement was verified. A real desktop and Cocoa AX recheck remain necessary; M0-01 partial.
 
 ### M1 — Controlled traditional alpha
 
