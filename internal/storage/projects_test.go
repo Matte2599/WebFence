@@ -414,12 +414,71 @@ func TestV1ProjectStoreMigratesToRevisionOne(t *testing.T) {
 		t.Fatalf("migrated project: %+v %v", loaded.Record(), err)
 	}
 	var version int
-	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 2 {
+	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 3 {
 		t.Fatalf("schema version after migration: %d %v", version, err)
 	}
 	history, err := s.ListAuthorizationRevisions(t.Context(), "migrated")
 	if err != nil || len(history) != 1 || history[0].Origins[0] != "https://lab.invalid:443" {
 		t.Fatalf("migrated history: %+v %v", history, err)
+	}
+}
+
+func TestV2ProjectStoreMigratesToRevocationState(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "v2.sqlite")
+	db, err := sql.Open("sqlite3", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = db.ExecContext(t.Context(), `CREATE TABLE projects (
+		id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL,
+		current_revision INTEGER NOT NULL CHECK (current_revision >= 1));
+		CREATE TABLE authorization_revisions (
+		project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+		revision INTEGER NOT NULL CHECK (revision >= 1), target_owner TEXT NOT NULL,
+		authorization_reference TEXT NOT NULL,
+		authorization_confirmed INTEGER NOT NULL CHECK (authorization_confirmed = 1),
+		expires_at TEXT NOT NULL, PRIMARY KEY (project_id, revision));
+		CREATE TABLE authorization_origins (
+		project_id TEXT NOT NULL, revision INTEGER NOT NULL,
+		position INTEGER NOT NULL CHECK (position >= 0 AND position < 32), origin TEXT NOT NULL,
+		PRIMARY KEY (project_id, revision, position), UNIQUE (project_id, revision, origin),
+		FOREIGN KEY (project_id, revision) REFERENCES authorization_revisions(project_id, revision) ON DELETE CASCADE);
+		INSERT INTO projects VALUES ('migrated-v2', 'Migrated fixture', 2);
+		INSERT INTO authorization_revisions VALUES ('migrated-v2', 1, 'Fixture owner', 'v2 approval', 1, '2100-01-01T00:00:00Z');
+		INSERT INTO authorization_revisions VALUES ('migrated-v2', 2, 'Fixture owner', 'v2 renewal', 1, '2101-01-01T00:00:00Z');
+		INSERT INTO authorization_origins VALUES ('migrated-v2', 1, 0, 'https://lab.invalid:443');
+		INSERT INTO authorization_origins VALUES ('migrated-v2', 2, 0, 'https://renewed.invalid:443');
+		PRAGMA user_version = 2`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(path, 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	s := openFixture(t, path)
+	loaded, err := s.LoadProject(t.Context(), "migrated-v2")
+	if err != nil || loaded.Revoked() || loaded.Revision() != 2 || loaded.Origins()[0] != "https://renewed.invalid:443" {
+		t.Fatalf("v2 migration: revision=%d revoked=%v err=%v", loaded.Revision(), loaded.Revoked(), err)
+	}
+	history, err := s.ListAuthorizationRevisions(t.Context(), "migrated-v2")
+	if err != nil || len(history) != 2 || history[0].Revoked || history[1].Revoked ||
+		history[0].Origins[0] != "https://lab.invalid:443" || history[1].Origins[0] != "https://renewed.invalid:443" {
+		t.Fatalf("v2 history after migration: %+v %v", history, err)
+	}
+	var version int
+	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 3 {
+		t.Fatalf("schema version after v2 migration: %d %v", version, err)
+	}
+	if _, err := s.RevokeAuthorization(t.Context(), "migrated-v2", 2); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.BeginRun(t.Context(), "migrated-v2"); !errors.Is(err, project.ErrAuthorizationRevoked) {
+		t.Fatalf("migrated project revocation ineffective: %v", err)
 	}
 }
 

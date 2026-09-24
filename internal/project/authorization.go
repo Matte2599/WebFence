@@ -4,6 +4,7 @@
 package project
 
 import (
+	"context"
 	"errors"
 	"math"
 	"net/url"
@@ -22,6 +23,7 @@ var (
 	ErrInvalidProject       = errors.New("project_invalid_configuration")
 	ErrAuthorizationMissing = errors.New("project_authorization_not_confirmed")
 	ErrAuthorizationExpired = errors.New("project_authorization_expired")
+	ErrAuthorizationRevoked = errors.New("project_authorization_revoked")
 )
 
 // Draft is local operator input. TargetOwner and AuthorizationReference are
@@ -51,6 +53,7 @@ type AuthorizationDraft struct {
 type Project struct {
 	id                     string
 	revision               uint64
+	revoked                bool
 	name                   string
 	targetOwner            string
 	authorizationReference string
@@ -67,6 +70,7 @@ type RunScope struct {
 	revision  uint64
 	expiresAt time.Time
 	policy    scope.Policy
+	lifecycle context.Context // optional managed-run cancellation, never replaceable
 }
 
 func New(d Draft) (Project, error) { return newAt(d, time.Now()) }
@@ -91,6 +95,17 @@ func RestoreRevision(d Draft, revision uint64) (Project, error) {
 		return Project{}, err
 	}
 	p.revision = revision
+	return p, nil
+}
+
+// RestoreRevokedRevision retains a revoked declaration for audit and renewal,
+// but BeginRun refuses it. Only trusted persistence should restore state.
+func RestoreRevokedRevision(d Draft, revision uint64) (Project, error) {
+	p, err := RestoreRevision(d, revision)
+	if err != nil {
+		return Project{}, err
+	}
+	p.revoked = true
 	return p, nil
 }
 
@@ -134,6 +149,21 @@ func build(d Draft, now time.Time, requireCurrent bool) (Project, error) {
 func (p Project) ID() string       { return p.id }
 func (p Project) Name() string     { return p.name }
 func (p Project) Revision() uint64 { return p.revision }
+func (p Project) Revoked() bool    { return p.revoked }
+
+// RevokeAuthorization returns a new, non-runnable revision while retaining the
+// descriptive record and origins. A fresh confirmed revision may reactivate it.
+func (p Project) RevokeAuthorization() (Project, error) {
+	if p.id == "" || p.revision == 0 || p.revision >= math.MaxInt64 {
+		return Project{}, ErrInvalidProject
+	}
+	if p.revoked {
+		return Project{}, ErrAuthorizationRevoked
+	}
+	p.revision++
+	p.revoked = true
+	return p, nil
+}
 
 // ReviseAuthorization validates a fresh operator declaration and returns a
 // distinct immutable project. Persistence must compare-and-swap the revision.
@@ -172,13 +202,17 @@ func (p Project) Record() Draft {
 // Origins returns a copy; callers cannot widen the stored policy.
 func (p Project) Origins() []string { return append([]string(nil), p.origins...) }
 
-// BeginRun rechecks expiry before creating an immutable run scope. Calling it
-// does not start a scan or grant permission to open a socket.
+// BeginRun rechecks expiry and revocation before creating an immutable scope.
+// It does not register the run for later store changes; use Store.BeginRun for
+// managed work. It does not start a scan or grant permission to open a socket.
 func (p Project) BeginRun() (RunScope, error) { return p.beginAt(time.Now()) }
 
 func (p Project) beginAt(now time.Time) (RunScope, error) {
 	if p.id == "" {
 		return RunScope{}, ErrInvalidProject
+	}
+	if p.revoked {
+		return RunScope{}, ErrAuthorizationRevoked
 	}
 	if !now.Before(p.expiresAt) {
 		return RunScope{}, ErrAuthorizationExpired
@@ -188,6 +222,20 @@ func (p Project) beginAt(now time.Time) (RunScope, error) {
 
 func (r RunScope) ProjectID() string { return r.projectID }
 func (r RunScope) Revision() uint64  { return r.revision }
+
+// BindLifecycle returns a scope that also denies work when ctx is canceled.
+// A bound lifecycle cannot be replaced or removed from a copied RunScope.
+func (r RunScope) BindLifecycle(ctx context.Context) (RunScope, error) {
+	if r.projectID == "" || ctx == nil || r.lifecycle != nil {
+		return RunScope{}, ErrInvalidProject
+	}
+	r.lifecycle = ctx
+	return r, nil
+}
+
+// Lifecycle is nil for an unmanaged snapshot. Authorized brokers watch it to
+// interrupt in-flight I/O as well as checking the scope before every hop.
+func (r RunScope) Lifecycle() context.Context { return r.lifecycle }
 
 // ExpiresAt is the fixed deadline of this run snapshot. The returned time
 // cannot extend it; CheckOrigin and Validate always use the stored deadline.
@@ -200,6 +248,16 @@ func (r RunScope) Validate() error { return r.validateAt(time.Now()) }
 func (r RunScope) validateAt(now time.Time) error {
 	if r.projectID == "" {
 		return ErrInvalidProject
+	}
+	if r.lifecycle != nil && r.lifecycle.Err() != nil {
+		cause := context.Cause(r.lifecycle)
+		if errors.Is(cause, ErrAuthorizationRevoked) {
+			return ErrAuthorizationRevoked
+		}
+		if errors.Is(cause, ErrAuthorizationExpired) {
+			return ErrAuthorizationExpired
+		}
+		return r.lifecycle.Err()
 	}
 	if !now.Before(r.expiresAt) {
 		return ErrAuthorizationExpired

@@ -77,6 +77,7 @@ type LabBroker struct {
 	roots      *x509.CertPool // fixture roots are injected only by same-package tests
 	permit     project.RunScope
 	authorized bool
+	stopPermit func() bool
 }
 
 func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolver) (*LabBroker, error) {
@@ -134,11 +135,19 @@ func NewAuthorizedLab(ctx context.Context, permit project.RunScope, grants []Gra
 	}
 	b.permit = permit
 	b.authorized = true
+	if lifecycle := permit.Lifecycle(); lifecycle != nil {
+		b.stopPermit = context.AfterFunc(lifecycle, b.cancel)
+	}
 	return b, nil
 }
 
-func origin(u *url.URL) string         { return u.Scheme + "://" + u.Host }
-func (b *LabBroker) Close()            { b.cancel() }
+func origin(u *url.URL) string { return u.Scheme + "://" + u.Host }
+func (b *LabBroker) Close() {
+	b.cancel()
+	if b.stopPermit != nil {
+		b.stopPermit()
+	}
+}
 func (b *LabBroker) RequestsUsed() int { b.mu.Lock(); defer b.mu.Unlock(); return b.used }
 
 func (b *LabBroker) contextError(ctx context.Context) error {
@@ -148,6 +157,9 @@ func (b *LabBroker) contextError(ctx context.Context) error {
 		}
 	}
 	if err := b.ctx.Err(); err != nil {
+		if errors.Is(context.Cause(b.ctx), project.ErrAuthorizationRevoked) {
+			return project.ErrAuthorizationRevoked
+		}
 		return err
 	}
 	return ctx.Err()

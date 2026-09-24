@@ -32,7 +32,9 @@ Secondo blocco tecnico: [snapshot applicato al laboratorio HTTP](it/M1-AUTHORIZE
 
 Terzo blocco tecnico: [store SQLite v1 dei progetti](it/M1-PROJECT-STORE.md), con creazione, riapertura, elenco e cancellazione dei soli metadati. Quota disco, backup e integrazione desktop restano aperti.
 
-Quarto blocco tecnico: [revisioni e rinnovo dell'autorizzazione](it/M1-PROJECT-STORE.md) con migrazione SQLite v1→v2, cronologia immutabile e controllo di versione concorrente. La revoca delle run attive resta aperta.
+Quarto blocco tecnico: [revisioni e rinnovo dell'autorizzazione](it/M1-PROJECT-STORE.md) con migrazione SQLite v1→v2, cronologia immutabile e controllo di versione concorrente.
+
+Quinto blocco tecnico: [run gestite e revoca locale](it/M1-MANAGED-RUNS.md) su rinnovo, revoca esplicita persistente, cancellazione, chiusura e scadenza; migrazione SQLite v2→v3. Il laboratorio HTTP interrompe le richieste in corso. Coordinamento tra processi e integrazione desktop restano aperti.
 
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
@@ -129,7 +131,9 @@ Second technical block: [snapshot enforced in the HTTP lab](en/M1-AUTHORIZED-LAB
 
 Third technical block: [SQLite v1 project store](en/M1-PROJECT-STORE.md), with creation, reopening, listing and deletion of metadata only. Disk quotas, backup and desktop integration remain open.
 
-Fourth technical block: [authorization revisions and renewal](en/M1-PROJECT-STORE.md) with SQLite v1→v2 migration, immutable history and optimistic revision checks. Revoking active runs remains open.
+Fourth technical block: [authorization revisions and renewal](en/M1-PROJECT-STORE.md) with SQLite v1→v2 migration, immutable history and optimistic revision checks.
+
+Fifth technical block: [managed runs and local revocation](en/M1-MANAGED-RUNS.md) on renewal, persistent explicit revocation, deletion, close and expiry; SQLite v2→v3 migration. The HTTP lab interrupts in-flight requests. Cross-process coordination and desktop integration remain open.
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.

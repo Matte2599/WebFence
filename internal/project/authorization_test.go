@@ -1,6 +1,7 @@
 package project
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"testing"
@@ -179,5 +180,67 @@ func TestAuthorizationRevisionKeepsPreviousRunSnapshot(t *testing.T) {
 	}
 	if _, err := RestoreRevision(base, 0); !errors.Is(err, ErrInvalidProject) {
 		t.Fatalf("invalid revision restored: %v", err)
+	}
+}
+
+func TestBoundRunScopeCannotDiscardRevocation(t *testing.T) {
+	p, err := New(fixture(time.Now()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	run, err := p.BeginRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, revoke := context.WithCancelCause(context.Background())
+	bound, err := run.BindLifecycle(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := bound.BindLifecycle(context.Background()); !errors.Is(err, ErrInvalidProject) {
+		t.Fatalf("bound lifecycle replaced: %v", err)
+	}
+	revoke(ErrAuthorizationRevoked)
+	if _, err := bound.CheckOrigin("https://lab.invalid"); !errors.Is(err, ErrAuthorizationRevoked) {
+		t.Fatalf("revoked scope accepted origin: %v", err)
+	}
+	if _, err := run.CheckOrigin("https://lab.invalid"); err != nil {
+		t.Fatalf("original unmanaged snapshot unexpectedly changed: %v", err)
+	}
+}
+
+func TestRevokedRevisionCannotStartUntilFreshDeclaration(t *testing.T) {
+	p, err := New(fixture(time.Now()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	revoked, err := p.RevokeAuthorization()
+	if err != nil || !revoked.Revoked() || revoked.Revision() != 2 {
+		t.Fatalf("revoke: %+v %v", revoked.Record(), err)
+	}
+	if _, err := revoked.BeginRun(); !errors.Is(err, ErrAuthorizationRevoked) {
+		t.Fatalf("revoked revision started a run: %v", err)
+	}
+	if _, err := revoked.RevokeAuthorization(); !errors.Is(err, ErrAuthorizationRevoked) {
+		t.Fatalf("duplicate revoke: %v", err)
+	}
+	change := AuthorizationDraft{
+		TargetOwner: "Fixture owner", AuthorizationReference: "fresh approval",
+		AuthorizationConfirmed: true, AuthorizationExpiresAt: time.Now().Add(time.Hour),
+		Origins: []string{"https://new.invalid"},
+	}
+	active, err := revoked.ReviseAuthorization(change)
+	if err != nil || active.Revoked() || active.Revision() != 3 {
+		t.Fatalf("fresh declaration: %+v %v", active.Record(), err)
+	}
+	if _, err := active.BeginRun(); err != nil {
+		t.Fatal(err)
+	}
+	restored, err := RestoreRevokedRevision(revoked.Record(), 2)
+	if err != nil || !restored.Revoked() {
+		t.Fatalf("restore revoked: %v", err)
+	}
+	if _, err := restored.BeginRun(); !errors.Is(err, ErrAuthorizationRevoked) {
+		t.Fatalf("restored revoked revision started: %v", err)
 	}
 }

@@ -2,7 +2,7 @@
 
 [English](../en/DATA-AND-RETEST.md) · [Indice](../README.md)
 
-Stato: modello logico M1–M4; il solo [schema v2 dei metadati di progetto e revisioni di autorizzazione](M1-PROJECT-STORE.md) è implementato. Le altre entità, la conservazione completa e il retest sono pianificati. Driver SQLite e prove temporanee M0 in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
+Stato: modello logico M1–M4; il solo [schema v3 dei metadati di progetto e revisioni di autorizzazione](M1-PROJECT-STORE.md), inclusa la revoca, è implementato. Le altre entità, la conservazione completa e il retest sono pianificati. Driver SQLite e prove temporanee M0 in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
 
 ## Entità
 
