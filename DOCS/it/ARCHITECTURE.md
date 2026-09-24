@@ -49,7 +49,7 @@ La tabella descrive i contratti completi pianificati. `internal/scope` e `intern
 
 ## Persistenza e processi esterni
 
-SQLite è scelto (ADR-004) per metadati, futura coda e osservazioni; file separati per prove voluminose. Lo store M1 implementa una prima versione dello schema per i soli progetti, con foreign key; migrazioni successive e quota disco sono ancora da realizzare. Un checkpoint e lo stato della futura coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
+SQLite è scelto (ADR-004) per metadati, futura coda e osservazioni; file separati per prove voluminose. Lo store M1 implementa lo schema v2 per i soli progetti, con migrazione transazionale dalla v1, revisioni di autorizzazione e foreign key; quota disco e migrazioni successive sono ancora da realizzare. Un checkpoint e lo stato della futura coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
 
 Credenziali e chiavi private nel portachiavi del sistema o in un contenitore cifrato sbloccato dall'operatore. Il database contiene riferimenti, non segreti in chiaro. La cifratura di SQLite non è automatica: scegliere esplicitamente una libreria compatibile e documentare cosa rimane nei metadati.
 

@@ -49,7 +49,7 @@ The table describes planned complete contracts. `internal/scope` and `internal/t
 
 ## Persistence and external processes
 
-SQLite is selected (ADR-004) for metadata and the future queue and observation store; separate files will hold larger evidence. The M1 store implements an initial schema version for projects only, with foreign keys; later migrations and disk quotas remain open. Save a checkpoint and future queue state in one transaction when they describe the same progress. Write files to staging first, then promote them atomically; recovery removes orphans without deleting referenced evidence.
+SQLite is selected (ADR-004) for metadata and the future queue and observation store; separate files will hold larger evidence. The M1 store implements schema v2 for projects only, with transactional migration from v1, authorization revisions and foreign keys; disk quotas and later migrations remain open. Save a checkpoint and future queue state in one transaction when they describe the same progress. Write files to staging first, then promote them atomically; recovery removes orphans without deleting referenced evidence.
 
 Keep credentials and private keys in the system keychain or an encrypted container unlocked by the operator. The database stores references, not plaintext secrets. SQLite encryption is not automatic: choose a compatible library explicitly and document metadata exposure.
 

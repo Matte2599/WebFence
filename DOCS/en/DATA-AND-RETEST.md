@@ -2,7 +2,7 @@
 
 [Italiano](../it/DATA-AND-RETEST.md) · [Index](../README.md)
 
-Status: M1–M4 logical model; only the [v1 project-metadata schema](M1-PROJECT-STORE.md) is implemented. The other entities, complete retention and retesting remain planned. SQLite driver selection and temporary M0 experiments are in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
+Status: M1–M4 logical model; only the [v2 project-metadata and authorization-revision schema](M1-PROJECT-STORE.md) is implemented. The other entities, complete retention and retesting remain planned. SQLite driver selection and temporary M0 experiments are in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
 
 ## Entities
 

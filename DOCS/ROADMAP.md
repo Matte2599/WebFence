@@ -32,6 +32,8 @@ Secondo blocco tecnico: [snapshot applicato al laboratorio HTTP](it/M1-AUTHORIZE
 
 Terzo blocco tecnico: [store SQLite v1 dei progetti](it/M1-PROJECT-STORE.md), con creazione, riapertura, elenco e cancellazione dei soli metadati. Quota disco, backup e integrazione desktop restano aperti.
 
+Quarto blocco tecnico: [revisioni e rinnovo dell'autorizzazione](it/M1-PROJECT-STORE.md) con migrazione SQLite v1→v2, cronologia immutabile e controllo di versione concorrente. La revoca delle run attive resta aperta.
+
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
 - [ ] Persistenza, ripristino dopo crash, limiti disco e cancellazione base del progetto.
@@ -126,6 +128,8 @@ First technical block: [in-memory project model and authorization declaration](e
 Second technical block: [snapshot enforced in the HTTP lab](en/M1-AUTHORIZED-LAB.md) on every hop and at expiry, still loopback-only. Full policies and production transport remain to be built.
 
 Third technical block: [SQLite v1 project store](en/M1-PROJECT-STORE.md), with creation, reopening, listing and deletion of metadata only. Disk quotas, backup and desktop integration remain open.
+
+Fourth technical block: [authorization revisions and renewal](en/M1-PROJECT-STORE.md) with SQLite v1→v2 migration, immutable history and optimistic revision checks. Revoking active runs remains open.
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.
