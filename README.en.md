@@ -10,6 +10,8 @@ The [first M1 block](DOCS/en/M1-PROJECT-AUTHORIZATION.md) adds a project model a
 
 The [M1 lab](DOCS/en/M1-AUTHORIZED-LAB.md) enforces that snapshot in the loopback-only HTTP transport, including after redirects and at expiry.
 
+The [M1 project store](DOCS/en/M1-PROJECT-STORE.md) keeps metadata in SQLite and reloads it after reopening; the GUI does not use it yet.
+
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 
 ## Why WebFence
@@ -31,11 +33,11 @@ WebFence is intended to assess authorized websites and APIs, connect each findin
 | Project memory | Retain inventory and history until deletion; handle credentials and raw evidence under separate retention policies. |
 | Fix validation | Targeted retests, baseline comparisons and regression discovery within the reassessed scope. |
 
-All these capabilities are **planned**. Milestones and acceptance criteria are in the [roadmap](DOCS/ROADMAP.md).
+The table describes product goals, **not completed features**; the only implemented M1 increments are linked above. Milestones and acceptance criteria are in the [roadmap](DOCS/ROADMAP.md).
 
 ## Technical direction
 
-**Go is the recommended language for the core and native desktop application**, with Qt Widgets/MIQT selected for the GUI. The first deployment will target a single operator. SQLite is the proposed local store. The scanning browser and AI inference will run as separate components when needed; a CLI can reuse the core later.
+**Go is selected for the core and native desktop application**, with Qt Widgets/MIQT selected for the GUI. The first deployment will target a single operator. SQLite is selected for local storage; the project-metadata store is the first implemented component. The scanning browser and AI inference will run as separate components when needed; a CLI can reuse the core later.
 
 Rust remains an option for bounded components if measurements justify it. The comparison and reconsideration criteria are in the [language ADR](DOCS/en/ADR-001-LANGUAGE.md). Desktop delivery is confirmed; consult the [M0 matrix](DOCS/en/M0-VALIDATION.md) for toolkit verification.
 

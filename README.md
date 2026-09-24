@@ -10,6 +10,8 @@ Il [primo blocco M1](DOCS/it/M1-PROJECT-AUTHORIZATION.md) aggiunge un modello di
 
 Il [laboratorio M1](DOCS/it/M1-AUTHORIZED-LAB.md) applica quello snapshot al trasporto HTTP solo loopback, anche dopo i redirect e alla scadenza.
 
+Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLite e li rilegge dopo la riapertura; la GUI non lo usa ancora.
+
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 
 ## Perché WebFence
@@ -31,11 +33,11 @@ WebFence nasce per analizzare siti e API autorizzati, associare ogni problema al
 | Memoria dei progetti | Inventario e cronologia persistenti fino alla cancellazione; credenziali e prove grezze con conservazione distinta. |
 | Convalida fix | Nuovo controllo mirato, confronto con la baseline e ricerca di regressioni nel perimetro riesaminato. |
 
-Tutte queste capacità sono **pianificate**. Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
+La tabella descrive obiettivi di prodotto, **non funzionalità completate**; i soli incrementi M1 implementati sono collegati sopra. Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
 
 ## Direzione tecnica
 
-**Go è la scelta raccomandata per il core e l'applicazione desktop nativa**, con Qt Widgets/MIQT scelto per la GUI. La prima installazione sarà pensata per un singolo operatore. SQLite è la proposta per lo storage locale. Browser di scansione e inferenza AI saranno componenti separati, attivati quando necessari; una CLI potrà riutilizzare il core in seguito.
+**Go è la scelta per il core e l'applicazione desktop nativa**, con Qt Widgets/MIQT scelto per la GUI. La prima installazione sarà pensata per un singolo operatore. SQLite è scelto per lo storage locale; lo store dei soli metadati di progetto è il primo componente implementato. Browser di scansione e inferenza AI saranno componenti separati, attivati quando necessari; una CLI potrà riutilizzare il core in seguito.
 
 Rust rimane un'opzione per componenti circoscritti se misure reali ne giustificheranno l'introduzione. Il confronto e le condizioni per rivedere la scelta sono nell'[ADR sul linguaggio](DOCS/it/ADR-001-LANGUAGE.md). La modalità desktop è confermata; per le verifiche del toolkit consultare la [matrice M0](DOCS/it/M0-VALIDATION.md).
 

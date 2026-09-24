@@ -2,7 +2,7 @@
 
 [English](../en/ADR-004-STORAGE-SIGNATURE.md) · [Indice](../README.md)
 
-Data: 2026-09-23. Stato: selezione accettata per le fondazioni M0; integrazione applicativa M1/M2 non realizzata. Il portachiavi rimane una decisione separata da verificare.
+Data: 2026-09-23. Stato: selezione accettata per le fondazioni M0; lo [store dei metadati di progetto M1](M1-PROJECT-STORE.md) è il primo uso applicativo di SQLite. Report e firma integrata restano da realizzare. Il portachiavi rimane una decisione separata da verificare.
 
 ## Decisione e alternative
 
@@ -17,11 +17,11 @@ Data: 2026-09-23. Stato: selezione accettata per le fondazioni M0; integrazione 
 
 ## Esperimento SQLite
 
-`internal/foundation/sqlite_test.go` contiene solo prove, senza store o schema del prodotto. Ogni test usa file temporanei sintetici e URI costruiti con `net/url`. Configurazione: un collegamento per pool, WAL, `synchronous=FULL`, foreign key attive, busy timeout 50 ms e `trusted_schema=OFF` applicato con hook a ogni nuova connessione.
+`internal/foundation/sqlite_test.go` contiene le prove M0, separate dallo [store di progetto](M1-PROJECT-STORE.md). Ogni test usa file temporanei sintetici e URI costruiti con `net/url`. Configurazione dell'esperimento: un collegamento per pool, WAL, `synchronous=FULL`, foreign key attive, busy timeout 50 ms e `trusted_schema=OFF` applicato con hook a ogni nuova connessione.
 
 Prove: commit/rollback, riapertura e integrità, testo Unicode e SQL trattato come parametro, foreign key, reinizializzazione dopo ricambio connessioni, lettura senza vedere scritture non committate, secondo writer respinto con `SQLITE_BUSY`, ripresa dopo rilascio lock, cancellazione di query lunga e attesa del pool. La scadenza del context non sostituisce il timeout nativo del busy handler.
 
-WAL richiede filesystem locale compatibile; niente cartelle di rete o sincronizzazione del DB attivo. Le prove non dimostrano recupero da perdita di alimentazione, backup, migrazioni, cifratura, quote o cancellazione sicura. Questi flussi e permessi/ACL dello storage reale sono lavoro M1. Non copiare un DB aperto ignorando WAL/SHM.
+WAL richiede filesystem locale compatibile; niente cartelle di rete o sincronizzazione del DB attivo. Le prove M0 non dimostravano recupero da perdita di alimentazione, backup, migrazioni, cifratura, quote o cancellazione sicura. Lo store M1 aggiunge solo la prima versione di schema e la riapertura dopo commit; gli altri flussi e i permessi/ACL sui sistemi reali restano aperti. Non copiare un DB aperto ignorando WAL/SHM.
 
 ## Contratto JWS implementato
 
