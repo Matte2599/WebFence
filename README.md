@@ -14,7 +14,7 @@ Le fondazioni includono anche prove SQLite e un componente JWS Ed25519 limitato:
 
 Il bundle macOS include una [correzione temporanea Qt Cocoa](DOCS/it/ADR-006-QT-COCOA.md) per il crash assistivo riprodotto; layout compatto verificato al 200% e [CI verde sui quattro target](https://github.com/Matte2599/WebFence/actions/runs/35873709410). Restano aperti collaudi con lettori reali e distribuzione.
 
-La nuova estensione Cocoa con riferimenti AX stabili ha superato localmente il filtro 10.000 → 1 → 0 → 10.000 per 30 cicli, con focus e pressione della prima cella. La verifica CI macOS 15/26 e VoiceOver reale restano aperti; [evidenza](DOCS/evidence/macos-ax-table-reset-2026-09-24.md).
+La nuova estensione Cocoa con riferimenti AX stabili ha superato localmente il filtro 10.000 → 1 → 0 → 10.000 per 30 cicli, con focus e pressione della prima cella. La [CI macOS 15/26](https://github.com/Matte2599/WebFence/actions/runs/35975333332) passa il test AX bloccante; VoiceOver reale resta aperto; [evidenza](DOCS/evidence/macos-ax-table-reset-2026-09-24.md).
 
 Il bundle macOS raccoglie ora [provenienza e attribuzioni disponibili](DOCS/it/M0-PACKAGING.md), segnalando esplicitamente i materiali ancora mancanti per la distribuzione.
 

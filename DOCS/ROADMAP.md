@@ -22,7 +22,7 @@ Queste spunte attestano documenti creati, non codice funzionante o revisione leg
 
 Dipende dalla fondazione documentale. **In corso.** Primo task: prototipo offline e fondazioni Go; [risultati e limiti](it/M0-DESKTOP.md).
 
-**Stato tecnico corrente:** la patch Cocoa a riferimenti stabili passa localmente 30 cicli AX con focus/pressione; il fallback del mirror GNU passa download e SHA-256. La CI del nuovo commit macOS 15/26 resta da verificare; il test AX diventa bloccante. M0-01/02/06 restano parziali per lettori e desktop reali, materiali/minimi OS e revisione legale. [Evidenza AX](evidence/macos-ax-table-reset-2026-09-24.md) · [matrice](it/M0-VALIDATION.md).
+**Stato tecnico corrente:** la patch Cocoa a riferimenti stabili passa localmente 30 cicli AX con focus/pressione; il fallback del mirror GNU passa download e SHA-256. La [CI `e2cce25`](https://github.com/Matte2599/WebFence/actions/runs/35975333332) ha sette job verdi, inclusi i test AX bloccanti e la raccolta sorgenti su macOS 15/26. M0-01/02/06 restano parziali per lettori e desktop reali, materiali/minimi OS e revisione legale. [Evidenza AX](evidence/macos-ax-table-reset-2026-09-24.md) · [matrice](it/M0-VALIDATION.md).
 
 - [x] Modulo Go/Fyne fissato, cataloghi IT/EN, fixture offline e test GUI con race detector.
 - [x] Finestra, 10.000 righe, filtri, dettaglio/copiatore evidenze e preferenza lingua persistente.
@@ -197,7 +197,7 @@ These checks represent created documents, not working code or completed legal re
 
 Depends on the documentation foundation. **In progress.** First task: offline prototype and Go foundations; [results and limitations](en/M0-DESKTOP.md).
 
-**Current technical state:** the stable-reference Cocoa patch passes 30 local AX rounds with focus/press; the GNU mirror fallback passes download and SHA-256. macOS 15/26 CI for the new commit remains pending; the AX test becomes blocking. M0-01/02/06 remain partial for real readers and desktops, materials/minimum OS versions and legal review. [AX evidence](evidence/macos-ax-table-reset-2026-09-24.md) · [matrix](en/M0-VALIDATION.md).
+**Current technical state:** the stable-reference Cocoa patch passes 30 local AX rounds with focus/press; the GNU mirror fallback passes download and SHA-256. [CI `e2cce25`](https://github.com/Matte2599/WebFence/actions/runs/35975333332) has seven passing jobs, including the blocking AX tests and source collection on macOS 15/26. M0-01/02/06 remain partial for real readers and desktops, materials/minimum OS versions and legal review. [AX evidence](evidence/macos-ax-table-reset-2026-09-24.md) · [matrix](en/M0-VALIDATION.md).
 
 - [x] Pinned Go/Fyne module, IT/EN catalogs, offline fixtures and GUI tests with race detector.
 - [x] Window, 10,000 rows, filters, evidence reader/copy and persistent language preference.
