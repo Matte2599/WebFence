@@ -279,6 +279,7 @@ try {
                 $traceUntil = [DateTime]::UtcNow.AddSeconds(20)
                 while (-not $process.HasExited -and [DateTime]::UtcNow -lt $traceUntil) {
                     try {
+                        $process.Refresh()
                         $modules = @($process.Modules)
                     } catch [System.ComponentModel.Win32Exception] {
                         if ($process.HasExited) { break }
@@ -318,6 +319,8 @@ try {
             $process.Dispose()
             Write-Output "PASS packaged $platform $trial with no MSYS2/Go in PATH and a Unicode/spaced directory"
             if ($trial -eq '--soak-test=10s') {
+                Write-Output "Observed packaged $platform modules ($moduleSamples samples): $(($loadedBundleModules.Keys | Sort-Object) -join ', ')"
+                Write-Output "External module paths for review: $(($externalModules.Keys | Sort-Object) -join ', ')"
                 $expectedPlugin = if ($platform -eq 'windows') { 'platforms/qwindows.dll' } else { 'platforms/qoffscreen.dll' }
                 foreach ($required in @('webfence.exe', 'Qt6Core.dll', 'Qt6Gui.dll', 'Qt6Widgets.dll', $expectedPlugin)) {
                     if (-not $loadedBundleModules.ContainsKey($required)) {
@@ -325,8 +328,7 @@ try {
                     }
                 }
                 if ($moduleSamples -lt 1) { throw "Packaged $platform soak produced no process module sample" }
-                Write-Output "PASS packaged $platform module samples: $moduleSamples; bundle: $(($loadedBundleModules.Keys | Sort-Object) -join ', ')"
-                Write-Output "External module paths for review: $(($externalModules.Keys | Sort-Object) -join ', ')"
+                Write-Output "PASS packaged $platform module samples: $moduleSamples; expected Qt platform plugin observed"
             }
         }
     }
