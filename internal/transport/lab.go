@@ -59,6 +59,9 @@ type Result struct {
 	StatusCode int
 	Header     http.Header
 	Body       []byte
+	// FinalURL is the scope-checked URL that produced this response. It may
+	// contain sensitive query data and must not be copied into scan reports.
+	FinalURL string
 }
 
 // LabBroker must not be copied. Close cancels in-flight and queued work.
@@ -225,6 +228,7 @@ func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
 			return Result{}, err
 		}
 		if next == "" {
+			result.FinalURL = u.String()
 			return result, nil
 		}
 		if hops >= b.limits.MaxRedirects {

@@ -188,8 +188,12 @@ func TestRedirectBudgetAndNoCredentialsOrProxy(t *testing.T) {
 	g := fixtureGrant(t, s, "fixture.invalid")
 	dns := fixed(g.Addresses[0])
 	b, _ := newFixtureBroker(t, g, limits(), dns)
-	if _, err := b.Fetch(context.Background(), g.Origin+"/same"); err != nil {
+	result, err := b.Fetch(context.Background(), g.Origin+"/same")
+	if err != nil {
 		t.Fatal(err)
+	}
+	if result.FinalURL != g.Origin+"/final" {
+		t.Fatalf("redirect final URL mismatch: %q", result.FinalURL)
 	}
 	if b.RequestsUsed() != 2 {
 		t.Fatal("redirect did not count")

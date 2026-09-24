@@ -8,7 +8,8 @@ require (
 	github.com/lestrrat-go/jwx/v4 v4.5.0
 	github.com/mappu/miqt v0.14.0
 	github.com/mattn/go-sqlite3 v1.14.52
-	golang.org/x/sys v0.27.0
+	golang.org/x/net v0.59.0
+	golang.org/x/sys v0.48.0
 )
 
 require (

@@ -14,7 +14,9 @@ The [M1 project store](DOCS/en/M1-PROJECT-STORE.md) keeps metadata in SQLite, mi
 
 [M1 managed runs](DOCS/en/M1-MANAGED-RUNS.md) bind the current revision to local revocation and stop the HTTP lab when authorization changes; they remain disconnected from the GUI.
 
-The [first M1 HTTP check](DOCS/en/M1-HEADER-LAB.md) uses managed runs and explicit loopback-only seeds to observe a header on HTML responses, with redacted outcomes and seed counts; it performs neither discovery nor production scanning.
+The [first M1 HTTP check](DOCS/en/M1-HEADER-LAB.md) uses managed runs and explicit loopback-only seeds to observe a header on HTML responses, with redacted outcomes and seed counts. It is not production scanning.
+
+[M1 HTML discovery](DOCS/en/M1-DISCOVERY-LAB.md) observes links and forms in seed responses under limits and scope checks; it does not visit candidates or submit forms. The report retains only redacted counts.
 
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 

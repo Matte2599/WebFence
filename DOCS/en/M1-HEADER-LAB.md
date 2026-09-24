@@ -14,4 +14,4 @@ The `Report` contains project ID, authorization revision, planned/completed seed
 
 Tests use only loopback `httptest` servers: `nosniff` present, absent, ambiguous value, nonapplicable MIME, invalid MIME, status 500, partial budget, out-of-scope seed, redirect to an unauthorized second origin, revocation during a request, and caller slice mutation after validation. The race detector exercises the path. No external target was contacted.
 
-M1 still needs discovery of observed links/forms without automatic submission, method/path/exclusion policy, rate limiting, a production broker, persistent run data and quota/recovery, IT/EN desktop results and visible incomplete coverage. The [human prerequisite plan](M1-PREREQUISITES.md) remains open.
+The next block adds [bounded HTML discovery](M1-DISCOVERY-LAB.md) on seed responses, without visiting links or automatically submitting forms. M1 still needs method/path/exclusion policy, rate limiting, a production broker, persistent run data and quota/recovery, IT/EN desktop results and visible incomplete coverage. The [human prerequisite plan](M1-PREREQUISITES.md) remains open.
