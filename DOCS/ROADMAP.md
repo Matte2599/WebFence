@@ -96,6 +96,8 @@ Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/wind
 
 [Orca Debian headless](evidence/debian-orca-headless-2026-09-24.md): configurazione privata Speech Dispatcher/ALSA `null` permette la prova locale con voce attiva IT/EN; Orca invia i comandi localizzati della riga sintetica senza errori WebFence. `test-orca.sh` inserito nel packaging; build completa ARM64 locale e [CI `a7afdeb`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35953580914) superate, inclusi Debian amd64/ARM64. Non è audio ascoltato: desktop reale, VoiceOver/NVDA e riesame AX Cocoa restano necessari; M0-01 parziale.
 
+[Diagnostica AX Cocoa](evidence/macos-ax-table-reset-2026-09-24.md): il test Swift `4635117` controlla ruolo e celle della riga dopo 10.000 → 1 → 0 → 10.000, compilato localmente; la CI lo esegue senza bloccare gli altri job e distingue il permesso AX assente da un difetto dell'app. [Run macOS 15 e altri cinque job](https://github.com/Matte2599/WebFence/actions/runs/35954825284) superati; lo step AX è passato davvero in tutte e quattro le fasi. La prova locale su macOS 26 attende lo sblocco del Mac e un bundle corrente; M0-01 invariato.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -258,6 +260,8 @@ Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-
 [Windows runtime modules](evidence/windows-runtime-modules-2026-09-24.md): the extracted ZIP samples modules during offscreen and native soaks, after `Process.Refresh()`, and compares them with the inventory. [CI `a9a8e5c`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110/109 samples, expected Qt plugins observed and no external paths recorded. The `18c223a` attempt failed this check without refresh; transient loads and clean desktops remain open. M0-02/06 partial.
 
 [Headless Debian Orca](evidence/debian-orca-headless-2026-09-24.md): private Speech Dispatcher/ALSA `null` configuration enables a local speech-on EN/IT trial; Orca sends localized synthetic-row commands without WebFence errors. `test-orca.sh` is integrated into packaging; the full local ARM64 build and [CI `a7afdeb`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35953580914) passed, including Debian amd64/ARM64. This is not heard audio: real desktop, VoiceOver/NVDA and Cocoa AX recheck remain necessary; M0-01 partial.
+
+[Cocoa AX diagnostic](evidence/macos-ax-table-reset-2026-09-24.md): the Swift test in `4635117` checks row role and cells after 10,000 → 1 → 0 → 10,000 and compiles locally; CI runs it without blocking other jobs and distinguishes absent AX permission from an app defect. The [macOS 15 and five other jobs](https://github.com/Matte2599/WebFence/actions/runs/35954825284) passed; the AX step actually passed all four stages. The local macOS 26 trial awaits an unlocked Mac and a current bundle; M0-01 is unchanged.
 
 ### M1 — Controlled traditional alpha
 
