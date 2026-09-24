@@ -136,7 +136,36 @@ try {
             $vcsChecks[0].verification.size_bytes -ne $vcsLock.git_archive_size_bytes) {
             throw 'winpthreads offline Git checksum evidence is missing or changed'
         }
-        Write-Output "PASS extracted ZIP source attachment: $($attachment.archive_count) archives, $archiveBytes bytes, inventory and recipe hashes; winpthreads Git archive verified"
+        $signatureLockPath = Join-Path $sourceRoot 'source-signature-lock.json'
+        if (-not (Test-Path -LiteralPath $signatureLockPath -PathType Leaf) -or
+            (Get-FileHash -Algorithm SHA256 -LiteralPath $signatureLockPath).Hash -ne $attachment.source_signature_lock_sha256) {
+            throw 'Missing or changed Windows source signature lock'
+        }
+        $signatureLock = Get-Content -Raw -LiteralPath $signatureLockPath | ConvertFrom-Json
+        if (@($signatureLock.entries).Count -ne 8) { throw 'Expected eight reviewed source signatures' }
+        foreach ($entry in $signatureLock.entries) {
+            $keyFile = Join-Path $sourceRoot $entry.public_key_file
+            if (-not (Test-Path -LiteralPath $keyFile -PathType Leaf) -or
+                (Get-FileHash -Algorithm SHA256 -LiteralPath $keyFile).Hash -ne $entry.public_key_sha256) {
+                throw "Missing or changed source signing key: $($entry.source_package)"
+            }
+            $sources = @($manifest.archives | Where-Object { $_.base -eq $entry.source_package })
+            if ($sources.Count -ne 1 -or $sources[0].version -ne $entry.version -or
+                $sources[0].archive_sha256 -ne $entry.archive_sha256) {
+                throw "Signed source archive differs from lock: $($entry.source_package)"
+            }
+            $signatures = @($sources[0].source_checks | Where-Object { $_.source -eq $entry.signature_source })
+            if ($signatures.Count -ne 1 -or $signatures[0].status -ne 'verified' -or
+                $signatures[0].signature_verified -ne $true -or
+                $signatures[0].verification.method -ne 'offline_openpgp_detached_signature' -or
+                $signatures[0].verification.primary_fingerprint -ne $entry.primary_fingerprint -or
+                $signatures[0].verification.signer_fingerprint -ne $entry.signer_fingerprint -or
+                $signatures[0].verification.signature_sha256 -ne $entry.signature_sha256 -or
+                $signatures[0].verification.payload_sha256 -ne $entry.payload_sha256) {
+                throw "Offline source signature evidence is missing or changed: $($entry.source_package)"
+            }
+        }
+        Write-Output "PASS extracted ZIP source attachment: $($attachment.archive_count) archives, $archiveBytes bytes, inventory and recipe hashes; winpthreads Git archive and 8 detached signatures verified"
     }
     foreach ($platform in @('offscreen', 'windows')) {
         foreach ($trial in @('--self-test', '--soak-test=10s')) {

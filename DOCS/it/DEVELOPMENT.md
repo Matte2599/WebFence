@@ -112,6 +112,8 @@ Su Linux usare esclusivamente il launcher isolato, con `dbus-run-session`, `gnom
 sh scripts/test-keychain-linux.sh
 ```
 
+La raccolta facoltativa dei sorgenti Windows richiede anche GnuPG nel PATH: verifica offline le otto firme delle versioni vincolate usando solo le chiavi pubbliche nel repository. [Procedura e limiti](M0-WINDOWS-SOURCES.md#verifica-offline-delle-otto-firme-distaccate). La normale build GUI non richiede GnuPG.
+
 Il bundle macOS ricompila ora il plugin Cocoa Qt 6.11.2 con una correzione temporanea del crash assistivo: [ADR-006](ADR-006-QT-COCOA.md). Occorrono anche CMake, Ninja e gli header MoltenVK/Vulkan (`brew install cmake ninja molten-vk vulkan-headers`); il sorgente Qt viene scaricato e verificato per hash. Versioni Qt diverse vengono rifiutate finché non rivalutate. I binari non confezionati continuano a usare Qt installato.
 
 Aggiunti confezionamento `.deb`/ZIP Windows e collaudi del runtime separato: [ADR-007 e comandi](ADR-007-PACKAGING.md). [CI `32655b0` superata, sei job](https://github.com/Matte2599/WebFence/actions/runs/35877356234); pacchetti di sviluppo, non release supportate.

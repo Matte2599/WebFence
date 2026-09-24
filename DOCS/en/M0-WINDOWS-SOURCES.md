@@ -4,7 +4,7 @@
 
 ## Available procedure
 
-`scripts/collect_windows_sources.py` collects MSYS2 source packages matching recipes identified in the Windows `native-build.json`. Requires Python 3.9+, zstd and curl 8.4+. The inventory is a trusted build input in a controlled directory; it does not accept instructions from targets or AI. The program neither executes recipes nor installs dependencies.
+`scripts/collect_windows_sources.py` collects MSYS2 source packages matching recipes identified in the Windows `native-build.json`. Requires Python 3.9+, zstd, curl 8.4+ and GnuPG for locked versions with detached signatures. The inventory is a trusted build input in a controlled directory; it does not accept instructions from targets or AI. The program neither executes recipes nor installs dependencies.
 
 ```sh
 python3 scripts/collect_windows_sources.py \
@@ -21,7 +21,7 @@ For each version, the collector compares the `PKGBUILD` SHA-256 against the bina
 
 URLs are fixed to `repo.msys2.org/mingw/sources`; HTTPS only, including redirects, without personal `.curlrc`. At most 64 packages, 256 MiB per archive, 1 GiB combined; 100,000 members and 2 GiB declared per archive, 1 MiB per metadata file. Streaming reads, no general extraction or followed links. Unsafe paths, duplicate members, wrong hashes and exceeded budgets stop collection. Transfers use the macOS collector’s redirect/time/stall limits.
 
-The pinned `winpthreads` Git input is now verified offline; any other VCS inputs remain `vcs_unverified`. Signatures with `SKIP` and weak checksums remain `no_strong_checksum`. SHA-1/MD5 may be compared but cannot establish `verified` alone. Outer archive hashes are observed, not checked against independent signatures. `distribution_ready` and `corresponding_sources_complete` remain **false**.
+The pinned `winpthreads` Git input is now verified offline; any other VCS inputs remain `vcs_unverified`. The eight `SKIP` signatures of pinned versions are now verified offline; new signatures or weak checksums without proof remain `no_strong_checksum`. SHA-1/MD5 may be compared but cannot establish `verified` alone. Outer archive hashes are observed, not checked against independent signatures. `distribution_ready` and `corresponding_sources_complete` remain **false**.
 
 ## Verification on 2026-09-23
 
@@ -36,6 +36,10 @@ For winpthreads, a [historical offline supplement](../evidence/windows-sources-2
 The [new evidence ledger](../evidence/windows-vcs-2026-09-24.md) documents the versioned `winpthreads` lock, isolated Git verification integrated into the collector and the complete local collection: 21 unchanged archives, **104 verified inputs** including Git and eight `SKIP` signatures still unverified. Attachment rechecks the commit and tar, includes the lock and rejects the old `vcs_unverified` collection; the extracted-ZIP trial checks the lock and verification metadata. All 68 local Python regressions and complete collection/attachment trials passed; [CI `8391cf8` passed six jobs](https://github.com/Matte2599/WebFence/actions/runs/35942924645), including the extracted Windows ZIP. Git must be available in the collection environment. This is not PGP verification or distribution approval.
 
 Embedded component/notice mapping, rebuild/replacement environment and instructions, distribution assembly and legal review remain open. Collection does not close M0-02 or authorize a release.
+
+## Offline verification of eight detached signatures
+
+The [evidence ledger](../evidence/windows-signatures-2026-09-24.md) records seven pinned public keys for the eight `SKIP` inputs, including the GCC and PCRE2 signing subkeys. The collector requires GnuPG on PATH, verifies recipe-declared fingerprints and signature/payload offline without executing sources. Complete local collection: **21 archives, 112 verified inputs, zero unverified in the current plan**; regenerated attachment with lock and keys, older collection rejected. **73 local Python tests** and complete collection/attachment trials passed; changed-code CI is pending. Cryptographic validity does not independently identify signers or approve licenses or distribution.
 
 A [technical ledger of license metadata in all 21 recipes](../evidence/windows-license-metadata-2026-09-24.md) rechecks the archive and 42 `PKGBUILD`/`.SRCINFO` hashes, distinguishes the package-specific `libiconv` field and flags `custom` and compound declarations for review. Recipe metadata does not automatically assign a license to binaries or embedded code; mapping to notices in the ZIP and legal review remain open.
 
@@ -66,7 +70,7 @@ The options are mutually exclusive. Without either option, development packaging
 
 `scripts/attach_windows_sources.py` compares the current inventory’s package plan with the acquisition plan. It verifies archives, hashes, budgets, recipes and regenerated metadata; rejects mismatched paths and links in materials. It copies archives and regenerates `PKGBUILD`/`.SRCINFO` from those copied bytes, ignoring mutable loose recipes. The attachment is published in fresh staging only after all checks pass. Trusted build inputs; concurrent writers are unsupported.
 
-The ZIP contains `WebFence/msys2-sources`: original archives with nested upstream sources, patches and notices, recipes, collection manifest, original/current inventories, `attachment.json` and IT/EN README. Manifest archive paths now resolve inside the package. Compressed archives add about 302 MiB before ZIP compression; the app does not extract or execute them. The current inventory is SHA-256-bound to the package’s DLL inventory. Acquisition metadata is not presented as provenance of the new executable; the winpthreads Git lock and offline proof are included and rechecked in the attachment. The earlier manual supplement remains separate historical evidence.
+The ZIP contains `WebFence/msys2-sources`: original archives with nested upstream sources, patches and notices, recipes, collection manifest, original/current inventories, `attachment.json` and IT/EN README. Manifest archive paths now resolve inside the package. Compressed archives add about 302 MiB before ZIP compression; the app does not extract or execute them. The current inventory is SHA-256-bound to the package’s DLL inventory. Acquisition metadata is not presented as provenance of the new executable; the winpthreads Git lock, signature lock and public keys are included and rechecked in the attachment. The earlier manual supplement remains separate historical evidence.
 
 Packaging also compares every installed, selected notice with the matching member of the retained MSYS2 binary archive, records its path, SHA-256 and original member in `native-build.json`, and rejects selected members that are missing, changed, duplicate or nonregular in that archive. The extracted-ZIP trial rechecks DLL and notice hashes and package linkage before launching the GUI. This proves correspondence of the **selected** files with the archives used for the development build; it does not prove that the selection covers all required notices or that package signatures were verified. The synthetic archive regression and local suite of 58 tests pass; [CI `8a8ea85`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35933571589) checked **43 DLLs, 22 packages and 74 notices** in the extracted ZIP. [Trial record](../evidence/windows-notice-linkage-2026-09-24.md).
 

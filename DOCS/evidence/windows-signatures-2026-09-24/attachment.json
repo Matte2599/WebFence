@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "distribution_ready": false,
+  "corresponding_sources_complete": false,
+  "current_native_build_sha256": "1d6c259798e2e9ab68123a3d6dc248fb1a2cc42c9f308db78a27f4ff5d0bba8b",
+  "collection_input_sha256": "1d6c259798e2e9ab68123a3d6dc248fb1a2cc42c9f308db78a27f4ff5d0bba8b",
+  "collection_manifest_sha256": "4c4300e08553cc607aa562c84eff04b1bf3ead13a2f2f93f83fc44a511c050be",
+  "archive_count": 21,
+  "archive_bytes": 316641108,
+  "scope": "Original MSYS2 archives with nested upstream sources, patches and notices; recipes regenerated from reverified archives.",
+  "provenance": "native-build.current.json identifies this package; native-build.input.json identifies collection. Source manifest archive paths are relative to this directory.",
+  "open_items": [
+    "External signer identity/trust and embedded-component/notice review",
+    "Build environment, rebuild/replacement instructions and source/license completeness"
+  ],
+  "winpthreads_vcs_lock_sha256": "b1c389219a3be61fab191cbe32c8d75b75ef991073e2847887c6da8e11b7e7e1",
+  "source_signature_lock_sha256": "b564628c28e34588d8a9f1aa655c7c204cbe94d40f300c24e4ef3e05e598f761"
+}

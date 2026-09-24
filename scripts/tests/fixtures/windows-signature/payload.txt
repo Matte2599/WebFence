@@ -1,0 +1,1 @@
+WebFence synthetic detached-signature fixture. No executable code.

@@ -112,6 +112,8 @@ On Linux use only the isolated launcher, with `dbus-run-session`, `gnome-keyring
 sh scripts/test-keychain-linux.sh
 ```
 
+Optional Windows source collection also requires GnuPG on PATH: it verifies the eight signatures of locked versions offline using only the public keys in the repository. [Procedure and limits](M0-WINDOWS-SOURCES.md#offline-verification-of-eight-detached-signatures). The ordinary GUI build does not require GnuPG.
+
 The macOS bundle now rebuilds the Qt 6.11.2 Cocoa plugin with a temporary assistive-crash correction: [ADR-006](ADR-006-QT-COCOA.md). CMake, Ninja and MoltenVK/Vulkan headers are also required (`brew install cmake ninja molten-vk vulkan-headers`); Qt sources are downloaded and hash-verified. Other Qt versions are rejected until reassessed. Unpackaged binaries continue using installed Qt.
 
 Added `.deb`/Windows ZIP packaging and separate-runtime checks: [ADR-007 and commands](ADR-007-PACKAGING.md). [CI `32655b0` passed, six jobs](https://github.com/Matte2599/WebFence/actions/runs/35877356234); development packages, not supported releases.

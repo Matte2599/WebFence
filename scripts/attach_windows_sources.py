@@ -101,6 +101,26 @@ def attach(native_build, materials, output, zstd='zstd'):
             packaged_lock = stage / 'winpthreads-vcs-lock.json'
             shutil.copyfile(vcs_lock_path, packaged_lock)
             vcs_lock_hash = sha(packaged_lock)
+        signature_lock_hash = None
+        if any(item['base'] in sources.SIGNED_PACKAGES for item in plan):
+            key_root = Path(__file__).resolve().parent.parent / 'packaging/windows'
+            signature_lock_path = key_root / 'source-signature-lock.json'
+            locked = sources.load_signature_lock(signature_lock_path)
+            packaged_lock = stage / 'source-signature-lock.json'
+            shutil.copyfile(signature_lock_path, packaged_lock)
+            signature_lock_hash = sha(packaged_lock)
+            for entry in locked.values():
+                source_key = key_root / entry['public_key_file']
+                if (not source_key.is_file() or source_key.is_symlink()
+                        or source_key.stat().st_size > 64 * 1024
+                        or sha(source_key) != entry['public_key_sha256']):
+                    raise ValueError('Missing or changed reviewed Windows source signing key')
+                target_key = stage / entry['public_key_file']
+                target_key.parent.mkdir(exist_ok=True)
+                if not target_key.exists():
+                    shutil.copyfile(source_key, target_key)
+                if sha(target_key) != entry['public_key_sha256']:
+                    raise ValueError('Copied Windows source signing key differs from lock')
         result = {'schema': 1, 'distribution_ready': False, 'corresponding_sources_complete': False,
                   'current_native_build_sha256': hashlib.sha256(current_raw).hexdigest(),
                   'collection_input_sha256': hashlib.sha256(original_raw).hexdigest(),
@@ -108,10 +128,12 @@ def attach(native_build, materials, output, zstd='zstd'):
                   'archive_count': len(records), 'archive_bytes': total,
                   'scope': 'Original MSYS2 archives with nested upstream sources, patches and notices; recipes regenerated from reverified archives.',
                   'provenance': 'native-build.current.json identifies this package; native-build.input.json identifies collection. Source manifest archive paths are relative to this directory.',
-                  'open_items': ['Detached signatures and embedded-component/notice review',
+                  'open_items': ['External signer identity/trust and embedded-component/notice review',
                                  'Build environment, rebuild/replacement instructions and source/license completeness']}
         if vcs_lock_hash is not None:
             result['winpthreads_vcs_lock_sha256'] = vcs_lock_hash
+        if signature_lock_hash is not None:
+            result['source_signature_lock_sha256'] = signature_lock_hash
         (stage / 'attachment.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
         (stage / 'README.md').write_text(
             '# Materiali sorgente MSYS2 / MSYS2 source materials\n\n'
@@ -119,12 +141,16 @@ def attach(native_build, materials, output, zstd='zstd'):
             'Gli archivi includono sorgenti, patch e avvisi annidati; non vengono eseguiti. '
             'Manifest di acquisizione e inventario corrente sono distinti. '
             'Il lock winpthreads documenta una verifica Git offline, senza checkout. '
-            'Firme, completezza, licenze e ricompilazione richiedono ancora revisione; nessuna approvazione della distribuzione.\n\n'
+            'Le firme distaccate vincolate nel piano sono verificate offline con chiavi pubbliche; '
+            'identità dei firmatari, completezza, licenze e ricompilazione richiedono ancora revisione. '
+            'Nessuna approvazione della distribuzione.\n\n'
             '**EN:** Original archives and recipes bound to DLLs through inventory and hashes. '
             'Archives include nested sources, patches and notices; none are executed. '
             'Collection manifest and current inventory are separate. '
             'The winpthreads lock records an offline Git check without checkout. '
-            'Signatures, completeness, licenses and rebuilding still require review; no distribution approval.\n', encoding='utf-8')
+            'Detached signatures locked in the plan are verified offline against pinned public keys; '
+            'signer identity, completeness, licenses and rebuilding still require review. '
+            'No distribution approval.\n', encoding='utf-8')
         if output.exists() or output.is_symlink():
             raise FileExistsError('Refusing to replace existing Windows source materials')
         stage.rename(output)

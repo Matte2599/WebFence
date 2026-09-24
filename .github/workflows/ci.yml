@@ -194,6 +194,7 @@ jobs:
           cache: false
           update: true
           install: >-
+            gnupg
             mingw-w64-ucrt-x86_64-gcc
             mingw-w64-ucrt-x86_64-pkgconf
             mingw-w64-ucrt-x86_64-qt6-base

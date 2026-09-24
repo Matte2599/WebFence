@@ -82,6 +82,8 @@ Riferimenti Qt Windows: controllo automatico di 27 percorsi `LicenseFile`/`Licen
 
 Verifica Git Windows del 2026-09-24: [winpthreads verificato offline in modo automatico](evidence/windows-vcs-2026-09-24.md) tramite lock di archivio, ricetta, pack, commit e tar. Nuova raccolta locale dei 21 archivi: 104 input verificati, otto firme `SKIP` ancora non verificate; allegato completo e rifiuto della raccolta precedente con VCS non verificato. 68 test Python locali superati; [CI `8391cf8`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35942924645), incluso lo ZIP Windows estratto. M0-02/06 restano aperti per firme, componenti incorporati, revisione legale e collaudi desktop reali.
 
+Firme sorgenti Windows del 2026-09-24: [otto verifiche OpenPGP offline](evidence/windows-signatures-2026-09-24.md) con sette chiavi pubbliche vincolate, inclusi i fingerprint delle sottochiavi GCC e PCRE2. Stessi 21 archivi/316.641.108 byte: 112 input verificati, zero non verificati nel piano corrente; vecchia raccolta rifiutata, 73 test Python e allegato locale completo superati. CI del codice modificato in attesa. Restano fiducia/identità esterna delle chiavi, firme dei binari, componenti incorporati, licenze e collaudi desktop; M0-02/06 aperti.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -230,6 +232,8 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 Windows Qt references: automated check of 27 `LicenseFile`/`LicenseFiles` paths in selected sidecars, confined to the protocol subtree and bound to included texts. Trial on the original package and 64 local Python tests passed; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): six jobs passed on the first attempt, including Windows. M0-02 remains open for embedded components, real desktops, signatures and legal review.
 
 Windows Git verification on 2026-09-24: [winpthreads verified automatically offline](evidence/windows-vcs-2026-09-24.md) using an archive, recipe, pack, commit and tar lock. New local collection of the 21 archives: 104 verified inputs, eight `SKIP` signatures still unverified; full attachment and rejection of the earlier collection with unverified VCS. 68 local Python tests passed; [CI `8391cf8` passed six jobs](https://github.com/Matte2599/WebFence/actions/runs/35942924645), including the extracted Windows ZIP. M0-02/06 remain open for signatures, embedded components, legal review and real desktop trials.
+
+Windows source signatures on 2026-09-24: [eight offline OpenPGP checks](evidence/windows-signatures-2026-09-24.md) with seven pinned public keys, including GCC and PCRE2 subkey fingerprints. Same 21 archives/316,641,108 bytes: 112 verified inputs, zero unverified in the current plan; older collection rejected, 73 Python tests and full local attachment passed. Changed-code CI is pending. External key trust/identity, binary signatures, embedded components, licenses and desktop trials remain open; M0-02/06 are partial.
 
 ### M1 — Controlled traditional alpha
 
