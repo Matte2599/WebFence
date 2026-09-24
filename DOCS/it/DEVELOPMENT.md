@@ -4,7 +4,7 @@
 
 ## Avvio e controlli
 
-Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. È ancora un prototipo offline con esempi: nessuno scanner, progetto persistente **nella GUI**, CVE o AI. Il core dispone di uno [store progetti M1 separato](M1-PROJECT-STORE.md). [Stato e verifiche desktop](QT-DESKTOP.md).
+Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. Il desktop resta un prototipo offline con esempi: nessuna scansione o progetto persistente **nella GUI**, CVE o AI. Il core dispone di uno [store progetti M1](M1-PROJECT-STORE.md) e di un [primo controllo HTTP solo loopback](M1-HEADER-LAB.md), separati dalla GUI. [Stato e verifiche desktop](QT-DESKTOP.md).
 
 La prima compilazione dei binding può richiedere diversi minuti; le successive beneficiano della cache Go. La CI macOS compila i wrapper C++ con `-O0 -g0` per contenere il costo della prima compilazione; build e bundle usano gli stessi flag e la cache. Le librerie Qt installate restano quelle del pacchetto Homebrew. Lo script locale usa per default `-O2 -g`; la CI verifica funzionalità, non prestazioni di release.
 
@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -37,6 +37,7 @@ Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `
 - `internal/i18n`: cataloghi JSON IT/EN incorporati.
 - `internal/preferences`: sola lingua, indipendente dal toolkit.
 - `internal/project` e `internal/storage`: modello di autorizzazione, store SQLite dei soli metadati e [run gestite con revoca locale](M1-MANAGED-RUNS.md), ancora scollegati dalla GUI.
+- `internal/scanner`: [primo controllo HTTP di laboratorio](M1-HEADER-LAB.md) su seed espliciti, senza dati persistenti o rete esterna.
 
 I futuri pacchetti del motore restano indipendenti da Qt. Non usare la cache delle fixture come modello di conservazione per dati reali. Fyne e il vecchio laboratorio Qt sono nella cronologia Git, non nella build corrente.
 

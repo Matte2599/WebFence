@@ -4,7 +4,7 @@
 
 ## Running and checking
 
-Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. This remains an offline example prototype: no scanner, persistent projects **in the GUI**, CVE or AI. The core has a separate [M1 project store](M1-PROJECT-STORE.md). [Desktop status and verification](QT-DESKTOP.md).
+Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. The desktop remains an offline example prototype: no scanning or persistent projects **in the GUI**, CVE or AI. The core has an [M1 project store](M1-PROJECT-STORE.md) and a [first loopback-only HTTP check](M1-HEADER-LAB.md), separate from the GUI. [Desktop status and verification](QT-DESKTOP.md).
 
 The first binding compilation can take several minutes; later builds benefit from Go’s cache. macOS CI compiles C++ wrappers with `-O0 -g0` to limit first-build cost; build and bundle share flags and cache. Installed Qt libraries remain the Homebrew package binaries. The local script defaults to `-O2 -g`; CI checks functionality, not release performance.
 
@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -37,6 +37,7 @@ On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w6
 - `internal/i18n`: embedded IT/EN JSON catalogs.
 - `internal/preferences`: language only, independent of toolkit.
 - `internal/project` and `internal/storage`: authorization model, SQLite metadata-only store and [managed runs with local revocation](M1-MANAGED-RUNS.md), still disconnected from the GUI.
+- `internal/scanner`: [first laboratory HTTP check](M1-HEADER-LAB.md) on explicit seeds, with no persistent data or external networking.
 
 Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
 
