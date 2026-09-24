@@ -15,6 +15,8 @@ Updated: 2026-09-24. **M0 remains open.** This register tracks exit criteria, no
 
 M0-02, Windows notices: [comparison of selected files with cached binary archives and extracted-ZIP recheck](../evidence/windows-notice-linkage-2026-09-24.md) passed in [CI `8a8ea85`](https://github.com/Matte2599/WebFence/actions/runs/35933571589), six green jobs on the first attempt. Checked 43 DLLs/22 packages/74 notices; 58 local and Windows Python tests passed. Selection completeness remains to be checked; gate unchanged.
 
+M0-01, Debian: [IT/EN AT-SPI bridge trial](../evidence/debian-atspi-2026-09-24.md) after table reset integrated into packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) completed with six passing jobs on the first attempt, including amd64/arm64 `.deb` jobs. The accessibility gate remains partial: Orca announcements, other-platform readers and real-desktop trials are still needed.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.

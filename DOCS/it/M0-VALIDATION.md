@@ -15,6 +15,8 @@ Aggiornamento: 2026-09-24. **M0 aperta.** Questo registro riguarda criteri di us
 
 M0-02, avvisi Windows: [confronto dei file selezionati con gli archivi binari e ricontrollo nello ZIP](../evidence/windows-notice-linkage-2026-09-24.md) superati nella [CI `8a8ea85`](https://github.com/Matte2599/WebFence/actions/runs/35933571589), sei job verdi al primo tentativo. Verificati 43 DLL/22 pacchetti/74 notices; 58 test Python locali e Windows passati. La completezza della selezione resta da verificare; gate invariato.
 
+M0-01, Debian: [prova del bridge AT-SPI](../evidence/debian-atspi-2026-09-24.md) IT/EN dopo reset della tabella integrata nel packaging; [CI `8b470e7`](https://github.com/Matte2599/WebFence/actions/runs/35935923455) conclusa con sei job verdi al primo tentativo, inclusi `.deb` amd64/arm64. Il gate assistivo resta parziale: mancano annunci Orca, lettori delle altre piattaforme e verifiche desktop reali.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.
