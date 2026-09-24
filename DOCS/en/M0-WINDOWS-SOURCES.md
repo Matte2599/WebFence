@@ -41,7 +41,7 @@ The [verified ledger](../evidence/windows-binary-checksum-lock-2026-09-24.md) fi
 
 ## Attribution sidecars
 
-The [trial against 22 checksum-locked archives](../evidence/windows-attribution-sidecars-2026-09-24.md) expanded notice and attribution selection from 74 to 136 files: 62 additions (PCRE2's `AUTHORS.md` and 61 Qt sidecars). Packaging now compares paths selected from the installation with those in the binary archive, in addition to checking hashes; omitted, duplicate or nonregular files fail the build. All 27 `LicenseFile` references in the selected Qt JSON files resolve to included files. The 62 local Python regressions and trial on all 22 archives pass; changed-code CI is pending. This improves materials for review without establishing that Wayland protocols are embedded in Windows DLLs or closing the legal gate.
+The [trial against 22 checksum-locked archives](../evidence/windows-attribution-sidecars-2026-09-24.md) expanded notice and attribution selection from 74 to 136 files: 62 additions (PCRE2's `AUTHORS.md` and 61 Qt sidecars). Packaging now compares paths selected from the installation with those in the binary archive, in addition to checking hashes; omitted, duplicate or nonregular files fail the build. All 27 `LicenseFile` references in the selected Qt JSON files resolve to included files. The 62 local Python regressions and trial on all 22 archives pass; [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168): six jobs passed on the first attempt, including Windows packaging and the extracted ZIP. This improves materials for review without establishing that Wayland protocols are embedded in Windows DLLs or closing the legal gate.
 
 ## Include sources in the ZIP
 
