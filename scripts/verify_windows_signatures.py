@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 
 from msys2_binary_metadata import sha, tar_stream
@@ -91,6 +92,11 @@ def _run_gpg(gpg, home, env, *arguments, timeout=30):
                                '--no-auto-key-retrieve', *arguments], env=env,
                               cwd=home.parent, capture_output=True, text=True,
                               check=True, timeout=timeout)
+    except subprocess.CalledProcessError as error:
+        detail = ' | '.join(line.strip() for line in (error.stderr or '').splitlines())
+        detail = detail.encode('unicode_escape').decode('ascii')[-600:]
+        raise ValueError('Offline Windows source signature verification failed: '
+                         + detail) from error
     except (OSError, subprocess.SubprocessError) as error:
         raise ValueError('Offline Windows source signature verification failed') from error
 
@@ -152,7 +158,9 @@ def verify_signature(archive_path, item, files, srcinfo, checks, entry, *,
         raise ValueError('Missing or changed reviewed Windows source signing key')
     if shutil.which(gpg) is None:
         raise ValueError('GnuPG is required for offline Windows source signature verification')
-    with tempfile.TemporaryDirectory(prefix='webfence-source-signature-') as temporary:
+    # Keep the macOS GnuPG agent's Unix-domain socket below the platform path limit.
+    short_temp = '/tmp' if sys.platform == 'darwin' else None
+    with tempfile.TemporaryDirectory(prefix='wf-gpg-', dir=short_temp) as temporary:
         root = Path(temporary)
         home = root / 'gnupg'
         home.mkdir(mode=0o700)
