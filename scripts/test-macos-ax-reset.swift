@@ -26,6 +26,12 @@ func label(_ element: AXUIElement, _ key: CFString) -> String {
     return status == .success ? (value as? String ?? "") : ""
 }
 
+func describe(_ element: AXUIElement, _ key: CFString) -> String {
+    let (status, value) = attribute(element, key)
+    guard status == .success else { return "AXError \(status.rawValue)" }
+    return String(reflecting: value as? String)
+}
+
 func find(_ root: AXUIElement, depth: Int = 0, matching: (AXUIElement) -> Bool) -> AXUIElement? {
     if matching(root) { return root }
     if depth >= 8 { return nil }
@@ -42,6 +48,25 @@ func wait<T>(seconds: TimeInterval, for result: () -> T?) -> T? {
         Thread.sleep(forTimeInterval: 0.2)
     } while Date() < deadline
     return nil
+}
+
+func snapshot(_ window: AXUIElement) -> String {
+    guard let table = find(window, matching: {
+        label($0, kAXRoleAttribute as CFString) == "AXTable"
+    }) else { return "AXTable unavailable" }
+    let (rowsStatus, rowsValue) = attribute(table, kAXRowsAttribute as CFString)
+    guard rowsStatus == .success, let rows = rowsValue as? [AXUIElement] else {
+        return "AXRows AXError \(rowsStatus.rawValue)"
+    }
+    guard let first = rows.first else { return "AXRows=0" }
+    let (cellsStatus, cellsValue) = attribute(first, kAXChildrenAttribute as CFString)
+    let cells = cellsValue as? [AXUIElement] ?? []
+    let firstCell = cells.first
+    return "AXRows=\(rows.count), rowRole=\(describe(first, kAXRoleAttribute as CFString)), " +
+        "cells=\(cells.count) (AXError \(cellsStatus.rawValue)), " +
+        "cellRole=\(firstCell.map { describe($0, kAXRoleAttribute as CFString) } ?? "none"), " +
+        "cellTitle=\(firstCell.map { describe($0, kAXTitleAttribute as CFString) } ?? "none"), " +
+        "cellValue=\(firstCell.map { describe($0, kAXValueAttribute as CFString) } ?? "none")"
 }
 
 func inspect(_ window: AXUIElement, expectedCount: Int, expectedID: String?) throws {
@@ -118,12 +143,31 @@ func trial(bundle: URL) throws {
     let press = AXUIElementPerformAction(load, kAXPressAction as CFString)
     guard press == .success else { throw TrialError.failed("load AXPress: AXError \(press.rawValue)") }
 
-    try inspect(window, expectedCount: 10_000, expectedID: "DEMO-00001")
-    for (query, count, id) in [("DEMO-10000", 1, "DEMO-10000"), ("no-such-fixture", 0, ""), ("", 10_000, "DEMO-00001")] {
-        let result = AXUIElementSetAttributeValue(search, kAXValueAttribute as CFString, query as CFTypeRef)
-        guard result == .success else { throw TrialError.failed("filter AXValue: AXError \(result.rawValue)") }
-        try inspect(window, expectedCount: count, expectedID: count == 0 ? nil : id)
+    var failures = 0
+    func observe(_ stage: String, count: Int, id: String?) {
+        do {
+            try inspect(window, expectedCount: count, expectedID: id)
+        } catch {
+            failures += 1
+            print("FAIL \(stage): \(error)")
+            print("DIAG \(stage): \(snapshot(window))")
+        }
     }
+    observe("initial/10000", count: 10_000, id: "DEMO-00001")
+    for round in 1...3 {
+        for (stage, query, count, id) in [
+            ("one", "DEMO-10000", 1, "DEMO-10000"),
+            ("empty", "no-such-fixture", 0, ""),
+            ("restored", "", 10_000, "DEMO-00001")
+        ] {
+            let result = AXUIElementSetAttributeValue(search, kAXValueAttribute as CFString, query as CFTypeRef)
+            guard result == .success else {
+                throw TrialError.failed("round \(round)/\(stage) filter AXValue: AXError \(result.rawValue)")
+            }
+            observe("round \(round)/\(stage)", count: count, id: count == 0 ? nil : id)
+        }
+    }
+    guard failures == 0 else { throw TrialError.failed("\(failures) AX stage failures across 3 rounds") }
 }
 
 guard CommandLine.arguments.count == 2 else {
@@ -136,7 +180,7 @@ guard AXIsProcessTrusted() else {
 }
 do {
     try trial(bundle: URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true))
-    print("PASS native Cocoa AX reset 10000 → 1 → 0 → 10000")
+    print("PASS native Cocoa AX reset 10000 → 1 → 0 → 10000, 3 rounds")
 } catch {
     fputs("FAIL native Cocoa AX reset: \(error)\n", stderr)
     exit(1)
