@@ -49,7 +49,7 @@ La tabella descrive i contratti completi pianificati. `internal/scope` e `intern
 
 ## Persistenza e processi esterni
 
-SQLite è scelto (ADR-004) per metadati, futura coda e osservazioni; file separati per prove voluminose. Lo store M1 implementa lo schema v2 per i soli progetti, con migrazione transazionale dalla v1, revisioni di autorizzazione e foreign key; quota disco e migrazioni successive sono ancora da realizzare. Un checkpoint e lo stato della futura coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
+SQLite è scelto (ADR-004) per metadati, futura coda e osservazioni; file separati per prove voluminose. Lo store M1 implementa lo schema v3 per i soli progetti, con migrazione transazionale dalle v1/v2, revisioni di autorizzazione, revoca persistente e foreign key; quota disco e migrazioni successive sono ancora da realizzare. Un checkpoint e lo stato della futura coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
 
 Credenziali e chiavi private nel portachiavi del sistema o in un contenitore cifrato sbloccato dall'operatore. Il database contiene riferimenti, non segreti in chiaro. La cifratura di SQLite non è automatica: scegliere esplicitamente una libreria compatibile e documentare cosa rimane nei metadati.
 
@@ -71,6 +71,6 @@ La modalità server, utenti condivisi, PostgreSQL e worker distribuiti richiedon
 
 `internal/transport` aggiunge un broker HTTP/TLS confinato a grant loopback, con IP fissato alla connessione e budget/cancellazione condivisi. Decisione M0 e limiti di produzione: [ADR-003](ADR-003-TRANSPORT.md). Nessuna chiamata dalla GUI.
 
-`NewAuthorizedLab` applica lo snapshot del progetto a ogni hop del medesimo broker e ne usa la scadenza per interrompere richieste in corso. Rimane un laboratorio: [contratto M1](M1-AUTHORIZED-LAB.md).
+`NewAuthorizedLab` applica lo snapshot del progetto a ogni hop del medesimo broker e ne usa la scadenza per interrompere richieste in corso. Le [run gestite](M1-MANAGED-RUNS.md) aggiungono revoca locale collegata allo store; rimane un laboratorio: [contratto M1](M1-AUTHORIZED-LAB.md).
 
 SQLite e il profilo JWS sono selezionati in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): esistono test di fattibilità SQLite, lo [store M1](M1-PROJECT-STORE.md) e `internal/signature`, senza progetti né report nella GUI.

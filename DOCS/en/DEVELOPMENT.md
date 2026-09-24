@@ -36,7 +36,7 @@ On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w6
 - `internal/demo`: pure fixtures without networking.
 - `internal/i18n`: embedded IT/EN JSON catalogs.
 - `internal/preferences`: language only, independent of toolkit.
-- `internal/project` and `internal/storage`: authorization model and SQLite metadata-only store, still disconnected from the GUI.
+- `internal/project` and `internal/storage`: authorization model, SQLite metadata-only store and [managed runs with local revocation](M1-MANAGED-RUNS.md), still disconnected from the GUI.
 
 Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
 

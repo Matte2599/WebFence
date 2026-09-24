@@ -10,7 +10,9 @@ Il [primo blocco M1](DOCS/it/M1-PROJECT-AUTHORIZATION.md) aggiunge un modello di
 
 Il [laboratorio M1](DOCS/it/M1-AUTHORIZED-LAB.md) applica quello snapshot al trasporto HTTP solo loopback, anche dopo i redirect e alla scadenza.
 
-Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLite, migra la v1 alla v2 e registra rinnovi di autorizzazione versionati; la GUI non lo usa ancora.
+Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLite, migra gli schemi v1/v2 alla v3 e registra rinnovi e revoche di autorizzazione versionati; la GUI non lo usa ancora.
+
+Le [run gestite M1](DOCS/it/M1-MANAGED-RUNS.md) collegano la revisione corrente alla revoca locale e fermano il laboratorio HTTP quando l'autorizzazione cambia; restano scollegate dalla GUI.
 
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 

@@ -36,7 +36,7 @@ Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `
 - `internal/demo`: fixture pure senza rete.
 - `internal/i18n`: cataloghi JSON IT/EN incorporati.
 - `internal/preferences`: sola lingua, indipendente dal toolkit.
-- `internal/project` e `internal/storage`: modello di autorizzazione e store SQLite dei soli metadati, ancora scollegati dalla GUI.
+- `internal/project` e `internal/storage`: modello di autorizzazione, store SQLite dei soli metadati e [run gestite con revoca locale](M1-MANAGED-RUNS.md), ancora scollegati dalla GUI.
 
 I futuri pacchetti del motore restano indipendenti da Qt. Non usare la cache delle fixture come modello di conservazione per dati reali. Fyne e il vecchio laboratorio Qt sono nella cronologia Git, non nella build corrente.
 
