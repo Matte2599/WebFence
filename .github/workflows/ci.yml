@@ -90,6 +90,14 @@ jobs:
       - run: go test ./internal/desktop
       - run: ./bin/webfence --self-test
       - run: ./bin/webfence --soak-test=10s
+      - name: Reuse pinned Qt source for Cocoa builds and trials
+        if: runner.os == 'macOS'
+        run: |
+          curl --fail --location --proto '=https' --proto-redir '=https' \
+            --connect-timeout 20 --max-time 180 --retry 3 --retry-delay 2 --retry-all-errors \
+            https://download.qt.io/official_releases/qt/6.11/6.11.2/submodules/qtbase-everywhere-src-6.11.2.tar.xz \
+            --output "$RUNNER_TEMP/qtbase-6.11.2.tar.xz"
+          echo "WEBFENCE_QT_SOURCE_ARCHIVE=$RUNNER_TEMP/qtbase-6.11.2.tar.xz" >> "$GITHUB_ENV"
       - name: macOS development bundle
         if: runner.os == 'macOS'
         env:
@@ -180,6 +188,22 @@ jobs:
               exit 1
             }
           cat "$RUNNER_TEMP/cocoa-replacement-trial/result.json"
+      - name: Build private Cocoa direct-row AX variant
+        if: runner.os == 'macOS'
+        run: |
+          python3 dist/WebFence.app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py \
+            dist/WebFence.app "$(brew --prefix qtbase)" "$RUNNER_TEMP/cocoa-ax-direct-rows" \
+            --ax-direct-rows || {
+              tail -n 60 "$RUNNER_TEMP/cocoa-ax-direct-rows/"*.log
+              exit 1
+            }
+          cat "$RUNNER_TEMP/cocoa-ax-direct-rows/result.json"
+      - name: Diagnose private Cocoa direct-row AX variant (M0-01 open)
+        if: runner.os == 'macOS'
+        continue-on-error: true
+        run: |
+          "$RUNNER_TEMP/webfence-ax-reset" \
+            "$RUNNER_TEMP/cocoa-ax-direct-rows/WebFence replacement trial.app"
       - name: Assemble native macOS sources beside the signed bundle
         if: runner.os == 'macOS'
         run: |

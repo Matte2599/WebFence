@@ -47,6 +47,8 @@ M0-02, inventario dello ZIP Windows: [prova degli import PE statici e dei file e
 
 M0-02, moduli runtime Windows: [campionamento del processo nello ZIP estratto](../evidence/windows-runtime-modules-2026-09-24.md) durante i due soak sintetici, con inventario vincolato alle DLL incluse e nessun percorso esterno osservato. [CI `a9a8e5c`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110 campioni offscreen e 109 Windows, plugin Qt richiesti osservati. Il primo tentativo `18c223a` non aveva osservato `qoffscreen.dll` senza aggiornare lo snapshot; la correzione lo aggiorna prima della lettura. Caricamenti transitori, altri flussi e desktop puliti restano aperti; gate invariato.
 
+M0-01, la [CI `18c513e` al secondo tentativo](https://github.com/Matte2599/WebFence/actions/runs/35961360935) ha sette job verdi; il primo tentativo macOS 26 era fallito solo per timeout del mirror sorgenti. L'AX rilanciato su 26 fallisce ancora sei stadi ed è non bloccante. [Variante diagnostica diretta delle righe Cocoa](M0-QT-REPLACEMENT.md): patch solo in una copia privata, con compilazione e firma locali verificate; il self-test locale non supera i controlli di focus della sessione Mac bloccata. La CI confronterà lo stesso client AX sui due bundle macOS 15/26. Nessuna correzione AX dichiarata, gate invariato.
+
 ## Collaudo desktop riproducibile
 
 Registrare commit, hash del pacchetto, sistema/versione/architettura, Qt, lettore/versione, scala e preferenza di navigazione tastiera. Usare solo fixture integrate; nessun target esterno. Registrare esito e difetto per ciascun passo in entrambe le lingue. Salvare eventuali screenshot/audio solo con dati sintetici.

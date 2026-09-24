@@ -34,6 +34,19 @@ The procedure:
 
 `result.json` and logs outside the app describe the final outcome. The copy retains the base bundle inventory and adds `replacement-trial.json` before signing: that sidecar describes the variant **before** testing, with `passed=false`. The copy is a trial artifact, not a distributable package with an updated inventory. Returning to the original bundle provides rollback; the original app is never replaced.
 
+## Diagnostic AX row variant
+
+The `--ax-direct-rows` option adds a second Cocoa change **only to the private copy**: `accessibilityRows` returns its synthetic row array directly, without `NSAccessibilityUnignoredChildren`. It isolates whether that conversion invalidates the row/cell references seen in the [AX diagnostic](../evidence/macos-ax-table-reset-2026-09-24.md); it is not an approved fix. Compilation, signing, self-test and soak still have to pass. CI then runs the same Swift AX client on the original bundle and the variant; the AX result is nonblocking while M0-01 remains open. A passing internal Qt self-test alone is insufficient.
+
+```sh
+python3 "$app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py" \
+  "$app" "$(brew --prefix qtbase)" "$trial_dir-direct-rows" --ax-direct-rows
+swiftc scripts/test-macos-ax-reset.swift -o "$trial_dir-ax-client"
+"$trial_dir-ax-client" "$trial_dir-direct-rows/WebFence replacement trial.app"
+```
+
+The `ax_direct_rows` field in `result.json` distinguishes the variants. CI downloads the pinned Qt archive once for the bundle and both rebuilds; each builder invocation still verifies its SHA-256. The client uses only synthetic fixtures and a temporary HOME; the original bundle, installed plugin and personal language preference must remain unchanged. The private copy retains the base build inventory and must not be distributed.
+
 ## Evidence and limitations
 
 [Local trial on 2026-09-23](../evidence/macos-cocoa-replacement-2026-09-23/result.json) passed on macOS 26.6.2 ARM64: variant rebuilt from shipped materials, valid signature, same Go build ID, self-test and four cycles in 12.003 s; diagnostic message detected in both executions. Original bundle, installed Qt plugin and personal language unchanged. Invalid archive rejected before extraction; existing output refused while preserving its result. The [context](../evidence/macos-cocoa-replacement-2026-09-23/context.json) distinguishes the previous bundle with local modifications from the new trial script and records the first failed attempt involving the Homebrew prefix. [CI `3f68e6a`](https://github.com/Matte2599/WebFence/actions/runs/35916839178) completed: six passing jobs. On macOS 15.7.9 the procedure shipped in the bundle rebuilds/loads the Cocoa variant, retains the Go build ID and passes signing, self-test and soak; originals preserved. The 36 Python regressions and Windows/Debian package checks passed. The previous `51673d9` run (35916784359) was cancelled by the next push, which encodes patch-context whitespace without changing generated patch bytes. Technical success does not approve LICENSE/CLA or close distribution review. Corresponding materials and embedded-dependency mapping, procedures for other libraries/platforms, actual readers, clean desktops and minimum systems remain to be completed. This ad hoc signature does not verify Developer ID/notarization or hardened-runtime behavior.

@@ -47,6 +47,8 @@ M0-02, Windows ZIP inventory: [trial of static PE imports and actual packaged fi
 
 M0-02, Windows runtime modules: [process sampling in the extracted ZIP](../evidence/windows-runtime-modules-2026-09-24.md) during both synthetic soaks, with bundle-loaded modules bound to the DLL inventory and no external paths observed. [CI `a9a8e5c`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35951514939): 110 offscreen and 109 Windows samples, required Qt plugins observed. The first `18c223a` attempt did not observe `qoffscreen.dll` without refreshing the process snapshot; the correction refreshes it before each read. Transient loads, other flows and clean desktops remain open; gate unchanged.
 
+M0-01, [CI `18c513e` on attempt two](https://github.com/Matte2599/WebFence/actions/runs/35961360935) has seven green jobs; the first macOS 26 attempt failed only on a source-mirror timeout. The rerun AX diagnostic on 26 still fails six nonblocking stages. [Direct Cocoa row diagnostic variant](M0-QT-REPLACEMENT.md): patch only in a private copy, with local compilation and signing verified; the local self-test does not pass focus checks in the locked Mac session. CI will compare the same AX client on both macOS 15/26 bundles. No AX fix is claimed; gate unchanged.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.

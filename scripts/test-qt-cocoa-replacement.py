@@ -28,6 +28,20 @@ PATCH = '''
 \x20
      if (mInstance)
 '''
+AX_DIRECT_ROWS_PATCH = '''
+--- a/src/plugins/platforms/cocoa/qcocoaaccessibilityelement.mm
++++ b/src/plugins/platforms/cocoa/qcocoaaccessibilityelement.mm
+@@ -1155,7 +1155,7 @@
+                 rows = [self populateTableArray:NSAccessibilityRowRole
+                              count:rowCount];
+                 [rows retain];
+             }
+-            return NSAccessibilityUnignoredChildren(rows);
++            return rows;
+         }
+     }
+     return nil;
+'''
 
 
 def sha(path):
@@ -57,7 +71,7 @@ def run(command, output, env=None, timeout=180):
     return output.read_text(errors='replace')
 
 
-def trial(bundle, qt, output):
+def trial(bundle, qt, output, ax_direct_rows=False):
     # Keep the Qt prefix spelling: framework install names use Homebrew's opt
     # path, not its resolved Cellar directory.
     bundle, qt, output = bundle.resolve(), qt.absolute(), output.absolute()
@@ -81,6 +95,7 @@ def trial(bundle, qt, output):
     preference_hash = sha(preference) if preference.exists() else None
     record = {'schema_version': 1, 'passed': False, 'distribution_ready': False,
               'scope': 'Modified Cocoa plugin only; not a complete Qt rebuild or legal review',
+              'ax_direct_rows': ax_direct_rows,
               'system': platform.mac_ver()[0], 'architecture': platform.machine(),
               'base_inventory_sha256': sha(inventory),
               'base_executable_sha256': sha(bundle / exe_rel),
@@ -94,9 +109,10 @@ def trial(bundle, qt, output):
         local_scripts.mkdir()
         shutil.copy2(scripts / 'build-qt-cocoa.sh', local_scripts)
         shutil.copytree(scripts / 'qt-cocoa', local_scripts / 'qt-cocoa')
-        (output / 'trial.patch').write_text(PATCH)
+        trial_patch = PATCH + (AX_DIRECT_ROWS_PATCH if ax_direct_rows else '')
+        (output / 'trial.patch').write_text(trial_patch)
         with (local_scripts / 'qt-cocoa/accessibility.patch').open('a') as patch:
-            patch.write(PATCH)
+            patch.write(trial_patch)
         env = os.environ.copy()
         for key in list(env):
             if key.startswith(('QT_', 'DYLD_')):
@@ -152,9 +168,11 @@ if __name__ == '__main__':
     parser.add_argument('bundle', type=Path)
     parser.add_argument('qt_prefix', type=Path)
     parser.add_argument('new_output_directory', type=Path)
+    parser.add_argument('--ax-direct-rows', action='store_true',
+                        help='Privately test direct Cocoa AX row arrays; not a product patch')
     args = parser.parse_args()
     try:
-        trial(args.bundle, args.qt_prefix, args.new_output_directory)
+        trial(args.bundle, args.qt_prefix, args.new_output_directory, args.ax_direct_rows)
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         print('Cocoa replacement trial failed: ' + str(error), file=sys.stderr)
         sys.exit(1)

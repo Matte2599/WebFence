@@ -34,6 +34,19 @@ La procedura:
 
 `result.json` e i log esterni all'app descrivono l'esito finale. La copia conserva l'inventario del bundle base e aggiunge un `replacement-trial.json` prima della firma: quel sidecar descrive la variante **prima** dei test, con `passed=false`. La copia è soltanto un artefatto di collaudo, non un pacchetto distribuibile con inventario aggiornato. Tornare al bundle originale equivale al ripristino; non viene sostituita l'app originale.
 
+## Variante diagnostica AX delle righe
+
+L'opzione `--ax-direct-rows` aggiunge **solo alla copia privata** una seconda modifica Cocoa: `accessibilityRows` restituisce l'array di righe sintetiche direttamente, senza `NSAccessibilityUnignoredChildren`. Serve a isolare se questa trasformazione invalida i riferimenti di righe/celle osservati nella [diagnostica AX](../evidence/macos-ax-table-reset-2026-09-24.md); non è una correzione approvata. Il collaudo di compilazione, firma, self-test e soak resta obbligatorio. La CI esegue poi lo stesso client Swift AX sia sul bundle originale sia sulla variante; l'esito AX è non bloccante finché il difetto M0-01 è aperto. Un self-test Qt positivo da solo non basta.
+
+```sh
+python3 "$app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py" \
+  "$app" "$(brew --prefix qtbase)" "$trial_dir-direct-rows" --ax-direct-rows
+swiftc scripts/test-macos-ax-reset.swift -o "$trial_dir-ax-client"
+"$trial_dir-ax-client" "$trial_dir-direct-rows/WebFence replacement trial.app"
+```
+
+Il parametro `ax_direct_rows` in `result.json` distingue le due varianti. La CI scarica l'archivio Qt fissato una volta per il bundle e le due ricompilazioni; ogni invocazione del builder ne verifica comunque lo SHA-256. Il client usa solo fixture sintetiche e HOME temporanea; il bundle originale, il plugin installato e la lingua personale devono restare invariati. La copia privata conserva l'inventario della build di base e non va distribuita.
+
 ## Evidenze e limiti
 
 [Prova locale del 2026-09-23](../evidence/macos-cocoa-replacement-2026-09-23/result.json) superata su macOS 26.6.2 ARM64: variante ricompilata dai materiali inclusi, firma valida, stesso Go build ID, self-test e quattro cicli in 12,003 s; messaggio diagnostico rilevato in entrambe le esecuzioni. Bundle originale, plugin Qt installato e lingua personale invariati. Archivio invalido respinto prima dell’estrazione; output preesistente rifiutato preservando il risultato. Il [contesto](../evidence/macos-cocoa-replacement-2026-09-23/context.json) distingue il bundle precedente con modifiche locali dal nuovo script di collaudo e registra il primo tentativo fallito sul prefisso Homebrew. [CI `3f68e6a`](https://github.com/Matte2599/WebFence/actions/runs/35916839178) completata: sei job superati. Su macOS 15.7.9 la procedura inclusa nel bundle ricompila/carica la variante Cocoa, mantiene il Go build ID e supera firma, self-test e soak; originali preservati. Le 36 regressioni Python e i controlli dei pacchetti Windows/Debian sono verdi. La run precedente `51673d9` (35916784359) è stata annullata dal push successivo, che codifica lo spazio di contesto della patch senza cambiarne i byte prodotti. Un successo tecnico non approva LICENSE/CLA né chiude la revisione della distribuzione. Restano da completare materiali corrispondenti e mappatura delle dipendenze incorporate, procedure per le altre librerie/piattaforme, lettori reali, desktop puliti e sistemi minimi. Nessuna firma Developer ID/notarizzazione o comportamento sotto hardened runtime è verificato da questa firma ad hoc.
