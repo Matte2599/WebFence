@@ -116,6 +116,24 @@ func (p Project) beginAt(now time.Time) (RunScope, error) {
 
 func (r RunScope) ProjectID() string { return r.projectID }
 
+// ExpiresAt is the fixed deadline of this run snapshot. The returned time
+// cannot extend it; CheckOrigin and Validate always use the stored deadline.
+func (r RunScope) ExpiresAt() time.Time { return r.expiresAt }
+
+// Validate checks that a run snapshot exists and has not expired. It does not
+// prove the operator's claim or authorize network access by itself.
+func (r RunScope) Validate() error { return r.validateAt(time.Now()) }
+
+func (r RunScope) validateAt(now time.Time) error {
+	if r.projectID == "" {
+		return ErrInvalidProject
+	}
+	if !now.Before(r.expiresAt) {
+		return ErrAuthorizationExpired
+	}
+	return nil
+}
+
 // CheckOrigin enforces expiry and exact HTTP(S) origin for each planned URL.
 // It does not enforce methods, paths, IP egress, budgets or target ownership;
 // those checks must precede every actual network request in later M1 blocks.
@@ -124,11 +142,8 @@ func (r RunScope) CheckOrigin(rawURL string) (*url.URL, error) {
 }
 
 func (r RunScope) checkAt(now time.Time, rawURL string) (*url.URL, error) {
-	if r.projectID == "" {
-		return nil, ErrInvalidProject
-	}
-	if !now.Before(r.expiresAt) {
-		return nil, ErrAuthorizationExpired
+	if err := r.validateAt(now); err != nil {
+		return nil, err
 	}
 	return r.policy.Check(rawURL)
 }

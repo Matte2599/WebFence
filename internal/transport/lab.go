@@ -17,6 +17,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Matte2599/WebFence/internal/project"
 	"github.com/Matte2599/WebFence/internal/scope"
 )
 
@@ -63,17 +64,19 @@ type Result struct {
 // LabBroker must not be copied. Close cancels in-flight and queued work.
 // Configuration is copied; requests cannot supply headers, credentials or methods.
 type LabBroker struct {
-	policy   scope.Policy
-	grants   map[string]map[netip.Addr]struct{}
-	limits   Limits
-	resolver Resolver
-	ctx      context.Context
-	cancel   context.CancelFunc
-	slots    chan struct{}
-	mu       sync.Mutex
-	used     int
-	dial     func(context.Context, string, string) (net.Conn, error)
-	roots    *x509.CertPool // fixture roots are injected only by same-package tests
+	policy     scope.Policy
+	grants     map[string]map[netip.Addr]struct{}
+	limits     Limits
+	resolver   Resolver
+	ctx        context.Context
+	cancel     context.CancelFunc
+	slots      chan struct{}
+	mu         sync.Mutex
+	used       int
+	dial       func(context.Context, string, string) (net.Conn, error)
+	roots      *x509.CertPool // fixture roots are injected only by same-package tests
+	permit     project.RunScope
+	authorized bool
 }
 
 func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolver) (*LabBroker, error) {
@@ -117,11 +120,33 @@ func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolve
 		dial: (&net.Dialer{}).DialContext}, nil
 }
 
+// NewAuthorizedLab adds an operator-declared run scope to the loopback-only
+// broker. Network grants may be broader than the project scope; both checks
+// apply to every hop. This is still a synthetic laboratory, not a production
+// scanner or proof of target ownership.
+func NewAuthorizedLab(ctx context.Context, permit project.RunScope, grants []Grant, limits Limits, resolver Resolver) (*LabBroker, error) {
+	if err := permit.Validate(); err != nil {
+		return nil, err
+	}
+	b, err := NewLab(ctx, grants, limits, resolver)
+	if err != nil {
+		return nil, err
+	}
+	b.permit = permit
+	b.authorized = true
+	return b, nil
+}
+
 func origin(u *url.URL) string         { return u.Scheme + "://" + u.Host }
 func (b *LabBroker) Close()            { b.cancel() }
 func (b *LabBroker) RequestsUsed() int { b.mu.Lock(); defer b.mu.Unlock(); return b.used }
 
 func (b *LabBroker) contextError(ctx context.Context) error {
+	if b.authorized {
+		if err := b.permit.Validate(); err != nil {
+			return err
+		}
+	}
 	if err := b.ctx.Err(); err != nil {
 		return err
 	}
@@ -145,6 +170,11 @@ func (b *LabBroker) reserve(ctx context.Context) error {
 // All error values are redacted codes (or context/scope sentinels), never raw
 // url.Error, TLS, DNS or socket errors containing target or certificate data.
 func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
+	if b.authorized {
+		var cancelAuthorization context.CancelFunc
+		ctx, cancelAuthorization = context.WithDeadline(ctx, b.permit.ExpiresAt())
+		defer cancelAuthorization()
+	}
 	ctx, cancel := context.WithTimeout(ctx, b.limits.RequestTimeout)
 	defer cancel()
 	stop := context.AfterFunc(b.ctx, cancel)
@@ -161,6 +191,11 @@ func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
 	for hops := 0; ; hops++ {
 		if err := b.contextError(ctx); err != nil {
 			return Result{}, err
+		}
+		if b.authorized {
+			if _, err := b.permit.CheckOrigin(raw); err != nil {
+				return Result{}, err
+			}
 		}
 		u, err := b.policy.Check(raw)
 		if err != nil {

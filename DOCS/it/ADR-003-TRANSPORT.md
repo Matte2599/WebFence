@@ -52,6 +52,6 @@ Un blocco dei dial indipendente dal codice in prova limita i test agli endpoint 
 
 ## Conseguenze e limiti residui
 
-Il task copre il gate M0 del laboratorio e dei **primi** test scope/rete. M0 resta aperta per GUI/accessibilità, packaging e altre decisioni di fondazione. Prima di traffico reale servono autorizzazioni/scadenza, esclusioni dei servizi interni, IP/CIDR e reti pubbliche/private, metodi e percorsi, rate limit, redazione, recupero e integrazione del ciclo di scansione. Il laboratorio non dimostra comportamento di DNS Internet, proxy aziendali, browser, WebSocket, reti private reali o resilienza a ogni guasto OS.
+Il task copre il gate M0 del laboratorio e dei **primi** test scope/rete; per lo stato di M0 vedere la [matrice](M0-VALIDATION.md). Il [blocco M1 successivo](M1-AUTHORIZED-LAB.md) applica una dichiarazione di progetto e la scadenza al broker sempre solo loopback. Prima di traffico reale servono esclusioni dei servizi interni, IP/CIDR e reti pubbliche/private, metodi e percorsi, rate limit, redazione, recupero e integrazione del ciclo di scansione. Il laboratorio non dimostra comportamento di DNS Internet, proxy aziendali, browser, WebSocket, reti private reali o resilienza a ogni guasto OS.
 
 Riferimenti verificati: [Go HTTP transport](https://pkg.go.dev/net/http#Transport), [resolver](https://pkg.go.dev/net#Resolver.LookupNetIP), [contesti](https://pkg.go.dev/context), [verifica TLS](https://pkg.go.dev/crypto/tls#Config).
