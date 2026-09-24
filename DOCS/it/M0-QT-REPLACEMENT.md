@@ -36,7 +36,7 @@ La procedura:
 
 ## Variante diagnostica AX delle righe
 
-L'opzione `--ax-direct-rows` aggiunge **solo alla copia privata** una seconda modifica Cocoa: `accessibilityRows` restituisce l'array di righe sintetiche direttamente, senza `NSAccessibilityUnignoredChildren`. Serve a isolare se questa trasformazione invalida i riferimenti di righe/celle osservati nella [diagnostica AX](../evidence/macos-ax-table-reset-2026-09-24.md); non è una correzione approvata. Il collaudo di compilazione, firma, self-test e soak resta obbligatorio. La CI esegue poi lo stesso client Swift AX sia sul bundle originale sia sulla variante; l'esito AX è non bloccante finché il difetto M0-01 è aperto. Un self-test Qt positivo da solo non basta.
+L'opzione `--ax-direct-rows` aggiunge **solo alla copia privata** una seconda modifica Cocoa: `accessibilityRows` restituisce l'array di righe sintetiche direttamente, senza `NSAccessibilityUnignoredChildren`. La [prova CI](../evidence/macos-ax-table-reset-2026-09-24.md) ha escluso questa singola modifica come correzione: il client Swift AX fallisce nella stessa quantità di stadi sul bundle normale e sulla variante su entrambi i runner macOS. L'opzione resta per riprodurre l'esperimento manualmente; non fa parte della CI ordinaria né del plugin distribuito. Compilazione, firma, self-test e soak restano obbligatori per ogni copia privata. Un self-test Qt positivo da solo non basta.
 
 ```sh
 python3 "$app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py" \
@@ -45,7 +45,7 @@ swiftc scripts/test-macos-ax-reset.swift -o "$trial_dir-ax-client"
 "$trial_dir-ax-client" "$trial_dir-direct-rows/WebFence replacement trial.app"
 ```
 
-Il parametro `ax_direct_rows` in `result.json` distingue le due varianti. La CI scarica l'archivio Qt fissato una volta per il bundle e le due ricompilazioni; ogni invocazione del builder ne verifica comunque lo SHA-256. Il client usa solo fixture sintetiche e HOME temporanea; il bundle originale, il plugin installato e la lingua personale devono restare invariati. La copia privata conserva l'inventario della build di base e non va distribuita.
+Il parametro `ax_direct_rows` in `result.json` distingue le due varianti. La CI scarica l'archivio Qt fissato una volta per il bundle e la ricompilazione ordinaria; ogni invocazione del builder ne verifica comunque lo SHA-256. Il client usa solo fixture sintetiche e HOME temporanea; il bundle originale, il plugin installato e la lingua personale devono restare invariati. La copia privata conserva l'inventario della build di base e non va distribuita.
 
 ## Evidenze e limiti
 

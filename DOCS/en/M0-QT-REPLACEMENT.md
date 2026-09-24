@@ -36,7 +36,7 @@ The procedure:
 
 ## Diagnostic AX row variant
 
-The `--ax-direct-rows` option adds a second Cocoa change **only to the private copy**: `accessibilityRows` returns its synthetic row array directly, without `NSAccessibilityUnignoredChildren`. It isolates whether that conversion invalidates the row/cell references seen in the [AX diagnostic](../evidence/macos-ax-table-reset-2026-09-24.md); it is not an approved fix. Compilation, signing, self-test and soak still have to pass. CI then runs the same Swift AX client on the original bundle and the variant; the AX result is nonblocking while M0-01 remains open. A passing internal Qt self-test alone is insufficient.
+The `--ax-direct-rows` option adds a second Cocoa change **only to the private copy**: `accessibilityRows` returns its synthetic row array directly, without `NSAccessibilityUnignoredChildren`. The [CI comparison](../evidence/macos-ax-table-reset-2026-09-24.md) rules out this change alone as a fix: the Swift AX client fails the same number of stages on the normal bundle and variant on both macOS runners. The option remains to reproduce the experiment manually; it is not part of routine CI or the shipped plugin. Compilation, signing, self-test and soak remain mandatory for each private copy. A passing internal Qt self-test alone is insufficient.
 
 ```sh
 python3 "$app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py" \
@@ -45,7 +45,7 @@ swiftc scripts/test-macos-ax-reset.swift -o "$trial_dir-ax-client"
 "$trial_dir-ax-client" "$trial_dir-direct-rows/WebFence replacement trial.app"
 ```
 
-The `ax_direct_rows` field in `result.json` distinguishes the variants. CI downloads the pinned Qt archive once for the bundle and both rebuilds; each builder invocation still verifies its SHA-256. The client uses only synthetic fixtures and a temporary HOME; the original bundle, installed plugin and personal language preference must remain unchanged. The private copy retains the base build inventory and must not be distributed.
+The `ax_direct_rows` field in `result.json` distinguishes the variants. CI downloads the pinned Qt archive once for the bundle and normal rebuild; each builder invocation still verifies its SHA-256. The client uses only synthetic fixtures and a temporary HOME; the original bundle, installed plugin and personal language preference must remain unchanged. The private copy retains the base build inventory and must not be distributed.
 
 ## Evidence and limitations
 

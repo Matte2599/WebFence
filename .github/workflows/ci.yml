@@ -188,22 +188,6 @@ jobs:
               exit 1
             }
           cat "$RUNNER_TEMP/cocoa-replacement-trial/result.json"
-      - name: Build private Cocoa direct-row AX variant
-        if: runner.os == 'macOS'
-        run: |
-          python3 dist/WebFence.app/Contents/Resources/notices/scripts/test-qt-cocoa-replacement.py \
-            dist/WebFence.app "$(brew --prefix qtbase)" "$RUNNER_TEMP/cocoa-ax-direct-rows" \
-            --ax-direct-rows || {
-              tail -n 60 "$RUNNER_TEMP/cocoa-ax-direct-rows/"*.log
-              exit 1
-            }
-          cat "$RUNNER_TEMP/cocoa-ax-direct-rows/result.json"
-      - name: Diagnose private Cocoa direct-row AX variant (M0-01 open)
-        if: runner.os == 'macOS'
-        continue-on-error: true
-        run: |
-          "$RUNNER_TEMP/webfence-ax-reset" \
-            "$RUNNER_TEMP/cocoa-ax-direct-rows/WebFence replacement trial.app"
       - name: Assemble native macOS sources beside the signed bundle
         if: runner.os == 'macOS'
         run: |
