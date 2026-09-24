@@ -45,11 +45,11 @@ Il broker rappresenta un confine da implementare e provare anche per traffico br
 | `report` | Snapshot, rendering, manifest e firma tramite componente con accesso limitato alle chiavi |
 | `storage` | Transazioni, migrazioni, cancellazione e ripristino |
 
-La tabella descrive i contratti completi pianificati. `internal/scope` e `internal/transport` implementano le fondazioni M0; `internal/project` aggiunge lo [snapshot di autorizzazione M1](M1-PROJECT-AUTHORIZATION.md), in memoria e senza rete propria. Il [broker autorizzato M1](M1-AUTHORIZED-LAB.md) collega i due componenti soltanto per loopback. Gli altri moduli del motore non sono ancora presenti. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
+La tabella descrive i contratti completi pianificati. `internal/scope` e `internal/transport` implementano le fondazioni M0; `internal/project` aggiunge lo [snapshot di autorizzazione M1](M1-PROJECT-AUTHORIZATION.md), in memoria e senza rete propria. Il [broker autorizzato M1](M1-AUTHORIZED-LAB.md) collega i due componenti soltanto per loopback; `internal/storage` salva [metadati di progetto](M1-PROJECT-STORE.md) in SQLite senza integrazione GUI. Gli altri moduli del motore non sono ancora presenti. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
 
 ## Persistenza e processi esterni
 
-SQLite è scelto (ADR-004) per il futuro store di metadati, coda e osservazioni; file separati per prove voluminose. Accesso serializzato alle scritture quando utile, foreign key, migrazioni e quota disco. Un checkpoint e lo stato della coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
+SQLite è scelto (ADR-004) per metadati, futura coda e osservazioni; file separati per prove voluminose. Lo store M1 implementa una prima versione dello schema per i soli progetti, con foreign key; migrazioni successive e quota disco sono ancora da realizzare. Un checkpoint e lo stato della futura coda devono essere salvati nella stessa transazione quando descrivono lo stesso avanzamento. I file si scrivono prima in area temporanea, poi si promuovono atomicamente; un recupero elimina orfani senza cancellare prove referenziate.
 
 Credenziali e chiavi private nel portachiavi del sistema o in un contenitore cifrato sbloccato dall'operatore. Il database contiene riferimenti, non segreti in chiaro. La cifratura di SQLite non è automatica: scegliere esplicitamente una libreria compatibile e documentare cosa rimane nei metadati.
 
@@ -73,4 +73,4 @@ La modalità server, utenti condivisi, PostgreSQL e worker distribuiti richiedon
 
 `NewAuthorizedLab` applica lo snapshot del progetto a ogni hop del medesimo broker e ne usa la scadenza per interrompere richieste in corso. Rimane un laboratorio: [contratto M1](M1-AUTHORIZED-LAB.md).
 
-SQLite e il profilo JWS sono selezionati in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): test di fattibilità SQLite e componente `internal/signature`, senza store progetti né report nella GUI.
+SQLite e il profilo JWS sono selezionati in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): esistono test di fattibilità SQLite, lo [store M1](M1-PROJECT-STORE.md) e `internal/signature`, senza progetti né report nella GUI.

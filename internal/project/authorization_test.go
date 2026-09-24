@@ -88,6 +88,8 @@ func TestAuthorizationSnapshotCannotBeWidenedByCaller(t *testing.T) {
 	draft.Origins[0] = "https://outside.invalid"
 	origins := p.Origins()
 	origins[0] = "https://outside.invalid:443"
+	record := p.Record()
+	record.Origins[0] = "https://outside.invalid:443"
 	if got := p.Origins()[0]; got != "https://lab.invalid:443" {
 		t.Fatalf("canonical origin changed: %s", got)
 	}

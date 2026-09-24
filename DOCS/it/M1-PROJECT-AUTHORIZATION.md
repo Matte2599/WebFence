@@ -2,7 +2,7 @@
 
 [English](../en/M1-PROJECT-AUTHORIZATION.md) · [Roadmap](../ROADMAP.md) · [Architettura](ARCHITECTURE.md)
 
-`internal/project` introduce il modello di progetto **in memoria e senza rete**. Questo blocco prepara lo snapshot del perimetro per una run, ma non realizza ancora scansione, persistenza SQLite o una schermata di gestione progetti.
+`internal/project` introduce il modello di progetto **in memoria e senza rete**. Questo primo blocco prepara lo snapshot del perimetro per una run. La [persistenza SQLite successiva](M1-PROJECT-STORE.md) è separata; scansione e schermata di gestione progetti non sono ancora realizzate.
 
 ## Contratto implementato
 
@@ -16,4 +16,4 @@ Questo controllo è **solo il livello di origine**. Non limita ancora metodi, pe
 
 I test sintetici coprono richiesta ammessa, schema/porta/sottodominio esclusi, scadenza al confine esatto e dopo l'avvio, valore zero, configurazioni invalide, duplicati canonici e impossibilità di allargare uno snapshot modificando le slice del chiamante. La suite race di `internal/project` è passata localmente; la CI multipiattaforma include il nuovo pacchetto nella suite race.
 
-Restano per M1: persistenza e migrazione del progetto, rinnovo/versione dell'autorizzazione, policy di metodi/percorsi/esclusioni e di destinazione IP, broker di produzione con budget/rate limit condivisi, UI IT/EN, discovery e prove redatte. L'integrazione per hop nel solo laboratorio è descritta separatamente. I [collaudi umani ereditati da M0](M0-VALIDATION.md) restano prerequisiti di validazione M1.
+Restano per M1: integrazione e migrazioni successive dello store di progetto, rinnovo/versione dell'autorizzazione, policy di metodi/percorsi/esclusioni e di destinazione IP, broker di produzione con budget/rate limit condivisi, UI IT/EN, discovery e prove redatte. L'integrazione per hop nel solo laboratorio è descritta separatamente. I [collaudi umani ereditati da M0](M0-VALIDATION.md) restano prerequisiti di validazione M1.

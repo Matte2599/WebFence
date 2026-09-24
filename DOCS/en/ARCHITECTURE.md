@@ -45,11 +45,11 @@ The broker represents a boundary to implement and test for browser traffic, redi
 | `report` | Snapshots, rendering, manifests and signing through a component with limited key access |
 | `storage` | Transactions, migrations, deletion and recovery |
 
-The table describes planned complete contracts. `internal/scope` and `internal/transport` implement the M0 foundations; `internal/project` adds the [M1 authorization snapshot](M1-PROJECT-AUTHORIZATION.md), in memory and with no networking of its own. The [M1 authorized broker](M1-AUTHORIZED-LAB.md) connects the components for loopback only. Other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
+The table describes planned complete contracts. `internal/scope` and `internal/transport` implement the M0 foundations; `internal/project` adds the [M1 authorization snapshot](M1-PROJECT-AUTHORIZATION.md), in memory and with no networking of its own. The [M1 authorized broker](M1-AUTHORIZED-LAB.md) connects the components for loopback only; `internal/storage` saves [project metadata](M1-PROJECT-STORE.md) in SQLite without GUI integration. Other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
 
 ## Persistence and external processes
 
-SQLite is selected (ADR-004) for the future metadata, queue and observation store; separate files hold larger evidence. Serialize writes where useful, enforce foreign keys, migrations and disk quotas. Save a checkpoint and queue state in one transaction when they describe the same progress. Write files to staging first, then promote them atomically; recovery removes orphans without deleting referenced evidence.
+SQLite is selected (ADR-004) for metadata and the future queue and observation store; separate files will hold larger evidence. The M1 store implements an initial schema version for projects only, with foreign keys; later migrations and disk quotas remain open. Save a checkpoint and future queue state in one transaction when they describe the same progress. Write files to staging first, then promote them atomically; recovery removes orphans without deleting referenced evidence.
 
 Keep credentials and private keys in the system keychain or an encrypted container unlocked by the operator. The database stores references, not plaintext secrets. SQLite encryption is not automatic: choose a compatible library explicitly and document metadata exposure.
 
@@ -73,4 +73,4 @@ Server mode, shared users, PostgreSQL and distributed workers require dedicated 
 
 `NewAuthorizedLab` applies the project snapshot on every hop of the same broker and uses its expiry to stop in-progress requests. It remains a lab: [M1 contract](M1-AUTHORIZED-LAB.md).
 
-SQLite and the JWS profile are selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): SQLite feasibility tests and the `internal/signature` component, without a project store or GUI reports.
+SQLite and the JWS profile are selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): SQLite feasibility tests, the [M1 store](M1-PROJECT-STORE.md) and `internal/signature` exist, without projects or reports in the GUI.

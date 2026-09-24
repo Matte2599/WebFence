@@ -2,7 +2,7 @@
 
 [Italiano](../it/ADR-004-STORAGE-SIGNATURE.md) · [Index](../README.md)
 
-Date: 2026-09-23. Status: selection accepted for M0 foundations; M1/M2 application integration is not implemented. Keychain access remains a separate decision requiring verification.
+Date: 2026-09-23. Status: selection accepted for M0 foundations; the [M1 project-metadata store](M1-PROJECT-STORE.md) is the first application use of SQLite. Reports and integrated signing remain to be built. Keychain access remains a separate decision requiring verification.
 
 ## Decision and alternatives
 
@@ -17,11 +17,11 @@ Date: 2026-09-23. Status: selection accepted for M0 foundations; M1/M2 applicati
 
 ## SQLite experiment
 
-`internal/foundation/sqlite_test.go` contains tests only, without a product store or schema. Each test uses synthetic temporary files and URIs constructed with `net/url`. Configuration: one connection per pool, WAL, `synchronous=FULL`, enabled foreign keys, 50 ms busy timeout and `trusted_schema=OFF` applied by a hook to every new connection.
+`internal/foundation/sqlite_test.go` contains the M0 experiments, separate from the [project store](M1-PROJECT-STORE.md). Each test uses synthetic temporary files and URIs constructed with `net/url`. Experiment configuration: one connection per pool, WAL, `synchronous=FULL`, enabled foreign keys, 50 ms busy timeout and `trusted_schema=OFF` applied by a hook to every new connection.
 
 Tests: commit/rollback, reopen and integrity, Unicode text and SQL handled as a parameter, foreign keys, reinitialization after connection replacement, readers not seeing uncommitted writes, second writer rejected with `SQLITE_BUSY`, recovery after releasing the lock, cancellation of a long query and pool wait. Context expiry does not replace the busy handler's native timeout.
 
-WAL requires a compatible local filesystem; no network folders or synchronization of an active DB. These tests do not establish power-loss recovery, backups, migrations, encryption, quotas or secure deletion. Those flows and actual storage permissions/ACLs belong to M1. Do not copy an open DB while ignoring WAL/SHM files.
+WAL requires a compatible local filesystem; no network folders or synchronization of an active DB. The M0 tests did not establish power-loss recovery, backups, migrations, encryption, quotas or secure deletion. The M1 store adds only the first schema version and reopening after commit; the other flows and real-system permissions/ACLs remain open. Do not copy an open DB while ignoring WAL/SHM files.
 
 ## Implemented JWS contract
 

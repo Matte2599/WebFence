@@ -4,7 +4,7 @@
 
 ## Running and checking
 
-Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. This remains an offline example prototype: no scanner, persistent projects, CVE or AI. [Status and verification](QT-DESKTOP.md).
+Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. This remains an offline example prototype: no scanner, persistent projects **in the GUI**, CVE or AI. The core has a separate [M1 project store](M1-PROJECT-STORE.md). [Desktop status and verification](QT-DESKTOP.md).
 
 The first binding compilation can take several minutes; later builds benefit from Go’s cache. macOS CI compiles C++ wrappers with `-O0 -g0` to limit first-build cost; build and bundle share flags and cache. Installed Qt libraries remain the Homebrew package binaries. The local script defaults to `-O2 -g`; CI checks functionality, not release performance.
 
@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/foundation ./internal/signature ./internal/credentials
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -36,10 +36,11 @@ On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w6
 - `internal/demo`: pure fixtures without networking.
 - `internal/i18n`: embedded IT/EN JSON catalogs.
 - `internal/preferences`: language only, independent of toolkit.
+- `internal/project` and `internal/storage`: authorization model and SQLite metadata-only store, still disconnected from the GUI.
 
 Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
 
-The only saved preference is `WebFence/ui-language` under `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` or `~/.config`; Windows: `%AppData%`). Writes use a temporary file and rename in the same directory. Errors are visible in the GUI; session language remains usable. Old Fyne preferences are neither imported nor deleted. Examples, filters and selection are not saved. Explicitly copied clipboard contents are not erased by “Clear examples”.
+In the desktop, the only saved preference is `WebFence/ui-language` under `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` or `~/.config`; Windows: `%AppData%`). Writes use a temporary file and rename in the same directory. Errors are visible in the GUI; session language remains usable. Old Fyne preferences are neither imported nor deleted. Examples, filters and selection are not saved. Explicitly copied clipboard contents are not erased by “Clear examples”.
 
 The Language menu and selector switch IT/EN; shortcuts are **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** on macOS). **Ctrl+O/Cmd+O** loads examples. Full keyboard and screen-reader validation remains open.
 

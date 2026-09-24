@@ -28,7 +28,9 @@ Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
 
 Primo blocco tecnico: [modello progetto e dichiarazione di autorizzazione](it/M1-PROJECT-AUTHORIZATION.md) in memoria, senza rete. Non completa i criteri M1 né i prerequisiti umani della [matrice M0](it/M0-VALIDATION.md).
 
-Secondo blocco tecnico: [snapshot applicato al laboratorio HTTP](it/M1-AUTHORIZED-LAB.md) su ogni hop e alla scadenza, ancora solo loopback. Persistenza, policy complete e trasporto di produzione restano da realizzare.
+Secondo blocco tecnico: [snapshot applicato al laboratorio HTTP](it/M1-AUTHORIZED-LAB.md) su ogni hop e alla scadenza, ancora solo loopback. Policy complete e trasporto di produzione restano da realizzare.
+
+Terzo blocco tecnico: [store SQLite v1 dei progetti](it/M1-PROJECT-STORE.md), con creazione, riapertura, elenco e cancellazione dei soli metadati. Quota disco, backup e integrazione desktop restano aperti.
 
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
@@ -121,7 +123,9 @@ Depends on M0. Covers WF-01, WF-02, WF-03, WF-07, WF-09.
 
 First technical block: [in-memory project model and authorization declaration](en/M1-PROJECT-AUTHORIZATION.md), without networking. It does not complete the M1 criteria or the human prerequisites in the [M0 matrix](en/M0-VALIDATION.md).
 
-Second technical block: [snapshot enforced in the HTTP lab](en/M1-AUTHORIZED-LAB.md) on every hop and at expiry, still loopback-only. Persistence, full policies and production transport remain to be built.
+Second technical block: [snapshot enforced in the HTTP lab](en/M1-AUTHORIZED-LAB.md) on every hop and at expiry, still loopback-only. Full policies and production transport remain to be built.
+
+Third technical block: [SQLite v1 project store](en/M1-PROJECT-STORE.md), with creation, reopening, listing and deletion of metadata only. Disk quotas, backup and desktop integration remain open.
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.

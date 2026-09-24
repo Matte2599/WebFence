@@ -2,7 +2,7 @@
 
 [Italiano](../it/M1-PROJECT-AUTHORIZATION.md) · [Roadmap](../ROADMAP.md) · [Architecture](ARCHITECTURE.md)
 
-`internal/project` introduces an **in-memory, network-free** project model. This block prepares a run scope snapshot; it does not yet provide scanning, SQLite persistence or a project-management screen.
+`internal/project` introduces an **in-memory, network-free** project model. This first block prepares a run scope snapshot. The [later SQLite persistence](M1-PROJECT-STORE.md) is separate; scanning and a project-management screen are not yet implemented.
 
 ## Implemented contract
 
@@ -16,4 +16,4 @@ This is **only the origin layer**. It does not yet restrict methods, paths, IP/C
 
 Synthetic tests cover an allowed request, excluded schemes/ports/subdomains, expiry at the exact boundary and after run start, zero values, invalid configurations, canonical duplicates and attempts to widen a snapshot by mutating caller slices. The `internal/project` race suite passed locally; cross-platform CI includes the new package in its race suite.
 
-Remaining M1 work includes project persistence/migration, authorization renewal/versioning, method/path/exclusion and IP destination policies, a production broker with shared budgets/rate limits, IT/EN UI, discovery and redacted evidence. The lab-only per-hop integration is documented separately. [Human trials carried from M0](M0-VALIDATION.md) remain M1 validation prerequisites.
+Remaining M1 work includes store integration and later migrations, authorization renewal/versioning, method/path/exclusion and IP destination policies, a production broker with shared budgets/rate limits, IT/EN UI, discovery and redacted evidence. The lab-only per-hop integration is documented separately. [Human trials carried from M0](M0-VALIDATION.md) remain M1 validation prerequisites.

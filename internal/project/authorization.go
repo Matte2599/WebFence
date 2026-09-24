@@ -59,14 +59,24 @@ type RunScope struct {
 func New(d Draft) (Project, error) { return newAt(d, time.Now()) }
 
 func newAt(d Draft, now time.Time) (Project, error) {
+	return build(d, now, true)
+}
+
+// Restore validates a previously recorded project, including an expired one.
+// Expired authorization remains readable for renewal or deletion, but BeginRun
+// still refuses it. Callers must not use Restore to bypass operator confirmation.
+func Restore(d Draft) (Project, error) { return build(d, time.Now(), false) }
+
+func build(d Draft, now time.Time, requireCurrent bool) (Project, error) {
 	if !validID(d.ID) || !validText(d.Name, 128) || !validText(d.TargetOwner, 256) ||
-		!validText(d.AuthorizationReference, 256) || len(d.Origins) == 0 || len(d.Origins) > maxOrigins {
+		!validText(d.AuthorizationReference, 256) || d.AuthorizationExpiresAt.IsZero() ||
+		len(d.Origins) == 0 || len(d.Origins) > maxOrigins {
 		return Project{}, ErrInvalidProject
 	}
 	if !d.AuthorizationConfirmed {
 		return Project{}, ErrAuthorizationMissing
 	}
-	if !d.AuthorizationExpiresAt.After(now) {
+	if requireCurrent && !d.AuthorizationExpiresAt.After(now) {
 		return Project{}, ErrAuthorizationExpired
 	}
 	policy, err := scope.New(d.Origins)
@@ -96,6 +106,20 @@ func newAt(d Draft, now time.Time) (Project, error) {
 
 func (p Project) ID() string   { return p.id }
 func (p Project) Name() string { return p.name }
+
+// Record returns a detached copy of the descriptive project fields for local
+// persistence. The authorization reference is sensitive metadata: do not log it.
+func (p Project) Record() Draft {
+	if p.id == "" {
+		return Draft{}
+	}
+	return Draft{
+		ID: p.id, Name: p.name, TargetOwner: p.targetOwner,
+		AuthorizationReference: p.authorizationReference,
+		AuthorizationConfirmed: true, AuthorizationExpiresAt: p.expiresAt,
+		Origins: p.Origins(),
+	}
+}
 
 // Origins returns a copy; callers cannot widen the stored policy.
 func (p Project) Origins() []string { return append([]string(nil), p.origins...) }
