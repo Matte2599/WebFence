@@ -48,7 +48,7 @@ The View menu adds search (Ctrl/Cmd+F), results (F6), evidence (Ctrl/Cmd+Shift+E
 
 ## Platforms and bundle
 
-Requirements: Apple Silicon macOS, Windows 10/11 x86-64, Debian/derivatives x86-64 and ARM64; no 32-bit. Minimum versions and Windows 10 maintenance remain subject to [ADR-002](ADR-002-GUI.md). CI builds do not establish assistive use on the required systems.
+Requirements: Apple Silicon macOS, Windows 10/11 x86-64, Debian/derivatives x86-64 and ARM64; no 32-bit. The author chose macOS 26 as the temporary minimum; the local bundle declares 26.0 but has not yet been tested on a real 26.0 system. Windows/Debian minima and Windows 10 maintenance remain to be defined/verified under [ADR-002](ADR-002-GUI.md). CI builds do not establish assistive use on the required systems.
 
 ```sh
 sh scripts/package-macos.sh

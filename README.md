@@ -4,7 +4,7 @@
 
 [English](README.en.md) · [Documentazione](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [Licenza](LICENSE)
 
-Il prototipo desktop Go/Qt Widgets usa solo fixture sintetiche: carica 10.000 righe, le filtra e mostra le evidenze in italiano e inglese. Il motore di scansione di produzione non è implementato e non esistono release supportate o benchmark di sicurezza. Per il resoconto di M0, le verifiche e i prerequisiti prima di M1, vedere la [matrice di validazione](DOCS/it/M0-VALIDATION.md).
+Il prototipo desktop Go/Qt Widgets usa solo fixture sintetiche: carica 10.000 righe, le filtra e mostra le evidenze in italiano e inglese. Il motore di scansione di produzione non è implementato e non esistono release supportate o benchmark di sicurezza. Per il resoconto di M0 e i gate trasferiti a M1 vedere la [matrice di validazione](DOCS/it/M0-VALIDATION.md); il [piano dei collaudi umani M1](DOCS/it/M1-PREREQUISITES.md) spiega come eseguirli.
 
 Il [primo blocco M1](DOCS/it/M1-PROJECT-AUTHORIZATION.md) aggiunge un modello di progetto e uno snapshot delle origini dichiarate dall'operatore, ancora in memoria e senza rete.
 

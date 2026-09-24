@@ -4,7 +4,7 @@
 
 [Italiano](README.md) · [Documentation](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [License](LICENSE)
 
-The Go/Qt Widgets desktop prototype uses synthetic fixtures only: it loads 10,000 rows, filters them and displays evidence in Italian and English. The production scanning engine is not implemented, and there are no supported releases or security benchmarks. For the M0 closure report, verification and prerequisites before M1, see the [validation matrix](DOCS/en/M0-VALIDATION.md).
+The Go/Qt Widgets desktop prototype uses synthetic fixtures only: it loads 10,000 rows, filters them and displays evidence in Italian and English. The production scanning engine is not implemented, and there are no supported releases or security benchmarks. For the M0 closure report and gates carried into M1, see the [validation matrix](DOCS/en/M0-VALIDATION.md); the [M1 human-trial plan](DOCS/en/M1-PREREQUISITES.md) explains how to run them.
 
 The [first M1 block](DOCS/en/M1-PROJECT-AUTHORIZATION.md) adds a project model and snapshot of operator-declared origins, still in memory and without networking.
 

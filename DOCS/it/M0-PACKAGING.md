@@ -14,7 +14,7 @@ L’ispezione in sola lettura di tutti i Mach-O, escludendo duplicati symlink, h
 
 Un [controllo successivo di `LC_RPATH`](../evidence/macos-linkage-closure-2026-09-24.md) ha rilevato sei percorsi di ricerca esterni, pur senza dipendenze Homebrew esplicite. Il packaging ora li rimuove nello staging **prima** dell'inventario e della firma, controlla la chiusura dei riferimenti Mach-O e fallisce prima di sostituire l'app se un riferimento esce dal bundle. Su una copia privata: 28 binari, 194 riferimenti, 148 Apple e 46 risolti nell'app; firma e self-test Cocoa superati. La CI verifica nuovamente il bundle prodotto. I caricamenti del flusso sintetico sono verificati separatamente nella [prova runtime isolata](../evidence/macos-isolated-runtime-2026-09-24.md); l'avvio su Mac pulito resta da provare.
 
-Per un minimo supportato inferiore occorre compilare o acquisire ogni dipendenza nativa per quella base, impostare flag di deployment coerenti, ispezionare tutti i load command risultanti e provare sul relativo OS. Non alterare i load command della versione minima per nascondere codice incompatibile. È stato chiesto all’autore se il minimo desiderato sia macOS 13, 15 o 26; nessuna risposta o promessa di supporto presunta.
+Per un minimo supportato inferiore occorre compilare o acquisire ogni dipendenza nativa per quella base, impostare flag di deployment coerenti, ispezionare tutti i load command risultanti e provare sul relativo OS. Non alterare i load command della versione minima per nascondere codice incompatibile. **Decisione successiva dell'autore, 2026-09-24:** macOS **26** è l'obiettivo minimo per ora, solo su Apple Silicon. Il bundle locale dichiara 26.0.0; manca ancora una prova su macOS 26.0 reale, quindi questa non è una certificazione di supporto né una release.
 
 ## Punto di partenza dell’inventario
 
@@ -75,7 +75,7 @@ Difetto riprodotto sul bundle precedente: eseguibile e 18 altri Mach-O richiedon
 | Bundle locale da `f64f534` con modifiche dichiarate | 26.0.0 | 28, di cui 19 minimo 26 e nove minimo 14 | Self-test Cocoa sul Mac locale |
 | Bundle CI `3593dcc`, runner macOS 15 | 15.0.0 | 28; massimo richiesto 15.0.0 | Self-test e prova breve Cocoa |
 
-I due valori identificano build diverse e non promettono compatibilità del bundle locale con macOS 15. Le prove desktop pulite e il minimo ufficiale restano da definire/verificare.
+I due valori identificano build diverse e non promettono compatibilità del bundle locale con macOS 15. L'obiettivo macOS 26 è stato deciso successivamente, come indicato sopra; la prova su desktop pulito e su 26.0 resta da eseguire.
 
 ## Nuovo bundle locale dal commit corrente
 
