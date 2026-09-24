@@ -38,6 +38,8 @@ Quarto blocco tecnico: [revisioni e rinnovo dell'autorizzazione](it/M1-PROJECT-S
 
 Quinto blocco tecnico: [run gestite e revoca locale](it/M1-MANAGED-RUNS.md) su rinnovo, revoca esplicita persistente, cancellazione, chiusura e scadenza; migrazione SQLite v2→v3. Il laboratorio HTTP interrompe le richieste in corso. Coordinamento tra processi e integrazione desktop restano aperti.
 
+Sesto blocco tecnico: [primo controllo HTTP su seed espliciti](it/M1-HEADER-LAB.md), collegando progetto salvato, run gestita e broker solo loopback; osserva un header senza conservare URL/body/header grezzi nei risultati. Non realizza ancora discovery, persistenza degli esiti o UI.
+
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
 - [ ] Persistenza, ripristino dopo crash, limiti disco e cancellazione base del progetto.
@@ -138,6 +140,8 @@ Third technical block: [SQLite v1 project store](en/M1-PROJECT-STORE.md), with c
 Fourth technical block: [authorization revisions and renewal](en/M1-PROJECT-STORE.md) with SQLite v1→v2 migration, immutable history and optimistic revision checks.
 
 Fifth technical block: [managed runs and local revocation](en/M1-MANAGED-RUNS.md) on renewal, persistent explicit revocation, deletion, close and expiry; SQLite v2→v3 migration. The HTTP lab interrupts in-flight requests. Cross-process coordination and desktop integration remain open.
+
+Sixth technical block: [first HTTP check on explicit seeds](en/M1-HEADER-LAB.md), connecting saved project, managed run and loopback-only broker; it observes one header without retaining raw URLs/bodies/headers in results. Discovery, result persistence and UI are still missing.
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.

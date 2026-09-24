@@ -2,7 +2,7 @@
 
 [Italiano](../it/SCANNING.md) · [Index](../README.md)
 
-Status: engine not implemented. The first [origin check](M0-SCOPE.md), [lab-confined transport](ADR-003-TRANSPORT.md), [M1 operator-declared authorization snapshot](M1-PROJECT-AUTHORIZATION.md) and their [loopback-only integration](M1-AUTHORIZED-LAB.md) are available; no desktop target traffic. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
+Status: production engine not implemented. The first [origin check](M0-SCOPE.md), [lab-confined transport](ADR-003-TRANSPORT.md), [M1 operator-declared authorization snapshot](M1-PROJECT-AUTHORIZATION.md), their [loopback-only integration](M1-AUTHORIZED-LAB.md) and a [first HTTP check on explicit seeds](M1-HEADER-LAB.md) are available; no desktop target traffic. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
 
 ## Pipeline
 

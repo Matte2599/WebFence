@@ -14,6 +14,8 @@ Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLit
 
 Le [run gestite M1](DOCS/it/M1-MANAGED-RUNS.md) collegano la revisione corrente alla revoca locale e fermano il laboratorio HTTP quando l'autorizzazione cambia; restano scollegate dalla GUI.
 
+Il [primo controllo HTTP M1](DOCS/it/M1-HEADER-LAB.md) usa run gestite e seed espliciti solo loopback per osservare un header in risposte HTML, con esiti redatti e conteggio dei seed; non effettua discovery né scansioni di produzione.
+
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 
 ## Perché WebFence
