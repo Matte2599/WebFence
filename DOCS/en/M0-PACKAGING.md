@@ -76,3 +76,7 @@ Defect reproduced on the previous bundle: the executable and 18 other Mach-O fil
 | CI `3593dcc` bundle, macOS 15 runner | 15.0.0 | 28; maximum requirement 15.0.0 | Cocoa self-test and short soak |
 
 These values identify different builds and do not promise macOS 15 compatibility for the local bundle. Clean-desktop trials and the official minimum still need definition/verification.
+
+## New local bundle from the current commit
+
+The [trial of the `d92c20e` bundle and its associated source ZIP](../evidence/macos-current-bundle-2026-09-24.md) updates the local proof to a clean commit: signing, closure of 28 Mach-O files/194 references, 258 notices, four supplements, a separate package with 15 archives and the Cocoa soak pass on macOS 26.6.2. **This** artifact's minimum is 26.0.0. The Cocoa focus self-test does not pass in the locked Mac session; rerun it with AX/VoiceOver after unlocking. The previous generic ZIP is not associated with this new bundle. SDK 27.0 produces a Qt 6.11.2 warning; do not treat the build as a release or proof of the official minimum.

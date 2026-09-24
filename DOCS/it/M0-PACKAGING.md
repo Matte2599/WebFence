@@ -76,3 +76,7 @@ Difetto riprodotto sul bundle precedente: eseguibile e 18 altri Mach-O richiedon
 | Bundle CI `3593dcc`, runner macOS 15 | 15.0.0 | 28; massimo richiesto 15.0.0 | Self-test e prova breve Cocoa |
 
 I due valori identificano build diverse e non promettono compatibilità del bundle locale con macOS 15. Le prove desktop pulite e il minimo ufficiale restano da definire/verificare.
+
+## Nuovo bundle locale dal commit corrente
+
+Il [collaudo del bundle `d92c20e` e del relativo ZIP sorgenti](../evidence/macos-current-bundle-2026-09-24.md) aggiorna la prova locale a un commit pulito: firma, chiusura dei 28 Mach-O/194 riferimenti, 258 avvisi, quattro supplementi, pacchetto separato con 15 archivi e soak Cocoa passano su macOS 26.6.2. Il minimo di **questo** artefatto è 26.0.0. Il self-test di focus Cocoa non passa nella sessione Mac bloccata; rieseguirlo insieme ad AX/VoiceOver a schermo sbloccato. Lo ZIP generico precedente non è associato al nuovo bundle. L'SDK 27.0 produce un avviso Qt 6.11.2; non considerare la build una release o una prova del minimo ufficiale.
