@@ -98,6 +98,8 @@ Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/wind
 
 [Diagnostica AX Cocoa](evidence/macos-ax-table-reset-2026-09-24.md): il test Swift `4635117` controlla ruolo e celle della riga dopo 10.000 → 1 → 0 → 10.000, compilato localmente; la CI lo esegue senza bloccare gli altri job e distingue il permesso AX assente da un difetto dell'app. [Run macOS 15 e altri cinque job](https://github.com/Matte2599/WebFence/actions/runs/35954825284) superati; lo step AX è passato davvero in tutte e quattro le fasi. [Nuovo bundle locale pulito `d92c20e`](evidence/macos-current-bundle-2026-09-24.md) con materiali nativi/ZIP associato: firma, linkage e soak passati; self-test focus e AX richiedono Mac sbloccato. M0-01/02 invariati.
 
+[CI `41256ae`, sette job verdi](https://github.com/Matte2599/WebFence/actions/runs/35956499419): introdotto runner Apple Silicon macOS 26; build, bundle, Cocoa, sostituzione plugin e sorgenti superati su macOS 15 e 26. La diagnostica AX **non bloccante fallisce su entrambi**: riga ripristinata invalida su 15, titolo ID vuoto dopo filtro a una riga su 26. Il precedente passaggio AX su 15 non è costante. [Dettagli e prossima verifica](evidence/macos-ax-table-reset-2026-09-24.md). M0-01 resta aperto; i sette job verdi non certificano l'accessibilità.
+
 ### M1 — Alpha tradizionale controllata
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
@@ -262,6 +264,8 @@ Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-
 [Headless Debian Orca](evidence/debian-orca-headless-2026-09-24.md): private Speech Dispatcher/ALSA `null` configuration enables a local speech-on EN/IT trial; Orca sends localized synthetic-row commands without WebFence errors. `test-orca.sh` is integrated into packaging; the full local ARM64 build and [CI `a7afdeb`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35953580914) passed, including Debian amd64/ARM64. This is not heard audio: real desktop, VoiceOver/NVDA and Cocoa AX recheck remain necessary; M0-01 partial.
 
 [Cocoa AX diagnostic](evidence/macos-ax-table-reset-2026-09-24.md): the Swift test in `4635117` checks row role and cells after 10,000 → 1 → 0 → 10,000 and compiles locally; CI runs it without blocking other jobs and distinguishes absent AX permission from an app defect. The [macOS 15 and five other jobs](https://github.com/Matte2599/WebFence/actions/runs/35954825284) passed; the AX step actually passed all four stages. [New clean local `d92c20e` bundle](evidence/macos-current-bundle-2026-09-24.md) with native materials/associated ZIP: signing, linkage and soak passed; focus self-test and AX require an unlocked Mac. M0-01/02 unchanged.
+
+[CI `41256ae`, seven passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35956499419): an Apple Silicon macOS 26 runner now exercises build, bundle, Cocoa, plugin replacement and sources alongside macOS 15. The **nonblocking AX diagnostic fails on both**: an invalid restored row on 15 and an empty ID title after filtering to one row on 26. The earlier macOS 15 AX pass is not consistent. [Evidence and next check](evidence/macos-ax-table-reset-2026-09-24.md). M0-01 remains open; seven green jobs do not certify accessibility.
 
 ### M1 — Controlled traditional alpha
 
