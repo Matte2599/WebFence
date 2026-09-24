@@ -6,6 +6,7 @@ import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
+import subprocess
 
 spec = importlib.util.spec_from_file_location('native_sources', Path(__file__).parents[1] / 'collect-native-sources.py')
 sources = importlib.util.module_from_spec(spec)
@@ -171,6 +172,37 @@ class NativeSourcesTest(unittest.TestCase):
         self.assertEqual(args[args.index('--proto-redir') + 1], '=https')
         self.assertEqual(args[args.index('--max-filesize') + 1], '123')
         self.assertEqual(run.call_args.kwargs['timeout'], 190)
+
+    def test_gnu_mirror_failure_retries_only_official_host(self):
+        url = 'https://ftpmirror.gnu.org/gnu/gettext/gettext-1.0.tar.gz'
+        official = 'https://ftp.gnu.org/gnu/gettext/gettext-1.0.tar.gz'
+        with patch.object(sources.subprocess, 'check_output', return_value='curl 8.4.0\n'), \
+                patch.object(sources.subprocess, 'run', side_effect=[
+                    subprocess.CalledProcessError(22, ['curl']), None]) as run:
+            self.assertEqual(sources.fetch(url, self.root / 'out', 123), official)
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(run.call_args_list[0].args[0][-1], url)
+        self.assertEqual(run.call_args_list[1].args[0][-1], official)
+        with patch.object(sources.subprocess, 'check_output', return_value='curl 8.4.0\n'), \
+                patch.object(sources.subprocess, 'run', side_effect=subprocess.CalledProcessError(22, ['curl'])) as run:
+            with self.assertRaises(subprocess.CalledProcessError):
+                sources.fetch('https://example.invalid/src', self.root / 'out', 123)
+        self.assertEqual(run.call_count, 1)
+
+    def test_download_record_preserves_inventory_and_actual_acquisition_url(self):
+        self.make_archive([('sample/LICENSE', b'synthetic license')])
+        inventory = self.inventory()
+        url = 'https://ftpmirror.gnu.org/gnu/sample/source.tar.gz'
+        official = 'https://ftp.gnu.org/gnu/sample/source.tar.gz'
+        inventory['packages']['sample@1.0']['upstream_archives'][0]['downloadLocation'] = url
+        def copy_download(requested, destination, limit):
+            self.assertEqual(requested, url)
+            destination.write_bytes(self.archive.read_bytes())
+            return official
+        with patch.object(sources, 'fetch', side_effect=copy_download):
+            record = sources.collect(self.write_inventory(inventory), self.root / 'materials')
+        self.assertEqual(record['archives'][0]['url'], url)
+        self.assertEqual(record['archives'][0]['acquisition_url'], official)
 
 
 if __name__ == '__main__':

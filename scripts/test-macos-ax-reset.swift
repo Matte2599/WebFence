@@ -107,7 +107,7 @@ func inspect(_ window: AXUIElement, expectedCount: Int, expectedID: String?) thr
     print("PASS AXRows=\(rows.count), first AXRow has 4 cells, ID=\(id)")
 }
 
-func trial(bundle: URL) throws {
+func trial(bundle: URL, rounds: Int) throws {
     let executable = bundle.appendingPathComponent("Contents/MacOS/webfence")
     guard FileManager.default.isExecutableFile(atPath: executable.path) else {
         throw TrialError.failed("WebFence bundle executable missing")
@@ -158,7 +158,19 @@ func trial(bundle: URL) throws {
         }
     }
     observe("initial/10000", count: 10_000, id: "DEMO-00001")
-    for round in 1...3 {
+    guard let table = find(window, matching: {
+        label($0, kAXRoleAttribute as CFString) == "AXTable"
+    }), let row = elements(table, kAXRowsAttribute as CFString).first,
+          let cell = elements(row, kAXChildrenAttribute as CFString).first else {
+        throw TrialError.failed("first AXCell unavailable for focus check")
+    }
+    let focus = AXUIElementSetAttributeValue(cell, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+    guard focus == .success else { throw TrialError.failed("cell AXFocused: AXError \(focus.rawValue)") }
+    let activate = AXUIElementPerformAction(cell, kAXPressAction as CFString)
+    guard activate == .success else { throw TrialError.failed("cell AXPress: AXError \(activate.rawValue)") }
+    print("PASS first AXCell accepts focus and press before filtering")
+
+    for round in 1...rounds {
         for (stage, query, count, id) in [
             ("one", "DEMO-10000", 1, "DEMO-10000"),
             ("empty", "no-such-fixture", 0, ""),
@@ -171,11 +183,16 @@ func trial(bundle: URL) throws {
             observe("round \(round)/\(stage)", count: count, id: count == 0 ? nil : id)
         }
     }
-    guard failures == 0 else { throw TrialError.failed("\(failures) AX stage failures across 3 rounds") }
+    guard failures == 0 else { throw TrialError.failed("\(failures) AX stage failures across \(rounds) rounds") }
 }
 
-guard CommandLine.arguments.count == 2 else {
-    fputs("usage: test-macos-ax-reset WebFence.app\n", stderr)
+guard (2...3).contains(CommandLine.arguments.count) else {
+    fputs("usage: test-macos-ax-reset WebFence.app [rounds: 1-100]\n", stderr)
+    exit(64)
+}
+let rounds = CommandLine.arguments.count == 3 ? Int(CommandLine.arguments[2]) : 3
+guard let rounds, (1...100).contains(rounds) else {
+    fputs("rounds must be an integer from 1 to 100\n", stderr)
     exit(64)
 }
 guard AXIsProcessTrusted() else {
@@ -183,8 +200,8 @@ guard AXIsProcessTrusted() else {
     exit(77)
 }
 do {
-    try trial(bundle: URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true))
-    print("PASS native Cocoa AX reset 10000 → 1 → 0 → 10000, 3 rounds")
+    try trial(bundle: URL(fileURLWithPath: CommandLine.arguments[1], isDirectory: true), rounds: rounds)
+    print("PASS native Cocoa AX reset 10000 → 1 → 0 → 10000, \(rounds) rounds")
 } catch {
     fputs("FAIL native Cocoa AX reset: \(error)\n", stderr)
     exit(1)

@@ -165,20 +165,11 @@ jobs:
         run: |
           ./dist/WebFence.app/Contents/MacOS/webfence --self-test
           ./dist/WebFence.app/Contents/MacOS/webfence --soak-test=10s
-      - name: Diagnostic Cocoa AX row reset (M0-01 open)
+      - name: Verify Cocoa AX row filtering (M0-01 reader trials open)
         if: runner.os == 'macOS'
-        continue-on-error: true
         run: |
           swiftc scripts/test-macos-ax-reset.swift -o "$RUNNER_TEMP/webfence-ax-reset"
-          set +e
           "$RUNNER_TEMP/webfence-ax-reset" dist/WebFence.app
-          status=$?
-          set -e
-          if [ "$status" -eq 77 ]; then
-            echo '::warning::AX client lacks Accessibility permission; M0-01 remains unverified on this runner'
-            exit 0
-          fi
-          exit "$status"
       - name: Rebuild and replace Cocoa using packaged materials
         if: runner.os == 'macOS'
         run: |

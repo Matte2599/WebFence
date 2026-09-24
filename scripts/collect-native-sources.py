@@ -80,12 +80,22 @@ def fetch(url, destination, max_bytes):
     match = re.match(r'curl (\d+)\.(\d+)\.(\d+)', version)
     if not match or tuple(map(int, match.groups())) < (8, 4, 0):
         raise ValueError('curl 8.4+ required to bound transfers without Content-Length')
-    subprocess.run(['curl', '--disable', '--fail', '--location', '--silent', '--show-error',
-                    '--proto', '=https', '--proto-redir', '=https', '--max-redirs', '5',
-                    '--connect-timeout', '20', '--max-time', '180',
-                    '--speed-limit', '1024', '--speed-time', '30',
-                    '--max-filesize', str(max_bytes), '--output', str(destination), url],
-                   check=True, timeout=190)
+    candidates = [url]
+    mirror_prefix = 'https://ftpmirror.gnu.org/gnu/'
+    if url.startswith(mirror_prefix):
+        candidates.append('https://ftp.gnu.org/gnu/' + url[len(mirror_prefix):])
+    for index, candidate in enumerate(candidates):
+        try:
+            subprocess.run(['curl', '--disable', '--fail', '--location', '--silent', '--show-error',
+                            '--proto', '=https', '--proto-redir', '=https', '--max-redirs', '5',
+                            '--connect-timeout', '20', '--max-time', '180',
+                            '--speed-limit', '1024', '--speed-time', '30',
+                            '--max-filesize', str(max_bytes), '--output', str(destination), candidate],
+                           check=True, timeout=190)
+            return candidate
+        except subprocess.CalledProcessError:
+            if index + 1 == len(candidates):
+                raise
 
 
 def is_notice(path):
@@ -213,7 +223,7 @@ def collect(manifest, output, reuse=()):
     marker.write_text('Collection is incomplete; do not distribute this sidecar.\n')
     (output / 'native-build.input.json').write_bytes(raw)
     (output / 'archives').mkdir()
-    results, downloaded, total = [], {}, 0
+    results, downloaded, acquired_from, total = [], {}, {}, 0
     for item in plan:
         digest = item['sha256']
         archive = output / 'archives' / (digest + '.archive')
@@ -227,7 +237,7 @@ def collect(manifest, output, reuse=()):
                     raise ValueError('Reusable archive exceeds source budget')
                 shutil.copyfile(available[digest], partial)
             else:
-                fetch(item['url'], partial, limit)
+                acquired_from[digest] = fetch(item['url'], partial, limit)
             size = partial.stat().st_size
             total += size
             if size > MAX_ARCHIVE or total > MAX_TOTAL_ARCHIVES or sha(partial) != digest:
@@ -238,9 +248,12 @@ def collect(manifest, output, reuse=()):
         notice_root.mkdir(parents=True, exist_ok=False)
         references = FREETYPE_REFERENCES if item['package'].startswith('freetype@') else ()
         notices = collect_notices(archive, notice_root, references)
-        results.append(dict(item, archive=archive.relative_to(output).as_posix(),
-                            size_bytes=downloaded[digest],
-                            notice_root=notice_root.relative_to(output).as_posix(), **notices))
+        result = dict(item, archive=archive.relative_to(output).as_posix(),
+                      size_bytes=downloaded[digest],
+                      notice_root=notice_root.relative_to(output).as_posix(), **notices)
+        if digest in acquired_from:
+            result['acquisition_url'] = acquired_from[digest]
+        results.append(result)
         print('Verified source and notices:', item['package'], flush=True)
     result = {'schema': 1, 'distribution_ready': False, 'corresponding_sources_complete': False,
               'input_manifest_sha256': hashlib.sha256(raw).hexdigest(), 'archives': results,
