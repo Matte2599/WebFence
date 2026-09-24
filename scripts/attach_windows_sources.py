@@ -94,6 +94,13 @@ def attach(native_build, materials, output, zstd='zstd'):
         (stage / 'source-materials.json').write_bytes(manifest_raw)
         (stage / 'native-build.input.json').write_bytes(original_raw)
         (stage / 'native-build.current.json').write_bytes(current_raw)
+        vcs_lock_hash = None
+        if any(item['base'] == 'mingw-w64-winpthreads' for item in plan):
+            vcs_lock_path = Path(__file__).resolve().parent.parent / 'packaging/windows/winpthreads-vcs-lock.json'
+            sources.load_vcs_lock(vcs_lock_path)
+            packaged_lock = stage / 'winpthreads-vcs-lock.json'
+            shutil.copyfile(vcs_lock_path, packaged_lock)
+            vcs_lock_hash = sha(packaged_lock)
         result = {'schema': 1, 'distribution_ready': False, 'corresponding_sources_complete': False,
                   'current_native_build_sha256': hashlib.sha256(current_raw).hexdigest(),
                   'collection_input_sha256': hashlib.sha256(original_raw).hexdigest(),
@@ -101,18 +108,22 @@ def attach(native_build, materials, output, zstd='zstd'):
                   'archive_count': len(records), 'archive_bytes': total,
                   'scope': 'Original MSYS2 archives with nested upstream sources, patches and notices; recipes regenerated from reverified archives.',
                   'provenance': 'native-build.current.json identifies this package; native-build.input.json identifies collection. Source manifest archive paths are relative to this directory.',
-                  'open_items': ['Detached signatures, VCS and embedded-component/notice review',
+                  'open_items': ['Detached signatures and embedded-component/notice review',
                                  'Build environment, rebuild/replacement instructions and source/license completeness']}
+        if vcs_lock_hash is not None:
+            result['winpthreads_vcs_lock_sha256'] = vcs_lock_hash
         (stage / 'attachment.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
         (stage / 'README.md').write_text(
             '# Materiali sorgente MSYS2 / MSYS2 source materials\n\n'
             '**IT:** Archivi originali e ricette collegate alle DLL tramite inventario e hash. '
             'Gli archivi includono sorgenti, patch e avvisi annidati; non vengono eseguiti. '
             'Manifest di acquisizione e inventario corrente sono distinti. '
+            'Il lock winpthreads documenta una verifica Git offline, senza checkout. '
             'Firme, completezza, licenze e ricompilazione richiedono ancora revisione; nessuna approvazione della distribuzione.\n\n'
             '**EN:** Original archives and recipes bound to DLLs through inventory and hashes. '
             'Archives include nested sources, patches and notices; none are executed. '
             'Collection manifest and current inventory are separate. '
+            'The winpthreads lock records an offline Git check without checkout. '
             'Signatures, completeness, licenses and rebuilding still require review; no distribution approval.\n', encoding='utf-8')
         if output.exists() or output.is_symlink():
             raise FileExistsError('Refusing to replace existing Windows source materials')

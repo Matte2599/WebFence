@@ -118,7 +118,25 @@ try {
         }
         if ($manifest.archives.Count -lt 1 -or $manifest.archives.Count -ne $attachment.archive_count -or
             $archiveBytes -ne $attachment.archive_bytes) { throw 'Source attachment totals differ' }
-        Write-Output "PASS extracted ZIP source attachment: $($attachment.archive_count) archives, $archiveBytes bytes, inventory and recipe hashes"
+        $vcsLockPath = Join-Path $sourceRoot 'winpthreads-vcs-lock.json'
+        if (-not (Test-Path -LiteralPath $vcsLockPath -PathType Leaf) -or
+            (Get-FileHash -Algorithm SHA256 -LiteralPath $vcsLockPath).Hash -ne $attachment.winpthreads_vcs_lock_sha256) {
+            throw 'Missing or changed winpthreads VCS source lock'
+        }
+        $vcsLock = Get-Content -Raw -LiteralPath $vcsLockPath | ConvertFrom-Json
+        $winpthreads = @($manifest.archives | Where-Object { $_.base -eq $vcsLock.source_package })
+        if ($winpthreads.Count -ne 1 -or $winpthreads[0].archive_sha256 -ne $vcsLock.archive_sha256) {
+            throw 'winpthreads archive differs from reviewed VCS lock'
+        }
+        $vcsChecks = @($winpthreads[0].source_checks | Where-Object { $_.source -eq $vcsLock.vcs_source })
+        if ($vcsChecks.Count -ne 1 -or $vcsChecks[0].status -ne 'verified' -or
+            $vcsChecks[0].verification.method -ne 'isolated_git_archive_sha256' -or
+            $vcsChecks[0].verification.commit -ne $vcsLock.commit -or
+            $vcsChecks[0].verification.sha256 -ne $vcsLock.git_archive_sha256 -or
+            $vcsChecks[0].verification.size_bytes -ne $vcsLock.git_archive_size_bytes) {
+            throw 'winpthreads offline Git checksum evidence is missing or changed'
+        }
+        Write-Output "PASS extracted ZIP source attachment: $($attachment.archive_count) archives, $archiveBytes bytes, inventory and recipe hashes; winpthreads Git archive verified"
     }
     foreach ($platform in @('offscreen', 'windows')) {
         foreach ($trial in @('--self-test', '--soak-test=10s')) {

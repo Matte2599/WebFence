@@ -2,8 +2,8 @@
 """Collect MSYS2 source packages bound to a trusted Windows native inventory.
 
 Recipes are compared by hash, never executed. Internal checksums are checked
-where declared; VCS, skipped checksums and license/source completeness remain
-explicit review items. Archives remain outside the application bundle.
+where declared; one pinned winpthreads Git input is verified offline. Skipped
+signatures and license/source completeness remain explicit review items.
 """
 import argparse
 import hashlib
@@ -15,6 +15,7 @@ import shutil
 from urllib.parse import urlsplit
 
 from msys2_binary_metadata import fields, sha, single, tar_stream
+from verify_windows_vcs import load_lock as load_vcs_lock, verify_git_archive
 
 spec = importlib.util.spec_from_file_location('native_download', Path(__file__).with_name('collect-native-sources.py'))
 download = importlib.util.module_from_spec(spec)
@@ -145,6 +146,12 @@ def inspect_source(archive_path, item, zstd='zstd'):
     if single(srcinfo, 'pkgbase') != item['base'] or version != item['version']:
         raise ValueError('SRCINFO identity differs from binary inventory')
     checks = verify_inputs(srcinfo, files, links)
+    if item['base'] == 'mingw-w64-winpthreads':
+        lock = load_vcs_lock(Path(__file__).resolve().parent.parent /
+                             'packaging/windows/winpthreads-vcs-lock.json')
+        evidence = verify_git_archive(archive_path, item, files, srcinfo, checks, lock, zstd)
+        record = next(entry for entry in checks if entry['source'] == lock['vcs_source'])
+        record.update(status='verified', checksums_verified=['sha256'], verification=evidence)
     recorded = {path: {'size_bytes': record['size_bytes'], 'sha256': record['hashes']['sha256']}
                 for path, record in files.items()}
     return {'files': recorded, 'archive_links': links, 'source_checks': checks,
@@ -196,7 +203,7 @@ def collect(manifest, output, reuse_directory=None, zstd='zstd'):
     result = {'schema': 1, 'distribution_ready': False, 'corresponding_sources_complete': False,
               'input_manifest_sha256': hashlib.sha256(raw).hexdigest(), 'archives': results,
               'scope': 'MSYS2 source archives with binary-bound recipe hashes and declared internal checksum checks; no recipe execution or detached-signature verification.',
-              'open_items': ['VCS/SKIP/weak inputs and source completeness review',
+              'open_items': ['SKIP/weak inputs and source completeness review',
                              'Build environment, embedded-component mapping and applicable licenses',
                              'Rebuild/replacement instructions and distribution assembly']}
     (output / 'source-materials.json').write_text(json.dumps(result, indent=2) + '\n')

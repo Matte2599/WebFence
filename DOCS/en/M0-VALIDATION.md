@@ -23,6 +23,8 @@ M0-02, Windows sidecars: [expanded selection and archive-set comparison](../evid
 
 M0-02, Windows Qt references: packaging checks that `LicenseFile`/`LicenseFiles` in selected JSON files point to included texts without leaving the protocol subtree; the ZIP trial requires 27 references for Qt 6.11.2-2. Local trial on real files and 64 Python tests passed; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): six jobs passed on the first attempt, including Windows. This is neither legal approval nor proof of DLL contents.
 
+M0-02, Windows Git source: [automated offline winpthreads verification](../evidence/windows-vcs-2026-09-24.md) is integrated into collection and attachment, bound to recipe, archive, commit and expected tar. Local reconstruction: 21 unchanged archives, 104 verified inputs, eight `SKIP` signatures still without strong verification; the older collection with unverified VCS is rejected. Full collection/attachment and 67 local Python tests passed; changed-code CI is pending. This does not close signatures, embedded components, licenses, real desktops or M0-02.
+
 ## Reproducible desktop trial
 
 Record commit, package hash, system/version/architecture, Qt, reader/version, scale and keyboard-navigation preference. Use integrated fixtures only; no external targets. Record outcome and defects for each step in both languages. Save any screenshots/audio with synthetic data only.
