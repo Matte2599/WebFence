@@ -86,7 +86,7 @@ Firme sorgenti Windows del 2026-09-24: [otto verifiche OpenPGP offline](evidence
 
 [Prima CI delle firme Windows `2417662`](https://github.com/Matte2599/WebFence/actions/runs/35945431893): test nuovi falliti su macOS e Windows per portabilità dei file firmati e della directory GnuPG. Correzione del checkout byte per byte e del percorso temporaneo corto; 73 regressioni locali verdi. [CI `2cd9022`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35945996095); M0-02 resta aperto per i gate di distribuzione.
 
-Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/windows-binary-signatures-2026-09-24.md) sugli archivi originali già vincolati agli SHA-256 pubblicati, con una chiave pubblica ricavata dalla keyring MSYS2 revisionata. Il packaging ripete le verifiche prima dello ZIP e include lock, chiave, firme ed evidenze; 77 test Python e prova locale dei 22 archivi superati. CI del codice modificato in attesa. Fiducia/revoca indipendenti, componenti incorporati, licenze e collaudi desktop ancora aperti; M0-02/06 restano parziali.
+Firme dei pacchetti binari Windows: [22 verifiche OpenPGP offline](evidence/windows-binary-signatures-2026-09-24.md) sugli archivi originali già vincolati agli SHA-256 pubblicati, con una chiave pubblica ricavata dalla keyring MSYS2 revisionata. Il packaging ripete le verifiche prima dello ZIP e include lock, chiave, firme ed evidenze; 77 test Python e prova locale dei 22 archivi superati. [CI `589fa48`, sei job verdi](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Fiducia/revoca indipendenti, componenti incorporati, licenze e collaudi desktop ancora aperti; M0-02/06 restano parziali.
 
 ### M1 — Alpha tradizionale controllata
 
@@ -241,7 +241,7 @@ Windows source signatures on 2026-09-24: [eight offline OpenPGP checks](evidence
 
 [First Windows-signature CI for `2417662`](https://github.com/Matte2599/WebFence/actions/runs/35945431893): new tests failed on macOS and Windows due to signed-file checkout and GnuPG temporary-directory portability. Byte-preserving checkout and a short temporary path are in the correction; 73 local regressions pass. [CI `2cd9022`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35945996095); M0-02 remains open for distribution gates.
 
-Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-binary-signatures-2026-09-24.md) on original archives already bound to published SHA-256 values, using a public key derived from the reviewed MSYS2 keyring. Packaging repeats verification before creating the ZIP and includes lock, key, signatures and evidence; 77 Python tests and the local 22-archive trial passed. Changed-code CI pending. Independent trust/revocation, embedded components, licenses and real desktop trials remain open; M0-02/06 remain partial.
+Windows binary package signatures: [22 offline OpenPGP checks](evidence/windows-binary-signatures-2026-09-24.md) on original archives already bound to published SHA-256 values, using a public key derived from the reviewed MSYS2 keyring. Packaging repeats verification before creating the ZIP and includes lock, key, signatures and evidence; 77 Python tests and the local 22-archive trial passed. [CI `589fa48`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35947837828). Independent trust/revocation, embedded components, licenses and real desktop trials remain open; M0-02/06 remain partial.
 
 ### M1 — Controlled traditional alpha
 
