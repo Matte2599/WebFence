@@ -23,7 +23,7 @@ M0-02, sidecar Windows: [selezione estesa e confronto con l'archivio](../evidenc
 
 M0-02, riferimenti Qt Windows: il packaging verifica che i `LicenseFile`/`LicenseFiles` dei JSON selezionati puntino a testi inclusi e non escano dalla sottocartella dei protocolli; il test dello ZIP richiede 27 riferimenti per Qt 6.11.2-2. Prova locale sui file reali e 64 test Python superati; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): sei job superati al primo tentativo, incluso Windows. Non è un giudizio legale né una prova del contenuto delle DLL.
 
-M0-02, sorgente Git Windows: [verifica offline automatica di winpthreads](../evidence/windows-vcs-2026-09-24.md) integrata nella raccolta e nell'allegato, vincolata a ricetta, archivio, commit e tar atteso. Ricostruzione locale: 21 archivi invariati, 104 input verificati, otto firme `SKIP` ancora senza verifica forte; la vecchia raccolta con VCS non verificato viene rifiutata. Raccolta/allegato completi e 67 test Python locali passati; CI del codice in attesa. Non chiude firme, componenti incorporati, licenze, desktop reali o M0-02.
+M0-02, sorgente Git Windows: [verifica offline automatica di winpthreads](../evidence/windows-vcs-2026-09-24.md) integrata nella raccolta e nell'allegato, vincolata a ricetta, archivio, commit e tar atteso. Ricostruzione locale: 21 archivi invariati, 104 input verificati, otto firme `SKIP` ancora senza verifica forte; la vecchia raccolta con VCS non verificato viene rifiutata. Raccolta/allegato completi e 68 test Python locali passati; CI del codice in attesa. Non chiude firme, componenti incorporati, licenze, desktop reali o M0-02.
 
 ## Collaudo desktop riproducibile
 

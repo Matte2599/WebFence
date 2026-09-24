@@ -33,7 +33,7 @@ For winpthreads, a [historical offline supplement](../evidence/windows-sources-2
 
 ## Automated Git verification on 2026-09-24
 
-The [new evidence ledger](../evidence/windows-vcs-2026-09-24.md) documents the versioned `winpthreads` lock, isolated Git verification integrated into the collector and the complete local collection: 21 unchanged archives, **104 verified inputs** including Git and eight `SKIP` signatures still unverified. Attachment rechecks the commit and tar, includes the lock and rejects the old `vcs_unverified` collection; the extracted-ZIP trial checks the lock and verification metadata. All 67 local Python regressions and complete collection/attachment trials passed; changed-code CI is pending. Git must be available in the collection environment. This is not PGP verification or distribution approval.
+The [new evidence ledger](../evidence/windows-vcs-2026-09-24.md) documents the versioned `winpthreads` lock, isolated Git verification integrated into the collector and the complete local collection: 21 unchanged archives, **104 verified inputs** including Git and eight `SKIP` signatures still unverified. Attachment rechecks the commit and tar, includes the lock and rejects the old `vcs_unverified` collection; the extracted-ZIP trial checks the lock and verification metadata. All 68 local Python regressions and complete collection/attachment trials passed; changed-code CI is pending. Git must be available in the collection environment. This is not PGP verification or distribution approval.
 
 Embedded component/notice mapping, rebuild/replacement environment and instructions, distribution assembly and legal review remain open. Collection does not close M0-02 or authorize a release.
 
