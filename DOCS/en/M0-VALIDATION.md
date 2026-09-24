@@ -35,3 +35,5 @@ This block updates work rules, IT/EN matrices, README/roadmap links and CI activ
 ## Procedure for human trials
 
 Use synthetic fixtures only; record commit, package hash, OS version, reader, Qt, scale, monitor setup and IT/EN outcome. Launch the package outside the toolchain and exercise keyboard, menus, filter sequence 10,000 → 1 → 0 → 10,000, evidence selection/copy, language changes and restart. Record actual announcements, defects and limits without permanently changing personal preferences. No external website is a target of these trials.
+
+The [M1 operational plan](M1-PREREQUISITES.md) provides records and criteria for collecting future results.

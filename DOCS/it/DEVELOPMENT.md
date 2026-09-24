@@ -48,7 +48,7 @@ Il menu Visualizza aggiunge ricerca (Ctrl/Cmd+F), risultati (F6), evidenze (Ctrl
 
 ## Piattaforme e bundle
 
-Requisiti: macOS Apple Silicon, Windows 10/11 x86-64, Debian/derivati x86-64 e ARM64; nessun 32 bit. Versioni minime e mantenimento Windows 10 restano da verificare secondo [ADR-002](ADR-002-GUI.md). Build CI non equivalgono a uso assistivo sui sistemi richiesti.
+Requisiti: macOS Apple Silicon, Windows 10/11 x86-64, Debian/derivati x86-64 e ARM64; nessun 32 bit. L'autore ha scelto macOS 26 come minimo temporaneo; il bundle locale dichiara 26.0 ma non è ancora stato provato su 26.0 reale. Minimi Windows/Debian e mantenimento Windows 10 restano da definire/verificare secondo [ADR-002](ADR-002-GUI.md). Build CI non equivalgono a uso assistivo sui sistemi richiesti.
 
 ```sh
 sh scripts/package-macos.sh

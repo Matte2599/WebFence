@@ -26,6 +26,8 @@ Dipende dalla fondazione documentale. Ambito: prototipo desktop nativo offline e
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
 
+I gate con intervento umano trasferiti dalla [matrice M0](it/M0-VALIDATION.md) hanno un [piano di collaudo M1](it/M1-PREREQUISITES.md) e un [preflight locale](evidence/m1-prerequisite-preflight-2026-09-24.md). Il piano non li considera superati; sviluppo locale con fixture sintetiche e collaudi umani possono avanzare in parallelo.
+
 Primo blocco tecnico: [modello progetto e dichiarazione di autorizzazione](it/M1-PROJECT-AUTHORIZATION.md) in memoria, senza rete. Non completa i criteri M1 né i prerequisiti umani della [matrice M0](it/M0-VALIDATION.md).
 
 Secondo blocco tecnico: [snapshot applicato al laboratorio HTTP](it/M1-AUTHORIZED-LAB.md) su ogni hop e alla scadenza, ancora solo loopback. Policy complete e trasporto di produzione restano da realizzare.
@@ -124,6 +126,8 @@ Depends on the documentation foundation. Scope: bilingual offline native desktop
 ### M1 — Controlled traditional alpha
 
 Depends on M0. Covers WF-01, WF-02, WF-03, WF-07, WF-09.
+
+The human-intervention gates carried from the [M0 matrix](en/M0-VALIDATION.md) have an [M1 trial plan](en/M1-PREREQUISITES.md) and [local preflight](evidence/m1-prerequisite-preflight-2026-09-24.md). The plan does not mark them as passed; local synthetic-fixture development and human trials can proceed in parallel.
 
 First technical block: [in-memory project model and authorization declaration](en/M1-PROJECT-AUTHORIZATION.md), without networking. It does not complete the M1 criteria or the human prerequisites in the [M0 matrix](en/M0-VALIDATION.md).
 

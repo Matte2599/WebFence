@@ -35,3 +35,5 @@ Il blocco comprende aggiornamento delle regole di lavoro, matrici IT/EN, collega
 ## Procedura per i collaudi umani
 
 Usare solo fixture sintetiche; registrare commit, hash del pacchetto, versione OS, lettore, Qt, scala, configurazione dei monitor ed esito IT/EN. Avviare il pacchetto fuori dalla toolchain e percorrere tastiera, menu, filtro 10.000 → 1 → 0 → 10.000, selezione/copia delle prove, cambio lingua e riavvio. Annotare annunci effettivi, difetti e limiti senza modificare stabilmente le preferenze personali. Nessun sito esterno è un target di questi collaudi.
+
+Il [piano operativo M1](M1-PREREQUISITES.md) contiene schede e criteri per raccogliere gli esiti futuri.

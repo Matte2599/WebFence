@@ -14,7 +14,7 @@ A read-only scan of every Mach-O file, excluding symlink duplicates, found **28 
 
 A [later `LC_RPATH` review](../evidence/macos-linkage-closure-2026-09-24.md) found six external search paths despite no explicit Homebrew dependency edges. Packaging now removes them in staging **before** inventory and signing, checks Mach-O load-reference closure, and fails before replacing the app if a reference escapes the bundle. On a private copy: 28 binaries, 194 references, 148 Apple and 46 resolving in the app; signing and Cocoa self-test passed. CI checks the produced bundle again. Loads on the synthetic flow are separately checked in the [isolated runtime trial](../evidence/macos-isolated-runtime-2026-09-24.md); launch on a clean Mac remains untested.
 
-For a lower supported minimum, build or acquire every native dependency for that baseline, set consistent deployment flags, inspect all resulting load commands, and test on that OS. Do not patch minimum-version load commands to conceal incompatible code. The author has been asked whether the intended minimum should be macOS 13, 15 or 26; no answer or support promise is presumed.
+For a lower supported minimum, build or acquire every native dependency for that baseline, set consistent deployment flags, inspect all resulting load commands, and test on that OS. Do not patch minimum-version load commands to conceal incompatible code. **Subsequent author decision, 2026-09-24:** macOS **26** is the minimum target for now, on Apple Silicon only. The local bundle declares 26.0.0; a trial on real macOS 26.0 is still missing, so this is neither support certification nor a release.
 
 ## Inventory starting point
 
@@ -75,7 +75,7 @@ Defect reproduced on the previous bundle: the executable and 18 other Mach-O fil
 | Local bundle from `f64f534` with declared modifications | 26.0.0 | 28, including 19 minimum 26 and nine minimum 14 | Cocoa self-test on the local Mac |
 | CI `3593dcc` bundle, macOS 15 runner | 15.0.0 | 28; maximum requirement 15.0.0 | Cocoa self-test and short soak |
 
-These values identify different builds and do not promise macOS 15 compatibility for the local bundle. Clean-desktop trials and the official minimum still need definition/verification.
+These values identify different builds and do not promise macOS 15 compatibility for the local bundle. The macOS 26 target was chosen later, as noted above; clean-desktop and 26.0 trials remain to be done.
 
 ## New local bundle from the current commit
 
