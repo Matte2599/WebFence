@@ -79,7 +79,7 @@ Dependency materials: [source and notice collector](DOCS/en/M0-SOURCE-MATERIALS.
 
 Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with recipes bound to binaries and documented integrity checks; optional original archive attachment in the ZIP. The winpthreads Git source has an [automated offline check](DOCS/evidence/windows-vcs-2026-09-24.md) passed locally and in [CI `8391cf8`, six passing jobs](https://github.com/Matte2599/WebFence/actions/runs/35942924645). [Initial Windows CI](https://github.com/Matte2599/WebFence/actions/runs/35933571589) checked 74 notices; selection now covers 136 files bound to MSYS2 archives; completeness and legal review remain open.
 
-The [eight detached Windows source signatures](DOCS/evidence/windows-signatures-2026-09-24.md) now pass local offline OpenPGP verification with pinned public keys; changed-code CI is pending. Signer identity, binary signatures and legal review remain open.
+The [eight detached Windows source signatures](DOCS/evidence/windows-signatures-2026-09-24.md) now pass local offline OpenPGP verification with pinned public keys; [CI `2cd9022`, six jobs passed](https://github.com/Matte2599/WebFence/actions/runs/35945996095). Signer identity, binary signatures and legal review remain open.
 
 A [published-checksum lock](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) now binds the exact versions of 22 Windows binary packages: dependency changes require explicit review. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) passed six jobs on the first attempt; the lock does not establish PGP signatures or legal compliance.
 
