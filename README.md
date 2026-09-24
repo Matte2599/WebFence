@@ -81,7 +81,7 @@ Raccolti anche [21 pacchetti sorgente Windows](DOCS/it/M0-WINDOWS-SOURCES.md), c
 
 Un [registro dei checksum pubblicati](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) vincola ora le versioni esatte dei 22 pacchetti binari Windows: le modifiche alle dipendenze richiedono riesame esplicito. La [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) ha superato sei job al primo tentativo; il registro non prova firme PGP o conformità legale.
 
-La [selezione dei sidecar Windows](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) include ora 136 file di avviso e attribuzione collegati agli archivi binari, con controllo delle omissioni durante il packaging. La [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) ha superato sei job al primo tentativo. Il nuovo controllo dei 27 riferimenti ai testi Qt passa localmente ed è in attesa di CI; completezza delle licenze e revisione legale restano aperte.
+La [selezione dei sidecar Windows](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) include ora 136 file di avviso e attribuzione collegati agli archivi binari, con controllo delle omissioni durante il packaging. La [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) ha superato sei job al primo tentativo. Il controllo dei 27 riferimenti ai testi Qt passa localmente e nella [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509), sei job verdi; completezza delle licenze e revisione legale restano aperte.
 
 Disponibile anche l’inclusione nel bundle macOS dei [supplementi Homebrew GLib/libb2](DOCS/it/M0-SOURCE-MATERIALS.md#supplementi-homebrew-nel-bundle-macos), vincolati agli hash delle ricette installate.
 

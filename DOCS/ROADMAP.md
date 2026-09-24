@@ -78,7 +78,7 @@ Revisione tecnica delle 15 ricette Homebrew incluse nel pacchetto nativo: nessun
 
 [Sidecar Windows](evidence/windows-attribution-sidecars-2026-09-24.md): regola estesa da 74 a 136 file di avviso/attribuzione nei 22 archivi vincolati; il packaging confronta l'insieme selezionato nell'installazione con quello dell'archivio, rifiutando omissioni. 62 test Python locali e verifica dei 22 archivi passati; [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168): sei job verdi al primo tentativo, incluso Windows. Resta da mappare il codice effettivamente incorporato e ottenere revisione legale; M0-02 aperto.
 
-Riferimenti Qt Windows: controllo automatico di 27 percorsi `LicenseFile`/`LicenseFiles` nei sidecar selezionati, confinati alla sottocartella dei protocolli e legati ai testi inclusi. Prova sul pacchetto originale e 64 test Python locali superati; CI in attesa. M0-02 resta aperto per componenti incorporati, desktop reali, firme e revisione legale.
+Riferimenti Qt Windows: controllo automatico di 27 percorsi `LicenseFile`/`LicenseFiles` nei sidecar selezionati, confinati alla sottocartella dei protocolli e legati ai testi inclusi. Prova sul pacchetto originale e 64 test Python locali superati; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): sei job verdi al primo tentativo, incluso Windows. M0-02 resta aperto per componenti incorporati, desktop reali, firme e revisione legale.
 
 ### M1 — Alpha tradizionale controllata
 
@@ -225,7 +225,7 @@ Technical review of the 15 Homebrew recipes included in the native package: no o
 
 [Windows sidecars](evidence/windows-attribution-sidecars-2026-09-24.md): selection expanded from 74 to 136 notice/attribution files in the 22 locked archives; packaging compares the installed selection with the archive set and rejects omissions. 62 local Python tests and checks of all 22 archives passed; [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168): six jobs passed on the first attempt, including Windows. Mapping of actually embedded code and legal review remain open; M0-02 is not closed.
 
-Windows Qt references: automated check of 27 `LicenseFile`/`LicenseFiles` paths in selected sidecars, confined to the protocol subtree and bound to included texts. Trial on the original package and 64 local Python tests passed; CI pending. M0-02 remains open for embedded components, real desktops, signatures and legal review.
+Windows Qt references: automated check of 27 `LicenseFile`/`LicenseFiles` paths in selected sidecars, confined to the protocol subtree and bound to included texts. Trial on the original package and 64 local Python tests passed; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): six jobs passed on the first attempt, including Windows. M0-02 remains open for embedded components, real desktops, signatures and legal review.
 
 ### M1 — Controlled traditional alpha
 

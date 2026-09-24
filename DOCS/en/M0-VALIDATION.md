@@ -21,7 +21,7 @@ M0-02, Windows: [published SHA-256 ledger](../evidence/windows-binary-checksum-l
 
 M0-02, Windows sidecars: [expanded selection and archive-set comparison](../evidence/windows-attribution-sidecars-2026-09-24.md) passed locally on all 22 locked packages: 136 notice/attribution files, 62 more than the prior rule; 62 Python tests passed. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168): six jobs passed on the first attempt, including the extracted Windows ZIP. Inclusion of metadata does not establish complete licensing or presence of Wayland protocols in the Windows runtime.
 
-M0-02, Windows Qt references: packaging checks that `LicenseFile`/`LicenseFiles` in selected JSON files point to included texts without leaving the protocol subtree; the ZIP trial requires 27 references for Qt 6.11.2-2. Local trial on real files and 64 Python tests passed; CI pending. This is neither legal approval nor proof of DLL contents.
+M0-02, Windows Qt references: packaging checks that `LicenseFile`/`LicenseFiles` in selected JSON files point to included texts without leaving the protocol subtree; the ZIP trial requires 27 references for Qt 6.11.2-2. Local trial on real files and 64 Python tests passed; [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509): six jobs passed on the first attempt, including Windows. This is neither legal approval nor proof of DLL contents.
 
 ## Reproducible desktop trial
 

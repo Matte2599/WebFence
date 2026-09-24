@@ -81,7 +81,7 @@ Also collected [21 Windows source packages](DOCS/en/M0-WINDOWS-SOURCES.md), with
 
 A [published-checksum lock](DOCS/evidence/windows-binary-checksum-lock-2026-09-24.md) now binds the exact versions of 22 Windows binary packages: dependency changes require explicit review. [CI `d753f01`](https://github.com/Matte2599/WebFence/actions/runs/35937923381) passed six jobs on the first attempt; the lock does not establish PGP signatures or legal compliance.
 
-The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) passed six jobs on the first attempt. The new check of 27 Qt license-text references passes locally and awaits CI; license completeness and legal review remain open.
+The [Windows sidecar selection](DOCS/evidence/windows-attribution-sidecars-2026-09-24.md) now includes 136 notice and attribution files bound to binary archives, with packaging checks for omissions. [CI `6e13c95`](https://github.com/Matte2599/WebFence/actions/runs/35939387168) passed six jobs on the first attempt. The check of 27 Qt license-text references passes locally and in [CI `24a209c`](https://github.com/Matte2599/WebFence/actions/runs/35940549509), six green jobs; license completeness and legal review remain open.
 
 The macOS bundle can also include [GLib/libb2 Homebrew supplements](DOCS/en/M0-SOURCE-MATERIALS.md#homebrew-supplements-in-the-macos-bundle), bound to installed recipe hashes.
 
