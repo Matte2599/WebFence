@@ -6,6 +6,8 @@
 
 The Go/Qt Widgets desktop prototype uses synthetic fixtures only: it loads 10,000 rows, filters them and displays evidence in Italian and English. The production scanning engine is not implemented, and there are no supported releases or security benchmarks. For the M0 closure report, verification and prerequisites before M1, see the [validation matrix](DOCS/en/M0-VALIDATION.md).
 
+The [first M1 block](DOCS/en/M1-PROJECT-AUTHORIZATION.md) adds a project model and snapshot of operator-declared origins, still in memory and without networking.
+
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 
 ## Why WebFence

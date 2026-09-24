@@ -26,6 +26,8 @@ Dipende dalla fondazione documentale. Ambito: prototipo desktop nativo offline e
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
 
+Primo blocco tecnico: [modello progetto e dichiarazione di autorizzazione](it/M1-PROJECT-AUTHORIZATION.md) in memoria, senza rete. Non completa i criteri M1 né i prerequisiti umani della [matrice M0](it/M0-VALIDATION.md).
+
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
 - [ ] Persistenza, ripristino dopo crash, limiti disco e cancellazione base del progetto.
@@ -114,6 +116,8 @@ Depends on the documentation foundation. Scope: bilingual offline native desktop
 ### M1 — Controlled traditional alpha
 
 Depends on M0. Covers WF-01, WF-02, WF-03, WF-07, WF-09.
+
+First technical block: [in-memory project model and authorization declaration](en/M1-PROJECT-AUTHORIZATION.md), without networking. It does not complete the M1 criteria or the human prerequisites in the [M0 matrix](en/M0-VALIDATION.md).
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.

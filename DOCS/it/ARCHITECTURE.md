@@ -45,7 +45,7 @@ Il broker rappresenta un confine da implementare e provare anche per traffico br
 | `report` | Snapshot, rendering, manifest e firma tramite componente con accesso limitato alle chiavi |
 | `storage` | Transazioni, migrazioni, cancellazione e ripristino |
 
-La tabella descrive i contratti completi pianificati. `internal/scope` e `internal/transport` implementano soltanto le fondazioni M0 descritte sotto; gli altri moduli del motore non sono ancora presenti. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
+La tabella descrive i contratti completi pianificati. `internal/scope` e `internal/transport` implementano soltanto le fondazioni M0 descritte sotto; `internal/project` aggiunge il [primo snapshot di autorizzazione M1](M1-PROJECT-AUTHORIZATION.md), in memoria e senza rete. Gli altri moduli del motore non sono ancora presenti. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
 
 ## Persistenza e processi esterni
 

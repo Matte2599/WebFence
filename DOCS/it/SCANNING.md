@@ -2,7 +2,7 @@
 
 [English](../en/SCANNING.md) · [Indice](../README.md)
 
-Stato: motore da implementare. Sono disponibili il primo [controllo delle origini](M0-SCOPE.md) e il [trasporto confinato al laboratorio](ADR-003-TRANSPORT.md); nessun traffico target nel desktop. Riferimento metodologico: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), con identificativi fissati alla versione usata dalle regole.
+Stato: motore da implementare. Sono disponibili il primo [controllo delle origini](M0-SCOPE.md), il [trasporto confinato al laboratorio](ADR-003-TRANSPORT.md) e lo [snapshot M1 dell'autorizzazione dichiarata](M1-PROJECT-AUTHORIZATION.md); nessun traffico target nel desktop. Riferimento metodologico: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), con identificativi fissati alla versione usata dalle regole.
 
 ## Pipeline
 

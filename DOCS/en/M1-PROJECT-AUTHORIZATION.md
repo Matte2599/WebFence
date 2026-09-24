@@ -1,0 +1,19 @@
+# M1 — First block: project and authorization declaration
+
+[Italiano](../it/M1-PROJECT-AUTHORIZATION.md) · [Roadmap](../ROADMAP.md) · [Architecture](ARCHITECTURE.md)
+
+`internal/project` introduces an **in-memory, network-free** project model. This block prepares a run scope snapshot; it does not yet provide scanning, SQLite persistence or a project-management screen.
+
+## Implemented contract
+
+`project.New(Draft)` requires a project ID and name, claimed target-owner name, descriptive authorization reference, explicit operator confirmation, future expiry and one to 32 exact HTTP(S) origins. The reference is a label, not the document or a credential; none of these fields is sent over the network. Confirmation records an operator assertion: **WebFence does not independently verify ownership or the legal validity of authorization**.
+
+Partial or ambiguous input is rejected. `internal/scope` validates and canonicalizes origins, which are then copied; equivalent duplicates are rejected. The project and origin list expose no mutable internal structures. `BeginRun()` creates an immutable snapshot only while authorization is current. `RunScope.CheckOrigin(url)` rechecks expiry on every call and enforces exact scheme, host and port. The zero value denies use. Stable error codes omit URLs, owner names and references.
+
+This is **only the origin layer**. It does not yet restrict methods, paths, IP/CIDRs, DNS, budgets or rates, and it opens no socket. A passing check alone is insufficient to make a request. The M0 broker remains loopback-only; it is not connected to this model or the GUI. No external site was contacted for this block.
+
+## Verification and next blocks
+
+Synthetic tests cover an allowed request, excluded schemes/ports/subdomains, expiry at the exact boundary and after run start, zero values, invalid configurations, canonical duplicates and attempts to widen a snapshot by mutating caller slices. The `internal/project` race suite passed locally; cross-platform CI includes the new package in its race suite.
+
+Remaining M1 work includes project persistence/migration, authorization renewal/versioning, method/path/exclusion and IP destination policies, mandatory transport integration on every hop, shared budgets/rate limits, IT/EN UI, discovery and redacted evidence. None of those is claimed to be implemented here. [Human trials carried from M0](M0-VALIDATION.md) remain M1 validation prerequisites.
