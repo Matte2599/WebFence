@@ -45,7 +45,7 @@ The broker represents a boundary to implement and test for browser traffic, redi
 | `report` | Snapshots, rendering, manifests and signing through a component with limited key access |
 | `storage` | Transactions, migrations, deletion and recovery |
 
-The table describes planned complete contracts. `internal/scope` and `internal/transport` implement only the M0 foundations described below; other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
+The table describes planned complete contracts. `internal/scope` and `internal/transport` implement only the M0 foundations described below; `internal/project` adds the [first M1 authorization snapshot](M1-PROJECT-AUTHORIZATION.md), in memory and without networking. Other engine modules do not yet exist. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
 
 ## Persistence and external processes
 
