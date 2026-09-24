@@ -270,6 +270,44 @@ try {
             $process = [Diagnostics.Process]::Start($info)
             $stdout = $process.StandardOutput.ReadToEndAsync()
             $stderr = $process.StandardError.ReadToEndAsync()
+            $loadedBundleModules = @{}
+            $externalModules = @{}
+            $moduleSamples = 0
+            if ($trial -eq '--soak-test=10s') {
+                $bundlePrefix = [IO.Path]::GetFullPath($bundle).TrimEnd('\') + '\'
+                $windowsPrefix = [IO.Path]::GetFullPath($env:SystemRoot).TrimEnd('\') + '\'
+                $traceUntil = [DateTime]::UtcNow.AddSeconds(20)
+                while (-not $process.HasExited -and [DateTime]::UtcNow -lt $traceUntil) {
+                    try {
+                        $modules = @($process.Modules)
+                    } catch [System.ComponentModel.Win32Exception] {
+                        if ($process.HasExited) { break }
+                        Start-Sleep -Milliseconds 100
+                        continue
+                    } catch {
+                        if ($process.HasExited) { break }
+                        throw
+                    }
+                    foreach ($module in $modules) {
+                        try {
+                            $modulePath = [IO.Path]::GetFullPath($module.FileName)
+                        } catch [System.ComponentModel.Win32Exception] {
+                            continue  # The module may have unloaded between enumeration and inspection.
+                        }
+                        if ($modulePath.StartsWith($bundlePrefix, [StringComparison]::OrdinalIgnoreCase)) {
+                            $relative = [IO.Path]::GetRelativePath($bundle, $modulePath).Replace('\', '/')
+                            if ($relative -ne 'webfence.exe' -and -not $recordedDlls.ContainsKey($relative)) {
+                                throw "Uninventoried module loaded from WebFence ZIP: $relative"
+                            }
+                            $loadedBundleModules[$relative] = $true
+                        } elseif (-not $modulePath.StartsWith($windowsPrefix, [StringComparison]::OrdinalIgnoreCase)) {
+                            $externalModules[$modulePath] = $true
+                        }
+                    }
+                    $moduleSamples++
+                    Start-Sleep -Milliseconds 100
+                }
+            }
             if (-not $process.WaitForExit(120000)) {
                 $process.Kill($true)
                 throw "Packaged $platform test timed out"
@@ -279,6 +317,17 @@ try {
             if ($process.ExitCode -ne 0) { throw "Packaged $platform test failed: $($process.ExitCode)" }
             $process.Dispose()
             Write-Output "PASS packaged $platform $trial with no MSYS2/Go in PATH and a Unicode/spaced directory"
+            if ($trial -eq '--soak-test=10s') {
+                $expectedPlugin = if ($platform -eq 'windows') { 'platforms/qwindows.dll' } else { 'platforms/qoffscreen.dll' }
+                foreach ($required in @('webfence.exe', 'Qt6Core.dll', 'Qt6Gui.dll', 'Qt6Widgets.dll', $expectedPlugin)) {
+                    if (-not $loadedBundleModules.ContainsKey($required)) {
+                        throw "Packaged $platform soak did not expose expected loaded module: $required"
+                    }
+                }
+                if ($moduleSamples -lt 1) { throw "Packaged $platform soak produced no process module sample" }
+                Write-Output "PASS packaged $platform module samples: $moduleSamples; bundle: $(($loadedBundleModules.Keys | Sort-Object) -join ', ')"
+                Write-Output "External module paths for review: $(($externalModules.Keys | Sort-Object) -join ', ')"
+            }
         }
     }
 } finally {
