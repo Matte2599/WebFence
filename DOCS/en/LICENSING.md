@@ -43,7 +43,7 @@ A CLA has not yet been prepared or activated. [CONTRIBUTING.md](../../CONTRIBUTI
 
 The WebFence license does not change licenses of libraries, engines, imported rules, AI weights, datasets or CVE data. Before distributing them, record inventory, version, provenance, license, notices and compatibility with both distribution modes. A separate process does not automatically remove obligations. Do not copy third-party scanner templates without review.
 
-The custom text is an initial technical draft, not a standard license already validated by a lawyer. Professional review should cover definitions, enforceability, consumer protection, contributor agreements and commercial contracts. No prices, tax identifiers, addresses, email addresses, jurisdiction clauses or payment terms have been invented.
+The custom text is an initial technical draft, not a standard license already validated by a lawyer. The [M1 internal assessment](M1-LEGAL-ASSESSMENT.md) reviewed sections and risks against a precise SHA-256; professional review remains necessary before relevant agreements/distribution for definitions, enforceability, consumer protection, package duties, contributors and commercial contracts. No prices, tax identifiers, addresses, email addresses, jurisdiction clauses or payment terms have been invented.
 
 Decision owner: Matteo Luigi Feroldi. Public license changes must have a version and changelog; they do not retroactively revoke rights properly obtained for earlier copies.
 

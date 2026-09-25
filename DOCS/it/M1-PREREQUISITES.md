@@ -1,23 +1,23 @@
-# M1 — Piano dei prerequisiti con intervento umano
+# M1 — Piano storico dei collaudi con intervento umano
 
 [English](../en/M1-PREREQUISITES.md) · [Matrice M0](M0-VALIDATION.md) · [Roadmap](../ROADMAP.md)
 
-Questo piano rende eseguibili i gate trasferiti da M0 a M1. Lo stato di **M0** rimane esclusivamente nella [matrice M0](M0-VALIDATION.md). Una build CI, un test AX/AT-SPI o un container non sostituiscono un giudizio di una persona sul desktop richiesto. Il [preflight locale del 2026-09-24](../evidence/m1-prerequisite-preflight-2026-09-24.md) registra soltanto le verifiche effettivamente eseguite.
+Questo è il piano storico per le prove trasferite da M0 a M1. Per decisione dell'autore del 25 settembre 2026, **non sono più prerequisiti per chiudere M1**: restano prove necessarie prima delle pertinenti dichiarazioni di supporto/accessibilità e delle distribuzioni o integrazioni di contributi. Non sono state segnate come superate. Lo stato di **M0** rimane esclusivamente nella [matrice M0](M0-VALIDATION.md); lo [stato M1](M1-VALIDATION.md) e le [piattaforme target](M1-SUPPORT-POLICY.md) hanno documenti propri. Una build CI, un test AX/AT-SPI o un container non sostituiscono il giudizio di una persona sul desktop richiesto. Il [preflight locale del 2026-09-24](../evidence/m1-prerequisite-preflight-2026-09-24.md) registra soltanto le verifiche effettivamente eseguite.
 
 ## Matrice di esecuzione
 
-| ID | Prerequisito | Ambiente e responsabile della prova | Criterio per chiudere il gate |
+| ID | Prova | Ambiente e responsabile | Criterio per completare la prova |
 | --- | --- | --- | --- |
 | M1-H01 | VoiceOver | Mac Apple Silicon reale; persona che ascolta e usa VoiceOver | Scheda IT ed EN con annunci effettivi, navigazione e lettura delle evidenze; difetti bloccanti risolti o limite esplicitamente accettato. |
 | M1-H02 | NVDA | Windows 10/11 x86-64 reale; persona che ascolta e usa NVDA | Stessa prova IT/EN su ZIP estratto, avviato fuori da MSYS2; versione di Windows e NVDA registrate. |
-| M1-H03 | Orca | Desktop Debian/derivato reale, x86-64 o ARM64; persona che ascolta e usa Orca | Stessa prova IT/EN su `.deb` installato; sessione X11/Wayland e versione di Orca registrate. |
+| M1-H03 | Orca | Desktop Ubuntu 24.04 reale, x86-64 o ARM64; persona che ascolta e usa Orca | Stessa prova IT/EN su `.deb` installato; sessione X11/Wayland e versione di Orca registrate. |
 | M1-H04 | Monitor misti | Desktop reale con due monitor attivi, uno con scala diversa; operatore | Trasferimento della finestra tra gli schermi in entrambe le direzioni, con focus, tabella, menu, popup e testo leggibili in IT/EN; scale e risoluzioni registrate. |
-| M1-H05 | Workstation supportate | Windows 10 x86-64, Windows 11 x86-64, Debian/derivato x86-64 e ARM64 reali, anche tramite operatori diversi | Per ciascuna combinazione: pacchetto ottenuto e verificato, installazione/estrazione, avvio fuori dalla toolchain, percorso sintetico IT/EN, chiusura e riavvio. Registrare separatamente successi e problemi. |
-| M1-H06 | Versioni minime | Mac, Windows e Debian sulle versioni minime **dichiarate** dopo decisione sul supporto | Versione minima per ogni piattaforma/architettura fissata, binari e dipendenze compatibili, esecuzione del percorso sintetico su quel sistema reale. Una versione più recente non basta. |
-| M1-H07 | Revisione legale | Consulente legale qualificato incaricato dall'autore | Parere su versioni/hash precisi di LICENSE, notices/pacchetti e [dossier](LEGAL-REVIEW.md); correzioni concordate applicate; approvazione documentata dall'autore prima della distribuzione pertinente. |
+| M1-H05 | Workstation target | Windows 10 1809+ x86-64, Windows 11 x86-64, Ubuntu 24.04 x86-64 e ARM64 reali, anche tramite operatori diversi | Per ciascuna combinazione: pacchetto ottenuto e verificato, installazione/estrazione, avvio fuori dalla toolchain, percorso sintetico IT/EN, chiusura e riavvio. Registrare separatamente successi e problemi. |
+| M1-H06 | Versioni minime | Mac, Windows e Ubuntu sulle [versioni minime target](M1-SUPPORT-POLICY.md) | Le versioni sono deliberate; verificare binari e dipendenze ed eseguire il percorso sintetico sul sistema reale prima di dichiarare compatibilità minima provata. Una versione più recente non basta. |
+| M1-H07 | Revisione professionale | Consulente legale qualificato incaricato dall'autore | Dopo l'[analisi interna](M1-LEGAL-ASSESSMENT.md), ottenere un parere su versioni/hash precisi di LICENSE, notices/pacchetti e [dossier](LEGAL-REVIEW.md), applicare le correzioni e approvare la distribuzione pertinente. |
 | M1-H08 | Accordo contributori | Autore e consulente; poi processo di accettazione | Testo per titolari individuali e aziendali revisionato/approvato, versione e accettazione verificabili prima di integrare contributi sostanziali che richiedono rilicenza. |
 
-**Stato iniziale:** procedure preparate, nessun M1-H01…H08 superato per effetto di questo documento. H01 è praticabile sull'attuale Mac solo con un ascoltatore; H04 richiede un secondo monitor. H02/H03/H05 richiedono workstation e operatori reali. Per H06 l'autore ha scelto **macOS 26** come obiettivo minimo temporaneo su Apple Silicon; il bundle corrente dichiara 26.0.0, ma resta da provarlo su 26.0 reale. I minimi Windows/Debian vanno ancora decisi e provati. H07/H08 richiedono un professionista e l'approvazione dell'autore.
+**Stato corrente:** nessuna prova H01…H05 su persone/hardware reale è stata attestata da questo documento. H06 ha la decisione sulle versioni, non la prova sulle macchine minime. H07 ha l'analisi interna, non un parere professionale; H08 non ha un accordo attivo. La chiusura M1 non modifica questi fatti.
 
 ## Preparazione comune
 
@@ -65,7 +65,7 @@ Motivo del blocco o criterio di accettazione:
 Esito attestato dall'operatore (conservato privatamente):
 ```
 
-Per H05 produrre quattro schede distinte, una per ogni combinazione indicata. H06 richiede una scheda ulteriore per ogni versione minima deliberata, anche se coincide con una prova H05: collegare le due, senza duplicare evidenze. macOS 26 è l'obiettivo deliberato, ancora da provare sulla versione 26.0; i minimi Windows 10 e Debian restano decisioni di prodotto. Non dedurre una prova reale dalla matrice upstream Qt o dai metadata del bundle.
+Per H05 produrre quattro schede distinte, una per ogni combinazione indicata. H06 richiede una scheda ulteriore per ogni versione minima deliberata, anche se coincide con una prova H05: collegare le due, senza duplicare evidenze. macOS 26.0, Windows 10 1809 e Ubuntu 24.04 sono target decisi ma non provati tutti sulle versioni minime reali. Non dedurre una prova reale dalla matrice upstream Qt o dai metadata del bundle.
 
 ## Tracciato legale e contributi
 

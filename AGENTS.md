@@ -14,6 +14,7 @@ Leggere [MEMORY.md](MEMORY.md), [README.md](README.md), [DOCS/ROADMAP.md](DOCS/R
 - Testare i rischi della modifica; per sola documentazione controllare collegamenti, coerenza, traduzioni e `git diff --check`. Non creare test che ripetono soltanto il testo.
 - Per ogni blocco di lavoro usare un branch dedicato. Dopo CI verde sul branch, integrare con squash merge su `main` e verificare la CI del commit finale. Non creare commit solo per registrare gli esiti CI.
 - Registrare lo stato di M0 esclusivamente in [DOCS/it/M0-VALIDATION.md](DOCS/it/M0-VALIDATION.md) e [DOCS/en/M0-VALIDATION.md](DOCS/en/M0-VALIDATION.md). README e ROADMAP rimandano a quelle matrici, senza duplicare lo stato.
+- La [chiusura M1](DOCS/it/M1-VALIDATION.md) segue la decisione più recente dell'autore: test locali/CI e alpha tecnica; prove assistive/hardware e consulenza legale professionale restano rischi per supporto, distribuzione o contributi, non gate M1. Non presentarli come superati.
 - Aggiornare MEMORY solo alla fine del blocco, con decisioni persistenti e problemi aperti; distinguere requisito dell'autore, proposta e verifica completata.
 - I contributi esterni non concedono automaticamente diritti di rilicenza; vedere [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -35,6 +36,7 @@ Read [MEMORY.md](MEMORY.md), [README.en.md](README.en.md), [DOCS/ROADMAP.md](DOC
 - Test the risks of the change; for documentation-only work check links, consistency, translations and `git diff --check`. Do not create tests that merely repeat text.
 - Use a dedicated branch for each work block. After green CI on the branch, squash-merge into `main` and verify CI for the final commit. Do not create commits solely to record CI results.
 - Record M0 status only in [DOCS/it/M0-VALIDATION.md](DOCS/it/M0-VALIDATION.md) and [DOCS/en/M0-VALIDATION.md](DOCS/en/M0-VALIDATION.md). README and ROADMAP link to those matrices instead of duplicating status.
+- [M1 closure](DOCS/en/M1-VALIDATION.md) follows the author's latest decision: local/CI tests and technical alpha; assistive/hardware trials and professional legal advice remain risks for support, distribution or contributions, not M1 gates. Do not claim they passed.
 - Update MEMORY only at the end of a work block, with persistent decisions and open problems; distinguish author requirements, proposals and completed verification.
 - External contributions do not automatically grant relicensing rights; see [CONTRIBUTING.md](CONTRIBUTING.md).
 

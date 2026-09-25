@@ -4,6 +4,8 @@
 
 Status: technical preparation, **no professional legal opinion obtained**. This dossier does not change LICENSE or activate a CLA or commercial agreement. The author confirmed that professional review still needs to be arranged.
 
+**M1 update (September 25, 2026):** the [internal legal assessment](M1-LEGAL-ASSESSMENT.md) reviewed the current license and outstanding risks. The author removed outside counsel from M1 closure gates; this does not make the internal assessment qualified legal advice or approve distribution or a CLA.
+
 ## Material for review
 
 - [WebFence Community License 1.0](../../LICENSE), governing English text and Italian translation.

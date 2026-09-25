@@ -4,6 +4,8 @@
 
 Aggiornato: 2026-09-24. Questa è l'unica fonte per lo stato di M0. La chiusura riguarda il perimetro automatizzabile definito dall'autore, non una release supportata o una certificazione di accessibilità, sicurezza o conformità legale. Le attività che richiedono persone o hardware reale sono prerequisiti di M1; il loro rinvio non equivale a un esito positivo.
 
+**Nota successiva (25 settembre 2026):** il trasferimento a M1 sotto registra la decisione di chiusura M0 del 24 settembre. L'autore ha poi [chiuso M1 sui criteri tecnici e test locali/CI](M1-VALIDATION.md), rinviando le prove umane e la consulenza esterna alle attività di supporto/distribuzione pertinenti. Questa nota non modifica l'esito storico di M0 e non marca tali prove come superate.
+
 ## Gate di M0
 
 | ID | Criterio | Esito automatizzabile e prove | Limite trasferito a M1 |

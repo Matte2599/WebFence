@@ -16,4 +16,4 @@ All'apertura vengono controllati versione, tabelle richieste, `quick_check` e ch
 
 ## Limiti e prossimi passi
 
-La GUI M1 crea, seleziona ed elimina progetti, configura una origine/un seed per scansione e legge le run salvate dopo riavvio. Non offre ancora rinnovo/revoca, pulsante di backup o ripristino guidato; le API Go esistono. Non copiare un DB aperto ignorando WAL/SHM: usare `Backup`. La cancellazione non rimuove backup esterni né garantisce sovrascrittura forense. Nessuna scansione esterna è stata eseguita per queste prove. I gate su workstation e accessibilità reali restano [aperti](M1-VALIDATION.md).
+La GUI M1 crea, seleziona ed elimina progetti, configura una origine/un seed per scansione e legge le run salvate dopo riavvio. Non offre ancora rinnovo/revoca, pulsante di backup o ripristino guidato; le API Go esistono. Non copiare un DB aperto ignorando WAL/SHM: usare `Backup`. La cancellazione non rimuove backup esterni né garantisce sovrascrittura forense. Nessuna scansione esterna è stata eseguita per queste prove. Le prove su workstation e accessibilità reali non sono state eseguite; vedi [limiti M1](M1-VALIDATION.md).

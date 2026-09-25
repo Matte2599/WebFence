@@ -20,4 +20,4 @@ This is **only the origin layer**. It does not yet restrict methods, paths, IP/C
 
 Synthetic tests cover an allowed request, excluded schemes/ports/subdomains, expiry at the exact boundary and after run start, zero values, invalid configurations, canonical duplicates, revisioning and attempts to widen a snapshot by mutating caller slices or renewing a project. Cross-platform CI includes the package in its race suite.
 
-Later blocks added desktop integration, policy, discovery and redacted observations as recorded in the [M1 matrix](M1-VALIDATION.md). [Human trials carried from M0](M0-VALIDATION.md) remain M1 validation prerequisites.
+Later blocks added desktop integration, policy, discovery and redacted observations as recorded in the [M1 matrix](M1-VALIDATION.md). [Human trials carried from M0](M0-VALIDATION.md) have not been performed; by the author's later decision they do not block technical M1 closure and remain in the [trial plan](M1-PREREQUISITES.md).

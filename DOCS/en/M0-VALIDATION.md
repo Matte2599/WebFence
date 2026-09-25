@@ -4,6 +4,8 @@
 
 Updated: 2026-09-24. This is the sole source for M0 status. Closure covers the automatable scope defined by the author, not a supported release or certification of accessibility, security or legal compliance. Work requiring people or real hardware is a prerequisite for M1; deferral is not a passing result.
 
+**Later note (September 25, 2026):** the transfer to M1 below records the September 24 M0 closure decision. The author later [closed M1 on technical criteria and local/CI tests](M1-VALIDATION.md), deferring human trials and outside counsel to relevant support/distribution work. This note does not alter the historical M0 outcome or mark those trials as passed.
+
 ## M0 gates
 
 | ID | Criterion | Automatable outcome and evidence | Limit carried into M1 |
