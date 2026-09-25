@@ -2,7 +2,7 @@
 
 [English](../en/SCANNING.md) · [Indice](../README.md)
 
-Stato: motore di produzione da implementare. Sono disponibili il primo [controllo delle origini](M0-SCOPE.md), il [trasporto confinato al laboratorio](ADR-003-TRANSPORT.md), lo [snapshot M1 dell'autorizzazione dichiarata](M1-PROJECT-AUTHORIZATION.md), la loro [integrazione solo loopback](M1-AUTHORIZED-LAB.md), un [primo controllo HTTP su seed espliciti](M1-HEADER-LAB.md) e [discovery HTML osservativa](M1-DISCOVERY-LAB.md); nessun traffico target nel desktop. Riferimento metodologico: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), con identificativi fissati alla versione usata dalle regole.
+Stato: motore di produzione da implementare. Sono disponibili il primo [controllo delle origini](M0-SCOPE.md), il [trasporto confinato al laboratorio](ADR-003-TRANSPORT.md), lo [snapshot M1 dell'autorizzazione dichiarata](M1-PROJECT-AUTHORIZATION.md), la loro [integrazione solo loopback](M1-AUTHORIZED-LAB.md), un [primo controllo HTTP su seed espliciti](M1-HEADER-LAB.md), [discovery HTML osservativa](M1-DISCOVERY-LAB.md) e [visite controllate con grant pubblici fissati](M1-CONTROLLED-CRAWL.md); nessun traffico target nel desktop. Riferimento metodologico: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), con identificativi fissati alla versione usata dalle regole.
 
 ## Pipeline
 
@@ -11,6 +11,8 @@ Stato: motore di produzione da implementare. Sono disponibili il primo [controll
 Il piano salva versioni di regole, configurazione, ambiente, credenziali per riferimento e snapshot intelligence. Normalizzare URL senza unire percorsi o parametri che l'applicazione distingue. Il deduplicatore considera origine, metodo, route, posizione del parametro e contesto di autenticazione; non solo l'URL.
 
 Discovery iniziale: link HTTP(S) e form osservati senza inviarli automaticamente. Importazione esplicita di specifiche API, browser JavaScript, flussi di login e identità multiple arrivano in M3. I documenti OpenAPI importati sono input non fidati: i loro server non ampliano lo scope.
+
+Il core M1 può visitare sequenzialmente link HTTP con `RunCrawl` solo su scelta esplicita e nei limiti della [policy implementata](M1-CONTROLLED-CRAWL.md); i form restano osservativi. La tabella dei profili seguente è ancora una proposta di prodotto, non la configurazione automatica di quel core.
 
 ## Perimetro
 

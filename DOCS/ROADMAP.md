@@ -2,7 +2,7 @@
 
 [Indice / Index](README.md) · [Italiano](#italiano) · [English](#english)
 
-Aggiornamento / Updated: 2026-09-24. Responsabile / Owner: Matteo Luigi Feroldi.
+Aggiornamento / Updated: 2026-09-25. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
@@ -40,7 +40,9 @@ Quinto blocco tecnico: [run gestite e revoca locale](it/M1-MANAGED-RUNS.md) su r
 
 Sesto blocco tecnico: [primo controllo HTTP su seed espliciti](it/M1-HEADER-LAB.md), collegando progetto salvato, run gestita e broker solo loopback; osserva un header senza conservare URL/body/header grezzi nei risultati. Non realizza ancora discovery, persistenza degli esiti o UI.
 
-Settimo blocco tecnico: [discovery HTML osservativa](it/M1-DISCOVERY-LAB.md) sulle risposte dei seed; estrae link e azioni di form sotto scope e limiti, senza nuove richieste. Il report espone conteggi e copertura parziale; pianificazione delle visite, dati persistenti e UI restano aperti.
+Settimo blocco tecnico: [discovery HTML osservativa](it/M1-DISCOVERY-LAB.md) sulle risposte dei seed; estrae link e azioni di form sotto scope e limiti, senza nuove richieste. Il report espone conteggi e copertura parziale.
+
+Ottavo blocco tecnico: [visite HTTP controllate](it/M1-CONTROLLED-CRAWL.md) con policy GET/HEAD, prefissi ed esclusioni, coda BFS opt-in, rate per origine e [IP pubblici fissati](it/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Verifica sintetica; nessun target esterno reale. Restano aperti coordinamento tra run/processi, persistenza/redazione delle prove, quote/ripristino, UI IT/EN e collaudi umani.
 
 - [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
@@ -145,7 +147,9 @@ Fifth technical block: [managed runs and local revocation](en/M1-MANAGED-RUNS.md
 
 Sixth technical block: [first HTTP check on explicit seeds](en/M1-HEADER-LAB.md), connecting saved project, managed run and loopback-only broker; it observes one header without retaining raw URLs/bodies/headers in results. Discovery, result persistence and UI are still missing.
 
-Seventh technical block: [observational HTML discovery](en/M1-DISCOVERY-LAB.md) on seed responses; it extracts links and form actions under scope and parser limits, without new requests. The report exposes counts and partial coverage; visit planning, persistent data and UI remain open.
+Seventh technical block: [observational HTML discovery](en/M1-DISCOVERY-LAB.md) on seed responses; it extracts links and form actions under scope and parser limits, without new requests. The report exposes counts and partial coverage.
+
+Eighth technical block: [controlled HTTP visits](en/M1-CONTROLLED-CRAWL.md) with GET/HEAD policy, path prefixes/exclusions, opt-in BFS queue, per-origin pacing and [pinned public IPs](en/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Synthetic verification; no real external target. Cross-run/process coordination, persistent/redacted evidence, quotas/recovery, IT/EN UI and human trials remain open.
 
 - [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.

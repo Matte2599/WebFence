@@ -10,4 +10,4 @@ Limiti dell'osservatore: body massimo 8 MiB (il broker può imporre meno), token
 
 I test sintetici su loopback verificano redirect e base, codifica del percorso e ordine della query, deduplicazione, esclusione di origini esterne e schemi non HTTP, form mai inviati, limiti del parser e assenza di URL, query e valori dei form nel report. Il parser HTML è `golang.org/x/net/html` v0.59.0; il suo [contratto di tokenizer](https://pkg.go.dev/golang.org/x/net/html) assume input UTF-8. Il modulo aggiorna anche `golang.org/x/sys` a v0.48.0.
 
-Restano per M1: policy per metodi/percorsi ed esclusioni, pianificazione esplicita e sicura delle visite, broker di produzione e limiti di rate, persistenza/redazione delle prove, UI IT/EN e copertura incompleta visibile. I prerequisiti umani sono nel [piano M1](M1-PREREQUISITES.md).
+Il blocco seguente aggiunge [visite HTTP controllate](M1-CONTROLLED-CRAWL.md) nel core, senza cambiare il comportamento osservativo di `RunHeaderLab`. Restano per M1 integrazione desktop, persistenza/redazione delle prove, coordinamento tra run/processi e collaudi su sistemi reali. I prerequisiti umani sono nel [piano M1](M1-PREREQUISITES.md).

@@ -218,6 +218,21 @@ jobs:
             mingw-w64-ucrt-x86_64-pkgconf
             mingw-w64-ucrt-x86_64-qt6-base
             mingw-w64-ucrt-x86_64-python
+      - name: Keep reviewed winpthreads packages for Windows provenance
+        run: |
+          archive=/var/cache/pacman/pkg/mingw-w64-ucrt-x86_64-libwinpthread-14.0.0.r420.g61d40c4c0-1-any.pkg.tar.zst
+          companion=/var/cache/pacman/pkg/mingw-w64-ucrt-x86_64-winpthreads-14.0.0.r420.g61d40c4c0-1-any.pkg.tar.zst
+          curl --fail --location --retry 3 \
+            'https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libwinpthread-14.0.0.r420.g61d40c4c0-1-any.pkg.tar.zst' \
+            --output "$archive"
+          curl --fail --location --retry 3 \
+            'https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-winpthreads-14.0.0.r420.g61d40c4c0-1-any.pkg.tar.zst' \
+            --output "$companion"
+          printf '%s  %s\n' '7357dcd5e1d4044b167d596b89e87bd2bffa55d3a3ddd009a0ac252f51a0d8af' "$archive" | sha256sum --check -
+          printf '%s  %s\n' '21dd07d35b4d51809dd387834dcaed31ece21a68a28a23164b21e62d7eb0fa84' "$companion" | sha256sum --check -
+          pacman -U --noconfirm "$archive" "$companion"
+          test "$(pacman -Q mingw-w64-ucrt-x86_64-libwinpthread | awk '{print $2}')" = '14.0.0.r420.g61d40c4c0-1'
+          test "$(pacman -Q mingw-w64-ucrt-x86_64-winpthreads | awk '{print $2}')" = '14.0.0.r420.g61d40c4c0-1'
       - run: test "$(go env GOARCH)" = amd64
       - name: Source collection and attachment regressions
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
