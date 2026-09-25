@@ -38,7 +38,8 @@ func (s *Store) Backup(ctx context.Context, destination string) error {
 	if _, err := s.db.ExecContext(ctx, "VACUUM INTO ?", destination); err != nil {
 		return storageError(ctx, err)
 	}
-	f, err = os.Open(destination)
+	// FlushFileBuffers requires a write-capable handle on Windows.
+	f, err = os.OpenFile(destination, os.O_RDWR, 0)
 	if err != nil {
 		return ErrUnavailable
 	}
