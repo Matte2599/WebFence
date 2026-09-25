@@ -21,6 +21,8 @@ La licenza WebFence resta invariata e copre il nostro codice. MIQT è MIT. Per Q
 
 Qt 6.11 dichiara Windows 10 da 1809 e Windows 11 x86-64, macOS da 13 e configurazioni Linux x86-64/ARM64. **Qt 6.12 è annunciata come ultima versione con supporto Windows 10**: prima di dichiarare supportato il prodotto serve un piano per aggiornamenti e durata del supporto richiesto. La matrice upstream non certifica WebFence né MIQT. [Piattaforme Qt](https://doc.qt.io/qt-6/supported-platforms.html).
 
+Decisione successiva M1: l'autore ha fissato i [target minimi](M1-SUPPORT-POLICY.md) a macOS 26 ARM64, Windows 10 1809+ x86-64 e Ubuntu 24.04 LTS x86-64/ARM64. La questione della manutenzione futura di Windows 10 e le prove sulle versioni minime reali restano aperte prima di dichiarazioni di supporto; questo ADR conserva i gate storici M0 sotto.
+
 ## Gate M0 ancora aperti
 
 1. Verificare lettura e azioni con VoiceOver, NVDA e Orca, oltre al solo albero accessibile.

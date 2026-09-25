@@ -54,7 +54,7 @@ Il menu Visualizza aggiunge ricerca (Ctrl/Cmd+F), risultati (F6), evidenze (Ctrl
 
 ## Piattaforme e bundle
 
-Requisiti: macOS Apple Silicon, Windows 10/11 x86-64, Debian/derivati x86-64 e ARM64; nessun 32 bit. L'autore ha scelto macOS 26 come minimo temporaneo; il bundle locale dichiara 26.0 ma non è ancora stato provato su 26.0 reale. Minimi Windows/Debian e mantenimento Windows 10 restano da definire/verificare secondo [ADR-002](ADR-002-GUI.md). Build CI non equivalgono a uso assistivo sui sistemi richiesti.
+Target M1: macOS 26+ Apple Silicon ARM64, Windows 10 1809+/11 x86-64 e Ubuntu 24.04 LTS x86-64/ARM64; nessun 32 bit. Altre Debian/derivate restano un obiettivo di compatibilità. Il bundle dichiara macOS 26.0, ma non è stato provato su 26.0 reale; lo ZIP Windows e i `.deb` sono provati in CI, non su ogni workstation minima. Limiti e gestione futura di Windows 10 nella [policy piattaforme](M1-SUPPORT-POLICY.md) e in [ADR-002](ADR-002-GUI.md). CI non equivale a uso assistivo sui sistemi richiesti.
 
 ```sh
 sh scripts/package-macos.sh

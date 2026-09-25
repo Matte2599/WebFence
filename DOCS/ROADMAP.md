@@ -26,7 +26,7 @@ Dipende dalla fondazione documentale. Ambito: prototipo desktop nativo offline e
 
 Dipende da M0. Copre WF-01, WF-02, WF-03, WF-07, WF-09.
 
-I gate con intervento umano trasferiti dalla [matrice M0](it/M0-VALIDATION.md) hanno un [piano di collaudo M1](it/M1-PREREQUISITES.md) e un [preflight locale](evidence/m1-prerequisite-preflight-2026-09-24.md). Il piano non li considera superati; sviluppo locale con fixture sintetiche e collaudi umani possono avanzare in parallelo.
+I gate con intervento umano trasferiti dalla [matrice M0](it/M0-VALIDATION.md) hanno un [piano di collaudo](it/M1-PREREQUISITES.md) e un [preflight locale](evidence/m1-prerequisite-preflight-2026-09-24.md). Per decisione successiva dell'autore, non bloccano più la chiusura tecnica di M1: rimangono prove da svolgere prima delle pertinenti dichiarazioni di supporto, accessibilità e distribuzione.
 
 Primo blocco tecnico: [modello progetto e dichiarazione di autorizzazione](it/M1-PROJECT-AUTHORIZATION.md) in memoria, senza rete. Non completa i criteri M1 né i prerequisiti umani della [matrice M0](it/M0-VALIDATION.md).
 
@@ -44,7 +44,7 @@ Settimo blocco tecnico: [discovery HTML osservativa](it/M1-DISCOVERY-LAB.md) sul
 
 Ottavo blocco tecnico: [visite HTTP controllate](it/M1-CONTROLLED-CRAWL.md) con policy GET/HEAD, prefissi ed esclusioni, coda BFS opt-in, rate per origine e [IP pubblici fissati](it/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Verifica sintetica; nessun target esterno reale.
 
-La [matrice di validazione M1](it/M1-VALIDATION.md) registra il successivo blocco di persistenza/UI e i limiti. I quattro criteri tecnici sotto sono implementati e verificati localmente; **M1 non è formalmente chiusa** finché M1-H01…H08, che richiedono persone e sistemi reali, non saranno completati.
+**M1 chiusa come alpha tecnica controllata** secondo la [matrice di validazione](it/M1-VALIDATION.md). I quattro criteri sotto sono implementati e verificati; le [piattaforme target](it/M1-SUPPORT-POLICY.md) sono state fissate e la [revisione legale interna](it/M1-LEGAL-ASSESSMENT.md) è documentata. Le prove M1-H01…H08 non eseguite non sono state trasformate in esiti positivi: passano a condizioni di qualità/rilascio o contributi per le attività pertinenti.
 
 - [x] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
 - [x] Discovery HTTP(S), primo controllo a basso impatto e prove redatte.
@@ -135,7 +135,7 @@ Depends on the documentation foundation. Scope: bilingual offline native desktop
 
 Depends on M0. Covers WF-01, WF-02, WF-03, WF-07, WF-09.
 
-The human-intervention gates carried from the [M0 matrix](en/M0-VALIDATION.md) have an [M1 trial plan](en/M1-PREREQUISITES.md) and [local preflight](evidence/m1-prerequisite-preflight-2026-09-24.md). The plan does not mark them as passed; local synthetic-fixture development and human trials can proceed in parallel.
+The human-intervention gates carried from the [M0 matrix](en/M0-VALIDATION.md) have a [trial plan](en/M1-PREREQUISITES.md) and [local preflight](evidence/m1-prerequisite-preflight-2026-09-24.md). By a later author decision they no longer block technical M1 closure; they remain to be performed before the relevant support, accessibility and distribution claims.
 
 First technical block: [in-memory project model and authorization declaration](en/M1-PROJECT-AUTHORIZATION.md), without networking. It does not complete the M1 criteria or the human prerequisites in the [M0 matrix](en/M0-VALIDATION.md).
 
@@ -153,7 +153,7 @@ Seventh technical block: [observational HTML discovery](en/M1-DISCOVERY-LAB.md) 
 
 Eighth technical block: [controlled HTTP visits](en/M1-CONTROLLED-CRAWL.md) with GET/HEAD policy, path prefixes/exclusions, opt-in BFS queue, per-origin pacing and [pinned public IPs](en/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Synthetic verification; no real external target.
 
-The [M1 validation matrix](en/M1-VALIDATION.md) records the subsequent persistence/UI block and limits. The four technical criteria below are implemented and locally verified; **M1 is not formally closed** until M1-H01…H08, which need people and real systems, are completed.
+**M1 is closed as a controlled technical alpha** according to the [validation matrix](en/M1-VALIDATION.md). The four criteria below are implemented and verified; [target platforms](en/M1-SUPPORT-POLICY.md) are set and the [internal legal assessment](en/M1-LEGAL-ASSESSMENT.md) is recorded. Unperformed M1-H01…H08 trials have not been turned into passing results: they move to quality/release or contribution conditions for relevant future activity.
 
 - [x] Projects, scope/authorization, controlled transport, budgets and cancellation.
 - [x] HTTP(S) discovery, first low-impact check and redacted evidence.

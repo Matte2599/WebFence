@@ -20,4 +20,4 @@ Questo controllo è **solo il livello di origine**. Non limita ancora metodi, pe
 
 I test sintetici coprono richiesta ammessa, schema/porta/sottodominio esclusi, scadenza al confine esatto e dopo l'avvio, valore zero, configurazioni invalide, duplicati canonici, revisione e impossibilità di allargare uno snapshot modificando le slice del chiamante o rinnovando il progetto. La CI multipiattaforma include il pacchetto nella suite race.
 
-I blocchi successivi hanno aggiunto integrazione desktop, policy, discovery e osservazioni redatte come riportato nella [matrice M1](M1-VALIDATION.md). I [collaudi umani ereditati da M0](M0-VALIDATION.md) restano prerequisiti di validazione M1.
+I blocchi successivi hanno aggiunto integrazione desktop, policy, discovery e osservazioni redatte come riportato nella [matrice M1](M1-VALIDATION.md). I [collaudi umani ereditati da M0](M0-VALIDATION.md) non sono stati eseguiti; per decisione successiva dell'autore non bloccano la chiusura tecnica M1 e restano nel [piano di prova](M1-PREREQUISITES.md).

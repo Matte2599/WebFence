@@ -43,7 +43,7 @@ Il CLA non è ancora predisposto né attivo. La procedura in [CONTRIBUTING.md](.
 
 La licenza di WebFence non cambia le licenze di librerie, motori, regole importate, pesi AI, dataset e CVE. Prima di distribuirli: inventario, versione, provenienza, licenza, avvisi e compatibilità con entrambe le modalità di distribuzione. Un processo separato non elimina automaticamente gli obblighi. Non copiare template di scanner terzi senza verifica.
 
-Il testo personalizzato è una prima stesura tecnica, non una licenza standard già validata da un legale. Una revisione professionale deve verificare definizioni, applicabilità, tutela dei consumatori, accordi per contributori e contratti commerciali. Non sono inventati tariffe, partita IVA, indirizzi, email, foro competente o condizioni di pagamento.
+Il testo personalizzato è una prima stesura tecnica, non una licenza standard già validata da un legale. L'[analisi interna M1](M1-LEGAL-ASSESSMENT.md) ha valutato sezioni e rischi su uno SHA-256 preciso; una revisione professionale resta necessaria prima degli accordi/distribuzioni pertinenti per definizioni, applicabilità, tutela dei consumatori, obblighi dei pacchetti, contributori e contratti commerciali. Non sono inventati tariffe, partita IVA, indirizzi, email, foro competente o condizioni di pagamento.
 
 Responsabile delle decisioni: Matteo Luigi Feroldi. Le modifiche pubbliche di licenza devono avere versione e changelog; non revocano retroattivamente i diritti regolarmente ottenuti sulle copie precedenti.
 

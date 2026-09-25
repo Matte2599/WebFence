@@ -1,23 +1,23 @@
-# M1 — Human-intervention prerequisite plan
+# M1 — Historical human trial plan
 
 [Italiano](../it/M1-PREREQUISITES.md) · [M0 matrix](M0-VALIDATION.md) · [Roadmap](../ROADMAP.md)
 
-This plan makes the gates carried from M0 into M1 executable. **M0** status remains exclusively in the [M0 matrix](M0-VALIDATION.md). A CI build, AX/AT-SPI test or container cannot replace a person's judgment on the required desktop. The [local preflight dated 2026-09-24](../evidence/m1-prerequisite-preflight-2026-09-24.md) records only checks actually performed.
+This is the historical plan for trials carried from M0 into M1. By the author's September 25, 2026 decision, **they are no longer prerequisites for closing M1**: they remain required before relevant support/accessibility claims, distribution or contribution integration. They have not been marked as passed. **M0** status stays only in the [M0 matrix](M0-VALIDATION.md); [M1 status](M1-VALIDATION.md) and [target platforms](M1-SUPPORT-POLICY.md) have their own documents. A CI build, AX/AT-SPI test or container cannot replace a person's judgment on the required desktop. The [local preflight dated 2026-09-24](../evidence/m1-prerequisite-preflight-2026-09-24.md) records only checks actually performed.
 
 ## Execution matrix
 
-| ID | Prerequisite | Environment and trial owner | Gate closure criterion |
+| ID | Trial | Environment and trial owner | Trial completion criterion |
 | --- | --- | --- | --- |
 | M1-H01 | VoiceOver | Real Apple Silicon Mac; person listening to and using VoiceOver | IT and EN record with actual announcements, navigation and evidence reading; blocking defects fixed or limitation explicitly accepted. |
 | M1-H02 | NVDA | Real Windows 10/11 x86-64 desktop; person listening to and using NVDA | Same IT/EN trial on extracted ZIP, launched outside MSYS2; Windows and NVDA versions recorded. |
-| M1-H03 | Orca | Real Debian/derivative desktop, x86-64 or ARM64; person listening to and using Orca | Same IT/EN trial on installed `.deb`; X11/Wayland session and Orca version recorded. |
+| M1-H03 | Orca | Real Ubuntu 24.04 desktop, x86-64 or ARM64; person listening to and using Orca | Same IT/EN trial on installed `.deb`; X11/Wayland session and Orca version recorded. |
 | M1-H04 | Mixed monitors | Real desktop with two active monitors at different scales; operator | Move window between displays in both directions with focus, table, menus, popups and text usable in IT/EN; record scales and resolutions. |
-| M1-H05 | Supported workstations | Real Windows 10 x86-64, Windows 11 x86-64, Debian/derivative x86-64 and ARM64, possibly with different operators | For each combination: obtain and verify package, install/extract, launch outside toolchain, IT/EN synthetic workflow, exit and restart. Record successes and defects separately. |
-| M1-H06 | Minimum OS versions | Macs, Windows and Debian machines at the **declared** minimum versions after support decision | Set minimum version per platform/architecture, ensure binaries and dependencies are compatible, execute synthetic workflow on that real OS. A newer version is insufficient. |
-| M1-H07 | Legal review | Qualified legal counsel retained by the author | Opinion on precise versions/hashes of LICENSE, notices/packages and [dossier](LEGAL-REVIEW.md); agreed changes applied; documented author approval before relevant distribution. |
+| M1-H05 | Target workstations | Real Windows 10 1809+ x86-64, Windows 11 x86-64, Ubuntu 24.04 x86-64 and ARM64, possibly with different operators | For each combination: obtain and verify package, install/extract, launch outside toolchain, IT/EN synthetic workflow, exit and restart. Record successes and defects separately. |
+| M1-H06 | Minimum OS versions | Macs, Windows and Ubuntu machines at the [target minimum versions](M1-SUPPORT-POLICY.md) | The versions are decided; check binary/dependency compatibility and run the synthetic flow on the real minimum OS before claiming verified minimum compatibility. A newer version is insufficient. |
+| M1-H07 | Professional review | Qualified legal counsel retained by the author | After the [internal assessment](M1-LEGAL-ASSESSMENT.md), obtain an opinion on precise versions/hashes of LICENSE, notices/packages and [dossier](LEGAL-REVIEW.md), apply corrections and approve relevant distribution. |
 | M1-H08 | Contributor agreement | Author and counsel, then acceptance process | Text for individual and company rights holders reviewed/approved, version and acceptance verifiable before merging substantial contributions requiring relicensing. |
 
-**Initial state:** procedures prepared; none of M1-H01…H08 passes merely because this document exists. H01 can be performed on the current Mac only with a listener; H04 needs a second monitor. H02/H03/H05 need real workstations and operators. For H06 the author chose **macOS 26** as the temporary minimum target on Apple Silicon; the current bundle declares 26.0.0, but a real 26.0 trial is still needed. Windows/Debian minima remain to be chosen and tested. H07/H08 need a professional and author approval.
+**Current state:** no H01…H05 trial on people/real hardware is attested by this document. H06 has a version decision, not trials on minimum-version machines. H07 has the internal assessment, not a professional opinion; H08 has no active agreement. M1 closure does not change these facts.
 
 ## Common preparation
 
@@ -65,7 +65,7 @@ Blocker or acceptance rationale:
 Operator attestation (kept privately):
 ```
 
-For H05 create four separate records, one per listed combination. H06 needs an additional record for every agreed minimum version, even if it coincides with H05: link the two without duplicating evidence. macOS 26 is the agreed target, still to be tried on version 26.0; Windows 10 and Debian minima remain product decisions. Do not infer a real trial from the upstream Qt matrix or bundle metadata.
+For H05 create four separate records, one per listed combination. H06 needs an additional record for every agreed minimum version, even if it coincides with H05: link the two without duplicating evidence. macOS 26.0, Windows 10 1809 and Ubuntu 24.04 are decided targets but have not all been tried on real minimum-version systems. Do not infer a real trial from the upstream Qt matrix or bundle metadata.
 
 ## Legal and contribution track
 

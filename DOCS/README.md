@@ -28,8 +28,10 @@
 | Trasporto M0 e confini di rete / M0 transport and network boundaries | [ADR-003 IT](it/ADR-003-TRANSPORT.md) | [ADR-003 EN](en/ADR-003-TRANSPORT.md) |
 | Scope origini e laboratorio M0 / Origin scope and M0 lab | [IT](it/M0-SCOPE.md) | [EN](en/M0-SCOPE.md) |
 | Verifica e chiusura M0 / M0 verification and closure | [IT](it/M0-VALIDATION.md) | [EN](en/M0-VALIDATION.md) |
-| Prerequisiti umani M1 / M1 human prerequisites | [IT](it/M1-PREREQUISITES.md) | [EN](en/M1-PREREQUISITES.md) |
-| Verifica e gate M1 / M1 validation and gates | [IT](it/M1-VALIDATION.md) | [EN](en/M1-VALIDATION.md) |
+| Piano storico dei collaudi / Historical trial plan | [IT](it/M1-PREREQUISITES.md) | [EN](en/M1-PREREQUISITES.md) |
+| Chiusura e limiti M1 / M1 closure and limits | [IT](it/M1-VALIDATION.md) | [EN](en/M1-VALIDATION.md) |
+| Piattaforme target M1 / M1 target platforms | [IT](it/M1-SUPPORT-POLICY.md) | [EN](en/M1-SUPPORT-POLICY.md) |
+| Analisi legale interna M1 / M1 internal legal assessment | [IT](it/M1-LEGAL-ASSESSMENT.md) | [EN](en/M1-LEGAL-ASSESSMENT.md) |
 | Progetto e autorizzazione M1 / M1 project and authorization | [IT](it/M1-PROJECT-AUTHORIZATION.md) | [EN](en/M1-PROJECT-AUTHORIZATION.md) |
 | Laboratorio autorizzato M1 / M1 authorized lab | [IT](it/M1-AUTHORIZED-LAB.md) | [EN](en/M1-AUTHORIZED-LAB.md) |
 | Store progetti M1 / M1 project store | [IT](it/M1-PROJECT-STORE.md) | [EN](en/M1-PROJECT-STORE.md) |

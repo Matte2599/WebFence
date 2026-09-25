@@ -54,7 +54,7 @@ The View menu adds search (Ctrl/Cmd+F), results (F6), evidence (Ctrl/Cmd+Shift+E
 
 ## Platforms and bundle
 
-Requirements: Apple Silicon macOS, Windows 10/11 x86-64, Debian/derivatives x86-64 and ARM64; no 32-bit. The author chose macOS 26 as the temporary minimum; the local bundle declares 26.0 but has not yet been tested on a real 26.0 system. Windows/Debian minima and Windows 10 maintenance remain to be defined/verified under [ADR-002](ADR-002-GUI.md). CI builds do not establish assistive use on the required systems.
+M1 targets: Apple Silicon ARM64 macOS 26+, Windows 10 1809+/11 x86-64 and Ubuntu 24.04 LTS x86-64/ARM64; no 32-bit. Other Debian distributions/derivatives remain a compatibility goal. The bundle declares macOS 26.0 but has not been tried on a real 26.0 system; the Windows ZIP and `.deb` packages are tested in CI, not on every minimum-version workstation. Limits and future Windows 10 maintenance are in the [platform policy](M1-SUPPORT-POLICY.md) and [ADR-002](ADR-002-GUI.md). CI builds do not establish assistive use on the required systems.
 
 ```sh
 sh scripts/package-macos.sh

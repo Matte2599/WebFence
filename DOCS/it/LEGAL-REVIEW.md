@@ -4,6 +4,8 @@
 
 Stato: preparazione tecnica, **nessun parere legale professionale acquisito**. Questo dossier non modifica LICENSE e non attiva un CLA o un contratto commerciale. L’autore ha confermato che la revisione professionale è ancora da organizzare.
 
+**Aggiornamento M1 (25 settembre 2026):** l'[analisi legale interna](M1-LEGAL-ASSESSMENT.md) ha valutato la licenza corrente e i rischi aperti. L'autore ha tolto il parere esterno dai gate di chiusura M1; questa scelta non trasforma l'analisi interna in consulenza qualificata né approva distribuzioni o CLA.
+
 ## Materiale da esaminare
 
 - [WebFence Community License 1.0](../../LICENSE), testo inglese prevalente e traduzione italiana.

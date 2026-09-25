@@ -16,4 +16,4 @@ Opening checks the version, required tables, `quick_check` and foreign keys; an 
 
 ## Limits and next steps
 
-The M1 GUI creates, selects and deletes projects, configures one origin/seed per scan and reads saved runs after restart. It does not yet offer authorization renewal/revocation, a backup button or guided restore; Go APIs exist. Do not copy an open DB while ignoring WAL/SHM: use `Backup`. Deletion does not remove external backups or guarantee forensic overwrite. No external target was scanned in tests. Real-workstation and accessibility gates remain [open](M1-VALIDATION.md).
+The M1 GUI creates, selects and deletes projects, configures one origin/seed per scan and reads saved runs after restart. It does not yet offer authorization renewal/revocation, a backup button or guided restore; Go APIs exist. Do not copy an open DB while ignoring WAL/SHM: use `Backup`. Deletion does not remove external backups or guarantee forensic overwrite. No external target was scanned in tests. Real-workstation and accessibility trials have not been performed; see [M1 limits](M1-VALIDATION.md).

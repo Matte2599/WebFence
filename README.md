@@ -4,7 +4,7 @@
 
 [English](README.en.md) · [Documentazione](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [Licenza](LICENSE)
 
-WebFence è una **alpha desktop Go/Qt Widgets**. Offre un laboratorio di 10.000 esempi sintetici e un primo flusso M1 per progetti autorizzati: visite HTTP(S) GET limitate, discovery HTML, un controllo osservativo di header e risultati redatti salvati localmente. Non esistono release supportate, benchmark di sicurezza o equivalenza dimostrata con scanner commerciali. La [matrice M1](DOCS/it/M1-VALIDATION.md) distingue la parte tecnica verificata dai gate umani ancora aperti; lo stato M0 resta nella [matrice M0](DOCS/it/M0-VALIDATION.md).
+WebFence è una **alpha desktop Go/Qt Widgets**. Offre un laboratorio di 10.000 esempi sintetici e un primo flusso M1 per progetti autorizzati: visite HTTP(S) GET limitate, discovery HTML, un controllo osservativo di header e risultati redatti salvati localmente. **M1 è chiusa come milestone tecnica** secondo la [matrice M1](DOCS/it/M1-VALIDATION.md); prove su persone e hardware reale non sono state dichiarate superate. Non esistono release supportate, benchmark di sicurezza o equivalenza dimostrata con scanner commerciali. Lo stato M0 resta nella [matrice M0](DOCS/it/M0-VALIDATION.md).
 
 Il [primo blocco M1](DOCS/it/M1-PROJECT-AUTHORIZATION.md) aggiunge un modello di progetto e uno snapshot delle origini dichiarate dall'operatore, ancora in memoria e senza rete.
 
@@ -74,7 +74,7 @@ CGO_CXXFLAGS='-O2 -g -std=c++17' go run ./cmd/webfence
 
 Su macOS Apple Silicon si può creare un bundle locale con `sh scripts/package-macos.sh`. Gli URL `.invalid` degli esempi M0 sono testo inerte; **Scansione M1** apre invece rete solo per i target configurati e autorizzati dall'operatore. La build di prova non è un installer firmato/notarizzato.
 
-Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e derivati x86-64/ARM64. La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi. Stato delle verifiche, materiali di distribuzione e prerequisiti umani sono nella [matrice M0](DOCS/it/M0-VALIDATION.md).
+Piattaforme target M1: macOS 26+ Apple Silicon, Windows 10 1809+/11 x86-64 e Ubuntu 24.04 LTS x86-64/ARM64; altre Debian/derivate restano un obiettivo di compatibilità. La [policy di supporto](DOCS/it/M1-SUPPORT-POLICY.md) distingue target e verifiche. La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi.
 
 ## Licenza e autore
 
@@ -84,6 +84,6 @@ Il progetto adotta la **WebFence Community License 1.0**, una licenza source-ava
 
 L'uso da parte di aziende, la distribuzione del programma alle aziende, la rivendita del software e l'offerta di accesso al programma come servizio richiedono preventiva autorizzazione scritta di Matteo Luigi Feroldi, che può prevedere un corrispettivo o royalties concordate. La consegna di un report professionale a un'azienda non equivale a distribuirle il programma.
 
-Queste restrizioni non sono compatibili con la [Open Source Definition](https://opensource.org/osd). Per questo WebFence non è presentato come software open source OSI. La [documentazione sulle licenze](DOCS/it/LICENSING.md) spiega la scelta e le alternative. Il testo personalizzato richiede revisione legale prima di essere usato come base per contratti commerciali.
+Queste restrizioni non sono compatibili con la [Open Source Definition](https://opensource.org/osd). Per questo WebFence non è presentato come software open source OSI. La [documentazione sulle licenze](DOCS/it/LICENSING.md) spiega la scelta e le alternative; un'[analisi interna](DOCS/it/M1-LEGAL-ASSESSMENT.md) valuta il testo attuale senza sostituire il parere professionale necessario per contratti e distribuzioni pertinenti.
 
 Per richieste di licenza, apri una issue con oggetto **Licensing inquiry**, senza dati riservati; l'autore potrà indicare un canale privato. Per vulnerabilità di WebFence, segui [SECURITY.md](SECURITY.md).
