@@ -29,7 +29,7 @@ The self-test uses real Qt without a display and a temporary directory for langu
 
 On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. In UCRT64 use the same variables and build with `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; run `./bin/webfence.exe --self-test` with `QT_QPA_PLATFORM=offscreen`. Qt DLLs and plugins must be available; the exe alone is not a distributable package. CI uses [setup-msys2](https://github.com/msys2/setup-msys2); MSVC is not the CGO compiler in this setup.
 
-Windows packaging in CI retains the `libwinpthread` package already reviewed in the [binary lock](../../packaging/windows/msys2-binary-lock.json): after the MSYS2 update it restores the pinned version and verifies its SHA-256 before continuing. This prevents an upstream release from silently changing ZIP contents; updating the version requires explicit checksum and signature review.
+Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-libwinpthread) package already reviewed in the binary lock `packaging/windows/msys2-binary-lock.json`: after the MSYS2 update it restores the pinned version along with the [winpthreads](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-winpthreads) package that requires it, verifying both published SHA-256 values. This prevents an upstream release from silently changing ZIP contents; updating the version requires explicit checksum and signature review.
 
 ## Structure and data
 
