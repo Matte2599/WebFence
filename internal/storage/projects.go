@@ -1,5 +1,5 @@
-// Package storage persists the M1 project metadata in a local SQLite database.
-// It does not store credentials, scan results, evidence or report artifacts.
+// Package storage persists M1 project metadata and redacted scan observations
+// in a local SQLite database. It never stores raw target traffic or credentials.
 package storage
 
 import (
@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -19,7 +20,8 @@ import (
 )
 
 const driverName = "webfence-project-store"
-const schemaVersion = 3
+const schemaVersion = 4
+const MaxDatabaseBytes = 64 << 20 // SQLite main-file quota; WAL has separate size behavior
 
 // Errors are stable codes and never include a database path or project data.
 var (
@@ -30,6 +32,9 @@ var (
 	ErrAlreadyExists     = errors.New("storage_project_exists")
 	ErrNotFound          = errors.New("storage_project_not_found")
 	ErrRevisionConflict  = errors.New("storage_revision_conflict")
+	ErrBusy              = errors.New("storage_busy")
+	ErrQuota             = errors.New("storage_quota_exceeded")
+	ErrInvalidRun        = errors.New("storage_invalid_run_record")
 )
 
 func init() {
@@ -42,16 +47,21 @@ func init() {
 // Store owns one connection to a caller-selected local database. The caller
 // must keep the file and its parent directory on a trusted local filesystem.
 type Store struct {
-	db     *sql.DB
-	mu     sync.Mutex // serializes run registration with revision and deletion
-	runs   map[string]map[*ManagedRun]struct{}
-	closed bool
+	db           *sql.DB
+	mu           sync.Mutex // serializes run registration with revision and deletion
+	runs         map[string]map[*ManagedRun]struct{}
+	closed       bool
+	lock         *os.File // OS lock excludes another Store process and makes crash recovery safe
+	activeScanID string   // one persistent M1 crawler at a time in this process
 }
 
-// Open creates a private database file if absent, initializes schema v3, and
+// Open creates a private database file if absent, initializes schema v4, and
 // refuses an unknown future schema or an existing non-WebFence database.
 // The parent directory must already exist; this function never chooses it.
 func Open(ctx context.Context, path string) (*Store, error) {
+	if ctx == nil {
+		return nil, ErrUnavailable
+	}
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -61,6 +71,16 @@ func Open(ctx context.Context, path string) (*Store, error) {
 	if err := prepareFile(path); err != nil {
 		return nil, err
 	}
+	lock, err := acquireStoreLock(path + ".lock")
+	if err != nil {
+		return nil, err
+	}
+	keepLock := false
+	defer func() {
+		if !keepLock {
+			_ = unlockStoreFile(lock)
+		}
+	}()
 	filePath := filepath.ToSlash(path)
 	if !strings.HasPrefix(filePath, "/") { // file:///C:/... on Windows
 		filePath = "/" + filePath
@@ -81,11 +101,12 @@ func Open(ctx context.Context, path string) (*Store, error) {
 		_ = db.Close()
 		return nil, storageError(ctx, err)
 	}
-	s := &Store{db: db, runs: make(map[string]map[*ManagedRun]struct{})}
+	s := &Store{db: db, lock: lock, runs: make(map[string]map[*ManagedRun]struct{})}
 	if err := s.initialize(ctx); err != nil {
 		_ = db.Close()
 		return nil, err
 	}
+	keepLock = true
 	return s, nil
 }
 
@@ -146,8 +167,12 @@ func (s *Store) initialize(ctx context.Context) error {
 		if err := s.checkTablesV2(ctx); err != nil {
 			return err
 		}
-	case schemaVersion:
+	case 3:
 		if err := s.checkTablesV3(ctx); err != nil {
+			return err
+		}
+	case schemaVersion:
+		if err := s.checkTablesV4(ctx); err != nil {
 			return err
 		}
 	default:
@@ -159,6 +184,27 @@ func (s *Store) initialize(ctx context.Context) error {
 	}
 	if journal != "wal" {
 		return ErrUnavailable
+	}
+	var pageSize, pageCount int
+	if err := s.db.QueryRowContext(ctx, "PRAGMA page_size").Scan(&pageSize); err != nil {
+		return storageError(ctx, err)
+	}
+	if err := s.db.QueryRowContext(ctx, "PRAGMA page_count").Scan(&pageCount); err != nil {
+		return storageError(ctx, err)
+	}
+	if pageSize <= 0 || int64(pageSize)*int64(pageCount) > MaxDatabaseBytes {
+		return ErrQuota
+	}
+	maxPages := MaxDatabaseBytes / pageSize
+	var applied int
+	if err := s.db.QueryRowContext(ctx, "PRAGMA max_page_count = "+strconv.Itoa(maxPages)).Scan(&applied); err != nil {
+		return storageError(ctx, err)
+	}
+	if applied != maxPages {
+		return ErrQuota
+	}
+	if _, err := s.db.ExecContext(ctx, "PRAGMA journal_size_limit = 8388608"); err != nil {
+		return storageError(ctx, err)
 	}
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -250,14 +296,51 @@ func (s *Store) initialize(ctx context.Context) error {
 			PRAGMA user_version = 3`); err != nil {
 			return storageError(ctx, err)
 		}
-	case schemaVersion:
+	case 3, schemaVersion:
 	default:
 		return ErrUnsupportedSchema
+	}
+	if version < schemaVersion {
+		if _, err := tx.ExecContext(ctx, `CREATE TABLE scan_runs (
+			id TEXT PRIMARY KEY NOT NULL,
+			project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+			authorization_revision INTEGER NOT NULL CHECK (authorization_revision >= 1),
+			mode TEXT NOT NULL CHECK (mode IN ('loopback', 'pinned_public')),
+			state TEXT NOT NULL CHECK (state IN ('running', 'complete', 'interrupted', 'error')),
+			started_at TEXT NOT NULL,
+			finished_at TEXT,
+			planned_seeds INTEGER NOT NULL CHECK (planned_seeds BETWEEN 1 AND 32),
+			completed_visits INTEGER NOT NULL DEFAULT 0 CHECK (completed_visits BETWEEN 0 AND 256),
+			requests_used INTEGER NOT NULL DEFAULT 0 CHECK (requests_used BETWEEN 0 AND 10000),
+			coverage_limited INTEGER NOT NULL DEFAULT 0 CHECK (coverage_limited IN (0, 1)),
+			stop_code TEXT NOT NULL DEFAULT ''
+		);
+		CREATE INDEX scan_runs_project_started ON scan_runs(project_id, started_at DESC);
+		CREATE TABLE scan_visits (
+			run_id TEXT NOT NULL REFERENCES scan_runs(id) ON DELETE CASCADE,
+			visit_index INTEGER NOT NULL CHECK (visit_index BETWEEN 0 AND 255),
+			depth INTEGER NOT NULL CHECK (depth BETWEEN 0 AND 5),
+			status_code INTEGER NOT NULL CHECK (status_code BETWEEN 100 AND 599),
+			rule_id TEXT NOT NULL CHECK (rule_id = 'HTTP-XCTO-001'),
+			rule_revision INTEGER NOT NULL CHECK (rule_revision = 1),
+			outcome TEXT NOT NULL,
+			evidence_code TEXT NOT NULL,
+			discovery_status TEXT NOT NULL,
+			discovery_reason TEXT NOT NULL,
+			links INTEGER NOT NULL CHECK (links BETWEEN 0 AND 512),
+			forms INTEGER NOT NULL CHECK (forms BETWEEN 0 AND 512),
+			out_of_scope INTEGER NOT NULL CHECK (out_of_scope BETWEEN 0 AND 512),
+			invalid INTEGER NOT NULL CHECK (invalid BETWEEN 0 AND 512),
+			PRIMARY KEY (run_id, visit_index)
+		);
+		PRAGMA user_version = 4`); err != nil {
+			return storageError(ctx, err)
+		}
 	}
 	if err := tx.Commit(); err != nil {
 		return storageError(ctx, err)
 	}
-	if err := s.checkTablesV3(ctx); err != nil {
+	if err := s.checkTablesV4(ctx); err != nil {
 		return err
 	}
 	var integrity string
@@ -279,6 +362,66 @@ func (s *Store) initialize(ctx context.Context) error {
 	}
 	if broken {
 		return ErrCorrupt
+	}
+	// The OS lock guarantees that no other Store instance owns an active run.
+	// A previously running row therefore came from a crashed process.
+	if _, err := s.db.ExecContext(ctx, `UPDATE scan_runs SET state = 'interrupted',
+		finished_at = ?, coverage_limited = 1, stop_code = 'process_interrupted'
+		WHERE state = 'running'`, time.Now().UTC().Format(time.RFC3339Nano)); err != nil {
+		return storageError(ctx, err)
+	}
+	return nil
+}
+
+func (s *Store) checkTablesV4(ctx context.Context) error {
+	if err := s.checkTablesV3(ctx); err != nil {
+		return err
+	}
+	for _, query := range []string{
+		`SELECT id, project_id, authorization_revision, mode, state, started_at, finished_at,
+			planned_seeds, completed_visits, requests_used, coverage_limited, stop_code FROM scan_runs LIMIT 0`,
+		`SELECT run_id, visit_index, depth, status_code, rule_id, rule_revision, outcome, evidence_code,
+			discovery_status, discovery_reason, links, forms, out_of_scope, invalid FROM scan_visits LIMIT 0`,
+	} {
+		rows, err := s.db.QueryContext(ctx, query)
+		if err != nil {
+			return ErrUnsupportedSchema
+		}
+		if err := rows.Close(); err != nil {
+			return storageError(ctx, err)
+		}
+	}
+	for table, parent := range map[string]string{"scan_runs": "projects", "scan_visits": "scan_runs"} {
+		rows, err := s.db.QueryContext(ctx, "PRAGMA foreign_key_list("+table+")")
+		if err != nil {
+			return storageError(ctx, err)
+		}
+		count := 0
+		for rows.Next() {
+			var id, seq int
+			var gotParent, from, to, onUpdate, onDelete, match string
+			if err := rows.Scan(&id, &seq, &gotParent, &from, &to, &onUpdate, &onDelete, &match); err != nil {
+				_ = rows.Close()
+				return storageError(ctx, err)
+			}
+			if gotParent != parent || onDelete != "CASCADE" || table == "scan_runs" && (from != "project_id" || to != "id") ||
+				table == "scan_visits" && (from != "run_id" || to != "id") {
+				_ = rows.Close()
+				return ErrUnsupportedSchema
+			}
+			count++
+		}
+		rowErr := rows.Err()
+		closeErr := rows.Close()
+		if rowErr != nil {
+			return storageError(ctx, rowErr)
+		}
+		if closeErr != nil {
+			return storageError(ctx, closeErr)
+		}
+		if count != 1 {
+			return ErrUnsupportedSchema
+		}
 	}
 	return nil
 }
@@ -402,6 +545,10 @@ func storageError(ctx context.Context, err error) error {
 	if ctxErr := ctx.Err(); ctxErr != nil {
 		return ctxErr
 	}
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) && sqliteErr.Code == sqlite3.ErrFull {
+		return ErrQuota
+	}
 	return ErrUnavailable
 }
 
@@ -417,7 +564,15 @@ func (s *Store) Close() error {
 			s.revokeRuns(id)
 		}
 	}
-	if err := s.db.Close(); err != nil {
+	dbErr := s.db.Close()
+	if s.lock != nil {
+		lockErr := unlockStoreFile(s.lock)
+		s.lock = nil
+		if lockErr != nil {
+			return ErrUnavailable
+		}
+	}
+	if dbErr != nil {
 		return ErrUnavailable
 	}
 	return nil

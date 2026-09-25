@@ -6,7 +6,7 @@ Aggiornamento / Updated: 2026-09-25. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
-Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale e il prototipo desktop offline; lo stato di M0 è nella [matrice di validazione](it/M0-VALIDATION.md). Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
+Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale, il prototipo desktop M0 e la alpha tecnica M1; lo stato di M0 è nella [matrice di validazione](it/M0-VALIDATION.md), quello di M1 nella [matrice M1](it/M1-VALIDATION.md). Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
 
 ### Fondazione documentale — completata
 
@@ -42,12 +42,14 @@ Sesto blocco tecnico: [primo controllo HTTP su seed espliciti](it/M1-HEADER-LAB.
 
 Settimo blocco tecnico: [discovery HTML osservativa](it/M1-DISCOVERY-LAB.md) sulle risposte dei seed; estrae link e azioni di form sotto scope e limiti, senza nuove richieste. Il report espone conteggi e copertura parziale.
 
-Ottavo blocco tecnico: [visite HTTP controllate](it/M1-CONTROLLED-CRAWL.md) con policy GET/HEAD, prefissi ed esclusioni, coda BFS opt-in, rate per origine e [IP pubblici fissati](it/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Verifica sintetica; nessun target esterno reale. Restano aperti coordinamento tra run/processi, persistenza/redazione delle prove, quote/ripristino, UI IT/EN e collaudi umani.
+Ottavo blocco tecnico: [visite HTTP controllate](it/M1-CONTROLLED-CRAWL.md) con policy GET/HEAD, prefissi ed esclusioni, coda BFS opt-in, rate per origine e [IP pubblici fissati](it/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Verifica sintetica; nessun target esterno reale.
 
-- [ ] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
-- [ ] Discovery HTTP(S), primi controlli a basso impatto e prove redatte.
-- [ ] Persistenza, ripristino dopo crash, limiti disco e cancellazione base del progetto.
-- [ ] Desktop IT/EN con avanzamento, risultati e copertura incompleta esplicita.
+La [matrice di validazione M1](it/M1-VALIDATION.md) registra il successivo blocco di persistenza/UI e i limiti. I quattro criteri tecnici sotto sono implementati e verificati localmente; **M1 non è formalmente chiusa** finché M1-H01…H08, che richiedono persone e sistemi reali, non saranno completati.
+
+- [x] Progetti, scope/autorizzazione, trasporto controllato, budget e cancellazione.
+- [x] Discovery HTTP(S), primo controllo a basso impatto e prove redatte.
+- [x] Persistenza, ripristino di run interrotte, limiti disco e cancellazione base del progetto.
+- [x] Desktop IT/EN con avanzamento, risultati e copertura incompleta esplicita.
 
 Uscita: flusso progetto → scansione lab → risultati → riavvio verificato; suite di scope senza violazioni, casi vulnerabili/corretti per ogni regola, nessun LLM richiesto. Alpha utilizzabile soltanto nei limiti documentati.
 
@@ -113,7 +115,7 @@ CLI/CI, import SBOM, arricchimenti KEV/EPSS, verifiche su specifici framework, s
 
 ## English
 
-This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation and offline desktop prototype exist; M0 status is in the [validation matrix](en/M0-VALIDATION.md). Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
+This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation, M0 desktop prototype and technical M1 alpha exist; M0 status is in the [validation matrix](en/M0-VALIDATION.md), M1 status in the [M1 matrix](en/M1-VALIDATION.md). Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
 
 ### Documentation foundation — complete
 
@@ -149,12 +151,14 @@ Sixth technical block: [first HTTP check on explicit seeds](en/M1-HEADER-LAB.md)
 
 Seventh technical block: [observational HTML discovery](en/M1-DISCOVERY-LAB.md) on seed responses; it extracts links and form actions under scope and parser limits, without new requests. The report exposes counts and partial coverage.
 
-Eighth technical block: [controlled HTTP visits](en/M1-CONTROLLED-CRAWL.md) with GET/HEAD policy, path prefixes/exclusions, opt-in BFS queue, per-origin pacing and [pinned public IPs](en/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Synthetic verification; no real external target. Cross-run/process coordination, persistent/redacted evidence, quotas/recovery, IT/EN UI and human trials remain open.
+Eighth technical block: [controlled HTTP visits](en/M1-CONTROLLED-CRAWL.md) with GET/HEAD policy, path prefixes/exclusions, opt-in BFS queue, per-origin pacing and [pinned public IPs](en/ADR-008-PINNED-PUBLIC-TRANSPORT.md). Synthetic verification; no real external target.
 
-- [ ] Projects, scope/authorization, controlled transport, budgets and cancellation.
-- [ ] HTTP(S) discovery, initial low-impact checks and redacted evidence.
-- [ ] Persistence, crash recovery, disk limits and basic project deletion.
-- [ ] IT/EN desktop with progress, results and explicit incomplete coverage.
+The [M1 validation matrix](en/M1-VALIDATION.md) records the subsequent persistence/UI block and limits. The four technical criteria below are implemented and locally verified; **M1 is not formally closed** until M1-H01…H08, which need people and real systems, are completed.
+
+- [x] Projects, scope/authorization, controlled transport, budgets and cancellation.
+- [x] HTTP(S) discovery, first low-impact check and redacted evidence.
+- [x] Persistence, interrupted-run recovery, disk limits and basic project deletion.
+- [x] IT/EN desktop with progress, results and explicit incomplete coverage.
 
 Exit: verified project → lab scan → results → restart workflow; scope suite without violations, vulnerable/fixed cases per rule, no LLM required. Alpha usable only within documented limits.
 

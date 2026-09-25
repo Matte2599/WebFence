@@ -19,12 +19,14 @@ type workspace struct {
 	language, severity            *qt.QComboBox
 	advanced                      *qt.QCheckBox
 	load, clear, copy             *qt.QPushButton
+	scanOpen                      *qt.QPushButton
 	intro, summary, count, notice *qt.QLabel
 	searchLabel, severityLabel    *qt.QLabel
 	evidence                      *qt.QPlainTextEdit
 
 	fileMenu, viewMenu, languageMenu    *qt.QMenu
 	loadAction, clearAction, quitAction *qt.QAction
+	scanAction                          *qt.QAction
 	searchAction, resultsAction         *qt.QAction
 	evidenceAction, advancedAction      *qt.QAction
 	italianAction, englishAction        *qt.QAction
@@ -37,6 +39,7 @@ type workspace struct {
 	selectedID, locale string
 	variants           map[string]*qt.QVariant
 	emptyVariant       *qt.QVariant
+	scan               *scannerUI
 }
 
 // MIQT 0.14 copies callback-returned QVariant values without freeing their
@@ -52,6 +55,9 @@ func (w *workspace) variant(value string) *qt.QVariant {
 	return v
 }
 func (w *workspace) dispose() {
+	if w.scan != nil {
+		w.scan.dispose()
+	}
 	w.window.Close()
 	w.window.Delete()
 	w.proxy.Delete()
@@ -101,6 +107,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	tools := qt.NewQHBoxLayout(toolbar)
 	tools.SetContentsMargins(0, 0, 0, 0)
 	w.load = qt.NewQPushButton2()
+	w.scanOpen = qt.NewQPushButton2()
 	w.clear = qt.NewQPushButton2()
 	w.advanced = qt.NewQCheckBox2()
 	w.language = qt.NewQComboBox2()
@@ -108,7 +115,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	if w.locale == "en" {
 		w.language.SetCurrentIndex(1)
 	}
-	for _, v := range []*qt.QWidget{w.load.QWidget, w.clear.QWidget, w.advanced.QWidget} {
+	for _, v := range []*qt.QWidget{w.scanOpen.QWidget, w.load.QWidget, w.clear.QWidget, w.advanced.QWidget} {
 		tools.AddWidget(v)
 	}
 	tools.AddStretch()
@@ -227,6 +234,17 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 	w.italianAction.OnTriggered(func() { w.language.SetCurrentIndex(0) })
 	w.englishAction.OnTriggered(func() { w.language.SetCurrentIndex(1) })
 	w.loadAction = w.fileMenu.AddActionWithText("")
+	w.scanAction = w.fileMenu.AddActionWithText("")
+	w.scanOpen.OnClicked(func() {
+		if w.scan != nil {
+			w.scan.show()
+		}
+	})
+	w.scanAction.OnTriggered(func() {
+		if w.scan != nil {
+			w.scan.show()
+		}
+	})
 	key := qt.NewQKeySequence2("Ctrl+O")
 	w.loadAction.SetShortcut(key)
 	key.Delete()
@@ -297,7 +315,7 @@ func newWorkspace(locale, preferencePath string, preferenceError bool) *workspac
 		w.advancedAction.SetChecked(checked)
 		w.showEvidence()
 	})
-	chain := []*qt.QWidget{w.load.QWidget, w.clear.QWidget, w.advanced.QWidget,
+	chain := []*qt.QWidget{w.load.QWidget, w.scanOpen.QWidget, w.clear.QWidget, w.advanced.QWidget,
 		w.language.QWidget, w.search.QWidget, w.severity.QWidget, w.table.QWidget,
 		w.summary.QWidget, w.evidence.QWidget, w.copy.QWidget}
 	for i := 1; i < len(chain); i++ {
@@ -325,6 +343,7 @@ func (w *workspace) translate() {
 	w.notice.SetVisible(w.preferenceError)
 	w.intro.SetText(w.tr("intro"))
 	w.load.SetText(w.tr("load"))
+	w.scanOpen.SetText(w.tr("scan_open"))
 	w.clear.SetText(w.tr("clear"))
 	w.copy.SetText(w.tr("copy"))
 	w.advanced.SetText(w.tr("advanced"))
@@ -343,6 +362,7 @@ func (w *workspace) translate() {
 	w.severity.BlockSignals(blocked)
 	w.fileMenu.SetTitle(w.tr("file"))
 	w.loadAction.SetText(w.tr("load"))
+	w.scanAction.SetText(w.tr("scan_open"))
 	w.clearAction.SetText(w.tr("clear"))
 	w.quitAction.SetText(w.tr("quit"))
 	w.viewMenu.SetTitle(w.tr("view"))
@@ -361,6 +381,9 @@ func (w *workspace) translate() {
 		parent.Delete()
 	}
 	w.updateDetails()
+	if w.scan != nil {
+		w.scan.translate()
+	}
 }
 
 func (w *workspace) filter() {

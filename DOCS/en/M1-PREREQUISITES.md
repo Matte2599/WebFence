@@ -23,7 +23,7 @@ This plan makes the gates carried from M0 into M1 executable. **M0** status rema
 
 1. Record source commit, name and SHA-256 of the **actual tested artifact**, architecture, full OS/Qt/reader versions and session type. On macOS record hashes of the bundle executable and Cocoa plugin; on Windows hash the ZIP; on Debian hash the `.deb`. Do not reuse an older build's hash.
 2. Use a real workstation independent of the CI runner, a test account without customer data, and a development package. Before claiming a “clean host” install, record any preinstalled Qt, MSYS2, Go or other dependencies: if they affect launch, qualify the result.
-3. Launch WebFence from the installed/extracted artifact, not `go run` or a loose executable. Use only the included 10,000 synthetic fixtures; configure no external URL or scan.
+3. Launch WebFence from the installed/extracted artifact, not `go run` or a loose executable. Use the included 10,000 synthetic fixtures and, for the new M1 window, only an operator-owned loopback server if available; configure no external target.
 4. Keep notes, optional recordings and screenshots private. Publish only a redacted summary with hashes/versions, outcomes and reproducible defects; no tester names, voices, personal data or account preferences.
 
 ### Handoff for the available Windows 10 PC
@@ -40,6 +40,7 @@ Repeat **in each language**. Record what the reader actually announces, not just
 4. Explicitly copy **only** synthetic evidence and verify the result. Open and close advanced details; check long text and absence of stale evidence from a previous selection when results are empty.
 5. Change language using menu/shortcut, exit and restart. Check translations, saved preference and stable IDs. Restore the operator's original preference after the trial.
 6. For M1-H04 move the window, with results and popups open, from monitor A to B and back; repeat focus, rows and menus at each scale. Record any restart needed, clipping, blur or focus loss.
+7. Open **M1 Scan** using the keyboard. Check labels, unchecked authorization confirmation, fields and buttons, coverage warning, redacted result and IT/EN text. A scan trial requires a loopback server the operator controls; do not use external sites for this gate. After restart, verify the saved result and then delete the test project using the confirmation dialog.
 
 An assistive gate passes only when a person has actually **heard** the announcements and completed the workflow with the reader active. Automation with muted audio is diagnostic support. If there is a defect, record reproduction, environment, severity and a retest on the corrected package; do not mark “pass” merely because a trial was attempted.
 

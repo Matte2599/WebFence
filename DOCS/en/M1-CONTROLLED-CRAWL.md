@@ -2,7 +2,7 @@
 
 [Italiano](../it/M1-CONTROLLED-CRAWL.md) · [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) · [Roadmap](../ROADMAP.md)
 
-`scanner.RunCrawl` connects a SQLite project to a managed run, a policy-bound HTTP broker and a bounded BFS queue. It is an **experimental core**, not yet exposed in the GUI and not a production scanner. No external target was contacted during development or testing of this block. The operator must own or have explicit permission for the origins, addresses and activities; the project declaration does not independently prove that permission.
+`scanner.RunCrawl` connects a SQLite project to a managed run, a policy-bound HTTP broker and a bounded BFS queue. The basic workflow is now exposed in the M1 GUI, but this is not a production scanner. No external target was contacted during development or testing of this block. The operator must own or have explicit permission for the origins, addresses and activities; the project declaration does not independently prove that permission.
 
 ## Operating contract
 
@@ -19,6 +19,6 @@ On every hop, **all** resolver answers must be in the origin's grant. The broker
 
 ## Limits and evidence
 
-Pacing is per broker/run and does not coordinate processes or parallel runs. IP grants require operator selection and maintenance; no guided UI sets them safely yet. There is no persistent result storage, disk quota, crash recovery, target load feedback, browser, authentication, system egress firewall or desktop integration. The path policy alone cannot determine whether a GET has side effects. Do not start external visits using documentation examples.
+Pacing is per broker/run. The store permits one persistent crawler run per instance and a file lock excludes a second process on the same DB; other programs or separate DBs are not coordinated. Public IP grants require operator selection and maintenance; the GUI accepts manually pinned IPs without auto-suggesting them. Redacted persistence, a DB quota, interrupted-run marking on restart and desktop integration now exist. Target load feedback, browser, authentication and a system egress firewall remain absent. The path policy alone cannot determine whether a GET has side effects. Do not start external visits using documentation examples. [M1 verification and gates](M1-VALIDATION.md).
 
 Synthetic tests exercise prefixes/exclusions, ambiguous escapes, methods, preflight, redirects, mixed DNS, special IPs, peer pinning, pacing, cancellation/revocation, page/depth limits, ignored forms and report redaction. The public-path test uses a loopback `httptest` server and a fake dialer simulating a public peer: it is **not** a live public-network test. The M1 human trial plan remains [open](M1-PREREQUISITES.md).

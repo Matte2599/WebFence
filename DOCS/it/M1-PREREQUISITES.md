@@ -23,7 +23,7 @@ Questo piano rende eseguibili i gate trasferiti da M0 a M1. Lo stato di **M0** r
 
 1. Annotare commit sorgente, nome e SHA-256 dell'artefatto **effettivamente provato**, architettura, versione completa di OS/Qt/lettore e tipo di sessione. Per macOS registrare gli hash dell'eseguibile e del plugin Cocoa del bundle; per Windows dello ZIP; per Debian del `.deb`. Non riutilizzare l'hash di una build precedente.
 2. Usare una workstation reale indipendente dal runner CI, un account di prova senza dati cliente e un pacchetto di sviluppo. Prima di dichiarare «installazione su host pulito», registrare eventuali Qt, MSYS2, Go o altre dipendenze già installate: se incidono sull'avvio, l'esito è limitato.
-3. Avviare WebFence dall'artefatto installato/estratto, non da `go run` o da un eseguibile sciolto. Usare solo le 10.000 fixture sintetiche incluse; non configurare URL o scansioni esterne.
+3. Avviare WebFence dall'artefatto installato/estratto, non da `go run` o da un eseguibile sciolto. Usare le 10.000 fixture sintetiche incluse e, per la nuova finestra M1, soltanto un server loopback posseduto dall'operatore se disponibile; non configurare target esterni.
 4. Salvare privatamente note, eventuali registrazioni e schermate. Nel repository pubblico inserire solo una sintesi redatta con hash/versioni, esito e difetti riproducibili; niente nomi di tester, voci, dati personali o preferenze dell'account.
 
 ### Handoff per il PC Windows 10 disponibile
@@ -40,6 +40,7 @@ Ripetere **per ogni lingua**. Annotare l'annuncio reale del lettore, non solo l'
 4. Copiare **solo** la prova sintetica esplicitamente e verificare il risultato. Aprire e chiudere dettagli avanzati; verificare testo lungo e assenza di contenuto di una selezione precedente quando il risultato è vuoto.
 5. Cambiare lingua tramite menu/scorciatoia, chiudere e riaprire. Verificare traduzione, preferenza salvata e identità invariata degli ID. Ripristinare la preferenza originale dell'operatore dopo la prova.
 6. Per M1-H04 spostare la finestra, con risultati e popup aperti, dal monitor A a B e viceversa; ripetere focus, righe e menu a ciascuna scala. Registrare se il cambio impone riavvio o produce clipping, sfocatura o perdita di focus.
+7. Aprire **Scansione M1** da tastiera. Verificare etichette, conferma autorizzazione non preselezionata, campi e pulsanti, avviso di copertura, risultato redatto e testo IT/EN. Una prova di scansione richiede un server loopback di cui l'operatore controlla l'avvio; non usare siti esterni per questo gate. Dopo riavvio, verificare il risultato salvato e poi eliminare il progetto di prova confermando la finestra di dialogo.
 
 Un gate assistivo passa solo se una persona ha realmente **ascoltato** gli annunci e completato il percorso con il lettore attivo. Un test automatico senza audio resta supporto diagnostico. Se emerge un difetto, annotare riproduzione, ambiente, gravità e retest sul pacchetto corretto; non segnare «superato» perché il test è stato eseguito.
 

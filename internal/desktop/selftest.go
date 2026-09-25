@@ -5,9 +5,12 @@ import (
 	"github.com/Matte2599/WebFence/internal/demo"
 	"github.com/Matte2599/WebFence/internal/preferences"
 	qt "github.com/mappu/miqt/qt6"
+	"net/http"
+	"net/http/httptest"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -202,6 +205,43 @@ func selfTest(w *workspace) int {
 	w.clear.Click()
 	check(len(w.visible) == 0 && w.evidence.ToPlainText() == "", "clear dataset")
 	checkAccessible("cleared")
+	// The native M1 dialog creates a declared project, scans an owned loopback
+	// fixture, and renders only persisted redacted observations.
+	if w.scan != nil && w.scan.store != nil {
+		var hits atomic.Int32
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			hits.Add(1)
+			writer.Header().Set("Content-Type", "text/html")
+			_, _ = writer.Write([]byte("<html><body>synthetic</body></html>"))
+		}))
+		defer server.Close()
+		u := w.scan
+		u.show()
+		u.id.SetText("m1-native-selftest")
+		u.name.SetText("Synthetic owned lab")
+		u.owner.SetText("Test fixture")
+		u.reference.SetText("local self-test")
+		u.origin.SetText(server.URL)
+		u.seed.SetText(server.URL + "/")
+		u.confirmed.SetChecked(true)
+		u.create.Click()
+		check(u.selectedProjectID() == "m1-native-selftest", "M1 native project creation")
+		u.start.Click()
+		deadline := time.Now().Add(12 * time.Second)
+		for u.done != nil && time.Now().Before(deadline) {
+			qt.QCoreApplication_ProcessEvents()
+			time.Sleep(10 * time.Millisecond)
+		}
+		qt.QCoreApplication_ProcessEvents()
+		check(u.done == nil && hits.Load() == 1 && strings.Contains(u.results.ToPlainText(), "nosniff_absent"), "M1 native owned-lab scan and result")
+		check(!strings.Contains(u.results.ToPlainText(), server.URL), "M1 native result redaction")
+		w.englishAction.Trigger()
+		check(u.start.Text() == "Start scan" && strings.Contains(u.coverage.Text(), "queue"), "M1 native English translation")
+		w.italianAction.Trigger()
+		u.confirmDelete = func() bool { return true }
+		u.deleteProject.Click()
+		check(u.selectedProjectID() == "" && u.runs.Count() == 0, "M1 native project deletion")
+	}
 	runtime.GC() // Exercise automatic lifetime management of returned Qt values.
 	qt.QCoreApplication_ProcessEvents()
 	if failures > 0 {

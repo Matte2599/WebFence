@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/Matte2599/WebFence/internal/project"
 	"github.com/Matte2599/WebFence/internal/scope"
+	"github.com/Matte2599/WebFence/internal/storage"
 	"github.com/Matte2599/WebFence/internal/transport"
 )
 
@@ -62,6 +64,11 @@ func TestCrawlVisitsOnlyAllowedGETLinksAndRedactsReport(t *testing.T) {
 			t.Fatalf("visit %d: %+v", i, visit)
 		}
 	}
+	stored, err := store.LoadScanRun(t.Context(), report.RunID)
+	if err != nil || stored.State != "complete" || stored.CompletedVisits != 3 || len(stored.Visits) != 3 ||
+		!stored.CoverageLimited || stored.Visits[0].EvidenceCode != "nosniff_present" {
+		t.Fatalf("persistent crawl result: %+v err=%v", stored, err)
+	}
 	encoded, err := json.Marshal(report)
 	if err != nil {
 		t.Fatal(err)
@@ -70,6 +77,82 @@ func TestCrawlVisitsOnlyAllowedGETLinksAndRedactsReport(t *testing.T) {
 		if strings.Contains(string(encoded), secret) {
 			t.Fatalf("crawl report leaked input: %s", encoded)
 		}
+	}
+}
+
+func TestCrawlHeaderBeforeAndAfterFixSurvivesRestart(t *testing.T) {
+	var fixed atomic.Bool
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		if fixed.Load() {
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+		}
+		_, _ = io.WriteString(w, "<html>synthetic fixture</html>")
+	}))
+	defer server.Close()
+	path := filepath.Join(t.TempDir(), "end-to-end.sqlite")
+	store, err := storage.Open(t.Context(), path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = store.Close() }()
+	p, err := project.New(project.Draft{ID: "fix-fixture", Name: "Synthetic fix fixture", TargetOwner: "Test fixture",
+		AuthorizationReference: "owned local server", AuthorizationConfirmed: true,
+		AuthorizationExpiresAt: time.Now().Add(time.Hour), Origins: []string{server.URL}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.CreateProject(t.Context(), p); err != nil {
+		t.Fatal(err)
+	}
+	plan := crawlFixturePlan(t, p.ID(), []string{server.URL + "/allowed"}, fixtureGrant(t, server))
+	plan.MaxPages, plan.MaxDepth, plan.FollowLinks = 1, 0, false
+	before, err := RunCrawl(t.Context(), store, plan)
+	if err != nil || len(before.Visits) != 1 || before.Visits[0].EvidenceCode != "nosniff_absent" {
+		t.Fatalf("before fix: %+v %v", before, err)
+	}
+	fixed.Store(true)
+	after, err := RunCrawl(t.Context(), store, plan)
+	if err != nil || len(after.Visits) != 1 || after.Visits[0].EvidenceCode != "nosniff_present" {
+		t.Fatalf("after fix: %+v %v", after, err)
+	}
+	if err := store.Close(); err != nil {
+		t.Fatal(err)
+	}
+	store, err = storage.Open(t.Context(), path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, pair := range []struct{ id, want string }{{before.RunID, "nosniff_absent"}, {after.RunID, "nosniff_present"}} {
+		run, err := store.LoadScanRun(t.Context(), pair.id)
+		if err != nil || run.State != "complete" || len(run.Visits) != 1 || run.Visits[0].EvidenceCode != pair.want ||
+			run.Visits[0].RuleID != HeaderRuleID || run.Visits[0].RuleRevision != HeaderRuleRevision {
+			t.Fatalf("reopened %s: %+v %v", pair.want, run, err)
+		}
+	}
+}
+
+func TestCrawlPanickingObserverCannotPersistFalseCompletion(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		_, _ = io.WriteString(w, "<html>synthetic fixture</html>")
+	}))
+	defer server.Close()
+	store, id := fixtureStore(t, server.URL)
+	plan := crawlFixturePlan(t, id, []string{server.URL + "/allowed"}, fixtureGrant(t, server))
+	plan.MaxPages, plan.MaxDepth, plan.FollowLinks = 1, 0, false
+	plan.OnProgress = func(int) { panic("synthetic observer crash") }
+	func() {
+		defer func() {
+			if recover() == nil {
+				t.Fatal("observer did not panic")
+			}
+		}()
+		_, _ = RunCrawl(t.Context(), store, plan)
+	}()
+	runs, err := store.ListScanRuns(t.Context(), id)
+	if err != nil || len(runs) != 1 || runs[0].State != "interrupted" || !runs[0].CoverageLimited || runs[0].StopCode != "process_interrupted" {
+		t.Fatalf("false completion after panic: %+v %v", runs, err)
 	}
 }
 

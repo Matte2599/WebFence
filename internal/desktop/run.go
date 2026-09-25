@@ -1,6 +1,7 @@
 package desktop
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/Matte2599/WebFence/internal/i18n"
 	"github.com/Matte2599/WebFence/internal/preferences"
+	"github.com/Matte2599/WebFence/internal/storage"
 	qt "github.com/mappu/miqt/qt6"
 )
 
@@ -52,6 +54,24 @@ func Run(args []string) int {
 		preferenceError = err != nil
 	}
 	w := newWorkspace(locale, path, preferenceError)
+	var scanStore *storage.Store
+	var scanErr error
+	if dir != "" {
+		dataDir := filepath.Join(dir, "WebFence")
+		if mkErr := os.MkdirAll(dataDir, 0o700); mkErr != nil {
+			scanErr = storage.ErrUnavailable
+		} else {
+			scanStore, scanErr = storage.Open(context.Background(), filepath.Join(dataDir, "projects.sqlite"))
+		}
+	} else {
+		scanErr = storage.ErrUnavailable
+	}
+	defer func() {
+		if scanStore != nil {
+			_ = scanStore.Close()
+		}
+	}()
+	w.scan = newScannerUI(w, scanStore, scanErr)
 	defer w.dispose()
 	w.window.Show()
 	if soakDuration > 0 {
