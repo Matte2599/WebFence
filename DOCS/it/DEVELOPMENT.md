@@ -4,7 +4,7 @@
 
 ## Avvio e controlli
 
-Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. Il desktop resta un prototipo offline con esempi: nessuna scansione o progetto persistente **nella GUI**, CVE o AI. Il core dispone di uno [store progetti M1](M1-PROJECT-STORE.md), di un [primo controllo HTTP solo loopback](M1-HEADER-LAB.md) e di [visite controllate](M1-CONTROLLED-CRAWL.md), separati dalla GUI. [Stato e verifiche desktop](QT-DESKTOP.md).
+Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. Il desktop offre esempi sintetici M0 e una [alpha M1](M1-VALIDATION.md) con progetti salvati e scansioni HTTP limitate; CVE e AI non sono attive. [Stato e verifiche desktop M0](QT-DESKTOP.md).
 
 La prima compilazione dei binding può richiedere diversi minuti; le successive beneficiano della cache Go. La CI macOS compila i wrapper C++ con `-O0 -g0` per contenere il costo della prima compilazione; build e bundle usano gli stessi flag e la cache. Le librerie Qt installate restano quelle del pacchetto Homebrew. Lo script locale usa per default `-O2 -g`; la CI verifica funzionalità, non prestazioni di release.
 
@@ -25,7 +25,7 @@ QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-Il self-test usa Qt reale senza display e una directory temporanea per la lingua; la copia è intercettata per non modificare gli appunti. Verifica anche errori di salvataggio, testo lungo e cambio lingua tramite azioni. Non è una prova con screen reader. Il tag Fyne `ci` non serve più. `go test ./...` richiede ora le dipendenze Qt per compilare il desktop; i pacchetti puri si verificano separatamente come sopra.
+Il self-test usa Qt reale senza display e una directory temporanea per lingua e DB; la copia è intercettata per non modificare gli appunti. Verifica anche un progetto M1 e una scansione verso un server `httptest` locale posseduto dal test: **nessun target esterno**. Non è una prova con screen reader. Il tag Fyne `ci` non serve più. `go test ./...` richiede le dipendenze Qt per compilare il desktop.
 
 Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. Dalla shell UCRT64, usare le stesse variabili e compilare con `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; eseguire `./bin/webfence.exe --self-test` con `QT_QPA_PLATFORM=offscreen`. Qt DLL e plugin devono essere disponibili; il file exe da solo non è un pacchetto distribuibile. La CI usa [setup-msys2](https://github.com/msys2/setup-msys2); MSVC non è il compilatore CGO di questa configurazione.
 
@@ -38,13 +38,15 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/demo`: fixture pure senza rete.
 - `internal/i18n`: cataloghi JSON IT/EN incorporati.
 - `internal/preferences`: sola lingua, indipendente dal toolkit.
-- `internal/project` e `internal/storage`: modello di autorizzazione, store SQLite dei soli metadati e [run gestite con revoca locale](M1-MANAGED-RUNS.md), ancora scollegati dalla GUI.
-- `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), ancora senza integrazione desktop.
-- `internal/scanner`: [primo controllo HTTP di laboratorio](M1-HEADER-LAB.md), [discovery HTML osservativa](M1-DISCOVERY-LAB.md) e [crawler limitato](M1-CONTROLLED-CRAWL.md), senza dati di run persistenti. I test non aprono rete esterna.
+- `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
+- `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
+- `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md) e [crawler limitato](M1-CONTROLLED-CRAWL.md) con risultati persistenti. I test non aprono rete esterna.
 
 I futuri pacchetti del motore restano indipendenti da Qt. Non usare la cache delle fixture come modello di conservazione per dati reali. Fyne e il vecchio laboratorio Qt sono nella cronologia Git, non nella build corrente.
 
-Nel desktop la sola preferenza salvata è il file `WebFence/ui-language` sotto `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` o `~/.config`; Windows: `%AppData%`). La scrittura usa un temporaneo e rinomina nella stessa directory. Errori sono visibili nella GUI; la lingua della sessione resta utilizzabile. Le vecchie preferenze Fyne non sono importate né cancellate. Esempi, filtri e selezione non sono salvati. Gli appunti copiati esplicitamente non vengono cancellati da «Svuota esempi».
+Nel desktop `WebFence/ui-language` e `WebFence/projects.sqlite` sono sotto `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` o `~/.config`; Windows: `%AppData%`). Il DB può avere file `.lock`, `-wal` e `-shm`. La preferenza usa un temporaneo e rinomina; progetti e risultati M1 sono persistenti. Errori sono visibili nella GUI. Le vecchie preferenze Fyne non sono importate né cancellate. Esempi M0, filtri e selezione non sono salvati. Gli appunti copiati esplicitamente non vengono cancellati da «Svuota esempi».
+
+Per una prova M1, aprire **Scansione M1**, creare un progetto con origine esatta, titolare, riferimento non segreto, scadenza e conferma dell'autorizzazione. Selezionarlo, indicare un seed autorizzato, prefissi ammessi/esclusi, modalità loopback o IP pubblici fissati manualmente, budget, pagine e profondità. I link vengono visitati solo con l'apposita opzione. Avviare, leggere progresso e copertura, poi riaprire l'app per i risultati salvati. Usare esclusivamente target propri o esplicitamente autorizzati; il self-test usa solo loopback. La GUI non offre ancora rinnovo/revoca o backup; [API e limiti](M1-PROJECT-STORE.md).
 
 Menu Lingua e selettore cambiano IT/EN; scorciatoie **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** su macOS). **Ctrl+O/Cmd+O** carica gli esempi. Tastiera e screen reader completi restano da convalidare.
 
@@ -79,7 +81,7 @@ Log locali redatti con ID di run, durata, limiti ed errori; niente telemetria pr
 
 ## Primo livello scope (M0)
 
-`internal/scope` contiene la policy immutabile delle origini; il laboratorio HTTP è soltanto in `lab_test.go`. [Contratto e limiti](M0-SCOPE.md). Il desktop non effettua richieste.
+Per il blocco storico M0, `internal/scope` conteneva la policy immutabile delle origini e il laboratorio HTTP era soltanto in `lab_test.go` ([contratto M0](M0-SCOPE.md)). Il desktop M1 può effettuare richieste autorizzate tramite il broker controllato.
 
 ```sh
 go test -race -cover ./internal/scope

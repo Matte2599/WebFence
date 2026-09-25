@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"net/netip"
+	"time"
 
+	"github.com/Matte2599/WebFence/internal/project"
 	"github.com/Matte2599/WebFence/internal/scope"
 	"github.com/Matte2599/WebFence/internal/storage"
 	"github.com/Matte2599/WebFence/internal/transport"
@@ -34,6 +36,9 @@ type CrawlPlan struct {
 	MaxPages    int
 	MaxDepth    int
 	FollowLinks bool
+	// OnProgress receives only a completed-visit count; callers must marshal
+	// any UI updates onto the GUI thread themselves.
+	OnProgress func(completed int)
 }
 
 // CrawlVisit has no URL, query, response header or body. VisitIndex refers to
@@ -50,6 +55,7 @@ type CrawlVisit struct {
 }
 
 type CrawlReport struct {
+	RunID                 string
 	ProjectID             string
 	AuthorizationRevision uint64
 	PlannedSeeds          int
@@ -74,8 +80,8 @@ type crawlItem struct {
 // RunCrawl uses only a Store-managed run and the pinned broker. It preflights
 // all explicit seeds before networking, then visits a bounded BFS queue in
 // order. Forms are observed but never scheduled or submitted. No browser,
-// authentication, retry, persistent results or desktop integration exists.
-func RunCrawl(ctx context.Context, store *storage.Store, plan CrawlPlan) (CrawlReport, error) {
+// authentication or retry exists.
+func RunCrawl(ctx context.Context, store *storage.Store, plan CrawlPlan) (report CrawlReport, runErr error) {
 	if ctx == nil || store == nil || plan.ProjectID == "" || len(plan.SeedURLs) == 0 ||
 		len(plan.SeedURLs) > MaxHeaderLabSeeds || len(plan.Grants) == 0 || len(plan.Grants) > MaxHeaderLabGrants ||
 		!plan.Policy.Valid() || plan.MaxPages < len(plan.SeedURLs) || plan.MaxPages > MaxCrawlPages ||
@@ -98,7 +104,7 @@ func RunCrawl(ctx context.Context, store *storage.Store, plan CrawlPlan) (CrawlR
 	}
 	defer run.Close()
 	permit := run.Scope()
-	report := CrawlReport{ProjectID: permit.ProjectID(), AuthorizationRevision: permit.Revision(),
+	report = CrawlReport{ProjectID: permit.ProjectID(), AuthorizationRevision: permit.Revision(),
 		PlannedSeeds: len(seeds), Visits: make([]CrawlVisit, 0, plan.MaxPages)}
 	queue := make([]crawlItem, 0, plan.MaxPages)
 	queued := make(map[string]struct{}, plan.MaxPages)
@@ -128,6 +134,36 @@ func RunCrawl(ctx context.Context, store *storage.Store, plan CrawlPlan) (CrawlR
 		return CrawlReport{}, err
 	}
 	defer broker.Close()
+	runID, err := store.StartScanRun(run.Context(), permit, string(plan.Mode), len(seeds))
+	if err != nil {
+		return CrawlReport{}, err
+	}
+	report.RunID = runID
+	completedNormally := false
+	defer func() {
+		state := "complete"
+		if !completedNormally && runErr == nil {
+			state = "interrupted"
+			report.StopCode = "process_interrupted"
+			report.CoverageLimited = true
+		} else if runErr != nil {
+			state = "error"
+			if errors.Is(runErr, context.Canceled) || errors.Is(runErr, context.DeadlineExceeded) ||
+				errors.Is(runErr, project.ErrAuthorizationExpired) || errors.Is(runErr, project.ErrAuthorizationRevoked) {
+				state = "interrupted"
+			}
+			if report.StopCode == "" {
+				report.StopCode = safeStopError(runErr).Error()
+			}
+			report.CoverageLimited = true
+		}
+		finishCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+		if finishErr := store.FinishScanRun(finishCtx, runID, state, report.RequestsUsed, report.CoverageLimited, report.StopCode); finishErr != nil && runErr == nil {
+			runErr = finishErr
+			report.CoverageLimited = true
+		}
+	}()
 	visited := make(map[string]struct{}, plan.MaxPages)
 	for head := 0; head < len(queue); head++ {
 		item := queue[head]
@@ -156,10 +192,26 @@ func RunCrawl(ctx context.Context, store *storage.Store, plan CrawlPlan) (CrawlR
 			report.CoverageLimited = true
 			return report, stopped
 		}
-		report.CompletedVisits++
-		report.Visits = append(report.Visits, CrawlVisit{VisitIndex: head, Depth: item.depth,
+		visit := CrawlVisit{VisitIndex: head, Depth: item.depth,
 			StatusCode: check.StatusCode, RuleID: check.RuleID, RuleRevision: check.RuleRevision,
-			Outcome: check.Outcome, EvidenceCode: check.EvidenceCode, Discovery: discovery})
+			Outcome: check.Outcome, EvidenceCode: check.EvidenceCode, Discovery: discovery}
+		if err := store.AppendScanVisit(run.Context(), runID, storage.ScanVisit{
+			VisitIndex: visit.VisitIndex, Depth: visit.Depth, StatusCode: visit.StatusCode,
+			RuleID: visit.RuleID, RuleRevision: visit.RuleRevision,
+			Outcome: string(visit.Outcome), EvidenceCode: visit.EvidenceCode,
+			DiscoveryStatus: visit.Discovery.Status, DiscoveryReason: visit.Discovery.ReasonCode,
+			Links: visit.Discovery.Links, Forms: visit.Discovery.Forms,
+			OutOfScope: visit.Discovery.OutOfScope, Invalid: visit.Discovery.Invalid,
+		}, broker.RequestsUsed()); err != nil {
+			stopped := safeStopError(err)
+			report.StopCode, report.CoverageLimited = stopped.Error(), true
+			return report, stopped
+		}
+		report.CompletedVisits++
+		report.Visits = append(report.Visits, visit)
+		if plan.OnProgress != nil {
+			plan.OnProgress(report.CompletedVisits)
+		}
 		if discovery.Status == "incomplete" || discovery.OutOfScope != 0 || discovery.Invalid != 0 {
 			report.CoverageLimited = true
 		}
@@ -212,5 +264,6 @@ func RunCrawl(ctx context.Context, store *storage.Store, plan CrawlPlan) (CrawlR
 	if report.NotScheduled > 0 {
 		report.CoverageLimited = true
 	}
+	completedNormally = true
 	return report, nil
 }

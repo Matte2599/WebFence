@@ -414,7 +414,7 @@ func TestV1ProjectStoreMigratesToRevisionOne(t *testing.T) {
 		t.Fatalf("migrated project: %+v %v", loaded.Record(), err)
 	}
 	var version int
-	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 3 {
+	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 4 {
 		t.Fatalf("schema version after migration: %d %v", version, err)
 	}
 	history, err := s.ListAuthorizationRevisions(t.Context(), "migrated")
@@ -471,7 +471,7 @@ func TestV2ProjectStoreMigratesToRevocationState(t *testing.T) {
 		t.Fatalf("v2 history after migration: %+v %v", history, err)
 	}
 	var version int
-	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 3 {
+	if err := s.db.QueryRowContext(t.Context(), "PRAGMA user_version").Scan(&version); err != nil || version != 4 {
 		t.Fatalf("schema version after v2 migration: %d %v", version, err)
 	}
 	if _, err := s.RevokeAuthorization(t.Context(), "migrated-v2", 2); err != nil {

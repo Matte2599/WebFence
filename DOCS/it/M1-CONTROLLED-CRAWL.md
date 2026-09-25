@@ -2,7 +2,7 @@
 
 [English](../en/M1-CONTROLLED-CRAWL.md) · [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) · [Roadmap](../ROADMAP.md)
 
-`scanner.RunCrawl` collega un progetto SQLite a una run gestita, al broker HTTP con policy e a una coda BFS limitata. È un **core sperimentale**, non è ancora esposto nella GUI e non è uno scanner di produzione. Nessun target esterno è stato contattato durante lo sviluppo o i test di questo blocco. L'operatore deve possedere o avere un permesso esplicito per origini, indirizzi e attività; la dichiarazione nel progetto non costituisce prova indipendente di quel permesso.
+`scanner.RunCrawl` collega un progetto SQLite a una run gestita, al broker HTTP con policy e a una coda BFS limitata. Il flusso basilare è ora esposto nella GUI M1, ma non è uno scanner di produzione. Nessun target esterno è stato contattato durante lo sviluppo o i test di questo blocco. L'operatore deve possedere o avere un permesso esplicito per origini, indirizzi e attività; la dichiarazione nel progetto non costituisce prova indipendente di quel permesso.
 
 ## Contratto operativo
 
@@ -19,6 +19,6 @@ Per ogni hop, **tutti** gli indirizzi restituiti dal resolver devono essere nel 
 
 ## Limiti e prove
 
-La cadenza vale per un broker/run, non coordina processi o run parallele. I grant IP richiedono scelta e manutenzione dell'operatore; non esiste un'interfaccia guidata che li imposti in sicurezza. Non c'è ancora persistenza dei risultati, quota disco, ripresa dopo crash, controllo del carico del target, browser, autenticazione, egress firewall di sistema o integrazione desktop. La policy dei percorsi non può stabilire da sola se un GET ha effetti. Non avviare visite esterne con gli esempi di documentazione.
+La cadenza vale per un broker/run. Lo store consente una sola run crawler persistente per istanza e un lock di file esclude un secondo processo sullo stesso DB; altri programmi o DB distinti non sono coordinati. I grant IP pubblici richiedono scelta e manutenzione dell'operatore; la GUI accetta IP fissati manualmente, senza suggerirli automaticamente. Esistono ora persistenza redatta, quota DB, marcatura di run interrotte al riavvio e integrazione desktop. Restano assenti controllo del carico del target, browser, autenticazione ed egress firewall di sistema. La policy dei percorsi non può stabilire da sola se un GET ha effetti. Non avviare visite esterne con gli esempi di documentazione. [Verifica e gate M1](M1-VALIDATION.md).
 
 I test sintetici esercitano prefissi ed esclusioni, escape ambigui, metodi, preflight, redirect, DNS misto, IP speciali, peer pin, cadenza, cancellazione/revoca, limite di pagine/profondità, form ignorati e redazione del report. La prova del percorso pubblico usa un server `httptest` su loopback e un dialer fittizio che simula il peer pubblico: **non** è una prova su rete pubblica reale. Il piano di collaudo umano M1 resta [aperto](M1-PREREQUISITES.md).

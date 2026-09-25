@@ -242,6 +242,7 @@ func safeStopError(err error) error {
 		transport.ErrAddress, transport.ErrResolve, transport.ErrBudget,
 		transport.ErrNetwork, transport.ErrRedirect, transport.ErrRedirectLimit,
 		transport.ErrBodyLimit, transport.ErrEncoding,
+		storage.ErrUnavailable, storage.ErrQuota,
 	} {
 		if errors.Is(err, known) {
 			return known

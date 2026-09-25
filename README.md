@@ -4,21 +4,21 @@
 
 [English](README.en.md) · [Documentazione](DOCS/README.md) · [Roadmap](DOCS/ROADMAP.md) · [Licenza](LICENSE)
 
-Il prototipo desktop Go/Qt Widgets usa solo fixture sintetiche: carica 10.000 righe, le filtra e mostra le evidenze in italiano e inglese. Il motore di scansione di produzione non è implementato e non esistono release supportate o benchmark di sicurezza. Per il resoconto di M0 e i gate trasferiti a M1 vedere la [matrice di validazione](DOCS/it/M0-VALIDATION.md); il [piano dei collaudi umani M1](DOCS/it/M1-PREREQUISITES.md) spiega come eseguirli.
+WebFence è una **alpha desktop Go/Qt Widgets**. Offre un laboratorio di 10.000 esempi sintetici e un primo flusso M1 per progetti autorizzati: visite HTTP(S) GET limitate, discovery HTML, un controllo osservativo di header e risultati redatti salvati localmente. Non esistono release supportate, benchmark di sicurezza o equivalenza dimostrata con scanner commerciali. La [matrice M1](DOCS/it/M1-VALIDATION.md) distingue la parte tecnica verificata dai gate umani ancora aperti; lo stato M0 resta nella [matrice M0](DOCS/it/M0-VALIDATION.md).
 
 Il [primo blocco M1](DOCS/it/M1-PROJECT-AUTHORIZATION.md) aggiunge un modello di progetto e uno snapshot delle origini dichiarate dall'operatore, ancora in memoria e senza rete.
 
 Il [laboratorio M1](DOCS/it/M1-AUTHORIZED-LAB.md) applica quello snapshot al trasporto HTTP solo loopback, anche dopo i redirect e alla scadenza.
 
-Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva i metadati in SQLite, migra gli schemi v1/v2 alla v3 e registra rinnovi e revoche di autorizzazione versionati; la GUI non lo usa ancora.
+Lo [store progetti M1](DOCS/it/M1-PROJECT-STORE.md) conserva dichiarazioni versionate, run e osservazioni redatte in SQLite v4; gestisce riavvio, quota, backup manuale ed eliminazione logica. La finestra M1 lo usa per progetti e risultati.
 
-Le [run gestite M1](DOCS/it/M1-MANAGED-RUNS.md) collegano la revisione corrente alla revoca locale e fermano il laboratorio HTTP quando l'autorizzazione cambia; restano scollegate dalla GUI.
+Le [run gestite M1](DOCS/it/M1-MANAGED-RUNS.md) collegano la revisione corrente alla revoca locale e fermano il laboratorio HTTP quando l'autorizzazione cambia.
 
 Il [primo controllo HTTP M1](DOCS/it/M1-HEADER-LAB.md) usa run gestite e seed espliciti solo loopback per osservare un header in risposte HTML, con esiti redatti e conteggio dei seed. Non è una scansione di produzione.
 
 La [discovery HTML M1](DOCS/it/M1-DISCOVERY-LAB.md) osserva link e form nelle risposte dei seed con limiti e verifica dello scope; non visita i candidati e non invia form. Il report conserva solo conteggi redatti.
 
-Le [visite HTTP controllate M1](DOCS/it/M1-CONTROLLED-CRAWL.md) aggiungono policy per metodi, percorsi ed esclusioni, link seguiti solo con consenso esplicito, rate per origine e grant di IP pubblici fissati. Sono API del core testate su fixture sintetiche, non ancora disponibili nel desktop; i form non vengono inviati.
+Le [visite HTTP controllate M1](DOCS/it/M1-CONTROLLED-CRAWL.md) aggiungono policy per metodi, percorsi ed esclusioni, link seguiti solo con opt-in, rate per origine e grant di IP pubblici fissati. La GUI espone un'origine e un seed per scansione; i form non vengono inviati. Usa solo target propri o esplicitamente autorizzati.
 
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 
@@ -41,11 +41,11 @@ WebFence nasce per analizzare siti e API autorizzati, associare ogni problema al
 | Memoria dei progetti | Inventario e cronologia persistenti fino alla cancellazione; credenziali e prove grezze con conservazione distinta. |
 | Convalida fix | Nuovo controllo mirato, confronto con la baseline e ricerca di regressioni nel perimetro riesaminato. |
 
-La tabella descrive obiettivi di prodotto, **non funzionalità completate**; i soli incrementi M1 implementati sono collegati sopra. Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
+La tabella descrive obiettivi di prodotto, **non funzionalità completate**; la capacità M1 effettiva è nella [matrice di validazione](DOCS/it/M1-VALIDATION.md). Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
 
 ## Direzione tecnica
 
-**Go è la scelta per il core e l'applicazione desktop nativa**, con Qt Widgets/MIQT scelto per la GUI. La prima installazione sarà pensata per un singolo operatore. SQLite è scelto per lo storage locale; lo store dei soli metadati di progetto è il primo componente implementato. Browser di scansione e inferenza AI saranno componenti separati, attivati quando necessari; una CLI potrà riutilizzare il core in seguito.
+**Go è la scelta per il core e l'applicazione desktop nativa**, con Qt Widgets/MIQT scelto per la GUI. La alpha è pensata per un singolo operatore e salva progetti e osservazioni redatte in SQLite. Browser di scansione e inferenza AI saranno componenti separati, attivati quando necessari; una CLI potrà riutilizzare il core in seguito.
 
 Rust rimane un'opzione per componenti circoscritti se misure reali ne giustificheranno l'introduzione. Il confronto e le condizioni per rivedere la scelta sono nell'[ADR sul linguaggio](DOCS/it/ADR-001-LANGUAGE.md). La modalità desktop è confermata; per le verifiche del toolkit consultare la [matrice M0](DOCS/it/M0-VALIDATION.md).
 
@@ -72,7 +72,7 @@ Con Go 1.27.1 e le dipendenze native indicate nella [guida di sviluppo](DOCS/it/
 CGO_CXXFLAGS='-O2 -g -std=c++17' go run ./cmd/webfence
 ```
 
-Su macOS Apple Silicon si può creare un bundle locale con `sh scripts/package-macos.sh`. È un laboratorio GUI: gli URL `.invalid` sono testo inerte. La build di prova non è un installer firmato/notarizzato.
+Su macOS Apple Silicon si può creare un bundle locale con `sh scripts/package-macos.sh`. Gli URL `.invalid` degli esempi M0 sono testo inerte; **Scansione M1** apre invece rete solo per i target configurati e autorizzati dall'operatore. La build di prova non è un installer firmato/notarizzato.
 
 Piattaforme richieste: macOS Apple Silicon, Windows 10/11 x86-64, Debian e derivati x86-64/ARM64. La [direzione UX](DOCS/it/UX.md) prevede un desktop tradizionale e sobrio, percorso guidato e strumenti avanzati progressivi. Stato delle verifiche, materiali di distribuzione e prerequisiti umani sono nella [matrice M0](DOCS/it/M0-VALIDATION.md).
 

@@ -4,6 +4,8 @@
 
 Date: 2026-09-23. **Author-selected Qt integrated into the main entry point. M0 remains open.**
 
+This document records the historical M0 block at the stated date. For the current M1 scanning desktop see the [M1 matrix](M1-VALIDATION.md) and [guide](DEVELOPMENT.md); “no scanner” statements below describe only that block.
+
 ## Change
 
 `cmd/webfence` launches Qt Widgets through MIQT 0.14.0. The workspace lives in `internal/desktop`; the main module no longer depends on Fyne. The nested laboratory was consolidated, avoiding two GUI copies. Fyne trials and the previous comparison remain historical documentation and Git history (`2000c9a`).
