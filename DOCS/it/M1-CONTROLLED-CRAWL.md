@@ -1,0 +1,24 @@
+# M1 — Visite HTTP controllate
+
+[English](../en/M1-CONTROLLED-CRAWL.md) · [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) · [Roadmap](../ROADMAP.md)
+
+`scanner.RunCrawl` collega un progetto SQLite a una run gestita, al broker HTTP con policy e a una coda BFS limitata. È un **core sperimentale**, non è ancora esposto nella GUI e non è uno scanner di produzione. Nessun target esterno è stato contattato durante lo sviluppo o i test di questo blocco. L'operatore deve possedere o avere un permesso esplicito per origini, indirizzi e attività; la dichiarazione nel progetto non costituisce prova indipendente di quel permesso.
+
+## Contratto operativo
+
+- `CrawlPlan` richiede ID progetto, 1–32 seed espliciti, modalità `loopback` o `pinned_public`, grant di IP esatti per origine, `scope.RequestPolicy`, limiti, massimo 256 pagine, profondità 0–5 e `FollowLinks` esplicito. I seed sono copiati e verificati tutti **prima** del traffico. La run viene revocata al cambio di autorizzazione nello stesso store/processo.
+- `scope.NewRequestPolicy` richiede almeno un metodo `GET`/`HEAD` e un prefisso di percorso ammesso. Le esclusioni prevalgono. Il confronto rispetta i confini dei segmenti: `/docs` copre `/docs/a`, non `/document`. La policy **non** amplia lo scope delle origini. Percorsi con percent-encoding, doppia barra, backslash, `;`, segmenti `.`/`..` o caratteri di controllo sono rifiutati conservativamente; le query non sono filtrate per semantica. Il chiamante deve escludere route con effetti, compresi eventuali GET di logout o mutazione.
+- Il crawler usa solo `GET`; `HEAD` è disponibile solo come chiamata esplicita `Broker.FetchMethod` se la policy lo ammette. Nessun POST, invio di form, cookie, credenziale, JavaScript o retry automatico. I link HTML vengono seguiti solo se `FollowLinks` è vero; azioni di form sono osservate ma mai pianificate. Ogni candidato e ogni hop di redirect ripassa origine, metodo/percorso, DNS, IP e budget.
+- La coda è sequenziale e deduplica URL canonici e destinazioni finali dei redirect. Un limite di pagine/profondità o una destinazione esclusa produce conteggi di copertura parziale. `QueueDrained` significa soltanto che la coda ammessa è terminata, **non** che il sito sia stato coperto. Il report contiene ID progetto, revisione, codici, conteggi e stato della prima regola HTTP; non contiene URL, query, header o body. I riferimenti esatti vivono solo in memoria durante la run.
+
+## Trasporto e cadenza
+
+`transport.NewAuthorizedLabWithPolicy` mantiene i grant loopback. `transport.NewAuthorizedPublic` richiede uno scope con lifecycle, grant pubblici espliciti per ogni origine, policy valida, una sola richiesta/catena concorrente, intervallo per origine di almeno **100 ms**, massimo 10.000 tentativi e durata di run fino a quattro ore. I limiti più restrittivi scelti dal chiamante si applicano. Una prenotazione precede DNS; anche un errore DNS, un redirect e un'attesa annullata consumano un tentativo. L'intervallo è applicato dopo la risoluzione e prima della connessione; una prenotazione di tempo annullata non viene riutilizzata.
+
+Per ogni hop, **tutti** gli indirizzi restituiti dal resolver devono essere nel grant dell'origine. Il broker sceglie un IP deterministico, apre direttamente `IP:porta`, verifica il peer effettivo, conserva Host e SNI originali e verifica TLS; proxy e pooling sono disabilitati. Le reti private, loopback, link-local, metadata e intervalli speciali sono rifiutati nella modalità pubblica anche se indicati in un grant. La classificazione usa una fotografia conservativa dei registri [IANA IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry/) e [IANA IPv6](https://www.iana.org/assignments/iana-ipv6-special-registry/) riesaminata il 25 settembre 2026; non promette instradabilità globale. Per i dettagli vedere [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md).
+
+## Limiti e prove
+
+La cadenza vale per un broker/run, non coordina processi o run parallele. I grant IP richiedono scelta e manutenzione dell'operatore; non esiste un'interfaccia guidata che li imposti in sicurezza. Non c'è ancora persistenza dei risultati, quota disco, ripresa dopo crash, controllo del carico del target, browser, autenticazione, egress firewall di sistema o integrazione desktop. La policy dei percorsi non può stabilire da sola se un GET ha effetti. Non avviare visite esterne con gli esempi di documentazione.
+
+I test sintetici esercitano prefissi ed esclusioni, escape ambigui, metodi, preflight, redirect, DNS misto, IP speciali, peer pin, cadenza, cancellazione/revoca, limite di pagine/profondità, form ignorati e redazione del report. La prova del percorso pubblico usa un server `httptest` su loopback e un dialer fittizio che simula il peer pubblico: **non** è una prova su rete pubblica reale. Il piano di collaudo umano M1 resta [aperto](M1-PREREQUISITES.md).

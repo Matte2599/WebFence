@@ -10,4 +10,4 @@ Observer limits: at most 8 MiB of body (the broker may impose less), 64 KiB per 
 
 Synthetic loopback tests cover redirects and base URLs, escaped paths and query order, deduplication, rejection of external origins and non-HTTP schemes, forms never submitted, parser limits, and absence of URLs, queries and form values from the report. The HTML parser is `golang.org/x/net/html` v0.59.0; its [tokenizer contract](https://pkg.go.dev/golang.org/x/net/html) assumes UTF-8 input. This module also updates `golang.org/x/sys` to v0.48.0.
 
-M1 still needs method/path/exclusion policy, explicit safe visit planning, a production broker and rate limits, persisted/redacted evidence, an IT/EN UI and visible incomplete coverage. Human prerequisites are in the [M1 plan](M1-PREREQUISITES.md).
+The next block adds [controlled HTTP visits](M1-CONTROLLED-CRAWL.md) in the core without changing `RunHeaderLab`'s observational behavior. M1 still needs desktop integration, persistent/redacted evidence, coordination across runs/processes and trials on real systems. Human prerequisites are in the [M1 plan](M1-PREREQUISITES.md).

@@ -38,3 +38,7 @@ Before adding browsers, AI, plugins, an updater or shared users, update this mat
 ## M0 network-boundary evidence
 
 [ADR-003](ADR-003-TRANSPORT.md) records synthetic checks of changing/mixed DNS, actual peer, TLS, redirects, budgets and stopping the loopback broker. These are scoped checks with no external scanning; the complete product matrix remains unverified.
+
+## M1 pinned public transport evidence
+
+[ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) and [controlled visits](M1-CONTROLLED-CRAWL.md) add route policy, special-IP rejection, exact grants, broker-local pacing and per-hop checks. Tests simulate a public peer through a loopback server; they do not prove system egress, cross-process coordination or live public targets. Matrix controls needing a browser, credentials or UI remain open.

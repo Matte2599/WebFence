@@ -38,3 +38,7 @@ Prima di introdurre browser, AI, plugin, updater o multiutente, aggiornare quest
 ## Evidenze M0 del confine di rete
 
 [ADR-003](ADR-003-TRANSPORT.md) registra le prove sintetiche di DNS variabile/misto, peer effettivo, TLS, redirect, budget e arresto del broker loopback. Sono prove circoscritte, senza scansioni esterne; la matrice del prodotto non è integralmente verificata.
+
+## Evidenze M1 del trasporto pubblico fissato
+
+[ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) e le [visite controllate](M1-CONTROLLED-CRAWL.md) aggiungono policy di route, rifiuto di IP speciali, grant esatti, rate per broker e verifica a ogni hop. I test simulano il peer pubblico tramite un server loopback; non provano egress di sistema, coordinamento tra processi o target pubblici reali. Restano aperti i controlli della matrice che richiedono browser, credenziali o UI.

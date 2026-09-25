@@ -2,7 +2,7 @@
 
 [Italiano](../it/SCANNING.md) · [Index](../README.md)
 
-Status: production engine not implemented. The first [origin check](M0-SCOPE.md), [lab-confined transport](ADR-003-TRANSPORT.md), [M1 operator-declared authorization snapshot](M1-PROJECT-AUTHORIZATION.md), their [loopback-only integration](M1-AUTHORIZED-LAB.md), a [first HTTP check on explicit seeds](M1-HEADER-LAB.md) and [observational HTML discovery](M1-DISCOVERY-LAB.md) are available; no desktop target traffic. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
+Status: production engine not implemented. The first [origin check](M0-SCOPE.md), [lab-confined transport](ADR-003-TRANSPORT.md), [M1 operator-declared authorization snapshot](M1-PROJECT-AUTHORIZATION.md), their [loopback-only integration](M1-AUTHORIZED-LAB.md), a [first HTTP check on explicit seeds](M1-HEADER-LAB.md), [observational HTML discovery](M1-DISCOVERY-LAB.md) and [controlled visits with pinned public grants](M1-CONTROLLED-CRAWL.md) are available; no desktop target traffic. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
 
 ## Pipeline
 
@@ -11,6 +11,8 @@ Status: production engine not implemented. The first [origin check](M0-SCOPE.md)
 The plan records rule versions, configuration, environment, credential references and intelligence snapshot. Normalize URLs without merging paths or parameters the application distinguishes. Deduplication considers origin, method, route, parameter location and authentication context, not just URL.
 
 Initial discovery covers HTTP(S) links and observed forms without automatic submission. Explicit API specification imports, JavaScript browsers, login workflows and multiple identities arrive in M3. Imported OpenAPI documents are untrusted: their server entries do not expand scope.
+
+The M1 core can sequentially visit HTTP links with `RunCrawl` only by explicit opt-in and within the [implemented policy limits](M1-CONTROLLED-CRAWL.md); forms stay observational. The profile table below remains a product proposal, not automatic configuration of that core.
 
 ## Scope
 

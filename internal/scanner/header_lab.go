@@ -156,33 +156,38 @@ func RunHeaderLab(ctx context.Context, store *storage.Store, plan HeaderLabPlan)
 }
 
 func observeResponse(permit project.RunScope, index int, response transport.Result) (DiscoverySummary, error) {
+	summary, _, err := observeResponseSurface(permit, index, response)
+	return summary, err
+}
+
+func observeResponseSurface(permit project.RunScope, index int, response transport.Result) (DiscoverySummary, Surface, error) {
 	summary := DiscoverySummary{SeedIndex: index, Status: "skipped"}
 	if response.StatusCode < 200 || response.StatusCode >= 300 ||
 		response.StatusCode == 204 || response.StatusCode == 205 {
 		summary.ReasonCode = "http_status_not_applicable"
-		return summary, nil
+		return summary, Surface{}, nil
 	}
 	types := response.Header.Values("Content-Type")
 	if len(types) != 1 {
 		summary.Status, summary.ReasonCode = "incomplete", "content_type_unknown"
-		return summary, nil
+		return summary, Surface{}, nil
 	}
 	mediaType, params, err := mime.ParseMediaType(types[0])
 	if err != nil {
 		summary.Status, summary.ReasonCode = "incomplete", "content_type_unknown"
-		return summary, nil
+		return summary, Surface{}, nil
 	}
 	if mediaType != "text/html" {
 		summary.ReasonCode = "non_html_response"
-		return summary, nil
+		return summary, Surface{}, nil
 	}
 	if charset := params["charset"]; charset != "" && !strings.EqualFold(charset, "utf-8") {
 		summary.Status, summary.ReasonCode = "incomplete", "unsupported_charset"
-		return summary, nil
+		return summary, Surface{}, nil
 	}
 	surface, err := ObserveHTML(permit, response.FinalURL, response.Body)
 	if err != nil {
-		return DiscoverySummary{}, err
+		return DiscoverySummary{}, Surface{}, err
 	}
 	summary.Links, summary.Forms = len(surface.Links), len(surface.Forms)
 	summary.OutOfScope, summary.Invalid = surface.OutOfScope, surface.Invalid
@@ -191,7 +196,7 @@ func observeResponse(permit project.RunScope, index int, response transport.Resu
 	} else {
 		summary.Status, summary.ReasonCode = "observed", "html_observed"
 	}
-	return summary, nil
+	return summary, surface, nil
 }
 
 func checkXContentTypeOptions(index int, response transport.Result) Check {
@@ -233,6 +238,7 @@ func safeStopError(err error) error {
 		context.Canceled, context.DeadlineExceeded,
 		project.ErrAuthorizationExpired, project.ErrAuthorizationRevoked,
 		scope.ErrInvalidURL, scope.ErrOutOfScope,
+		scope.ErrRequestPolicy, scope.ErrMethodDenied, scope.ErrPathDenied, scope.ErrAmbiguousPath,
 		transport.ErrAddress, transport.ErrResolve, transport.ErrBudget,
 		transport.ErrNetwork, transport.ErrRedirect, transport.ErrRedirectLimit,
 		transport.ErrBodyLimit, transport.ErrEncoding,

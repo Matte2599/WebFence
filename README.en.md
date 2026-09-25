@@ -18,6 +18,8 @@ The [first M1 HTTP check](DOCS/en/M1-HEADER-LAB.md) uses managed runs and explic
 
 [M1 HTML discovery](DOCS/en/M1-DISCOVERY-LAB.md) observes links and forms in seed responses under limits and scope checks; it does not visit candidates or submit forms. The report retains only redacted counts.
 
+[M1 controlled HTTP visits](DOCS/en/M1-CONTROLLED-CRAWL.md) add method/path/exclusion policy, explicit opt-in link following, per-origin pacing and pinned public IP grants. These core APIs are tested on synthetic fixtures and are not available in the desktop yet; forms are never submitted.
+
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 
 ## Why WebFence

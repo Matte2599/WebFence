@@ -1,6 +1,6 @@
-// Package transport contains an M0 HTTP transport restricted to explicitly
-// granted loopback destinations. It is not wired into the desktop or ready for
-// public/private-network scanning, authenticated sessions or browser traffic.
+// Package transport contains a pinned HTTP broker for explicitly granted
+// loopback fixtures and public destinations. It is not wired into the desktop
+// and does not support private-network scanning, sessions or browser traffic.
 package transport
 
 import (
@@ -39,20 +39,21 @@ type Resolver interface {
 	LookupNetIP(ctx context.Context, network, host string) ([]netip.Addr, error)
 }
 
-// Grant binds one exact HTTP(S) origin to explicit loopback IPs. The port is
-// taken from Origin. No wildcard, CIDR, default grant or cross-origin IP union.
+// Grant binds one exact HTTP(S) origin to explicit IPs. The port is taken
+// from Origin. No wildcard, CIDR, default grant or cross-origin IP union.
 type Grant struct {
 	Origin    string
 	Addresses []netip.Addr
 }
 
 type Limits struct {
-	MaxRequests    int // shared by all Fetch calls, including redirect hops/failures
-	MaxConcurrent  int // entire Fetch chains, including response reading
-	MaxRedirects   int
-	MaxBodyBytes   int64         // per final response; exceeding it returns no partial body
-	RequestTimeout time.Duration // entire Fetch, including waiting, DNS and hops
-	RunTimeout     time.Duration // starts at construction, never reset by a Fetch
+	MaxRequests        int // shared by all Fetch calls, including redirect hops/failures
+	MaxConcurrent      int // entire Fetch chains, including response reading
+	MaxRedirects       int
+	MaxBodyBytes       int64         // per final response; exceeding it returns no partial body
+	RequestTimeout     time.Duration // entire Fetch, including waiting, DNS and hops
+	RunTimeout         time.Duration // starts at construction, never reset by a Fetch
+	MinRequestInterval time.Duration // per origin, including redirect hops; zero only for legacy lab callers
 }
 
 type Result struct {
@@ -64,10 +65,11 @@ type Result struct {
 	FinalURL string
 }
 
-// LabBroker must not be copied. Close cancels in-flight and queued work.
-// Configuration is copied; requests cannot supply headers, credentials or methods.
-type LabBroker struct {
+// Broker must not be copied. Close cancels in-flight and queued work.
+// Configuration is copied; requests cannot supply headers or credentials.
+type Broker struct {
 	policy     scope.Policy
+	route      scope.RequestPolicy
 	grants     map[string]map[netip.Addr]struct{}
 	limits     Limits
 	resolver   Resolver
@@ -76,6 +78,7 @@ type LabBroker struct {
 	slots      chan struct{}
 	mu         sync.Mutex
 	used       int
+	next       map[string]time.Time
 	dial       func(context.Context, string, string) (net.Conn, error)
 	roots      *x509.CertPool // fixture roots are injected only by same-package tests
 	permit     project.RunScope
@@ -83,10 +86,18 @@ type LabBroker struct {
 	stopPermit func() bool
 }
 
-func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolver) (*LabBroker, error) {
+// LabBroker is retained as an alias for the original M0 laboratory API.
+type LabBroker = Broker
+
+func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolver) (*Broker, error) {
+	return newPinned(ctx, grants, limits, resolver, false)
+}
+
+func newPinned(ctx context.Context, grants []Grant, limits Limits, resolver Resolver, public bool) (*Broker, error) {
 	if ctx == nil || resolver == nil || len(grants) == 0 || limits.MaxRequests <= 0 ||
 		limits.MaxConcurrent <= 0 || limits.MaxConcurrent > 16 || limits.MaxRedirects < 0 || limits.MaxRedirects > 10 ||
-		limits.MaxBodyBytes <= 0 || limits.MaxBodyBytes > 8<<20 || limits.RequestTimeout <= 0 || limits.RunTimeout <= 0 {
+		limits.MaxBodyBytes <= 0 || limits.MaxBodyBytes > 8<<20 || limits.RequestTimeout <= 0 || limits.RunTimeout <= 0 ||
+		limits.MinRequestInterval < 0 || limits.MinRequestInterval > time.Minute {
 		return nil, ErrConfig
 	}
 	origins := make([]string, 0, len(grants))
@@ -106,7 +117,8 @@ func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolve
 		}
 		ips := make(map[netip.Addr]struct{}, len(grant.Addresses))
 		for _, ip := range grant.Addresses {
-			if !ip.IsValid() || !ip.IsLoopback() || ip.Is4In6() || ip.Zone() != "" {
+			if !ip.IsValid() || ip.Is4In6() || ip.Zone() != "" ||
+				(public && !publicDestination(ip)) || (!public && !ip.IsLoopback()) {
 				return nil, ErrConfig
 			}
 			ips[ip] = struct{}{}
@@ -119,16 +131,16 @@ func NewLab(ctx context.Context, grants []Grant, limits Limits, resolver Resolve
 		return nil, ErrConfig
 	}
 	run, cancel := context.WithTimeout(ctx, limits.RunTimeout)
-	return &LabBroker{policy: policy, grants: allowed, limits: limits, resolver: resolver,
+	return &Broker{policy: policy, grants: allowed, limits: limits, resolver: resolver,
 		ctx: run, cancel: cancel, slots: make(chan struct{}, limits.MaxConcurrent),
-		dial: (&net.Dialer{}).DialContext}, nil
+		next: make(map[string]time.Time), dial: (&net.Dialer{}).DialContext}, nil
 }
 
 // NewAuthorizedLab adds an operator-declared run scope to the loopback-only
 // broker. Network grants may be broader than the project scope; both checks
 // apply to every hop. This is still a synthetic laboratory, not a production
 // scanner or proof of target ownership.
-func NewAuthorizedLab(ctx context.Context, permit project.RunScope, grants []Grant, limits Limits, resolver Resolver) (*LabBroker, error) {
+func NewAuthorizedLab(ctx context.Context, permit project.RunScope, grants []Grant, limits Limits, resolver Resolver) (*Broker, error) {
 	if err := permit.Validate(); err != nil {
 		return nil, err
 	}
@@ -136,24 +148,74 @@ func NewAuthorizedLab(ctx context.Context, permit project.RunScope, grants []Gra
 	if err != nil {
 		return nil, err
 	}
+	b.bindPermit(permit)
+	return b, nil
+}
+
+// NewAuthorizedLabWithPolicy applies method/path checks and pacing to an
+// owned loopback fixture. Unlike NewAuthorizedLab, zero rate is not allowed.
+func NewAuthorizedLabWithPolicy(ctx context.Context, permit project.RunScope, grants []Grant, limits Limits, resolver Resolver, route scope.RequestPolicy) (*Broker, error) {
+	if !route.Valid() || limits.MinRequestInterval <= 0 || limits.MaxConcurrent != 1 {
+		return nil, ErrConfig
+	}
+	b, err := NewAuthorizedLab(ctx, permit, grants, limits, resolver)
+	if err != nil {
+		return nil, err
+	}
+	b.route = route
+	return b, nil
+}
+
+// NewAuthorizedPublic allows only explicitly pinned public IPs for exact
+// operator-declared origins. No implicit DNS trust, private target exception,
+// proxy, credentials or TLS bypass is available. Caller must retain proof of
+// target authorization; an operator declaration is not independently verified.
+func NewAuthorizedPublic(ctx context.Context, permit project.RunScope, grants []Grant, limits Limits, resolver Resolver, route scope.RequestPolicy) (*Broker, error) {
+	if err := permit.Validate(); err != nil {
+		return nil, err
+	}
+	if permit.Lifecycle() == nil || !route.Valid() || limits.MinRequestInterval < 100*time.Millisecond || limits.MaxConcurrent != 1 || limits.MaxRequests > 10000 ||
+		limits.RunTimeout > 4*time.Hour || len(grants) == 0 || len(grants) > 32 {
+		return nil, ErrConfig
+	}
+	for _, grant := range grants {
+		if _, err := permit.CheckOrigin(grant.Origin); err != nil {
+			return nil, err
+		}
+		if len(grant.Addresses) == 0 || len(grant.Addresses) > 16 {
+			return nil, ErrConfig
+		}
+	}
+	if resolver == nil {
+		resolver = net.DefaultResolver
+	}
+	b, err := newPinned(ctx, grants, limits, resolver, true)
+	if err != nil {
+		return nil, err
+	}
+	b.route = route
+	b.bindPermit(permit)
+	return b, nil
+}
+
+func (b *Broker) bindPermit(permit project.RunScope) {
 	b.permit = permit
 	b.authorized = true
 	if lifecycle := permit.Lifecycle(); lifecycle != nil {
 		b.stopPermit = context.AfterFunc(lifecycle, b.cancel)
 	}
-	return b, nil
 }
 
 func origin(u *url.URL) string { return u.Scheme + "://" + u.Host }
-func (b *LabBroker) Close() {
+func (b *Broker) Close() {
 	b.cancel()
 	if b.stopPermit != nil {
 		b.stopPermit()
 	}
 }
-func (b *LabBroker) RequestsUsed() int { b.mu.Lock(); defer b.mu.Unlock(); return b.used }
+func (b *Broker) RequestsUsed() int { b.mu.Lock(); defer b.mu.Unlock(); return b.used }
 
-func (b *LabBroker) contextError(ctx context.Context) error {
+func (b *Broker) contextError(ctx context.Context) error {
 	if b.authorized {
 		if err := b.permit.Validate(); err != nil {
 			return err
@@ -168,7 +230,7 @@ func (b *LabBroker) contextError(ctx context.Context) error {
 	return ctx.Err()
 }
 
-func (b *LabBroker) reserve(ctx context.Context) error {
+func (b *Broker) reserve(ctx context.Context) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	if err := b.contextError(ctx); err != nil {
@@ -184,7 +246,19 @@ func (b *LabBroker) reserve(ctx context.Context) error {
 // Fetch issues GET only, with manual redirects and no cookies/auth/referer.
 // All error values are redacted codes (or context/scope sentinels), never raw
 // url.Error, TLS, DNS or socket errors containing target or certificate data.
-func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
+func (b *Broker) Fetch(ctx context.Context, raw string) (Result, error) {
+	return b.FetchMethod(ctx, http.MethodGet, raw)
+}
+
+// FetchMethod accepts only GET or HEAD. The route policy, when configured,
+// is rechecked on every redirect before DNS or a socket is opened.
+func (b *Broker) FetchMethod(ctx context.Context, method, raw string) (Result, error) {
+	if b == nil || ctx == nil || (method != http.MethodGet && method != http.MethodHead) {
+		return Result{}, scope.ErrMethodDenied
+	}
+	if method == http.MethodHead && !b.route.Valid() {
+		return Result{}, scope.ErrMethodDenied // legacy laboratory remains GET-only
+	}
 	if b.authorized {
 		var cancelAuthorization context.CancelFunc
 		ctx, cancelAuthorization = context.WithDeadline(ctx, b.permit.ExpiresAt())
@@ -216,6 +290,11 @@ func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
+		if b.route.Valid() {
+			if err := b.route.Check(method, u); err != nil {
+				return Result{}, err
+			}
+		}
 		if err = b.reserve(ctx); err != nil {
 			return Result{}, err
 		}
@@ -223,7 +302,10 @@ func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
 		if err != nil {
 			return Result{}, err
 		}
-		result, next, err := b.exchange(ctx, u, ip)
+		if err := b.pace(ctx, origin(u)); err != nil {
+			return Result{}, err
+		}
+		result, next, err := b.exchange(ctx, method, u, ip)
 		if err != nil {
 			return Result{}, err
 		}
@@ -242,7 +324,37 @@ func (b *LabBroker) Fetch(ctx context.Context, raw string) (Result, error) {
 	}
 }
 
-func (b *LabBroker) resolve(ctx context.Context, u *url.URL) (netip.Addr, error) {
+// pace assigns non-bursting per-origin slots, including redirect hops. Policy
+// constructors require one concurrent chain so the next attempt cannot pass
+// an earlier chain while it connects or reads. A canceled slot is not refunded;
+// over-throttling is safer than allowing a burst after cancellation.
+func (b *Broker) pace(ctx context.Context, key string) error {
+	if b.limits.MinRequestInterval == 0 {
+		return b.contextError(ctx)
+	}
+	b.mu.Lock()
+	now := time.Now()
+	start := now
+	if next := b.next[key]; next.After(start) {
+		start = next
+	}
+	b.next[key] = start.Add(b.limits.MinRequestInterval)
+	b.mu.Unlock()
+	if wait := time.Until(start); wait > 0 {
+		timer := time.NewTimer(wait)
+		defer timer.Stop()
+		select {
+		case <-timer.C:
+		case <-ctx.Done():
+			return b.contextError(ctx)
+		case <-b.ctx.Done():
+			return b.contextError(ctx)
+		}
+	}
+	return b.contextError(ctx)
+}
+
+func (b *Broker) resolve(ctx context.Context, u *url.URL) (netip.Addr, error) {
 	ip, err := netip.ParseAddr(u.Hostname())
 	ips := []netip.Addr{ip}
 	if err != nil {
@@ -266,7 +378,7 @@ func (b *LabBroker) resolve(ctx context.Context, u *url.URL) (netip.Addr, error)
 	return selected, nil
 }
 
-func (b *LabBroker) exchange(ctx context.Context, u *url.URL, ip netip.Addr) (Result, string, error) {
+func (b *Broker) exchange(ctx context.Context, method string, u *url.URL, ip netip.Addr) (Result, string, error) {
 	port, _ := strconv.ParseUint(u.Port(), 10, 16) // scope already checked it
 	pinned := netip.AddrPortFrom(ip, uint16(port))
 	protocols := new(http.Protocols)
@@ -304,7 +416,7 @@ func (b *LabBroker) exchange(ctx context.Context, u *url.URL, ip netip.Addr) (Re
 		},
 	}
 	defer tr.CloseIdleConnections()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), nil)
 	if err != nil {
 		return Result{}, "", scope.ErrInvalidURL
 	}
