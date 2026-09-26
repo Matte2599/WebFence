@@ -10,7 +10,7 @@ Status: production engine not implemented. The first [origin check](M0-SCOPE.md)
 
 The plan records rule versions, configuration, environment, credential references and intelligence snapshot. Normalize URLs without merging paths or parameters the application distinguishes. Deduplication considers origin, method, route, parameter location and authentication context, not just URL.
 
-Initial discovery covers HTTP(S) links and observed forms without automatic submission. The [M3 login lab](M3-SESSIONS.md) sends only one form on a declared, confirmed path, never observed forms. API specification imports, authenticated JavaScript browsing and multiple identities in the product remain to be integrated. Imported OpenAPI documents are untrusted: their server entries do not expand scope.
+Initial discovery covers HTTP(S) links and observed forms without automatic submission. The [M3 login lab](M3-SESSIONS.md) sends only one form on a declared, confirmed path, never observed forms. An [offline OpenAPI importer](M3-OPENAPI-IMPORT.md) produces a core inventory, but product integration, authenticated JavaScript browsing and multiple desktop identities remain open. OpenAPI documents are untrusted: their server entries do not expand scope.
 
 The M1 core can sequentially visit HTTP links with `RunCrawl` only by explicit opt-in and within the [implemented policy limits](M1-CONTROLLED-CRAWL.md); forms stay observational. The profile table below remains a product proposal, not automatic configuration of that core.
 
