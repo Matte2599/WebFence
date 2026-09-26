@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/Matte2599/WebFence/internal/transport"
+	"golang.org/x/net/netutil"
 )
 
 // Proxy is an authenticated, loopback-only HTTP forwarding boundary for a
@@ -45,6 +46,7 @@ func NewProxy(ctx context.Context, gate *Gate, broker *transport.Broker) (*Proxy
 	if err != nil {
 		return nil, ErrConfig
 	}
+	listener = netutil.LimitListener(listener, 32)
 	run, cancel := context.WithCancel(ctx)
 	p := &Proxy{gate: gate, broker: broker, listen: listener, ctx: run, cancel: cancel,
 		secret: base64.RawURLEncoding.EncodeToString(secret[:]), done: make(chan error, 1)}
