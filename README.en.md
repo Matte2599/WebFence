@@ -20,7 +20,7 @@ The [first M1 HTTP check](DOCS/en/M1-HEADER-LAB.md) uses managed runs and explic
 
 [M1 controlled HTTP visits](DOCS/en/M1-CONTROLLED-CRAWL.md) add method/path/exclusion policy, opt-in link following, per-origin pacing and pinned public IP grants. The GUI exposes one origin and one seed per scan; forms are never submitted. Use only owned or explicitly authorized targets.
 
-The [M2 alpha](DOCS/en/M2-VALIDATION.md) adds an on-demand CVE/NVD cache, conservative matching with operator-declared product/version and offline-verifiable IT/EN report bundles. The desktop exposes a limited guided flow for the selected run; tests did not measure CVE accuracy on real cases or perform live source sync.
+The [M2 alpha](DOCS/en/M2-VALIDATION.md) adds an on-demand CVE/NVD cache, conservative matching with operator-declared product/version and offline-verifiable IT/EN report bundles. The [desktop](DOCS/en/M2-GUI-EXTENSION.md) exposes CPE identity, explicit attestations and local key management for the selected run; the [simulation](DOCS/en/M2-ACCURACY-SIMULATION.md) does not measure accuracy on real CVEs, and no live source sync was performed.
 
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 

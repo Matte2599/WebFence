@@ -167,7 +167,13 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 		u.deleteProject.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.refreshRuns()
 	})
-	u.runs.OnCurrentIndexChanged(func(int) { u.showRun() })
+	u.runs.OnCurrentIndexChanged(func(int) {
+		u.showRun()
+		if u.m2 != nil {
+			u.m2.updateRun()
+			u.m2.refreshControls()
+		}
+	})
 	u.create.OnClicked(u.createProject)
 	u.deleteProject.OnClicked(u.removeProject)
 	u.start.OnClicked(u.startScan)

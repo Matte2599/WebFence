@@ -18,6 +18,6 @@ A backport can change `applicable` to `not_applicable` **only** with an explicit
 
 ## Verification and limits
 
-The [local simulation](M2-ACCURACY-SIMULATION.md) publishes the method, matrix and limits of 30 synthetic cases. `go test -race ./internal/intelligence` contacts no external source or target. No real-corpus matching accuracy or support for every CPE/CVE version scheme is claimed. The [M2 desktop](M2-VALIDATION.md) accepts manual vendor/product/version signals for a selected run; until the CPE part field is added, an NVD signal without a full CPE remains `unknown`. Backport and verification attestations remain core APIs without a GUI form.
+The [local simulation](M2-ACCURACY-SIMULATION.md) publishes the method, matrix and limits of 30 synthetic cases. `go test -race ./internal/intelligence` contacts no external source or target. No real-corpus matching accuracy or support for every CPE/CVE version scheme is claimed. The [M2 desktop](M2-GUI-EXTENSION.md) exposes the CPE part or full CPE and explicit backport/verification attestation forms for the selected run; attestations are not independent proof.
 
 Primary sources: [CVE Record Format](https://cveproject.github.io/cve-schema/schema/docs/), [NVD CPE FAQ](https://nvd.nist.gov/general/faq-sections/cpe-faqs), [NVD API](https://nvd.nist.gov/developers/vulnerabilities).

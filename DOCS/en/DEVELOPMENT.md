@@ -25,7 +25,7 @@ QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-The self-test uses real Qt without a display and a temporary directory for language and DB; copying is intercepted to preserve the clipboard. It also checks an M1 scan, a synthetic CVE fetched from a local `httptest` server, an explicit assessment and unsigned M2 export: **no external target**. It is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` needs Qt dependencies to compile the desktop.
+The self-test uses real Qt without a display and a temporary directory for language and DB; copying is intercepted to preserve the clipboard. It also checks an M1 scan, synthetic CVE/NVD records from local `httptest`, assessments/attestations, signed and unsigned M2 export and key management with an isolated synthetic credential store: **no external target**. `WEBFENCE_UI_SNAPSHOT_DIR` saves synthetic screenshots for visual inspection; macOS can also use `QT_QPA_PLATFORM=cocoa`. This is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` needs Qt dependencies to compile the desktop.
 
 On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. In UCRT64 use the same variables and build with `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; run `./bin/webfence.exe --self-test` with `QT_QPA_PLATFORM=offscreen`. Qt DLLs and plugins must be available; the exe alone is not a distributable package. CI uses [setup-msys2](https://github.com/msys2/setup-msys2); MSVC is not the CGO compiler in this setup.
 
@@ -49,7 +49,7 @@ In the desktop, `WebFence/ui-language`, `WebFence/projects.sqlite`, `WebFence/in
 
 For an M1 trial, open **M1 Scan**, create a project with exact origin, owner, non-secret authorization reference, expiry and confirmation. Select it, enter an authorized seed, allowed/excluded prefixes, loopback or manually pinned public IP mode, budget, pages and depth. Links are visited only when opted in. Start, review progress and coverage, then reopen the app to read saved results. Use only owned or explicitly authorized targets; the self-test uses loopback only. The GUI does not yet provide renewal/revocation or backup; see the [APIs and limits](M1-PROJECT-STORE.md).
 
-For M2, select a finished run in the M1 window and open **CVE and reports**. Choose a UTC NVD window or CVE ID and update the cache only by explicit action; enter a non-secret vendor, product, version and inventory reference for local matching. An assessment is not an active CVE check. Create a signer key in the native credential store, choose a new `.wfr` path and export; unsigned mode is explicit. **Verify** uses the local trust registry; importing another system's key requires an independently confirmed fingerprint through the [CLI procedure](M2-REPORTS.md). Export shows incomplete coverage and cache mode/freshness; no feed is fetched on startup.
+For M2, select a finished run in the M1 window and open **CVE and reports**. On the sources tab choose a UTC NVD window or CVE ID and update the cache only by explicit action. For matching, enter a full CPE or vendor/product/CPE part for NVD, with a version and non-secret reference; backports and verification require explicit attestations. An assessment is not an active CVE check. Under **Reports and keys**, create a key in the native credential store, export a new signed or explicitly unsigned `.wfr`, verify it offline, or rotate/revoke/export/import public descriptors. Import requires an independently confirmed fingerprint; see [procedure and limits](M2-GUI-EXTENSION.md). Export shows incomplete coverage and cache mode/freshness; no feed is fetched on startup.
 
 The Language menu and selector switch IT/EN; shortcuts are **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** on macOS). **Ctrl+O/Cmd+O** loads examples. Full keyboard and screen-reader validation remains open.
 
@@ -101,7 +101,7 @@ go test -race -cover ./internal/transport
 
 ## SQLite and JWS: M0 foundations
 
-Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files; `internal/signature` exposes byte signing/verification, now used by [M2 reports](M2-REPORTS.md) with JCS and native key storage. The GUI offers the essential workflow; rotation, revocation and public-key import remain in the CLI helper.
+Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files; `internal/signature` exposes byte signing/verification, now used by [M2 reports](M2-REPORTS.md) with JCS and native key storage. The [GUI and CLI helper](M2-GUI-EXTENSION.md) expose rotation, revocation and public-key import.
 
 ```sh
 go test -race ./internal/foundation ./internal/signature

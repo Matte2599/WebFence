@@ -20,7 +20,7 @@ La [discovery HTML M1](DOCS/it/M1-DISCOVERY-LAB.md) osserva link e form nelle ri
 
 Le [visite HTTP controllate M1](DOCS/it/M1-CONTROLLED-CRAWL.md) aggiungono policy per metodi, percorsi ed esclusioni, link seguiti solo con opt-in, rate per origine e grant di IP pubblici fissati. La GUI espone un'origine e un seed per scansione; i form non vengono inviati. Usa solo target propri o esplicitamente autorizzati.
 
-La [alpha M2](DOCS/it/M2-VALIDATION.md) aggiunge cache CVE/NVD aggiornata su richiesta, correlazione conservativa con prodotto/versione dichiarati dall'operatore e bundle di report IT/EN verificabili offline. Il desktop espone un flusso guidato limitato dalla run selezionata; i test non hanno misurato accuratezza CVE su casi reali né eseguito sync live delle fonti.
+La [alpha M2](DOCS/it/M2-VALIDATION.md) aggiunge cache CVE/NVD aggiornata su richiesta, correlazione conservativa con prodotto/versione dichiarati dall'operatore e bundle di report IT/EN verificabili offline. Il [desktop](DOCS/it/M2-GUI-EXTENSION.md) espone identità CPE, attestazioni esplicite e gestione locale delle chiavi per la run selezionata; la [simulazione](DOCS/it/M2-ACCURACY-SIMULATION.md) non misura accuratezza su CVE reali e non è stato eseguito sync live delle fonti.
 
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 

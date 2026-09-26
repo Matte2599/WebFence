@@ -134,7 +134,7 @@ func Assess(r Record, s ProductSignal, b *Backport, v *Verification) (Assessment
 			a.Reason = "backport_requires_review"
 			return a, nil
 		}
-		if !b.Confirmed || !validRef(b.EvidenceRef) || !validAdvisoryURL(b.AdvisoryURL) {
+		if !ValidBackport(*b) {
 			a.Status = "unknown"
 			a.Reason = "backport_requires_review"
 			return a, nil
@@ -144,12 +144,25 @@ func Assess(r Record, s ProductSignal, b *Backport, v *Verification) (Assessment
 		a.AttestationRef = b.EvidenceRef
 		return a, nil
 	}
-	if v != nil && a.Status == "applicable" && v.Confirmed && validRef(v.EvidenceRef) && (v.Method == "manual" || v.Method == "safe_check") {
-		a.Status = "verified"
-		a.Reason = "verification_attested"
-		a.AttestationRef = v.EvidenceRef
+	if v != nil && a.Status == "applicable" {
+		if !ValidVerification(*v) {
+			a.Status = "unknown"
+			a.Reason = "verification_requires_review"
+			return a, nil
+		}
+		a.Status, a.Reason, a.AttestationRef = "verified", "verification_attested", v.EvidenceRef
 	}
 	return a, nil
+}
+
+// ValidBackport validates the explicit operator attestation, never its truth.
+func ValidBackport(b Backport) bool {
+	return b.Confirmed && validRef(b.EvidenceRef) && validAdvisoryURL(b.AdvisoryURL)
+}
+
+// ValidVerification validates attestation fields, never performs a CVE check.
+func ValidVerification(v Verification) bool {
+	return v.Confirmed && validRef(v.EvidenceRef) && (v.Method == "manual" || v.Method == "safe_check")
 }
 
 func validAdvisoryURL(raw string) bool {
