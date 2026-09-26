@@ -86,6 +86,8 @@ Secondo blocco core: [proxy HTTP confinato](it/M3-BROWSER-PROXY.md) che inoltra 
 
 Terzo blocco sperimentale: [laboratorio Qt WebEngine](it/M3-BROWSER-LAB.md) su fixture locali per documento, script e `fetch`; runtime desktop, limiti di processo e prove multipiattaforma restano aperti.
 
+Quarto blocco sperimentale: [helper Qt supervisionato](it/ADR-011-BROWSER-HELPER.md) con IPC limitato, scadenza e terminazione dell'albero di processi; egress indipendente e limiti rigidi su macOS/Linux restano aperti.
+
 - [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
@@ -212,6 +214,8 @@ First core block: [browser request gate](en/M3-BROWSER-GATE.md) for scope, polic
 Second core block: [confined HTTP proxy](en/M3-BROWSER-PROXY.md) forwarding admitted requests through the pinned broker; loopback fixtures only, still without a working browser.
 
 Third experimental block: [Qt WebEngine lab](en/M3-BROWSER-LAB.md) on local document, script and `fetch` fixtures; the desktop runtime, process limits and cross-platform trials remain open.
+
+Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) with bounded IPC, deadline and process-tree termination; independent egress and hard macOS/Linux process limits remain open.
 
 - [ ] Isolated browser, scope for subresources/redirects and process limits.
 - [ ] Test-account sessions/login flows, validity checks and identity separation.

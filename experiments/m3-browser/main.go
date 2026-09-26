@@ -6,8 +6,11 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/netip"
@@ -29,11 +32,33 @@ import (
 
 type loopbackResolver struct{}
 
+type helperConfig struct {
+	Origin        string `json:"origin"`
+	ProxyEndpoint string `json:"proxy_endpoint"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
+}
+
+type helperResult struct {
+	Loaded          bool `json:"loaded"`
+	APISeen         bool `json:"api_seen"`
+	RedirectBlocked bool `json:"redirect_blocked"`
+	OutsideBlocked  bool `json:"outside_blocked"`
+	Denied          int  `json:"denied"`
+}
+
 func (loopbackResolver) LookupNetIP(context.Context, string, string) ([]netip.Addr, error) {
 	return []netip.Addr{netip.MustParseAddr("127.0.0.1")}, nil
 }
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--browser-helper" {
+		if err := runChild(); err != nil {
+			fmt.Fprintln(os.Stderr, "M3 browser helper failed:", err)
+			os.Exit(1)
+		}
+		return
+	}
 	if err := run(); err != nil {
 		fmt.Fprintln(os.Stderr, "M3 browser lab failed:", err)
 		os.Exit(1)
@@ -44,10 +69,6 @@ func main() {
 func run() error {
 	if len(os.Args) != 1 {
 		return errors.New("the lab accepts no target arguments")
-	}
-	if err := os.Setenv("QTWEBENGINE_CHROMIUM_FLAGS",
-		"--disable-background-networking --disable-component-update --disable-sync --disable-extensions --disable-default-apps"); err != nil {
-		return err
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
@@ -124,20 +145,67 @@ func run() error {
 		return err
 	}
 	defer proxy.Close()
+	username, password := proxy.Credentials()
+	payload, err := json.Marshal(helperConfig{Origin: origin, ProxyEndpoint: proxy.Endpoint(),
+		Username: username, Password: password})
+	if err != nil {
+		return err
+	}
+	executable, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	resultJSON, err := browser.RunHelper(ctx, executable, payload, browser.HelperLimits{
+		MaxRuntime: 15 * time.Second, MaxOutputBytes: 64 << 10,
+	})
+	if err != nil {
+		return err
+	}
+	var result helperResult
+	if err := json.Unmarshal(resultJSON, &result); err != nil {
+		return errors.New("invalid helper result")
+	}
+	if !result.Loaded || !result.APISeen || !result.RedirectBlocked || !result.OutsideBlocked ||
+		wrongHost.Load() || result.Denied < 1 ||
+		targetHits.Load() != 4 || gate.RequestsUsed() != 4 || broker.RequestsUsed() != 4 {
+		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d",
+			result.Loaded, result.APISeen, result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
+			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed())
+	}
+	return nil
+}
+
+func runChild() error {
+	var config helperConfig
+	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 4096))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(&config); err != nil {
+		return errors.New("invalid helper configuration")
+	}
+	var extra any
+	if err := decoder.Decode(&extra); err != io.EOF {
+		return errors.New("invalid helper configuration")
+	}
+	if err := validateHelperConfig(config); err != nil {
+		return err
+	}
+	if err := os.Setenv("QTWEBENGINE_CHROMIUM_FLAGS",
+		"--disable-background-networking --disable-component-update --disable-sync --disable-extensions --disable-default-apps --renderer-process-limit=4"); err != nil {
+		return err
+	}
 
 	runtime.LockOSThread()
-	qt.NewQApplication(os.Args)
-	endpoint, err := url.Parse(proxy.Endpoint())
+	qt.NewQApplication([]string{os.Args[0]})
+	endpoint, err := url.Parse(config.ProxyEndpoint)
 	if err != nil {
 		return err
 	}
 	port, err := strconv.Atoi(endpoint.Port())
-	if err != nil {
-		return err
+	if err != nil || port <= 0 || port > 65535 {
+		return errors.New("invalid helper proxy port")
 	}
-	username, password := proxy.Credentials()
 	qtProxy := network.NewQNetworkProxy7(network.QNetworkProxy__HttpProxy,
-		"127.0.0.1", uint16(port), username, password)
+		"127.0.0.1", uint16(port), config.Username, config.Password)
 	defer qtProxy.Delete()
 	network.QNetworkProxy_SetApplicationProxy(qtProxy)
 	profile := webengine.NewQWebEngineProfile()
@@ -145,6 +213,8 @@ func run() error {
 	if !profile.IsOffTheRecord() {
 		return errors.New("browser profile is persistent")
 	}
+	originPolicy, _ := scope.New([]string{config.Origin})
+	pathPolicy, _ := scope.NewRequestPolicy([]string{"GET"}, []string{"/app"}, nil)
 	var denied atomic.Int32
 	var outsideBlocked atomic.Bool
 	interceptor := webengine.NewQWebEngineUrlRequestInterceptor()
@@ -159,9 +229,9 @@ func run() error {
 			denied.Add(1)
 			return
 		}
-		u, err := permit.CheckOrigin(info.RequestUrl().ToString())
+		u, err := originPolicy.Check(info.RequestUrl().ToString())
 		if err == nil {
-			err = policy.Check(string(info.RequestMethod()), u)
+			err = pathPolicy.Check(string(info.RequestMethod()), u)
 		}
 		if err != nil {
 			info.Block(true)
@@ -190,14 +260,34 @@ func run() error {
 	defer timer.Delete()
 	timer.OnTimeout(qt.QCoreApplication_Quit)
 	timer.Start(5000)
-	page.Load(qt.NewQUrl3(origin + "/app"))
+	page.Load(qt.NewQUrl3(config.Origin + "/app"))
 	qt.QApplication_Exec()
-	if !loaded.Load() || !apiSeen.Load() || !redirectBlocked.Load() || !outsideBlocked.Load() ||
-		wrongHost.Load() || denied.Load() < 1 ||
-		targetHits.Load() != 4 || gate.RequestsUsed() != 4 || broker.RequestsUsed() != 4 {
-		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d",
-			loaded.Load(), apiSeen.Load(), redirectBlocked.Load(), outsideBlocked.Load(), wrongHost.Load(),
-			denied.Load(), targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed())
+	return json.NewEncoder(os.Stdout).Encode(helperResult{Loaded: loaded.Load(), APISeen: apiSeen.Load(),
+		RedirectBlocked: redirectBlocked.Load(), OutsideBlocked: outsideBlocked.Load(), Denied: int(denied.Load())})
+}
+
+func validateHelperConfig(c helperConfig) error {
+	u, err := url.Parse(c.Origin)
+	if err != nil || u.Scheme != "http" || u.Hostname() != "site.test" || u.Port() == "" ||
+		u.Path != "" || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" {
+		return errors.New("invalid helper origin")
+	}
+	if _, err := scope.New([]string{c.Origin}); err != nil {
+		return errors.New("invalid helper origin")
+	}
+	p, err := url.Parse(c.ProxyEndpoint)
+	if err != nil || p.Scheme != "http" || p.Hostname() != "127.0.0.1" || p.Port() == "" ||
+		p.Path != "" || p.RawQuery != "" || p.ForceQuery || p.Fragment != "" || p.User != nil ||
+		c.Username != "webfence" {
+		return errors.New("invalid helper proxy")
+	}
+	port, err := strconv.Atoi(p.Port())
+	if err != nil || port <= 0 || port > 65535 {
+		return errors.New("invalid helper proxy")
+	}
+	secret, err := base64.RawURLEncoding.DecodeString(c.Password)
+	if err != nil || len(secret) != 32 {
+		return errors.New("invalid helper proxy")
 	}
 	return nil
 }

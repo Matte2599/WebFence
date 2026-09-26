@@ -308,5 +308,7 @@ jobs:
           brew update
           env -u HOMEBREW_NO_INSTALL_UPGRADE brew install qtwebengine pkgconf
       - run: go mod download && go mod verify
+      - name: Validate M3 helper configuration
+        run: go test -tags=m3browserlab ./experiments/m3-browser
       - name: Synthetic Qt WebEngine proxy lab
         run: go run -tags=m3browserlab ./experiments/m3-browser
