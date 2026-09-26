@@ -2,7 +2,7 @@
 
 [English](../en/ARCHITECTURE.md) · [Indice](../README.md)
 
-Stato: architettura del prodotto pianificata. Per il desktop sono implementati il punto di ingresso desktop, il workspace Qt Widgets/MIQT, i cataloghi IT/EN e le fixture offline descritte in [Qt M0](QT-DESKTOP.md); il ciclo completo del diagramma di scansione resta da realizzare; le fondazioni scope/trasporto M0 sono descritte sotto.
+Stato: architettura del prodotto pianificata. Sono implementati il desktop Qt Widgets/MIQT, il flusso HTTP limitato [M1](M1-VALIDATION.md) e il flusso intelligence/report [M2](M2-VALIDATION.md); il ciclo completo del diagramma resta da realizzare. Il [primo blocco M3](M3-BROWSER-GATE.md) introduce soltanto la policy delle richieste browser.
 
 ## Struttura iniziale
 
@@ -45,7 +45,7 @@ Il broker rappresenta un confine da implementare e provare anche per traffico br
 | `report` | Snapshot, rendering, manifest e firma tramite componente con accesso limitato alle chiavi |
 | `storage` | Transazioni, migrazioni, cancellazione e ripristino |
 
-La tabella descrive i contratti completi pianificati. Nell'[alpha M1](M1-VALIDATION.md), `internal/project` lega autorizzazione e origini, `internal/scope` e `internal/transport` impongono policy, budget e IP fissati, `internal/scanner` realizza visite controllate, discovery e un controllo di header, `internal/storage` conserva progetti e osservazioni redatte e `internal/desktop` espone il flusso IT/EN. Browser, CVE, motori AI e report firmati restano futuri. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
+La tabella descrive i contratti completi pianificati. Nell'[alpha M1](M1-VALIDATION.md), `internal/project` lega autorizzazione e origini, `internal/scope` e `internal/transport` impongono policy, budget e IP fissati, `internal/scanner` realizza visite controllate, discovery e un controllo di header, `internal/storage` conserva progetti e osservazioni redatte e `internal/desktop` espone il flusso IT/EN. [M2](M2-VALIDATION.md) aggiunge cache CVE, correlazioni e report verificabili. `internal/browser` contiene ora solo il gate delle richieste; browser operativo e motori AI restano futuri. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
 
 ## Persistenza e processi esterni
 
@@ -69,8 +69,8 @@ La modalità server, utenti condivisi, PostgreSQL e worker distribuiti richiedon
 
 `internal/scope` realizza soltanto il confronto immutabile di origini HTTP(S), senza rete e senza dipendenze Qt. Un laboratorio loopback esiste esclusivamente nei test. Non sostituisce i confini IP/DNS, autorizzazioni e budget del broker pianificato: [contratto M0](M0-SCOPE.md).
 
-`internal/transport` aggiunge un broker HTTP/TLS confinato a grant loopback, con IP fissato alla connessione e budget/cancellazione condivisi. Decisione M0 e limiti di produzione: [ADR-003](ADR-003-TRANSPORT.md). Nessuna chiamata dalla GUI.
+`internal/transport` aggiunge un broker HTTP/TLS con grant loopback o IP pubblici fissati, con verifica del peer e budget/cancellazione condivisi. Decisioni e limiti: [ADR-003](ADR-003-TRANSPORT.md) e [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md). La GUI M1 lo usa per le visite controllate.
 
 `NewAuthorizedLab` applica lo snapshot del progetto a ogni hop del medesimo broker e ne usa la scadenza per interrompere richieste in corso. Le [run gestite](M1-MANAGED-RUNS.md) aggiungono revoca locale collegata allo store; rimane un laboratorio: [contratto M1](M1-AUTHORIZED-LAB.md).
 
-SQLite e il profilo JWS sono selezionati in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): esistono test di fattibilità SQLite, lo [store M1](M1-PROJECT-STORE.md) e `internal/signature`, senza progetti né report nella GUI.
+SQLite e il profilo JWS sono selezionati in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): esistono lo [store M1](M1-PROJECT-STORE.md), `internal/signature` e il [flusso report M2](M2-VALIDATION.md) nella GUI.

@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/browser ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -40,6 +40,7 @@ Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/p
 - `internal/preferences`: language only, independent of toolkit.
 - `internal/project` and `internal/storage`: authorization model, [SQLite v4](M1-PROJECT-STORE.md) with redacted runs/observations and [local revocation](M1-MANAGED-RUNS.md).
 - `internal/scope` and `internal/transport`: [route policy and public IP-pinned broker](M1-CONTROLLED-CRAWL.md), used by the M1 desktop.
+- `internal/browser`: [M3 request gate](M3-BROWSER-GATE.md), without a browser runtime or networking yet.
 - `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md) and [bounded crawler](M1-CONTROLLED-CRAWL.md) with persistent results. Tests open no external network connections.
 - `internal/intelligence` and `internal/reporting`: [M2 cache/matching](M2-INTELLIGENCE-CACHE.md) and [verifiable bundles](M2-REPORTS.md), independent of Qt. `cmd/webfence-report` and `cmd/webfence-verify` are technical helpers buildable from source.
 
