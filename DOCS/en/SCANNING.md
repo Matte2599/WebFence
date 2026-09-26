@@ -2,7 +2,7 @@
 
 [Italiano](../it/SCANNING.md) · [Index](../README.md)
 
-Status: production engine not implemented. The first [origin check](M0-SCOPE.md), [controlled transport](ADR-003-TRANSPORT.md), [M1 operator-declared authorization snapshot](M1-PROJECT-AUTHORIZATION.md), a [first HTTP check on explicit seeds](M1-HEADER-LAB.md), [observational HTML discovery](M1-DISCOVERY-LAB.md) and [controlled visits with pinned public grants](M1-CONTROLLED-CRAWL.md) are available in the M1 desktop. The [M3 browser gate](M3-BROWSER-GATE.md) generates no traffic yet. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
+Status: production engine not implemented. The first [origin check](M0-SCOPE.md), [controlled transport](ADR-003-TRANSPORT.md), [M1 operator-declared authorization snapshot](M1-PROJECT-AUTHORIZATION.md), a [first HTTP check on explicit seeds](M1-HEADER-LAB.md), [observational HTML discovery](M1-DISCOVERY-LAB.md) and [controlled visits with pinned public grants](M1-CONTROLLED-CRAWL.md) are available in the M1 desktop. The [M3 gate](M3-BROWSER-GATE.md) and [HTTP proxy](M3-BROWSER-PROXY.md) are not connected to a browser yet. Methodological reference: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), with identifiers pinned to the version used by rules.
 
 ## Pipeline
 

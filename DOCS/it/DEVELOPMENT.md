@@ -40,7 +40,7 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/preferences`: sola lingua, indipendente dal toolkit.
 - `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
 - `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
-- `internal/browser`: [gate delle richieste M3](M3-BROWSER-GATE.md), ancora senza runtime browser o rete.
+- `internal/browser`: [gate M3](M3-BROWSER-GATE.md) e [proxy HTTP confinato](M3-BROWSER-PROXY.md), ancora senza runtime browser.
 - `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md) e [crawler limitato](M1-CONTROLLED-CRAWL.md) con risultati persistenti. I test non aprono rete esterna.
 - `internal/intelligence` e `internal/reporting`: [cache/matching M2](M2-INTELLIGENCE-CACHE.md) e [bundle verificabili](M2-REPORTS.md), separati da Qt. `cmd/webfence-report` e `cmd/webfence-verify` sono ausili tecnici compilabili dal sorgente.
 
