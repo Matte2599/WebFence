@@ -17,7 +17,7 @@ The GUI creates private keys in the native credential store, exports signed or e
 
 ## Extra local verification
 
-The Qt self-test uses one run and two synthetic CVE/NVD records over loopback. It exercises both NVD identity modes, valid and conflicting attestations, stale-form reset, unsigned and signed bilingual export, offline verification, generation/rotation/revocation with an isolated synthetic credential store, import with wrong and correct fingerprints, and preserving the selected signing key across language changes. Core `go test -race`, `go test ./...`, `go vet ./...`, Python tests and soak remain general regressions.
+The Qt self-test uses one run and two synthetic CVE/NVD records over loopback. It exercises both NVD identity modes, valid and conflicting attestations, stale-form reset, unsigned and signed bilingual export, offline verification, generation/rotation/revocation with an isolated synthetic credential store, import with wrong and correct fingerprints and a short key ID, and preserving the selected signing key across language changes. Core `go test -race`, `go test ./...`, `go vet ./...`, Python tests and soak remain general regressions.
 
 Rendering was inspected on native macOS Cocoa and Qt offscreen in IT/EN: three tabs, the top/bottom of scrollable forms, and normal **820×740** and compact **620×560** logical-point windows. Local synthetic screenshots were inspected for overlaps, unreachable controls and clipped text; form growth and row wrapping resolved the initially narrow Cocoa fields. This check does not certify freedom from defects on Windows/Linux, every DPI scale, theme or assistive technology; CI checks native flows on its configured platforms.
 

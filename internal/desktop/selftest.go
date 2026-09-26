@@ -3,6 +3,7 @@ package desktop
 import (
 	"archive/zip"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/Matte2599/WebFence/internal/demo"
@@ -474,13 +475,33 @@ func selfTest(w *workspace) int {
 			waitM2()
 			_, importedErr := m.trust.Lookup(foreign.KeyID)
 			check(importedErr == nil && len(m.manageKeyIDs) == 3, "M2 imports independently confirmed public key")
+			shortPath := filepath.Join(filepath.Dir(w.preferencePath), "short-public.json")
+			data, readErr := os.ReadFile(foreignPath)
+			var descriptor reporting.PublicDescriptor
+			if readErr == nil {
+				readErr = json.Unmarshal(data, &descriptor)
+			}
+			descriptor.KeyID = "x"
+			if readErr == nil {
+				data, readErr = json.Marshal(descriptor)
+			}
+			if readErr == nil {
+				readErr = os.WriteFile(shortPath, data, 0o600)
+			}
+			if readErr == nil {
+				m.publicImportPath.SetText(shortPath)
+				m.importPublic.Click()
+				waitM2()
+			}
+			_, shortErr := m.trust.Lookup("x")
+			check(readErr == nil && shortErr == nil && len(m.manageKeyIDs) == 4, "M2 short imported key ID displays safely")
 		}
 		check(m.manageKeyIDs[1] == newKey, "M2 selected key identity remains stable")
 		m.name.SetText("Second local signer")
 		m.generate.Click()
 		waitM2()
-		check(len(m.keyIDs) == 2, "M2 second active key for selection regression")
-		m.signer.SetCurrentIndex(1)
+		check(len(m.keyIDs) == 3, "M2 second active key for selection regression")
+		m.signer.SetCurrentIndex(2)
 		selectedSigner := m.selectedSignerKey()
 		w.englishAction.Trigger()
 		check(selectedSigner != "" && m.selectedSignerKey() == selectedSigner, "M2 signer selection survives language change")

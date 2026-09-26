@@ -434,12 +434,13 @@ func (m *m2UI) refreshKeys() {
 	if m.trust != nil {
 		if records, err := m.trust.List(); err == nil {
 			for _, k := range records {
+				shortID := k.KeyID[:min(8, len(k.KeyID))]
 				m.manageKeyIDs = append(m.manageKeyIDs, k.KeyID)
 				m.manageKeyStatus = append(m.manageKeyStatus, k.Status)
-				m.manageKey.AddItem(k.Identity + " (" + k.KeyID[:8] + ") · " + m.tr("m2_key_"+k.Status))
+				m.manageKey.AddItem(k.Identity + " (" + shortID + ") · " + m.tr("m2_key_"+k.Status))
 				if k.Status == "active" {
 					m.keyIDs = append(m.keyIDs, k.KeyID)
-					m.signer.AddItem(k.Identity + " (" + k.KeyID[:8] + ")")
+					m.signer.AddItem(k.Identity + " (" + shortID + ")")
 				}
 			}
 		}
