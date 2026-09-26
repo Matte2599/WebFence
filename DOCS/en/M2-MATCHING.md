@@ -18,6 +18,6 @@ A backport can change `applicable` to `not_applicable` **only** with an explicit
 
 ## Verification and limits
 
-Synthetic fixtures cover inclusive/exclusive bounds, intermediate fixes, weak signals, backports, attestations, rejected sources, AND configurations and unsupported forms/versions. `go test -race ./internal/intelligence` contacts no external source or target. No real-corpus matching accuracy or support for every CPE/CVE version scheme is claimed; guided inventory and desktop presentation follow later.
+Synthetic fixtures cover inclusive/exclusive bounds, intermediate fixes, weak signals, backports, attestations, rejected sources, AND configurations and unsupported forms/versions. `go test -race ./internal/intelligence` contacts no external source or target. No real-corpus matching accuracy or support for every CPE/CVE version scheme is claimed. The [M2 desktop](M2-VALIDATION.md) accepts manual vendor/product/version signals for a selected run; backport and verification attestations remain core APIs without a GUI form.
 
 Primary sources: [CVE Record Format](https://cveproject.github.io/cve-schema/schema/docs/), [NVD CPE FAQ](https://nvd.nist.gov/general/faq-sections/cpe-faqs), [NVD API](https://nvd.nist.gov/developers/vulnerabilities).

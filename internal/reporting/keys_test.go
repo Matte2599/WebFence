@@ -74,6 +74,10 @@ func TestNativeKeyContractRotationRevocationAndImport(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	listed, err := trust.List()
+	if err != nil || len(listed) != 1 || listed[0].KeyID != first.KeyID || listed[0].PublicKey == "" {
+		t.Fatalf("public key list: %+v %v", listed, err)
+	}
 	if _, err := secrets.Get(ctx, secretID(first.KeyID)); err != nil {
 		t.Fatal(err)
 	}

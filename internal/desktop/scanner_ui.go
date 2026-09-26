@@ -9,7 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Matte2599/WebFence/internal/intelligence"
 	"github.com/Matte2599/WebFence/internal/project"
+	"github.com/Matte2599/WebFence/internal/reporting"
 	"github.com/Matte2599/WebFence/internal/scanner"
 	"github.com/Matte2599/WebFence/internal/scope"
 	"github.com/Matte2599/WebFence/internal/storage"
@@ -21,27 +23,28 @@ import (
 // GUI thread. The worker receives an immutable plan and sends counts/results
 // over channels; no target URL or response content is rendered as evidence.
 type scannerUI struct {
-	w                                                *workspace
-	store                                            *storage.Store
-	dialog                                           *qt.QDialog
-	timer                                            *qt.QTimer
-	labels                                           map[string]*qt.QLabel
-	intro, status, coverage                          *qt.QLabel
-	projects, runs, mode                             *qt.QComboBox
-	id, name, owner, reference, expiry, origin       *qt.QLineEdit
-	seed, allowed, excluded, pins                    *qt.QLineEdit
-	confirmed, follow                                *qt.QCheckBox
-	maxPages, maxDepth, budget                       *qt.QSpinBox
-	create, deleteProject, start, cancelRun, refresh *qt.QPushButton
-	progress                                         *qt.QProgressBar
-	results                                          *qt.QPlainTextEdit
-	projectIDs, runIDs                               []string
-	initErr                                          error
-	cancel                                           context.CancelFunc
-	done                                             chan struct{}
-	progressUpdates                                  chan int
-	finished                                         chan scanCompletion
-	confirmDelete                                    func() bool
+	w                                                        *workspace
+	store                                                    *storage.Store
+	dialog                                                   *qt.QDialog
+	timer                                                    *qt.QTimer
+	labels                                                   map[string]*qt.QLabel
+	intro, status, coverage                                  *qt.QLabel
+	projects, runs, mode                                     *qt.QComboBox
+	id, name, owner, reference, expiry, origin               *qt.QLineEdit
+	seed, allowed, excluded, pins                            *qt.QLineEdit
+	confirmed, follow                                        *qt.QCheckBox
+	maxPages, maxDepth, budget                               *qt.QSpinBox
+	create, deleteProject, start, cancelRun, refresh, m2Open *qt.QPushButton
+	progress                                                 *qt.QProgressBar
+	results                                                  *qt.QPlainTextEdit
+	projectIDs, runIDs                                       []string
+	initErr                                                  error
+	cancel                                                   context.CancelFunc
+	done                                                     chan struct{}
+	progressUpdates                                          chan int
+	finished                                                 chan scanCompletion
+	confirmDelete                                            func() bool
+	m2                                                       *m2UI
 }
 
 type scanCompletion struct {
@@ -49,7 +52,7 @@ type scanCompletion struct {
 	err    error
 }
 
-func newScannerUI(w *workspace, store *storage.Store, initErr error) *scannerUI {
+func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *intelligence.Cache, cacheErr error, trust *reporting.TrustStore, trustErr error) *scannerUI {
 	u := &scannerUI{w: w, store: store, initErr: initErr, labels: make(map[string]*qt.QLabel)}
 	u.dialog = qt.NewQDialog(w.window.QWidget)
 	u.dialog.Resize(820, 790)
@@ -131,9 +134,11 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error) *scannerUI 
 	u.cancelRun = qt.NewQPushButton2()
 	u.deleteProject = qt.NewQPushButton2()
 	u.refresh = qt.NewQPushButton2()
+	u.m2Open = qt.NewQPushButton2()
 	bar.AddWidget(u.cancelRun.QWidget)
 	bar.AddWidget(u.deleteProject.QWidget)
 	bar.AddWidget(u.refresh.QWidget)
+	bar.AddWidget(u.m2Open.QWidget)
 	outer.AddWidget(controls)
 	u.status = qt.NewQLabel2()
 	u.status.SetWordWrap(true)
@@ -172,12 +177,14 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error) *scannerUI 
 		}
 	})
 	u.refresh.OnClicked(func() { u.refreshProjects(); u.refreshRuns() })
+	u.m2Open.OnClicked(func() { u.m2.show() })
 	u.follow.OnToggled(func(on bool) { u.maxDepth.SetEnabled(on) })
 	u.maxDepth.SetEnabled(false)
 	u.cancelRun.SetEnabled(false)
 	u.maxPages.OnValueChanged(func(int) { u.progress.SetRange(0, u.maxPages.Value()) })
 	u.translate()
 	u.refreshProjects()
+	u.m2 = newM2UI(u, cache, cacheErr, trust, trustErr)
 	return u
 }
 
@@ -195,6 +202,7 @@ func (u *scannerUI) translate() {
 	u.start.SetText(u.tr("scan_start"))
 	u.cancelRun.SetText(u.tr("scan_cancel"))
 	u.refresh.SetText(u.tr("scan_refresh"))
+	u.m2Open.SetText(u.tr("m2_open"))
 	u.mode.SetItemText(0, u.tr("scan_loopback"))
 	u.mode.SetItemText(1, u.tr("scan_public"))
 	if u.projects.Count() > 0 {
@@ -210,6 +218,9 @@ func (u *scannerUI) translate() {
 	u.progress.SetAccessibleName(u.tr("scan_progress"))
 	u.progress.SetFormat(u.tr("scan_progress_format"))
 	u.showRun()
+	if u.m2 != nil {
+		u.m2.translate()
+	}
 }
 
 func (u *scannerUI) show() { u.dialog.Show(); u.dialog.Raise(); u.dialog.ActivateWindow() }
@@ -455,6 +466,10 @@ func (u *scannerUI) showRun() {
 	if i < 0 || i >= len(u.runIDs) || u.store == nil {
 		u.results.Clear()
 		u.coverage.SetText(u.tr("scan_no_runs"))
+		if u.m2 != nil {
+			u.m2.updateRun()
+			u.m2.refreshControls()
+		}
 		return
 	}
 	run, err := u.store.LoadScanRun(context.Background(), u.runIDs[i])
@@ -478,6 +493,10 @@ func (u *scannerUI) showRun() {
 			u.tr("scan_discovery_"+v.DiscoveryStatus), v.Links, v.Forms, v.OutOfScope, v.Invalid))
 	}
 	u.results.SetPlainText(strings.Join(lines, "\n"))
+	if u.m2 != nil {
+		u.m2.updateRun()
+		u.m2.refreshControls()
+	}
 }
 
 func (u *scannerUI) dispose() {
@@ -491,6 +510,9 @@ func (u *scannerUI) dispose() {
 		<-u.done
 	}
 	u.timer.Stop()
+	if u.m2 != nil {
+		u.m2.dispose()
+	}
 	u.dialog.Close()
 	u.dialog.Delete()
 }

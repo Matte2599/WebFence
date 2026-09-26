@@ -202,6 +202,20 @@ func (t *TrustStore) Lookup(id string) (TrustedKey, error) {
 	return TrustedKey{}, ErrUntrustedKey
 }
 
+// List returns public records for a local key picker. It never reads secrets.
+func (t *TrustStore) List() ([]KeyRecord, error) {
+	if t == nil {
+		return nil, ErrInvalid
+	}
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	doc, err := t.read()
+	if err != nil {
+		return nil, err
+	}
+	return append([]KeyRecord(nil), doc.Keys...), nil
+}
+
 type Keyring struct {
 	Trust   *TrustStore
 	Secrets SecretStore

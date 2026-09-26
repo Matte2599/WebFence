@@ -29,7 +29,7 @@ type Snapshot struct {
 	AuthorizationRevision               uint64
 	AuthorizationExpiresAt              time.Time
 	Run                                 storage.ScanRun
-	Intelligence                        *intelligence.Snapshot
+	Intelligence                        []intelligence.Snapshot
 	Assessments                         []intelligence.Assessment
 }
 
@@ -72,7 +72,7 @@ type Report struct {
 	Project         ReportProject             `json:"project"`
 	Run             ReportRun                 `json:"run"`
 	Coverage        ReportCoverage            `json:"coverage"`
-	Intelligence    ReportIntelligence        `json:"intelligence"`
+	Intelligence    []ReportIntelligence      `json:"intelligence"`
 	Assessments     []intelligence.Assessment `json:"assessments"`
 	Visits          []ReportVisit             `json:"visits"`
 }
@@ -113,6 +113,7 @@ type ReportCoverage struct {
 
 type ReportIntelligence struct {
 	Status      string `json:"status"`
+	Freshness   string `json:"freshness"`
 	Source      string `json:"source,omitempty"`
 	WindowStart string `json:"window_start_utc,omitempty"`
 	Watermark   string `json:"watermark_utc,omitempty"`

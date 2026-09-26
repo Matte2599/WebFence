@@ -34,19 +34,38 @@ func buildReport(s Snapshot, id, language string, now time.Time, signed bool, si
 			PlannedSeeds: s.Run.PlannedSeeds, CompletedVisits: s.Run.CompletedVisits, RequestsUsed: s.Run.RequestsUsed, StopCode: s.Run.StopCode},
 		Coverage: ReportCoverage{Limited: s.Run.CoverageLimited, WholeSiteAttested: false, UnknownUnexecuted: true,
 			UnexecutedReason: "whole_site_not_measured"},
-		Intelligence: ReportIntelligence{Status: "unavailable"}, Assessments: append([]intelligence.Assessment{}, s.Assessments...), Visits: make([]ReportVisit, 0, len(s.Run.Visits))}
+		Intelligence: make([]ReportIntelligence, 0, 2), Assessments: append([]intelligence.Assessment{}, s.Assessments...), Visits: make([]ReportVisit, 0, len(s.Run.Visits))}
 	if s.Run.CoverageLimited || s.Run.State != "complete" {
 		r.Coverage.Message = i18n.Text(language, "scan_incomplete")
 	} else {
 		r.Coverage.Message = i18n.Text(language, "scan_queue_complete")
 	}
-	if s.Run.PlannedSeeds > s.Run.CompletedVisits {
-		r.Coverage.UnexecutedSeedMinimum = s.Run.PlannedSeeds - s.Run.CompletedVisits
+	visitedSeeds := 0
+	for _, visit := range s.Run.Visits {
+		if visit.Depth == 0 {
+			visitedSeeds++
+		}
 	}
-	if s.Intelligence != nil {
-		r.Intelligence = ReportIntelligence{Status: s.Intelligence.Status(now, ttl, offline), Source: s.Intelligence.Source,
-			WindowStart: utc(s.Intelligence.WindowStart), Watermark: utc(s.Intelligence.Watermark),
-			LastSuccess: utc(s.Intelligence.LastSuccess), Records: s.Intelligence.Records}
+	if s.Run.PlannedSeeds > visitedSeeds {
+		r.Coverage.UnexecutedSeedMinimum = s.Run.PlannedSeeds - visitedSeeds
+	}
+	seenSource := map[string]bool{}
+	for _, snapshot := range s.Intelligence {
+		if (snapshot.Source != "nvd" && snapshot.Source != "cve") || seenSource[snapshot.Source] {
+			return Report{}, ErrInvalid
+		}
+		seenSource[snapshot.Source] = true
+	}
+	for _, source := range []string{"nvd", "cve"} {
+		entry := ReportIntelligence{Source: source, Status: "unavailable", Freshness: "unavailable"}
+		for _, snapshot := range s.Intelligence {
+			if snapshot.Source != source {
+				continue
+			}
+			entry = ReportIntelligence{Source: source, Status: snapshot.Status(now, ttl, offline), Freshness: snapshot.Status(now, ttl, false),
+				WindowStart: utc(snapshot.WindowStart), Watermark: utc(snapshot.Watermark), LastSuccess: utc(snapshot.LastSuccess), Records: snapshot.Records}
+		}
+		r.Intelligence = append(r.Intelligence, entry)
 	}
 	for _, v := range s.Run.Visits {
 		rv := ReportVisit{Index: v.VisitIndex, Depth: v.Depth, HTTPStatus: v.StatusCode, RuleID: v.RuleID, RuleRevision: v.RuleRevision,
@@ -82,7 +101,7 @@ var reportHTML = template.Must(template.New("report").Funcs(template.FuncMap{"tr
 <h2>{{tr "report_coverage"}}</h2><p>{{.Coverage.Message}}</p>
 <p>{{tr "report_unexecuted"}}: {{.Coverage.UnexecutedSeedMinimum}} {{tr "report_seed_minimum"}}; {{tr "report_remaining_unknown"}}</p>
 <p>{{tr "report_observed"}}: {{.Coverage.Observed}} · {{tr "report_not_observed"}}: {{.Coverage.NotObserved}} · {{tr "report_inconclusive"}}: {{.Coverage.Inconclusive}} · {{tr "report_skipped"}}: {{.Coverage.Skipped}}</p>
-<h2>{{tr "report_intelligence"}}</h2><p>{{tr .Intelligence.Status}} · {{.Intelligence.Source}} · {{.Intelligence.LastSuccess}}</p>
+<h2>{{tr "report_intelligence"}}</h2>{{range .Intelligence}}<p>{{.Source}} · {{tr .Status}} · {{tr .Freshness}} · {{.LastSuccess}}</p>{{end}}
 <h2>{{tr "report_assessments"}}</h2><ul>{{range .Assessments}}<li>{{.CVEID}} · {{.Source}} · {{tr .Status}} · {{.Reason}}</li>{{else}}<li>{{tr "report_none"}}</li>{{end}}</ul>
 <h2>{{tr "report_observations"}}</h2><table><thead><tr><th>{{tr "report_visit"}}</th><th>HTTP</th><th>{{tr "report_rule"}}</th><th>{{tr "report_result"}}</th><th>{{tr "report_evidence"}}</th></tr></thead><tbody>
 {{range .Visits}}<tr><td>{{.Index}}</td><td>{{.HTTPStatus}}</td><td>{{.Title}} ({{.RuleID}} v{{.RuleRevision}})</td><td>{{.OutcomeText}}</td><td>{{.EvidenceText}} [{{.EvidenceCode}}]</td></tr>{{end}}

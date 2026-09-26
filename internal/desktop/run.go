@@ -10,7 +10,9 @@ import (
 	"time"
 
 	"github.com/Matte2599/WebFence/internal/i18n"
+	"github.com/Matte2599/WebFence/internal/intelligence"
 	"github.com/Matte2599/WebFence/internal/preferences"
+	"github.com/Matte2599/WebFence/internal/reporting"
 	"github.com/Matte2599/WebFence/internal/storage"
 	qt "github.com/mappu/miqt/qt6"
 )
@@ -56,22 +58,35 @@ func Run(args []string) int {
 	w := newWorkspace(locale, path, preferenceError)
 	var scanStore *storage.Store
 	var scanErr error
+	var cache *intelligence.Cache
+	var cacheErr error
+	var trust *reporting.TrustStore
+	var trustErr error
 	if dir != "" {
 		dataDir := filepath.Join(dir, "WebFence")
 		if mkErr := os.MkdirAll(dataDir, 0o700); mkErr != nil {
 			scanErr = storage.ErrUnavailable
+			cacheErr = intelligence.ErrUnavailable
+			trustErr = reporting.ErrUnavailable
 		} else {
 			scanStore, scanErr = storage.Open(context.Background(), filepath.Join(dataDir, "projects.sqlite"))
+			cache, cacheErr = intelligence.Open(context.Background(), filepath.Join(dataDir, "intelligence.sqlite"))
+			trust, trustErr = reporting.OpenTrustStore(filepath.Join(dataDir, "report-trust.json"))
 		}
 	} else {
 		scanErr = storage.ErrUnavailable
+		cacheErr = intelligence.ErrUnavailable
+		trustErr = reporting.ErrUnavailable
 	}
 	defer func() {
 		if scanStore != nil {
 			_ = scanStore.Close()
 		}
+		if cache != nil {
+			_ = cache.Close()
+		}
 	}()
-	w.scan = newScannerUI(w, scanStore, scanErr)
+	w.scan = newScannerUI(w, scanStore, scanErr, cache, cacheErr, trust, trustErr)
 	defer w.dispose()
 	w.window.Show()
 	if soakDuration > 0 {

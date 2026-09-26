@@ -18,6 +18,6 @@ Un backport può cambiare `applicable` in `not_applicable` **solo** con attestaz
 
 ## Verifiche e limiti
 
-Le fixture sintetiche coprono limiti inclusivi/esclusivi, correzione intermedia, segnale debole, backport, attestazione, fonte rifiutata, configurazione AND e forme/versioni non supportate. `go test -race ./internal/intelligence` non contatta fonti o target esterni. Non si dichiara accuratezza di matching su un corpus reale né compatibilità con tutte le semantiche CPE/CVE; inventario guidato e presentazione desktop vengono dopo.
+Le fixture sintetiche coprono limiti inclusivi/esclusivi, correzione intermedia, segnale debole, backport, attestazione, fonte rifiutata, configurazione AND e forme/versioni non supportate. `go test -race ./internal/intelligence` non contatta fonti o target esterni. Non si dichiara accuratezza di matching su un corpus reale né compatibilità con tutte le semantiche CPE/CVE. Il [desktop M2](M2-VALIDATION.md) accetta segnali manuali vendor/prodotto/versione per una run selezionata; le attestazioni di backport e verifica restano API core, senza form grafico.
 
 Fonti primarie: [CVE Record Format](https://cveproject.github.io/cve-schema/schema/docs/), [NVD CPE FAQ](https://nvd.nist.gov/general/faq-sections/cpe-faqs), [NVD API](https://nvd.nist.gov/developers/vulnerabilities).

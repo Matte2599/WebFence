@@ -4,7 +4,7 @@
 
 ## Avvio e controlli
 
-Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. Il desktop offre esempi sintetici M0 e una [alpha M1](M1-VALIDATION.md) con progetti salvati e scansioni HTTP limitate; CVE e AI non sono attive. [Stato e verifiche desktop M0](QT-DESKTOP.md).
+Qt Widgets/MIQT è la GUI principale scelta dall’autore. Go **1.27.1** e MIQT **0.14.0** sono fissati nel modulo. Il desktop offre esempi sintetici M0, una [alpha M1](M1-VALIDATION.md) con scansioni HTTP limitate e un [flusso M2](M2-VALIDATION.md) per cache CVE, correlazioni esplicite e report. L'AI non è attiva. [Stato e verifiche desktop M0](QT-DESKTOP.md).
 
 La prima compilazione dei binding può richiedere diversi minuti; le successive beneficiano della cache Go. La CI macOS compila i wrapper C++ con `-O0 -g0` per contenere il costo della prima compilazione; build e bundle usano gli stessi flag e la cache. Le librerie Qt installate restano quelle del pacchetto Homebrew. Lo script locale usa per default `-O2 -g`; la CI verifica funzionalità, non prestazioni di release.
 
@@ -25,7 +25,7 @@ QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-Il self-test usa Qt reale senza display e una directory temporanea per lingua e DB; la copia è intercettata per non modificare gli appunti. Verifica anche un progetto M1 e una scansione verso un server `httptest` locale posseduto dal test: **nessun target esterno**. Non è una prova con screen reader. Il tag Fyne `ci` non serve più. `go test ./...` richiede le dipendenze Qt per compilare il desktop.
+Il self-test usa Qt reale senza display e una directory temporanea per lingua e DB; la copia è intercettata per non modificare gli appunti. Verifica anche una scansione M1, una CVE sintetica recuperata da un server `httptest` locale, correlazione esplicita ed export M2 non firmato: **nessun target esterno**. Non è una prova con screen reader. Il tag Fyne `ci` non serve più. `go test ./...` richiede le dipendenze Qt per compilare il desktop.
 
 Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. Dalla shell UCRT64, usare le stesse variabili e compilare con `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; eseguire `./bin/webfence.exe --self-test` con `QT_QPA_PLATFORM=offscreen`. Qt DLL e plugin devono essere disponibili; il file exe da solo non è un pacchetto distribuibile. La CI usa [setup-msys2](https://github.com/msys2/setup-msys2); MSVC non è il compilatore CGO di questa configurazione.
 
@@ -41,12 +41,15 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
 - `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
 - `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md) e [crawler limitato](M1-CONTROLLED-CRAWL.md) con risultati persistenti. I test non aprono rete esterna.
+- `internal/intelligence` e `internal/reporting`: [cache/matching M2](M2-INTELLIGENCE-CACHE.md) e [bundle verificabili](M2-REPORTS.md), separati da Qt. `cmd/webfence-report` e `cmd/webfence-verify` sono ausili tecnici compilabili dal sorgente.
 
 I futuri pacchetti del motore restano indipendenti da Qt. Non usare la cache delle fixture come modello di conservazione per dati reali. Fyne e il vecchio laboratorio Qt sono nella cronologia Git, non nella build corrente.
 
-Nel desktop `WebFence/ui-language` e `WebFence/projects.sqlite` sono sotto `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` o `~/.config`; Windows: `%AppData%`). Il DB può avere file `.lock`, `-wal` e `-shm`. La preferenza usa un temporaneo e rinomina; progetti e risultati M1 sono persistenti. Errori sono visibili nella GUI. Le vecchie preferenze Fyne non sono importate né cancellate. Esempi M0, filtri e selezione non sono salvati. Gli appunti copiati esplicitamente non vengono cancellati da «Svuota esempi».
+Nel desktop `WebFence/ui-language`, `WebFence/projects.sqlite`, `WebFence/intelligence.sqlite` e `WebFence/report-trust.json` sono sotto `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` o `~/.config`; Windows: `%AppData%`). Il DB progetti può avere file `.lock`, `-wal` e `-shm`; il registro pubblico di fiducia può avere `.lock`. Le chiavi private restano nel portachiavi nativo. La preferenza usa un temporaneo e rinomina; progetti, risultati M1 e cache CVE sono persistenti, le correlazioni GUI restano nella sessione fino all'export. Errori sono visibili nella GUI. Le vecchie preferenze Fyne non sono importate né cancellate. Esempi M0, filtri e selezione non sono salvati. Gli appunti copiati esplicitamente non vengono cancellati da «Svuota esempi».
 
 Per una prova M1, aprire **Scansione M1**, creare un progetto con origine esatta, titolare, riferimento non segreto, scadenza e conferma dell'autorizzazione. Selezionarlo, indicare un seed autorizzato, prefissi ammessi/esclusi, modalità loopback o IP pubblici fissati manualmente, budget, pagine e profondità. I link vengono visitati solo con l'apposita opzione. Avviare, leggere progresso e copertura, poi riaprire l'app per i risultati salvati. Usare esclusivamente target propri o esplicitamente autorizzati; il self-test usa solo loopback. La GUI non offre ancora rinnovo/revoca o backup; [API e limiti](M1-PROJECT-STORE.md).
+
+Per M2, selezionare una run conclusa nella finestra M1 e aprire **CVE e report**. Scegliere una finestra NVD UTC o un ID CVE e aggiornare la cache solo con azione esplicita; inserire vendor, prodotto, versione e riferimento di inventario senza segreti per la correlazione locale. Una correlazione non è un controllo CVE attivo. Creare una chiave firmatario nel portachiavi, scegliere un nuovo percorso `.wfr` ed esportare; l'opzione non firmata è esplicita. **Verifica** usa il registro di fiducia locale; per importare una chiave da altro sistema occorre confermare l'impronta separatamente con [CLI e procedura](M2-REPORTS.md). L'export mostra copertura incompleta e stato/freschezza della cache; nessun feed viene scaricato all'avvio.
 
 Menu Lingua e selettore cambiano IT/EN; scorciatoie **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** su macOS). **Ctrl+O/Cmd+O** carica gli esempi. Tastiera e screen reader completi restano da convalidare.
 
@@ -98,7 +101,7 @@ go test -race -cover ./internal/transport
 
 ## SQLite e JWS: fondazioni M0
 
-Driver e libreria scelti in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contiene test SQLite su file temporanei; `internal/signature` espone firma/verifica di byte, ora usata dal [core report M2](M2-REPORTS.md) insieme a JCS e portachiavi. Il workflow report non è ancora nella GUI.
+Driver e libreria scelti in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contiene test SQLite su file temporanei; `internal/signature` espone firma/verifica di byte, ora usata dal [report M2](M2-REPORTS.md) insieme a JCS e portachiavi. La GUI offre il flusso essenziale; rotazione, revoca e import di chiavi pubbliche restano nell'ausilio CLI.
 
 ```sh
 go test -race ./internal/foundation ./internal/signature

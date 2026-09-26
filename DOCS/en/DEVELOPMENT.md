@@ -4,7 +4,7 @@
 
 ## Running and checking
 
-Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. The desktop offers M0 synthetic examples and an [M1 alpha](M1-VALIDATION.md) with saved projects and bounded HTTP scans; CVE and AI are not active. [M0 desktop status and verification](QT-DESKTOP.md).
+Qt Widgets/MIQT is the author-selected main GUI. Go **1.27.1** and MIQT **0.14.0** are pinned in the module. The desktop offers M0 synthetic examples, an [M1 alpha](M1-VALIDATION.md) with bounded HTTP scans and an [M2 flow](M2-VALIDATION.md) for the CVE cache, explicit assessments and reports. AI is not active. [M0 desktop status and verification](QT-DESKTOP.md).
 
 The first binding compilation can take several minutes; later builds benefit from Go’s cache. macOS CI compiles C++ wrappers with `-O0 -g0` to limit first-build cost; build and bundle share flags and cache. Installed Qt libraries remain the Homebrew package binaries. The local script defaults to `-O2 -g`; CI checks functionality, not release performance.
 
@@ -25,7 +25,7 @@ QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-The self-test uses real Qt without a display and a temporary directory for language and DB; copying is intercepted to preserve the clipboard. It also checks an M1 project and scan against a test-owned local `httptest` server: **no external target**. It is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` needs Qt dependencies to compile the desktop.
+The self-test uses real Qt without a display and a temporary directory for language and DB; copying is intercepted to preserve the clipboard. It also checks an M1 scan, a synthetic CVE fetched from a local `httptest` server, an explicit assessment and unsigned M2 export: **no external target**. It is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` needs Qt dependencies to compile the desktop.
 
 On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. In UCRT64 use the same variables and build with `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; run `./bin/webfence.exe --self-test` with `QT_QPA_PLATFORM=offscreen`. Qt DLLs and plugins must be available; the exe alone is not a distributable package. CI uses [setup-msys2](https://github.com/msys2/setup-msys2); MSVC is not the CGO compiler in this setup.
 
@@ -41,12 +41,15 @@ Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/p
 - `internal/project` and `internal/storage`: authorization model, [SQLite v4](M1-PROJECT-STORE.md) with redacted runs/observations and [local revocation](M1-MANAGED-RUNS.md).
 - `internal/scope` and `internal/transport`: [route policy and public IP-pinned broker](M1-CONTROLLED-CRAWL.md), used by the M1 desktop.
 - `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md) and [bounded crawler](M1-CONTROLLED-CRAWL.md) with persistent results. Tests open no external network connections.
+- `internal/intelligence` and `internal/reporting`: [M2 cache/matching](M2-INTELLIGENCE-CACHE.md) and [verifiable bundles](M2-REPORTS.md), independent of Qt. `cmd/webfence-report` and `cmd/webfence-verify` are technical helpers buildable from source.
 
 Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
 
-In the desktop, `WebFence/ui-language` and `WebFence/projects.sqlite` are under `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` or `~/.config`; Windows: `%AppData%`). The DB may have `.lock`, `-wal` and `-shm` files. The language preference uses a temporary file and rename; M1 projects and results persist. Errors are visible in the GUI. Old Fyne preferences are neither imported nor deleted. M0 examples, filters and selection are not saved. Explicitly copied clipboard contents are not erased by “Clear examples”.
+In the desktop, `WebFence/ui-language`, `WebFence/projects.sqlite`, `WebFence/intelligence.sqlite` and `WebFence/report-trust.json` are under `os.UserConfigDir()` (macOS: `~/Library/Application Support`; Linux: `$XDG_CONFIG_HOME` or `~/.config`; Windows: `%AppData%`). The project DB may have `.lock`, `-wal` and `-shm` files; the public trust registry may have `.lock`. Private keys stay in the native credential store. Language uses a temporary file and rename; projects, M1 results and the CVE cache persist, while GUI assessments live in the session until export. Errors are visible in the GUI. Old Fyne preferences are neither imported nor deleted. M0 examples, filters and selection are not saved. Explicitly copied clipboard contents are not erased by “Clear examples”.
 
 For an M1 trial, open **M1 Scan**, create a project with exact origin, owner, non-secret authorization reference, expiry and confirmation. Select it, enter an authorized seed, allowed/excluded prefixes, loopback or manually pinned public IP mode, budget, pages and depth. Links are visited only when opted in. Start, review progress and coverage, then reopen the app to read saved results. Use only owned or explicitly authorized targets; the self-test uses loopback only. The GUI does not yet provide renewal/revocation or backup; see the [APIs and limits](M1-PROJECT-STORE.md).
+
+For M2, select a finished run in the M1 window and open **CVE and reports**. Choose a UTC NVD window or CVE ID and update the cache only by explicit action; enter a non-secret vendor, product, version and inventory reference for local matching. An assessment is not an active CVE check. Create a signer key in the native credential store, choose a new `.wfr` path and export; unsigned mode is explicit. **Verify** uses the local trust registry; importing another system's key requires an independently confirmed fingerprint through the [CLI procedure](M2-REPORTS.md). Export shows incomplete coverage and cache mode/freshness; no feed is fetched on startup.
 
 The Language menu and selector switch IT/EN; shortcuts are **Ctrl+1/Ctrl+2** (**Cmd+1/Cmd+2** on macOS). **Ctrl+O/Cmd+O** loads examples. Full keyboard and screen-reader validation remains open.
 
@@ -98,7 +101,7 @@ go test -race -cover ./internal/transport
 
 ## SQLite and JWS: M0 foundations
 
-Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files; `internal/signature` exposes byte signing/verification, now used by the [M2 report core](M2-REPORTS.md) with JCS and native key storage. The report workflow is not yet in the GUI.
+Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files; `internal/signature` exposes byte signing/verification, now used by [M2 reports](M2-REPORTS.md) with JCS and native key storage. The GUI offers the essential workflow; rotation, revocation and public-key import remain in the CLI helper.
 
 ```sh
 go test -race ./internal/foundation ./internal/signature
