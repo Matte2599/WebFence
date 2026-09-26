@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -98,7 +98,7 @@ go test -race -cover ./internal/transport
 
 ## SQLite e JWS: fondazioni M0
 
-Driver e libreria scelti in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contiene solo test SQLite su file temporanei; `internal/signature` espone firma/verifica di byte, senza report, JCS o portachiavi. Nessuno dei due è collegato alla GUI.
+Driver e libreria scelti in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contiene test SQLite su file temporanei; `internal/signature` espone firma/verifica di byte, ora usata dal [core report M2](M2-REPORTS.md) insieme a JCS e portachiavi. Il workflow report non è ancora nella GUI.
 
 ```sh
 go test -race ./internal/foundation ./internal/signature
