@@ -6,7 +6,7 @@ Aggiornamento / Updated: 2026-09-26. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
-Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale, il prototipo desktop M0 e la alpha tecnica M1; lo stato di M0 è nella [matrice di validazione](it/M0-VALIDATION.md), quello di M1 nella [matrice M1](it/M1-VALIDATION.md). Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
+Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale, il prototipo desktop M0 e le alpha tecniche M1/M2; stato e limiti sono nelle matrici [M0](it/M0-VALIDATION.md), [M1](it/M1-VALIDATION.md) e [M2](it/M2-VALIDATION.md). Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
 
 ### Fondazione documentale — completata
 
@@ -57,16 +57,18 @@ Uscita: flusso progetto → scansione lab → risultati → riavvio verificato; 
 
 Dipende da M1. Copre WF-04 e WF-06.
 
-Primo blocco core: [cache CVE/NVD](it/M2-INTELLIGENCE-CACHE.md) con sync transazionale, provenienza e stato. Integrazione GUI e report restano da completare.
+Primo blocco core: [cache CVE/NVD](it/M2-INTELLIGENCE-CACHE.md) con sync transazionale, provenienza e stato.
 
-Secondo blocco core: [matching conservativo](it/M2-MATCHING.md) su segnali espliciti, con confidenza, intervalli di versione e backport attestati. La presentazione desktop resta da completare.
+Secondo blocco core: [matching conservativo](it/M2-MATCHING.md) su segnali espliciti, con confidenza, intervalli di versione e backport attestati.
 
-Terzo blocco core: [report verificabili](it/M2-REPORTS.md) da run salvate, con JSON/HTML IT/EN, manifest JCS, firma JWS, gestione locale delle chiavi e verifica offline. Il flusso desktop guidato resta da completare.
+Terzo blocco core: [report verificabili](it/M2-REPORTS.md) da run salvate, con JSON/HTML IT/EN, manifest JCS, firma JWS, gestione locale delle chiavi e verifica offline.
 
-- [ ] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
-- [ ] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
-- [ ] Export JSON/HTML IT/EN, manifest, firma, gestione chiavi e verificatore offline.
-- [ ] Prove di manomissione, chiave non fidata, feed indisponibile e sync interrotta.
+Quarto blocco: [flusso desktop M2 e verifica complessiva](it/M2-VALIDATION.md), con sync manuale, segnale prodotto/versione dichiarato dall'operatore, export dalla run selezionata e regressioni native.
+
+- [x] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
+- [x] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
+- [x] Export JSON/HTML IT/EN, manifest, firma, gestione chiavi e verificatore offline.
+- [x] Prove di manomissione, chiave non fidata, feed indisponibile e sync interrotta.
 
 Uscita: bundle originale verificabile e alterazioni respinte; ultima cache valida recuperabile; report con controlli non eseguiti visibili. Nessuna dichiarazione di firma qualificata o copertura CVE totale.
 
@@ -121,7 +123,7 @@ CLI/CI, import SBOM, arricchimenti KEV/EPSS, verifiche su specifici framework, s
 
 ## English
 
-This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation, M0 desktop prototype and technical M1 alpha exist; M0 status is in the [validation matrix](en/M0-VALIDATION.md), M1 status in the [M1 matrix](en/M1-VALIDATION.md). Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
+This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation, M0 desktop prototype and technical M1/M2 alphas exist; status and limits are in the [M0](en/M0-VALIDATION.md), [M1](en/M1-VALIDATION.md) and [M2](en/M2-VALIDATION.md) matrices. Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
 
 ### Documentation foundation — complete
 
@@ -172,16 +174,18 @@ Exit: verified project → lab scan → results → restart workflow; scope suit
 
 Depends on M1. Covers WF-04 and WF-06.
 
-First core block: [CVE/NVD cache](en/M2-INTELLIGENCE-CACHE.md) with transactional sync, provenance and status. GUI integration and reports remain to be completed.
+First core block: [CVE/NVD cache](en/M2-INTELLIGENCE-CACHE.md) with transactional sync, provenance and status.
 
-Second core block: [conservative matching](en/M2-MATCHING.md) on explicit signals, with confidence, version ranges and attested backports. Desktop presentation remains to be completed.
+Second core block: [conservative matching](en/M2-MATCHING.md) on explicit signals, with confidence, version ranges and attested backports.
 
-Third core block: [verifiable reports](en/M2-REPORTS.md) from saved runs, with IT/EN JSON/HTML, a JCS manifest, JWS signing, local key management and offline verification. The guided desktop workflow remains to be completed.
+Third core block: [verifiable reports](en/M2-REPORTS.md) from saved runs, with IT/EN JSON/HTML, a JCS manifest, JWS signing, local key management and offline verification.
 
-- [ ] CVE/NVD adapters, incremental cache, provenance and freshness status.
-- [ ] Confidence-aware matching, versions/backports and candidate/verified distinction.
-- [ ] IT/EN JSON/HTML export, manifests, signing, key management and offline verifier.
-- [ ] Tampering, untrusted-key, unavailable-feed and interrupted-sync tests.
+Fourth block: [M2 desktop flow and full validation](en/M2-VALIDATION.md), with manual sync, operator-declared product/version signal, export from the selected run and native regressions.
+
+- [x] CVE/NVD adapters, incremental cache, provenance and freshness status.
+- [x] Confidence-aware matching, versions/backports and candidate/verified distinction.
+- [x] IT/EN JSON/HTML export, manifests, signing, key management and offline verifier.
+- [x] Tampering, untrusted-key, unavailable-feed and interrupted-sync tests.
 
 Exit: original bundle verifies and alterations are rejected; last valid cache is recoverable; reports show unexecuted checks. No qualified-signature or complete-CVE-coverage claims.
 

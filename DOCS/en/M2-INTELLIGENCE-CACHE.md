@@ -2,7 +2,7 @@
 
 [Italiano](../it/M2-INTELLIGENCE-CACHE.md) · [Roadmap](../ROADMAP.md) · [Intelligence specification](VULNERABILITY-INTELLIGENCE.md)
 
-Status: **first M2 core block**. `internal/intelligence` has separate adapters for an explicit NVD CVE API 2.0 date window and explicitly selected CVE Program IDs. No feed is downloaded on startup, no target inventory is sent to the sources, and no CVE database is bundled. The GUI does not yet expose synchronization.
+Status: **first M2 core block**. `internal/intelligence` has separate adapters for an explicit NVD CVE API 2.0 date window and explicitly selected CVE Program IDs. No feed is downloaded on startup, no target inventory is sent to the sources, and no CVE database is bundled. The [M2 desktop](M2-VALIDATION.md) exposes manual updates.
 
 ## Implemented contract
 
@@ -14,6 +14,6 @@ Status: **first M2 core block**. `internal/intelligence` has separate adapters f
 
 ## Verification and limits
 
-`go test -race ./internal/intelligence` covers pagination, provenance, offline reopen, source separation, rollback after an invalid/unavailable feed and rejection of custom external endpoints. Tests contact no real NVD or CVE service. They do not establish historical CVE coverage, authenticity of offline imports or compatibility with every upstream record. Matching, UI and reports belong to later blocks.
+`go test -race ./internal/intelligence` covers pagination, provenance, offline reopen, source separation, rollback after an invalid/unavailable feed and rejection of custom external endpoints. Tests contact no real NVD or CVE service. They do not establish historical CVE coverage, authenticity of offline imports or compatibility with every upstream record. The desktop always requires an explicit action before opening source network connections.
 
 Primary sources: [NVD API 2.0](https://nvd.nist.gov/developers/vulnerabilities), [CVE Services](https://github.com/CVEProject/cve-services), [official CVE catalog](https://github.com/CVEProject/cvelistV5). Source parameters and limits need review when upstream changes.

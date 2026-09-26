@@ -2,7 +2,7 @@
 
 [English](../en/REPORTING.md) · [Indice](../README.md)
 
-Stato: il [core report M2](M2-REPORTS.md) implementa export bilingue JSON/HTML, JCS, JWS, chiavi nel portachiavi e verificatore offline per le run M1. Le parti seguenti descrivono anche il contratto futuro; i finding ricchi, PDF, correzioni collegate e workflow desktop restano pianificati.
+Stato: il [report M2](M2-REPORTS.md) implementa export bilingue JSON/HTML, JCS, JWS, chiavi nel portachiavi e verificatore offline per le run M1; il [desktop M2](M2-VALIDATION.md) espone un flusso guidato limitato. Le parti seguenti descrivono anche il contratto futuro; finding ricchi, PDF e correzioni collegate restano pianificati.
 
 ## Contenuto
 

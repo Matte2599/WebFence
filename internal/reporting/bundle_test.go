@@ -13,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Matte2599/WebFence/internal/intelligence"
 	"github.com/Matte2599/WebFence/internal/storage"
 )
 
@@ -168,5 +169,28 @@ func TestUnsignedBundleIsExplicit(t *testing.T) {
 	}
 	if _, err := Verify(path, fixedTrust{}); !errors.Is(err, ErrUnsigned) {
 		t.Fatalf("unsigned accepted: %v", err)
+	}
+}
+
+func TestOfflineReportPreservesStaleFeedState(t *testing.T) {
+	s := fixtureSnapshot()
+	s.Intelligence = []intelligence.Snapshot{{Source: "nvd", LastSuccess: time.Now().Add(-72 * time.Hour), Records: 4}}
+	r, err := buildReport(s, "synthetic", "en", time.Now(), false, "", true, 24*time.Hour)
+	if err != nil || len(r.Intelligence) != 2 || r.Intelligence[0].Status != "offline" || r.Intelligence[0].Freshness != "stale" || r.Intelligence[1].Status != "unavailable" {
+		t.Fatalf("feed state: %+v %v", r.Intelligence, err)
+	}
+}
+
+func TestUnexecutedSeedsExcludeDiscoveredVisits(t *testing.T) {
+	s := fixtureSnapshot()
+	s.Run.PlannedSeeds = 2
+	discovered := s.Run.Visits[0]
+	discovered.VisitIndex = 1
+	discovered.Depth = 1
+	s.Run.Visits = append(s.Run.Visits, discovered)
+	s.Run.CompletedVisits = 2
+	r, err := buildReport(s, "synthetic", "en", time.Now(), false, "", true, time.Hour)
+	if err != nil || r.Coverage.UnexecutedSeedMinimum != 1 {
+		t.Fatalf("seed coverage: %+v %v", r.Coverage, err)
 	}
 }

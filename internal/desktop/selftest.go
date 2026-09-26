@@ -1,10 +1,16 @@
 package desktop
 
 import (
+	"archive/zip"
+	"context"
+	"errors"
 	"fmt"
 	"github.com/Matte2599/WebFence/internal/demo"
+	"github.com/Matte2599/WebFence/internal/intelligence"
 	"github.com/Matte2599/WebFence/internal/preferences"
+	"github.com/Matte2599/WebFence/internal/reporting"
 	qt "github.com/mappu/miqt/qt6"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -235,8 +241,63 @@ func selfTest(w *workspace) int {
 		qt.QCoreApplication_ProcessEvents()
 		check(u.done == nil && hits.Load() == 1 && strings.Contains(u.results.ToPlainText(), "nosniff_absent"), "M1 native owned-lab scan and result")
 		check(!strings.Contains(u.results.ToPlainText(), server.URL), "M1 native result redaction")
+		m := u.m2
+		m.show()
+		feed := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			writer.Header().Set("Content-Type", "application/json")
+			_, _ = writer.Write([]byte(`{"cveMetadata":{"cveId":"CVE-2026-1000","state":"PUBLISHED","datePublished":"2026-09-01T00:00:00Z","dateUpdated":"2026-09-25T00:00:00Z"},"containers":{"cna":{"affected":[{"vendor":"example","product":"widget","versions":[{"version":"1.0.0","lessThan":"2.0.0","versionType":"semver","status":"affected"}]}]}}}`))
+		}))
+		_, feedErr := m.cache.RefreshCVE(context.Background(), &intelligence.CVEClient{Endpoint: feed.URL + "/"}, []string{"CVE-2026-1000"})
+		feed.Close()
+		m.cveID.SetText("CVE-2026-1000")
+		m.source.SetCurrentIndex(1)
+		m.vendor.SetText("example")
+		m.product.SetText("widget")
+		m.version.SetText("1.5.0")
+		m.evidence.SetText("inventory:synthetic")
+		m.match.Click()
+		deadline = time.Now().Add(3 * time.Second)
+		for m.result != nil && time.Now().Before(deadline) {
+			qt.QCoreApplication_ProcessEvents()
+			time.Sleep(10 * time.Millisecond)
+		}
+		qt.QCoreApplication_ProcessEvents()
+		assessment, assessed := m.assessments["cve:CVE-2026-1000"]
+		check(feedErr == nil && assessed && assessment.Status == "applicable", "M2 native explicit cached CVE assessment")
+		m.unsigned.SetChecked(true)
+		bundlePath := filepath.Join(filepath.Dir(w.preferencePath), "m2-selftest.wfr")
+		m.destination.SetText(bundlePath)
+		m.export.Click()
+		deadline = time.Now().Add(12 * time.Second)
+		for m.result != nil && time.Now().Before(deadline) {
+			qt.QCoreApplication_ProcessEvents()
+			time.Sleep(10 * time.Millisecond)
+		}
+		qt.QCoreApplication_ProcessEvents()
+		bundle, bundleErr := zip.OpenReader(bundlePath)
+		if bundleErr == nil {
+			defer bundle.Close()
+		}
+		assessmentInReport := false
+		if bundleErr == nil {
+			for _, file := range bundle.File {
+				if file.Name != "report-en.json" {
+					continue
+				}
+				reader, readErr := file.Open()
+				if readErr != nil {
+					break
+				}
+				data, readErr := io.ReadAll(reader)
+				_ = reader.Close()
+				assessmentInReport = readErr == nil && strings.Contains(string(data), "CVE-2026-1000")
+			}
+		}
+		_, verificationErr := reporting.Verify(bundlePath, m.trust)
+		check(m.result == nil && bundleErr == nil && len(bundle.File) == 5 && assessmentInReport && errors.Is(verificationErr, reporting.ErrUnsigned), "M2 native bilingual unsigned export")
 		w.englishAction.Trigger()
 		check(u.start.Text() == "Start scan" && strings.Contains(u.coverage.Text(), "queue"), "M1 native English translation")
+		check(m.match.Text() == "Assess selected run" && m.unsigned.Text() == "Export explicitly unsigned", "M2 native English translation")
 		w.italianAction.Trigger()
 		u.confirmDelete = func() bool { return true }
 		u.deleteProject.Click()

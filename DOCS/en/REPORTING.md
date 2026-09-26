@@ -2,7 +2,7 @@
 
 [Italiano](../it/REPORTING.md) · [Index](../README.md)
 
-Status: the [M2 report core](M2-REPORTS.md) implements bilingual JSON/HTML export, JCS, JWS, native key storage and offline verification for M1 runs. The sections below also describe the future contract; richer findings, PDF, linked corrections and desktop workflow remain planned.
+Status: [M2 reports](M2-REPORTS.md) implement bilingual JSON/HTML export, JCS, JWS, native key storage and offline verification for M1 runs; the [M2 desktop](M2-VALIDATION.md) exposes a limited guided workflow. The sections below also describe the future contract; richer findings, PDF and linked corrections remain planned.
 
 ## Content
 

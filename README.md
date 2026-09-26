@@ -20,6 +20,8 @@ La [discovery HTML M1](DOCS/it/M1-DISCOVERY-LAB.md) osserva link e form nelle ri
 
 Le [visite HTTP controllate M1](DOCS/it/M1-CONTROLLED-CRAWL.md) aggiungono policy per metodi, percorsi ed esclusioni, link seguiti solo con opt-in, rate per origine e grant di IP pubblici fissati. La GUI espone un'origine e un seed per scansione; i form non vengono inviati. Usa solo target propri o esplicitamente autorizzati.
 
+La [alpha M2](DOCS/it/M2-VALIDATION.md) aggiunge cache CVE/NVD aggiornata su richiesta, correlazione conservativa con prodotto/versione dichiarati dall'operatore e bundle di report IT/EN verificabili offline. Il desktop espone un flusso guidato limitato dalla run selezionata; i test non hanno misurato accuratezza CVE su casi reali né eseguito sync live delle fonti.
+
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 
 ## Perché WebFence
@@ -41,7 +43,7 @@ WebFence nasce per analizzare siti e API autorizzati, associare ogni problema al
 | Memoria dei progetti | Inventario e cronologia persistenti fino alla cancellazione; credenziali e prove grezze con conservazione distinta. |
 | Convalida fix | Nuovo controllo mirato, confronto con la baseline e ricerca di regressioni nel perimetro riesaminato. |
 
-La tabella descrive obiettivi di prodotto, **non funzionalità completate**; la capacità M1 effettiva è nella [matrice di validazione](DOCS/it/M1-VALIDATION.md). Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
+La tabella descrive obiettivi di prodotto, **non funzionalità completate**; le capacità attuali e i limiti sono nelle matrici [M1](DOCS/it/M1-VALIDATION.md) e [M2](DOCS/it/M2-VALIDATION.md). Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
 
 ## Direzione tecnica
 
