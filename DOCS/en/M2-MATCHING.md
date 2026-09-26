@@ -1,6 +1,6 @@
 # M2 — Conservative CVE matching
 
-[Italiano](../it/M2-MATCHING.md) · [Roadmap](../ROADMAP.md) · [Cache](M2-INTELLIGENCE-CACHE.md)
+[Italiano](../it/M2-MATCHING.md) · [Roadmap](../ROADMAP.md) · [Cache](M2-INTELLIGENCE-CACHE.md) · [Simulation](M2-ACCURACY-SIMULATION.md)
 
 Status: **second M2 core block**. `internal/intelligence.Assess` correlates one cached NVD or CVE record with **one explicit product/version signal**. It does not infer installed products from M1 scan headers, prove exploitability or automatically create CVE findings in the GUI.
 
@@ -12,12 +12,12 @@ A backport can change `applicable` to `not_applicable` **only** with an explicit
 
 ## Supported subset
 
-- NVD: direct OR configurations with unescaped CPE 2.3, explicit vendor/product identity, matching or `*` extra fields, and inclusive/exclusive ranges of dotted numeric versions. AND, negation, recursive children, escaped fields and unproven platform conditions yield `unknown`.
-- CVE JSON: `containers.cna.affected`, explicit vendor/product, exact versions and `versionType=semver` ranges with three numeric components, including evaluation of sorted `changes`. Prereleases, distro, RPM, Python, Maven and custom ranges, or unproven platforms yield `unknown`; versions are never compared lexicographically.
+- NVD: direct OR configurations with unescaped CPE 2.3, explicit vendor/product identity and CPE part (`a`, `o`, `h`), matching or `*` extra fields, and inclusive/exclusive ranges of dotted numeric versions. The part may come from a full CPE or a separate signal field; without it the outcome is `unknown`. AND, negation, recursive children, escaped fields and unproven platform conditions yield `unknown`.
+- CVE JSON: `containers.cna.affected`, explicit vendor/product, exact versions and `versionType=semver` ranges with three numeric components, including evaluation of sorted `changes`. Conflicting overlapping ranges, out-of-range status changes, prereleases, distro, RPM, Python, Maven and custom ranges, or unproven platform, module, package or CPE constraints yield `unknown`; versions are never compared lexicographically.
 - A banner remains low confidence even if its input claims high confidence; it cannot produce `verified` or a negative conclusion. Duplicate JSON members, mismatched IDs and inconsistent hashes are rejected.
 
 ## Verification and limits
 
-Synthetic fixtures cover inclusive/exclusive bounds, intermediate fixes, weak signals, backports, attestations, rejected sources, AND configurations and unsupported forms/versions. `go test -race ./internal/intelligence` contacts no external source or target. No real-corpus matching accuracy or support for every CPE/CVE version scheme is claimed. The [M2 desktop](M2-VALIDATION.md) accepts manual vendor/product/version signals for a selected run; backport and verification attestations remain core APIs without a GUI form.
+The [local simulation](M2-ACCURACY-SIMULATION.md) publishes the method, matrix and limits of 30 synthetic cases. `go test -race ./internal/intelligence` contacts no external source or target. No real-corpus matching accuracy or support for every CPE/CVE version scheme is claimed. The [M2 desktop](M2-VALIDATION.md) accepts manual vendor/product/version signals for a selected run; until the CPE part field is added, an NVD signal without a full CPE remains `unknown`. Backport and verification attestations remain core APIs without a GUI form.
 
 Primary sources: [CVE Record Format](https://cveproject.github.io/cve-schema/schema/docs/), [NVD CPE FAQ](https://nvd.nist.gov/general/faq-sections/cpe-faqs), [NVD API](https://nvd.nist.gov/developers/vulnerabilities).
