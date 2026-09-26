@@ -85,6 +85,7 @@ Primo blocco core: [gate delle richieste browser](it/M3-BROWSER-GATE.md) per sco
 Secondo blocco core: [proxy HTTP confinato](it/M3-BROWSER-PROXY.md) che inoltra richieste ammesse al broker con IP fissati; solo fixture loopback, ancora senza browser operativo.
 
 Terzo blocco sperimentale: [laboratorio Qt WebEngine](it/M3-BROWSER-LAB.md) su fixture locali per documento, script e `fetch`; runtime desktop, limiti di processo e prove multipiattaforma restano aperti.
+Un job CI Ubuntu 24.04 ora prova il laboratorio Qt con display virtuale; registrare l'esito sul commit pertinente prima di considerare verificata la piattaforma Linux.
 
 Quarto blocco sperimentale: [helper Qt supervisionato](it/ADR-011-BROWSER-HELPER.md) con IPC limitato, scadenza e terminazione dell'albero di processi; egress indipendente e limiti rigidi su macOS/Linux restano aperti.
 
@@ -218,6 +219,7 @@ First core block: [browser request gate](en/M3-BROWSER-GATE.md) for scope, polic
 Second core block: [confined HTTP proxy](en/M3-BROWSER-PROXY.md) forwarding admitted requests through the pinned broker; loopback fixtures only, still without a working browser.
 
 Third experimental block: [Qt WebEngine lab](en/M3-BROWSER-LAB.md) on local document, script and `fetch` fixtures; the desktop runtime, process limits and cross-platform trials remain open.
+A Ubuntu 24.04 CI job now exercises the Qt lab under a virtual display; check the relevant commit before treating Linux as verified.
 
 Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) with bounded IPC, deadline and process-tree termination; independent egress and hard macOS/Linux process limits remain open.
 

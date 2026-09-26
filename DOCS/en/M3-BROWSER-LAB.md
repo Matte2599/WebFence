@@ -18,3 +18,5 @@ CGO_CXXFLAGS='-O0 -g0 -std=c++17' go test -tags=m3browserlab ./experiments/m3-br
 ```
 
 **Local trial on September 27, 2026, Apple Silicon/macOS 26.6.2, Qt WebEngine 6.11.2:** the command with the helper returned `PASS`. The macOS 26 CI job is separate and must be checked on the branch and merged commit. No equivalent Qt trial is documented yet on Windows or Linux. The lab is not a GUI feature and lacks independent egress, hard macOS/Linux process/memory limits, HTTPS and sessions; it does not satisfy the M3 browser criterion.
+
+CI now includes a Linux Ubuntu 24.04 job with Qt WebEngine and a virtual display: it runs the configuration test and the same synthetic fixture. The job must be green for the relevant commit before recording a successful Linux trial. The local macOS trial was repeated after adding the job. This is still not a trial of independent egress containment.
