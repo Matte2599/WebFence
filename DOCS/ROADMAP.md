@@ -61,6 +61,8 @@ Primo blocco core: [cache CVE/NVD](it/M2-INTELLIGENCE-CACHE.md) con sync transaz
 
 Secondo blocco core: [matching conservativo](it/M2-MATCHING.md) su segnali espliciti, con confidenza, intervalli di versione e backport attestati. La presentazione desktop resta da completare.
 
+Terzo blocco core: [report verificabili](it/M2-REPORTS.md) da run salvate, con JSON/HTML IT/EN, manifest JCS, firma JWS, gestione locale delle chiavi e verifica offline. Il flusso desktop guidato resta da completare.
+
 - [ ] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
 - [ ] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
 - [ ] Export JSON/HTML IT/EN, manifest, firma, gestione chiavi e verificatore offline.
@@ -173,6 +175,8 @@ Depends on M1. Covers WF-04 and WF-06.
 First core block: [CVE/NVD cache](en/M2-INTELLIGENCE-CACHE.md) with transactional sync, provenance and status. GUI integration and reports remain to be completed.
 
 Second core block: [conservative matching](en/M2-MATCHING.md) on explicit signals, with confidence, version ranges and attested backports. Desktop presentation remains to be completed.
+
+Third core block: [verifiable reports](en/M2-REPORTS.md) from saved runs, with IT/EN JSON/HTML, a JCS manifest, JWS signing, local key management and offline verification. The guided desktop workflow remains to be completed.
 
 - [ ] CVE/NVD adapters, incremental cache, provenance and freshness status.
 - [ ] Confidence-aware matching, versions/backports and candidate/verified distinction.

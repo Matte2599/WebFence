@@ -2,7 +2,7 @@
 
 [Italiano](../it/REPORTING.md) · [Index](../README.md)
 
-Status: proposed M2 report contract. M0 implements only the restricted JWS profile in [ADR-004](ADR-004-STORAGE-SIGNATURE.md), with independent Ed25519 checks; JCS and bundle verification remain unimplemented.
+Status: the [M2 report core](M2-REPORTS.md) implements bilingual JSON/HTML export, JCS, JWS, native key storage and offline verification for M1 runs. The sections below also describe the future contract; richer findings, PDF, linked corrections and desktop workflow remain planned.
 
 ## Content
 
@@ -19,7 +19,7 @@ Structured JSON and static HTML in M2; PDF in M6 after rendering QA. Selected la
 1. Freeze a results snapshot; generate final artifacts.
 2. Create a manifest with schema version, report/run/project IDs, signer-declared UTC time, language, declared identity, key ID and files listed by relative path, size and SHA-256.
 3. Canonicalize the manifest with [JCS, RFC 8785](https://www.rfc-editor.org/rfc/rfc8785). Reject duplicate keys, invalid numbers and invalid strings; use strings for long numeric identifiers.
-4. Sign the canonical bytes as an embedded payload in a [JWS, RFC 7515](https://www.rfc-editor.org/rfc/rfc7515.html). Proposed initial profile: `Ed25519` from [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html), with algorithm, `kid` and document type in the protected header. Use a maintained library supporting the profile; do not invent a cryptographic construction or silently substitute algorithms.
+4. Sign the canonical bytes as an embedded payload in a [JWS, RFC 7515](https://www.rfc-editor.org/rfc/rfc7515.html). The implemented profile uses `Ed25519` from [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html), with algorithm, `kid` and document type in the protected header, through `jwx/v4` already selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
 5. Distribute artifacts and JWS; any readable manifest copy must match the verified payload exactly. The signature is excluded from the manifest to avoid self-reference.
 
 ## Verification and trust

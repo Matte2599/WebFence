@@ -68,7 +68,7 @@ jobs:
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - run: test -z "$(gofmt -l cmd internal)"
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
       - name: Isolated Linux native credential tests
         if: runner.os == 'Linux'
         run: sh scripts/test-keychain-linux.sh
@@ -82,6 +82,8 @@ jobs:
         if: matrix.os == 'ubuntu-24.04'
         run: go test ./internal/signature -run '^$' -fuzz '^FuzzVerify$' -fuzztime=10s -parallel=2
       - run: go build -o bin/webfence ./cmd/webfence
+      - run: go build -o bin/webfence-report ./cmd/webfence-report
+      - run: go build -o bin/webfence-verify ./cmd/webfence-verify
       - run: go vet ./...
       - run: go test ./internal/desktop
       - run: ./bin/webfence --self-test
@@ -237,10 +239,12 @@ jobs:
       - name: Source collection and attachment regressions
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
       - name: Windows native credential tests
         run: go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
       - run: go build -ldflags '-H=windowsgui -s -w' -o bin/webfence.exe ./cmd/webfence
+      - run: go build -o bin/webfence-report.exe ./cmd/webfence-report
+      - run: go build -o bin/webfence-verify.exe ./cmd/webfence-verify
       - run: go vet ./...
       - run: go test ./internal/desktop
       - run: ./bin/webfence.exe --self-test

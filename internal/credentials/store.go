@@ -1,5 +1,5 @@
 // Package credentials provides a bounded, fail-closed OS credential store.
-// It is not yet connected to the GUI or to report signing.
+// M2 report signing uses it; the desktop UI does not yet manage signer keys.
 package credentials
 
 import (

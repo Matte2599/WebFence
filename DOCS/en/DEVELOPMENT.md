@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -98,7 +98,7 @@ go test -race -cover ./internal/transport
 
 ## SQLite and JWS: M0 foundations
 
-Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files only; `internal/signature` exposes byte signing/verification, without reports, JCS or keychain access. Neither is connected to the GUI.
+Driver and library selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md). `internal/foundation` contains SQLite tests on temporary files; `internal/signature` exposes byte signing/verification, now used by the [M2 report core](M2-REPORTS.md) with JCS and native key storage. The report workflow is not yet in the GUI.
 
 ```sh
 go test -race ./internal/foundation ./internal/signature

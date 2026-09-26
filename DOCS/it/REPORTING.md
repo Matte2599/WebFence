@@ -2,7 +2,7 @@
 
 [English](../en/REPORTING.md) · [Indice](../README.md)
 
-Stato: contratto report proposto M2. M0 implementa soltanto il profilo JWS ristretto di [ADR-004](ADR-004-STORAGE-SIGNATURE.md), con prove indipendenti Ed25519; JCS e verifica del bundle restano da realizzare.
+Stato: il [core report M2](M2-REPORTS.md) implementa export bilingue JSON/HTML, JCS, JWS, chiavi nel portachiavi e verificatore offline per le run M1. Le parti seguenti descrivono anche il contratto futuro; i finding ricchi, PDF, correzioni collegate e workflow desktop restano pianificati.
 
 ## Contenuto
 
@@ -19,7 +19,7 @@ JSON strutturato e HTML statico in M2; PDF in M6 dopo QA del rendering. La lingu
 1. Bloccare uno snapshot dei risultati; generare gli artefatti finali.
 2. Creare un manifest con versione schema, ID report/run/progetto, UTC dichiarato dal firmatario, lingua, identità dichiarata, ID chiave e lista dei file con percorso relativo, dimensione e SHA-256.
 3. Canonicalizzare il manifest con [JCS, RFC 8785](https://www.rfc-editor.org/rfc/rfc8785). Rifiutare chiavi duplicate, numeri non validi e stringhe non valide; usare stringhe per identificatori numerici lunghi.
-4. Firmare i byte canonici come payload incorporato in un [JWS, RFC 7515](https://www.rfc-editor.org/rfc/rfc7515.html). Profilo iniziale proposto: algoritmo `Ed25519` definito da [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html), header protetto con algoritmo, `kid` e tipo di documento. Usare una libreria mantenuta che supporti questo profilo; non inventare una costruzione crittografica o sostituire algoritmi silenziosamente.
+4. Firmare i byte canonici come payload incorporato in un [JWS, RFC 7515](https://www.rfc-editor.org/rfc/rfc7515.html). Il profilo implementato usa `Ed25519` definito da [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864.html), con algoritmo, `kid` e tipo di documento nell'header protetto, tramite `jwx/v4` già selezionato in [ADR-004](ADR-004-STORAGE-SIGNATURE.md).
 5. Distribuire artefatti e JWS; un'eventuale copia leggibile del manifest deve corrispondere esattamente al payload verificato. La firma non è elencata nel manifest per evitare autoriferimenti.
 
 ## Verifica e fiducia
