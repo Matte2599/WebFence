@@ -20,3 +20,7 @@ Il controllo locale dell'intera milestone usa `go mod verify`, `go test -race` s
 **Prova locale del 26 settembre 2026, Apple Silicon/macOS 26.6.2:** i controlli sopra sono passati; anche `go test -race ./internal/desktop` con i flag C++17, il self-test Qt con la correlazione CVE sintetica e il soak di 10 secondi (quattro cicli) sono passati. La suite Python ha eseguito 79 test, con quattro salti legati all'ambiente. Il risultato del branch e del merge finale è distinto da questa prova locale e si verifica nei run CI corrispondenti.
 
 Non sono stati eseguiti sync reali NVD/CVE né scansioni su target esterni per chiudere M2. La fonte e il sito analizzato sono confini di rete distinti: il feed non riceve inventario del progetto. L'accuratezza CVE, la disponibilità live degli endpoint, il feedback sul carico dei target, i limiti assistivi M0/M1 e la revisione legale professionale restano rischi per supporto e distribuzione, non esiti implicitamente superati da M2.
+
+## Verifica extra successiva a M2
+
+La [simulazione locale del matching](M2-ACCURACY-SIMULATION.md) aggiunge 30 casi sintetici etichettati: 17 conclusioni corrette su 20 casi con verità nota, tre astensioni e dieci casi indeterminati lasciati `unknown`. La misura è limitata al corpus costruito e non cambia la chiusura M2 né costituisce accuratezza su CVE reali. La revisione ha inoltre richiesto parte CPE esplicita per NVD senza CPE completo e astensione per qualificatori CVE non dimostrati o versioni discordanti.

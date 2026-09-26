@@ -12,6 +12,7 @@ import (
 // response banner is always low confidence, regardless of a claimed level.
 type ProductSignal struct {
 	CPE23, Vendor, Product, Version string
+	Part                            string // a, o, h; required for NVD matching without a full CPE
 	Method                          string // inventory, manual, banner
 	Confidence                      string // high, medium, low
 	EvidenceRef                     string // opaque local reference, never a secret or page body
@@ -59,10 +60,11 @@ func validSignal(s ProductSignal) bool {
 		return false
 	}
 	if s.CPE23 == "" {
-		return s.Vendor != "" && s.Product != "" && len(s.Vendor) <= 128 && len(s.Product) <= 128
+		return s.Vendor != "" && s.Product != "" && len(s.Vendor) <= 128 && len(s.Product) <= 128 &&
+			(s.Part == "" || s.Part == "a" || s.Part == "o" || s.Part == "h")
 	}
 	cpe, ok := parseCPE(s.CPE23)
-	return ok && cpe.version == s.Version && cpe.vendor != "*" && cpe.product != "*"
+	return ok && cpe.version == s.Version && cpe.vendor != "*" && cpe.product != "*" && (s.Part == "" || s.Part == cpe.part)
 }
 
 // Assess evaluates one source record against one product signal. Unknown
@@ -169,6 +171,9 @@ type matchResult struct {
 }
 
 func matchNVD(data []byte, s ProductSignal) matchResult {
+	if s.CPE23 == "" && s.Part == "" {
+		return matchResult{matchUnknown, "part_not_identified"}
+	}
 	var doc struct {
 		Configurations []struct {
 			Operator string `json:"operator"`
@@ -277,7 +282,7 @@ func cpeProductMatches(criteria cpeFields, s ProductSignal) bool {
 			return false
 		}
 	}
-	return strings.EqualFold(criteria.vendor, s.Vendor) && strings.EqualFold(criteria.product, s.Product)
+	return criteria.part == s.Part && strings.EqualFold(criteria.vendor, s.Vendor) && strings.EqualFold(criteria.product, s.Product)
 }
 
 func matchCPEVersion(criteria, actual, startInc, startExc, endInc, endExc string) matchValue {

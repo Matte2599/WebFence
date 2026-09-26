@@ -20,3 +20,7 @@ The local milestone check uses `go mod verify`, `go test -race` on all core pack
 **Local trial on September 26, 2026, Apple Silicon/macOS 26.6.2:** the checks above passed; `go test -race ./internal/desktop` with C++17 flags, the Qt self-test with a synthetic CVE assessment and the 10-second soak (four cycles) also passed. The Python suite ran 79 tests with four environment-dependent skips. Branch and final-merge outcomes are separate from this local trial and must be checked in the corresponding CI runs.
 
 No real NVD/CVE sync or scans of external targets were performed to close M2. The source and scanned site are distinct network boundaries: the feed receives no project inventory. CVE accuracy, live endpoint availability, target load feedback, M0/M1 assistive limits and professional legal review remain support/distribution risks, not outcomes implicitly passed by M2.
+
+## Extra review after M2
+
+The [local matching simulation](M2-ACCURACY-SIMULATION.md) adds 30 labeled synthetic cases: 17 correct conclusions among 20 cases with known truth, three abstentions, and ten indeterminate cases left `unknown`. This measure is limited to the constructed corpus; it does not change M2 closure or establish accuracy on real CVEs. The review also required an explicit CPE part for NVD without a full CPE and abstention for unproven CVE qualifiers or conflicting version entries.

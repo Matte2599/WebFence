@@ -65,6 +65,8 @@ Terzo blocco core: [report verificabili](it/M2-REPORTS.md) da run salvate, con J
 
 Quarto blocco: [flusso desktop M2 e verifica complessiva](it/M2-VALIDATION.md), con sync manuale, segnale prodotto/versione dichiarato dall'operatore, export dalla run selezionata e regressioni native.
 
+Verifica extra successiva alla chiusura M2: [simulazione locale del matching](it/M2-ACCURACY-SIMULATION.md) su un corpus sintetico etichettato e rafforzamento delle condizioni che richiedono `unknown`. La misura non equivale a un benchmark su CVE reali.
+
 - [x] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
 - [x] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
 - [x] Export JSON/HTML IT/EN, manifest, firma, gestione chiavi e verificatore offline.
@@ -181,6 +183,8 @@ Second core block: [conservative matching](en/M2-MATCHING.md) on explicit signal
 Third core block: [verifiable reports](en/M2-REPORTS.md) from saved runs, with IT/EN JSON/HTML, a JCS manifest, JWS signing, local key management and offline verification.
 
 Fourth block: [M2 desktop flow and full validation](en/M2-VALIDATION.md), with manual sync, operator-declared product/version signal, export from the selected run and native regressions.
+
+Extra review after M2 closure: [local matching simulation](en/M2-ACCURACY-SIMULATION.md) on a labeled synthetic corpus and tighter conditions requiring `unknown`. This measure is not a benchmark on real CVEs.
 
 - [x] CVE/NVD adapters, incremental cache, provenance and freshness status.
 - [x] Confidence-aware matching, versions/backports and candidate/verified distinction.

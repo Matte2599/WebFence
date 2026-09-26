@@ -78,8 +78,12 @@ func matchCVE(data []byte, s ProductSignal) matchResult {
 				Affected []struct {
 					Vendor        string       `json:"vendor"`
 					Product       string       `json:"product"`
+					PackageName   string       `json:"packageName"`
+					CollectionURL string       `json:"collectionURL"`
 					DefaultStatus string       `json:"defaultStatus"`
 					Platforms     []string     `json:"platforms"`
+					Modules       []string     `json:"modules"`
+					CPEs          []string     `json:"cpes"`
 					Versions      []cveVersion `json:"versions"`
 				} `json:"affected"`
 			} `json:"cna"`
@@ -101,7 +105,7 @@ func matchCVE(data []byte, s ProductSignal) matchResult {
 			continue
 		}
 		matched = true
-		if len(entry.Platforms) > 0 {
+		if len(entry.Platforms) > 0 || len(entry.Modules) > 0 || len(entry.CPEs) > 0 || entry.PackageName != "" || entry.CollectionURL != "" {
 			unsupported = true
 			continue
 		}
@@ -136,13 +140,18 @@ func matchCVE(data []byte, s ProductSignal) matchResult {
 }
 
 func matchCVEVersions(entries []cveVersion, defaultStatus, actual string) (matchValue, bool) {
+	decision := matchUnknown
 	for _, entry := range entries {
 		if entry.Version == "" || (entry.LessThan != "" && entry.LessThanOrEqual != "") {
 			return matchUnknown, false
 		}
 		if entry.LessThan == "" && entry.LessThanOrEqual == "" {
 			if entry.Version == actual {
-				return statusValue(entry.Status), true
+				value := statusValue(entry.Status)
+				if value == matchUnknown || decision != matchUnknown && decision != value {
+					return matchUnknown, false
+				}
+				decision = value
 			}
 			continue
 		}
@@ -171,7 +180,7 @@ func matchCVEVersions(entries []cveVersion, defaultStatus, actual string) (match
 		}
 		value := statusValue(entry.Status)
 		if value == matchUnknown {
-			return value, true
+			return matchUnknown, false
 		}
 		changes := append([]struct {
 			At     string `json:"at"`
@@ -181,8 +190,15 @@ func matchCVEVersions(entries []cveVersion, defaultStatus, actual string) (match
 			return matchUnknown, false
 		}
 		for _, change := range changes {
-			if _, ok := compareNumeric(change.At, actual, true); !ok {
+			fromStart, ok := compareNumeric(change.At, entry.Version, true)
+			if !ok || fromStart < 0 || statusValue(change.Status) == matchUnknown {
 				return matchUnknown, false
+			}
+			if upper != "*" {
+				fromEnd, ok := compareNumeric(change.At, upper, true)
+				if !ok || fromEnd > 0 || fromEnd == 0 && entry.LessThan != "" {
+					return matchUnknown, false
+				}
 			}
 		}
 		sort.Slice(changes, func(i, j int) bool { cmp, _ := compareNumeric(changes[i].At, changes[j].At, true); return cmp < 0 })
@@ -198,7 +214,13 @@ func matchCVEVersions(entries []cveVersion, defaultStatus, actual string) (match
 				value = statusValue(change.Status)
 			}
 		}
-		return value, true
+		if value == matchUnknown || decision != matchUnknown && decision != value {
+			return matchUnknown, false
+		}
+		decision = value
+	}
+	if decision != matchUnknown {
+		return decision, true
 	}
 	return statusValue(defaultStatus), true
 }
