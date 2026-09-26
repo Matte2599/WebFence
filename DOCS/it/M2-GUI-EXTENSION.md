@@ -17,7 +17,7 @@ La GUI crea chiavi private nel portachiavi nativo, esporta report firmati o espl
 
 ## Verifica locale aggiuntiva
 
-L'autotest Qt usa una run e due record CVE/NVD sintetici su loopback. Esercita entrambi i modi di identità NVD, attestazioni valide e in conflitto, reset dei campi obsoleti, export bilingue non firmato e firmato, verifica offline, generazione/rotazione/revoca con un portachiavi sintetico isolato e import con impronta errata e corretta. `go test -race` sul core, `go test ./...`, `go vet ./...`, test Python e soak restano regressioni generali.
+L'autotest Qt usa una run e due record CVE/NVD sintetici su loopback. Esercita entrambi i modi di identità NVD, attestazioni valide e in conflitto, reset dei campi obsoleti, export bilingue non firmato e firmato, verifica offline, generazione/rotazione/revoca con un portachiavi sintetico isolato, import con impronta errata e corretta e conservazione della chiave selezionata al cambio lingua. `go test -race` sul core, `go test ./...`, `go vet ./...`, test Python e soak restano regressioni generali.
 
 La resa è stata osservata su macOS Cocoa nativo e Qt offscreen in IT/EN: tre schede, inizio/fine di moduli scorrevoli e finestra normale **820×740** e compatta **620×560** punti logici. Le schermate sintetiche locali sono state ispezionate per sovrapposizioni, controlli irraggiungibili e tagli del testo; la politica di crescita e ritorno a capo del form elimina il campo troppo stretto visto inizialmente su Cocoa. Questo controllo non certifica assenza di difetti su Windows/Linux, ogni scala DPI, temi o tecnologie assistive; la CI verifica i flussi nativi sulle piattaforme configurate.
 

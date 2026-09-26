@@ -426,6 +426,7 @@ func (m *m2UI) refreshCache() {
 
 func (m *m2UI) refreshKeys() {
 	selectedID := m.selectedManagedKey()
+	signerID := m.selectedSignerKey()
 	m.signer.Clear()
 	m.manageKey.Clear()
 	m.keyIDs = nil
@@ -449,7 +450,21 @@ func (m *m2UI) refreshKeys() {
 			break
 		}
 	}
+	for i, id := range m.keyIDs {
+		if id == signerID {
+			m.signer.SetCurrentIndex(i)
+			break
+		}
+	}
 	m.refreshControls()
+}
+
+func (m *m2UI) selectedSignerKey() string {
+	i := m.signer.CurrentIndex()
+	if i < 0 || i >= len(m.keyIDs) {
+		return ""
+	}
+	return m.keyIDs[i]
 }
 
 func (m *m2UI) selectedManagedKey() string {
