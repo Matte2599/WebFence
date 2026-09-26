@@ -68,7 +68,7 @@ jobs:
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - run: test -z "$(gofmt -l cmd internal)"
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence
       - name: Isolated Linux native credential tests
         if: runner.os == 'Linux'
         run: sh scripts/test-keychain-linux.sh
@@ -237,7 +237,7 @@ jobs:
       - name: Source collection and attachment regressions
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - run: go mod download && go mod verify
-      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials
+      - run: go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence
       - name: Windows native credential tests
         run: go test -race -tags=keychainintegration ./internal/credentials -count=1 -v
       - run: go build -ldflags '-H=windowsgui -s -w' -o bin/webfence.exe ./cmd/webfence
