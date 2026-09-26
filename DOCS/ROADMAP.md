@@ -67,6 +67,8 @@ Quarto blocco: [flusso desktop M2 e verifica complessiva](it/M2-VALIDATION.md), 
 
 Verifica extra successiva alla chiusura M2: [simulazione locale del matching](it/M2-ACCURACY-SIMULATION.md) su un corpus sintetico etichettato e rafforzamento delle condizioni che richiedono `unknown`. La misura non equivale a un benchmark su CVE reali.
 
+Estensione desktop successiva: [funzioni avanzate M2 nella GUI](it/M2-GUI-EXTENSION.md) per identità CPE, attestazioni e gestione delle chiavi pubbliche, con regressioni del flusso e ispezione grafica Cocoa/offscreen. Restano aperte accuratezza reale, persistenza delle correlazioni e prove assistive/hardware pertinenti.
+
 - [x] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
 - [x] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
 - [x] Export JSON/HTML IT/EN, manifest, firma, gestione chiavi e verificatore offline.
@@ -185,6 +187,8 @@ Third core block: [verifiable reports](en/M2-REPORTS.md) from saved runs, with I
 Fourth block: [M2 desktop flow and full validation](en/M2-VALIDATION.md), with manual sync, operator-declared product/version signal, export from the selected run and native regressions.
 
 Extra review after M2 closure: [local matching simulation](en/M2-ACCURACY-SIMULATION.md) on a labeled synthetic corpus and tighter conditions requiring `unknown`. This measure is not a benchmark on real CVEs.
+
+Later desktop extension: [advanced M2 features in the GUI](en/M2-GUI-EXTENSION.md) for CPE identity, attestations and public key management, with flow regressions and Cocoa/offscreen visual inspection. Real-world accuracy, assessment persistence and relevant assistive/hardware trials remain open.
 
 - [x] CVE/NVD adapters, incremental cache, provenance and freshness status.
 - [x] Confidence-aware matching, versions/backports and candidate/verified distinction.

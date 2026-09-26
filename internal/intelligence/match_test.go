@@ -55,6 +55,8 @@ func TestNVDAssessmentConfidenceBackportAndVerification(t *testing.T) {
 	assert(signal("2.0", "inventory", "high"), nil, nil, "not_applicable")
 	assert(signal("2.0", "banner", "high"), nil, nil, "unknown")
 	assert(signal("1.5", "inventory", "high"), nil, &Verification{Method: "manual", EvidenceRef: "review:7", Confirmed: true}, "verified")
+	assert(signal("1.5", "inventory", "high"), nil, &Verification{Method: "manual", EvidenceRef: "bad/ref", Confirmed: true}, "unknown")
+	assert(signal("1.5", "inventory", "high"), nil, &Verification{Method: "manual", EvidenceRef: "review:7", Confirmed: false}, "unknown")
 	assert(signal("1.5", "banner", "high"), nil, &Verification{Method: "manual", EvidenceRef: "review:7", Confirmed: true}, "candidate")
 	backport := &Backport{CVEID: record.ID, Version: "1.5", AdvisoryURL: "https://vendor.example/advisory/42", EvidenceRef: "advisory:42", Confirmed: true}
 	assert(signal("1.5", "inventory", "high"), backport, nil, "not_applicable")

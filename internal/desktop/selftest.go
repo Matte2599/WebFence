@@ -3,6 +3,7 @@ package desktop
 import (
 	"archive/zip"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/Matte2599/WebFence/internal/demo"
@@ -13,12 +14,41 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 )
+
+type selfTestSecrets struct {
+	mu   sync.Mutex
+	data map[string][]byte
+}
+
+func (s *selfTestSecrets) Get(_ context.Context, id string) ([]byte, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, ok := s.data[id]
+	if !ok {
+		return nil, reporting.ErrUntrustedKey
+	}
+	return append([]byte(nil), v...), nil
+}
+func (s *selfTestSecrets) Set(_ context.Context, id string, value []byte) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.data[id] = append([]byte(nil), value...)
+	return nil
+}
+func (s *selfTestSecrets) Delete(_ context.Context, id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	delete(s.data, id)
+	return nil
+}
 
 // selfTest exercises the real Qt model/widgets on their owner OS thread.
 // It is not a screen-reader test. It never writes to the system clipboard.
@@ -243,12 +273,52 @@ func selfTest(w *workspace) int {
 		check(!strings.Contains(u.results.ToPlainText(), server.URL), "M1 native result redaction")
 		m := u.m2
 		m.show()
+		m.keys, _ = reporting.NewKeyring(m.trust, &selfTestSecrets{data: map[string][]byte{}})
+		m.confirmKeyChange = func(string, string) bool { return true }
+		m.refreshKeys()
+		waitM2 := func() {
+			deadline := time.Now().Add(12 * time.Second)
+			for m.result != nil && time.Now().Before(deadline) {
+				qt.QCoreApplication_ProcessEvents()
+				time.Sleep(10 * time.Millisecond)
+			}
+			qt.QCoreApplication_ProcessEvents()
+			check(m.result == nil, "M2 background operation finished")
+		}
+		captureM2 := func(label string) {
+			folder := os.Getenv("WEBFENCE_UI_SNAPSHOT_DIR")
+			if folder == "" {
+				return
+			}
+			if err := os.MkdirAll(folder, 0o700); err != nil {
+				check(false, "M2 snapshot directory: "+label)
+				return
+			}
+			save := func(suffix string) {
+				qt.QCoreApplication_ProcessEvents()
+				pixmap := m.dialog.Grab()
+				ok := pixmap.Save(filepath.Join(folder, label+suffix+".png"))
+				runtime.SetFinalizer(pixmap, nil)
+				pixmap.Delete()
+				check(ok, "M2 visual snapshot: "+label+suffix)
+			}
+			save("")
+			bar := m.pages[m.tabs.CurrentIndex()].VerticalScrollBar()
+			if bar.Maximum() > 0 {
+				old := bar.Value()
+				bar.SetValue(bar.Maximum())
+				save("-bottom")
+				bar.SetValue(old)
+			}
+		}
+		check(m.tabs.Count() == 3 && m.assessmentView.Height() >= 100, "M2 three-tab layout and assessment space")
 		feed := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			writer.Header().Set("Content-Type", "application/json")
 			_, _ = writer.Write([]byte(`{"cveMetadata":{"cveId":"CVE-2026-1000","state":"PUBLISHED","datePublished":"2026-09-01T00:00:00Z","dateUpdated":"2026-09-25T00:00:00Z"},"containers":{"cna":{"affected":[{"vendor":"example","product":"widget","versions":[{"version":"1.0.0","lessThan":"2.0.0","versionType":"semver","status":"affected"}]}]}}}`))
 		}))
 		_, feedErr := m.cache.RefreshCVE(context.Background(), &intelligence.CVEClient{Endpoint: feed.URL + "/"}, []string{"CVE-2026-1000"})
 		feed.Close()
+		m.refreshCache()
 		m.cveID.SetText("CVE-2026-1000")
 		m.source.SetCurrentIndex(1)
 		m.vendor.SetText("example")
@@ -256,24 +326,75 @@ func selfTest(w *workspace) int {
 		m.version.SetText("1.5.0")
 		m.evidence.SetText("inventory:synthetic")
 		m.match.Click()
-		deadline = time.Now().Add(3 * time.Second)
-		for m.result != nil && time.Now().Before(deadline) {
-			qt.QCoreApplication_ProcessEvents()
-			time.Sleep(10 * time.Millisecond)
-		}
-		qt.QCoreApplication_ProcessEvents()
+		waitM2()
 		assessment, assessed := m.assessments["cve:CVE-2026-1000"]
 		check(feedErr == nil && assessed && assessment.Status == "applicable", "M2 native explicit cached CVE assessment")
+		m.verificationConfirmed.SetChecked(true)
+		m.verificationEvidence.SetText("review:synthetic")
+		m.match.Click()
+		waitM2()
+		check(m.assessments["cve:CVE-2026-1000"].Status == "verified", "M2 native verified attestation")
+		m.verificationConfirmed.SetChecked(false)
+		m.verificationEvidence.SetText("")
+		m.backportConfirmed.SetChecked(true)
+		m.backportAdvisory.SetText("https://vendor.example.invalid/advisory/1")
+		m.backportEvidence.SetText("advisory:synthetic")
+		m.match.Click()
+		waitM2()
+		check(m.assessments["cve:CVE-2026-1000"].Status == "not_applicable", "M2 native backport attestation")
+		m.verificationConfirmed.SetChecked(true)
+		m.verificationEvidence.SetText("review:synthetic")
+		m.match.Click()
+		check(m.result == nil && m.status.Text() == m.tr("m2_attestation_conflict"), "M2 conflicting attestations blocked")
+		m.backportConfirmed.SetChecked(false)
+		m.backportAdvisory.SetText("")
+		m.backportEvidence.SetText("")
+		m.match.Click()
+		waitM2()
+		check(m.assessments["cve:CVE-2026-1000"].Status == "verified", "M2 verified status restored")
+		m.tabs.SetCurrentIndex(1)
+		captureM2("it-attested")
+		m.source.SetCurrentIndex(0)
+		check(!m.verificationConfirmed.IsChecked() && m.verificationEvidence.Text() == "", "M2 source change clears stale attestation")
+		m.part.SetCurrentIndex(0)
+		m.match.Click()
+		check(m.result == nil && m.status.Text() == m.tr("m2_part_required"), "M2 NVD requires explicit CPE part")
+		nvdFeed := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			writer.Header().Set("Content-Type", "application/json")
+			_, _ = writer.Write([]byte(`{"format":"NVD_CVE","version":"2.0","resultsPerPage":1,"startIndex":0,"totalResults":1,"vulnerabilities":[{"cve":{"id":"CVE-2026-1001","vulnStatus":"Analyzed","published":"2026-09-01T00:00:00Z","lastModified":"2026-09-25T00:00:00Z","configurations":[{"nodes":[{"operator":"OR","cpeMatch":[{"vulnerable":true,"criteria":"cpe:2.3:a:example:widget:*:*:*:*:*:*:*:*","versionStartIncluding":"1.0","versionEndExcluding":"2.0"}]}]}]}}]}`))
+		}))
+		now := time.Now().UTC()
+		_, nvdErr := m.cache.SyncNVD(context.Background(), &intelligence.NVDClient{Endpoint: nvdFeed.URL}, now.Add(-time.Hour), now)
+		nvdFeed.Close()
+		m.refreshCache()
+		m.cveID.SetText("CVE-2026-1001")
+		check(!m.backportConfirmed.IsChecked() && !m.verificationConfirmed.IsChecked(), "M2 CVE change keeps attestations clear")
+		m.version.SetText("1.5")
+		m.part.SetCurrentIndex(1)
+		m.match.Click()
+		waitM2()
+		check(nvdErr == nil && m.assessments["nvd:CVE-2026-1001"].Status == "applicable", "M2 native NVD CPE-part assessment")
+		m.cpe23.SetText("cpe:2.3:a:example:widget:1.5:*:*:*:*:*:*:*")
+		check(!m.vendor.IsEnabled() && !m.part.IsEnabled(), "M2 full CPE disables separate identity fields")
+		m.match.Click()
+		waitM2()
+		check(m.assessments["nvd:CVE-2026-1001"].Status == "applicable", "M2 native full-CPE assessment")
+		m.cpe23.SetText("")
+		check(m.vendor.IsEnabled() && m.part.IsEnabled(), "M2 separate identity fields restored")
+		m.backportConfirmed.SetChecked(true)
+		m.backportAdvisory.SetText("https://vendor.example.invalid/advisory/2")
+		m.backportEvidence.SetText("advisory:version")
+		m.version.SetText("1.5.0")
+		check(!m.backportConfirmed.IsChecked() && m.backportAdvisory.Text() == "" && m.backportEvidence.Text() == "", "M2 version change clears stale backport")
+		m.source.SetCurrentIndex(1)
+		m.cveID.SetText("CVE-2026-1000")
+		m.tabs.SetCurrentIndex(1)
+		captureM2("it-assessment")
 		m.unsigned.SetChecked(true)
 		bundlePath := filepath.Join(filepath.Dir(w.preferencePath), "m2-selftest.wfr")
 		m.destination.SetText(bundlePath)
 		m.export.Click()
-		deadline = time.Now().Add(12 * time.Second)
-		for m.result != nil && time.Now().Before(deadline) {
-			qt.QCoreApplication_ProcessEvents()
-			time.Sleep(10 * time.Millisecond)
-		}
-		qt.QCoreApplication_ProcessEvents()
+		waitM2()
 		bundle, bundleErr := zip.OpenReader(bundlePath)
 		if bundleErr == nil {
 			defer bundle.Close()
@@ -295,9 +416,116 @@ func selfTest(w *workspace) int {
 		}
 		_, verificationErr := reporting.Verify(bundlePath, m.trust)
 		check(m.result == nil && bundleErr == nil && len(bundle.File) == 5 && assessmentInReport && errors.Is(verificationErr, reporting.ErrUnsigned), "M2 native bilingual unsigned export")
+		m.name.SetText("Synthetic signer")
+		m.generate.Click()
+		waitM2()
+		check(len(m.keyIDs) == 1 && len(m.manageKeyIDs) == 1, "M2 native signing key generation")
+		oldKey := m.keyIDs[0]
+		m.unsigned.SetChecked(false)
+		signedPath := filepath.Join(filepath.Dir(w.preferencePath), "m2-signed-selftest.wfr")
+		m.destination.SetText(signedPath)
+		m.export.Click()
+		waitM2()
+		m.verifyBundle.SetText(signedPath)
+		m.verify.Click()
+		waitM2()
+		check(strings.Contains(m.status.Text(), "Synthetic signer"), "M2 native signed export and offline verification")
+		m.rotate.Click()
+		waitM2()
+		check(len(m.keyIDs) == 1 && m.keyIDs[0] != oldKey && len(m.manageKeyIDs) == 2, "M2 native key rotation")
+		newKey := m.keyIDs[0]
+		rotatedPath := filepath.Join(filepath.Dir(w.preferencePath), "m2-rotated-selftest.wfr")
+		m.destination.SetText(rotatedPath)
+		m.export.Click()
+		waitM2()
+		m.verifyBundle.SetText(rotatedPath)
+		m.verify.Click()
+		waitM2()
+		check(strings.Contains(m.status.Text(), "Synthetic signer"), "M2 rotated key signs and verifies")
+		publicPath := filepath.Join(filepath.Dir(w.preferencePath), "m2-public-selftest.json")
+		m.publicDestination.SetText(publicPath)
+		m.manageKey.SetCurrentIndex(1)
+		m.exportPublic.Click()
+		waitM2()
+		_, publicErr := os.Stat(publicPath)
+		check(publicErr == nil, "M2 native public key export")
+		m.revoke.Click()
+		waitM2()
+		check(len(m.keyIDs) == 0 && m.manageKeyStatus[1] == "revoked", "M2 native key revocation")
+		m.verify.Click()
+		waitM2()
+		_, revokedVerifyErr := reporting.Verify(rotatedPath, m.trust)
+		check(revokedVerifyErr != nil && strings.Contains(m.status.Text(), revokedVerifyErr.Error()), "M2 revoked key rejected by GUI verifier")
+		otherTrust, otherTrustErr := reporting.OpenTrustStore(filepath.Join(filepath.Dir(w.preferencePath), "other-trust.json"))
+		if otherTrustErr == nil {
+			otherKeys, _ := reporting.NewKeyring(otherTrust, &selfTestSecrets{data: map[string][]byte{}})
+			foreign, foreignErr := otherKeys.Generate(context.Background(), "Foreign synthetic signer")
+			foreignPath := filepath.Join(filepath.Dir(w.preferencePath), "foreign-public.json")
+			if foreignErr == nil {
+				foreignErr = otherTrust.ExportPublic(foreign.KeyID, foreignPath)
+			}
+			m.publicImportPath.SetText(foreignPath)
+			m.importFingerprint.SetText(strings.Repeat("0", 64))
+			m.importPublic.Click()
+			waitM2()
+			_, badImportErr := m.trust.Lookup(foreign.KeyID)
+			check(foreignErr == nil && badImportErr != nil, "M2 rejects unconfirmed public fingerprint")
+			m.importFingerprint.SetText(foreign.Fingerprint)
+			m.importPublic.Click()
+			waitM2()
+			_, importedErr := m.trust.Lookup(foreign.KeyID)
+			check(importedErr == nil && len(m.manageKeyIDs) == 3, "M2 imports independently confirmed public key")
+			shortPath := filepath.Join(filepath.Dir(w.preferencePath), "short-public.json")
+			data, readErr := os.ReadFile(foreignPath)
+			var descriptor reporting.PublicDescriptor
+			if readErr == nil {
+				readErr = json.Unmarshal(data, &descriptor)
+			}
+			descriptor.KeyID = "x"
+			if readErr == nil {
+				data, readErr = json.Marshal(descriptor)
+			}
+			if readErr == nil {
+				readErr = os.WriteFile(shortPath, data, 0o600)
+			}
+			if readErr == nil {
+				m.publicImportPath.SetText(shortPath)
+				m.importPublic.Click()
+				waitM2()
+			}
+			_, shortErr := m.trust.Lookup("x")
+			check(readErr == nil && shortErr == nil && len(m.manageKeyIDs) == 4, "M2 short imported key ID displays safely")
+		}
+		check(m.manageKeyIDs[1] == newKey, "M2 selected key identity remains stable")
+		m.name.SetText("Second local signer")
+		m.generate.Click()
+		waitM2()
+		check(len(m.keyIDs) == 3, "M2 second active key for selection regression")
+		m.signer.SetCurrentIndex(2)
+		selectedSigner := m.selectedSignerKey()
+		w.englishAction.Trigger()
+		check(selectedSigner != "" && m.selectedSignerKey() == selectedSigner, "M2 signer selection survives language change")
+		w.italianAction.Trigger()
+		m.tabs.SetCurrentIndex(2)
+		captureM2("it-reports")
+		m.tabs.SetCurrentIndex(0)
+		captureM2("it-sources")
+		m.dialog.Resize(620, 560)
+		qt.QCoreApplication_ProcessEvents()
+		check(m.dialog.Width() <= 620 && m.dialog.Height() <= 560, "M2 compact dialog accepts requested size")
+		for i, label := range []string{"compact-it-sources", "compact-it-assessment", "compact-it-reports"} {
+			m.tabs.SetCurrentIndex(i)
+			captureM2(label)
+		}
+		m.dialog.Resize(820, 740)
 		w.englishAction.Trigger()
 		check(u.start.Text() == "Start scan" && strings.Contains(u.coverage.Text(), "queue"), "M1 native English translation")
 		check(m.match.Text() == "Assess selected run" && m.unsigned.Text() == "Export explicitly unsigned", "M2 native English translation")
+		check(m.tabs.TabText(2) == "Reports and keys" && m.rotate.Text() == "Rotate selected key", "M2 advanced English translation")
+		for i, label := range []string{"en-sources", "en-assessment", "en-reports"} {
+			m.tabs.SetCurrentIndex(i)
+			captureM2(label)
+		}
 		w.italianAction.Trigger()
 		u.confirmDelete = func() bool { return true }
 		u.deleteProject.Click()
