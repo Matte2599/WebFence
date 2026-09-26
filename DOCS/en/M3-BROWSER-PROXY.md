@@ -1,6 +1,6 @@
 # M3 — Second block: confined HTTP proxy
 
-[Italiano](../it/M3-BROWSER-PROXY.md) · [Gate](M3-BROWSER-GATE.md) · [Roadmap](../ROADMAP.md)
+[Italiano](../it/M3-BROWSER-PROXY.md) · [Gate](M3-BROWSER-GATE.md) · [ADR-009](ADR-009-BROWSER-HTTP-BOUNDARY.md) · [Roadmap](../ROADMAP.md)
 
 `internal/browser.NewProxy` opens an ephemeral listener **only on `127.0.0.1`**. It requires a random 256-bit proxy credential generated for each instance and kept in memory only. After authentication, it admits absolute-form HTTP requests using GET/HEAD without a body. Every request traverses the [M3 gate](M3-BROWSER-GATE.md) and then the M1 broker, with scope, policy, pinned DNS/IP, budget, pacing and redirects checked again. Proxy responses and errors do not include URLs in their messages.
 

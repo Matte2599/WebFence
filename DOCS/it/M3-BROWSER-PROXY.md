@@ -1,6 +1,6 @@
 # M3 — Secondo blocco: proxy HTTP confinato
 
-[English](../en/M3-BROWSER-PROXY.md) · [Gate](M3-BROWSER-GATE.md) · [Roadmap](../ROADMAP.md)
+[English](../en/M3-BROWSER-PROXY.md) · [Gate](M3-BROWSER-GATE.md) · [ADR-009](ADR-009-BROWSER-HTTP-BOUNDARY.md) · [Roadmap](../ROADMAP.md)
 
 `internal/browser.NewProxy` apre un listener effimero **solo su `127.0.0.1`**. Richiede una credenziale proxy casuale di 256 bit, generata per istanza e conservata soltanto in memoria. Dopo l'autenticazione, ammette richieste HTTP in forma assoluta, GET/HEAD e senza body. Ogni richiesta passa dal [gate M3](M3-BROWSER-GATE.md) e poi dal broker M1 con scope, policy, DNS/IP fissati, budget, rate e redirect ricontrollati. Una risposta o un errore non include URL nei messaggi del proxy.
 
