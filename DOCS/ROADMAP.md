@@ -57,7 +57,9 @@ Uscita: flusso progetto → scansione lab → risultati → riavvio verificato; 
 
 Dipende da M1. Copre WF-04 e WF-06.
 
-Primo blocco core: [cache CVE/NVD](it/M2-INTELLIGENCE-CACHE.md) con sync transazionale, provenienza e stato. Integrazione GUI, matching e report restano da completare.
+Primo blocco core: [cache CVE/NVD](it/M2-INTELLIGENCE-CACHE.md) con sync transazionale, provenienza e stato. Integrazione GUI e report restano da completare.
+
+Secondo blocco core: [matching conservativo](it/M2-MATCHING.md) su segnali espliciti, con confidenza, intervalli di versione e backport attestati. La presentazione desktop resta da completare.
 
 - [ ] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
 - [ ] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
@@ -168,7 +170,9 @@ Exit: verified project → lab scan → results → restart workflow; scope suit
 
 Depends on M1. Covers WF-04 and WF-06.
 
-First core block: [CVE/NVD cache](en/M2-INTELLIGENCE-CACHE.md) with transactional sync, provenance and status. GUI integration, matching and reports remain to be completed.
+First core block: [CVE/NVD cache](en/M2-INTELLIGENCE-CACHE.md) with transactional sync, provenance and status. GUI integration and reports remain to be completed.
+
+Second core block: [conservative matching](en/M2-MATCHING.md) on explicit signals, with confidence, version ranges and attested backports. Desktop presentation remains to be completed.
 
 - [ ] CVE/NVD adapters, incremental cache, provenance and freshness status.
 - [ ] Confidence-aware matching, versions/backports and candidate/verified distinction.

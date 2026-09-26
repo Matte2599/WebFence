@@ -31,6 +31,7 @@
 | Piano storico dei collaudi / Historical trial plan | [IT](it/M1-PREREQUISITES.md) | [EN](en/M1-PREREQUISITES.md) |
 | Chiusura e limiti M1 / M1 closure and limits | [IT](it/M1-VALIDATION.md) | [EN](en/M1-VALIDATION.md) |
 | Cache CVE/NVD M2 / M2 CVE/NVD cache | [IT](it/M2-INTELLIGENCE-CACHE.md) | [EN](en/M2-INTELLIGENCE-CACHE.md) |
+| Correlazione CVE M2 / M2 CVE matching | [IT](it/M2-MATCHING.md) | [EN](en/M2-MATCHING.md) |
 | Piattaforme target M1 / M1 target platforms | [IT](it/M1-SUPPORT-POLICY.md) | [EN](en/M1-SUPPORT-POLICY.md) |
 | Analisi legale interna M1 / M1 internal legal assessment | [IT](it/M1-LEGAL-ASSESSMENT.md) | [EN](en/M1-LEGAL-ASSESSMENT.md) |
 | Progetto e autorizzazione M1 / M1 project and authorization | [IT](it/M1-PROJECT-AUTHORIZATION.md) | [EN](en/M1-PROJECT-AUTHORIZATION.md) |
