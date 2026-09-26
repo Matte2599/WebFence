@@ -80,6 +80,8 @@ Uscita: bundle originale verificabile e alterazioni respinte; ultima cache valid
 
 Dipende da M2. Estende WF-03 e realizza WF-10.
 
+Primo blocco core: [gate delle richieste browser](it/M3-BROWSER-GATE.md) per scope, policy, budget e revoca, senza runtime browser o traffico target. I criteri sotto restano aperti.
+
 - [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
@@ -200,6 +202,8 @@ Exit: original bundle verifies and alterations are rejected; last valid cache is
 ### M3 — Dynamic and authenticated applications
 
 Depends on M2. Extends WF-03 and implements WF-10.
+
+First core block: [browser request gate](en/M3-BROWSER-GATE.md) for scope, policy, budgets and revocation, without a browser runtime or target traffic. The criteria below remain open.
 
 - [ ] Isolated browser, scope for subresources/redirects and process limits.
 - [ ] Test-account sessions/login flows, validity checks and identity separation.

@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: planned product architecture. For the desktop, the entry point, Qt Widgets/MIQT workspace, IT/EN catalogs and offline fixtures described in [Qt M0](QT-DESKTOP.md) are implemented; the complete scanning workflow remains unimplemented; M0 scope/transport foundations are described below.
+Status: planned product architecture. The Qt Widgets/MIQT desktop, limited [M1](M1-VALIDATION.md) HTTP workflow and [M2](M2-VALIDATION.md) intelligence/report workflow are implemented; the complete diagrammed cycle remains unfinished. The [first M3 block](M3-BROWSER-GATE.md) introduces browser request policy only.
 
 ## Initial structure
 
@@ -45,7 +45,7 @@ The broker represents a boundary to implement and test for browser traffic, redi
 | `report` | Snapshots, rendering, manifests and signing through a component with limited key access |
 | `storage` | Transactions, migrations, deletion and recovery |
 
-The table describes planned complete contracts. In the [M1 alpha](M1-VALIDATION.md), `internal/project` binds authorization and origins, `internal/scope` and `internal/transport` enforce policy, budgets and pinned IPs, `internal/scanner` provides controlled visits, discovery and one header check, `internal/storage` retains projects and redacted observations, and `internal/desktop` exposes the IT/EN workflow. Browser, CVEs, AI engines and signed reports remain future work. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
+The table describes planned complete contracts. In the [M1 alpha](M1-VALIDATION.md), `internal/project` binds authorization and origins, `internal/scope` and `internal/transport` enforce policy, budgets and pinned IPs, `internal/scanner` provides controlled visits, discovery and one header check, `internal/storage` retains projects and redacted observations, and `internal/desktop` exposes the IT/EN workflow. [M2](M2-VALIDATION.md) adds CVE caching, correlations and verifiable reports. `internal/browser` now contains only the request gate; a working browser and AI engines remain future work. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
 
 ## Persistence and external processes
 
@@ -69,8 +69,8 @@ Server mode, shared users, PostgreSQL and distributed workers require dedicated 
 
 `internal/scope` implements only immutable HTTP(S) origin comparison, with no networking or Qt dependencies. A loopback laboratory exists exclusively in tests. It does not replace the planned broker’s IP/DNS, authorization and budget boundaries: [M0 contract](M0-SCOPE.md).
 
-`internal/transport` adds an HTTP/TLS broker confined to loopback grants, with pinned connection IPs and shared budgets/cancellation. M0 decision and production limitations: [ADR-003](ADR-003-TRANSPORT.md). No GUI calls.
+`internal/transport` adds an HTTP/TLS broker with loopback or pinned public IP grants, peer verification and shared budgets/cancellation. Decisions and limits: [ADR-003](ADR-003-TRANSPORT.md) and [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md). The M1 GUI uses it for controlled visits.
 
 `NewAuthorizedLab` applies the project snapshot on every hop of the same broker and uses its expiry to stop in-progress requests. [Managed runs](M1-MANAGED-RUNS.md) add local store-bound revocation; it remains a lab: [M1 contract](M1-AUTHORIZED-LAB.md).
 
-SQLite and the JWS profile are selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): SQLite feasibility tests, the [M1 store](M1-PROJECT-STORE.md) and `internal/signature` exist, without projects or reports in the GUI.
+SQLite and the JWS profile are selected in [ADR-004](ADR-004-STORAGE-SIGNATURE.md): the [M1 store](M1-PROJECT-STORE.md), `internal/signature` and the [M2 report workflow](M2-VALIDATION.md) exist in the GUI.
