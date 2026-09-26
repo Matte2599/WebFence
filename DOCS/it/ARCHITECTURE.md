@@ -2,7 +2,7 @@
 
 [English](../en/ARCHITECTURE.md) · [Indice](../README.md)
 
-Stato: architettura del prodotto pianificata. Sono implementati il desktop Qt Widgets/MIQT, il flusso HTTP limitato [M1](M1-VALIDATION.md) e il flusso intelligence/report [M2](M2-VALIDATION.md); il ciclo completo del diagramma resta da realizzare. I primi blocchi M3 aggiungono [policy](M3-BROWSER-GATE.md) e [proxy HTTP](M3-BROWSER-PROXY.md), ancora senza runtime browser.
+Stato: architettura del prodotto pianificata. Sono implementati il desktop Qt Widgets/MIQT, il flusso HTTP limitato [M1](M1-VALIDATION.md) e il flusso intelligence/report [M2](M2-VALIDATION.md); il ciclo completo del diagramma resta da realizzare. I primi blocchi M3 aggiungono [policy](M3-BROWSER-GATE.md), [proxy HTTP](M3-BROWSER-PROXY.md) e un [laboratorio Qt WebEngine](M3-BROWSER-LAB.md), ancora senza runtime browser nel desktop.
 
 ## Struttura iniziale
 

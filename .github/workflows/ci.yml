@@ -292,3 +292,21 @@ jobs:
         run: |
           cat dist/debian-${{ matrix.arch }}/validation.txt
           cat dist/debian-${{ matrix.arch }}/SHA256SUMS
+
+  m3-browser-lab:
+    runs-on: macos-26
+    timeout-minutes: 40
+    env:
+      CGO_CXXFLAGS: '-O0 -g0 -std=c++17'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - name: Qt WebEngine development dependencies
+        run: |
+          brew update
+          env -u HOMEBREW_NO_INSTALL_UPGRADE brew install qtwebengine pkgconf
+      - run: go mod download && go mod verify
+      - name: Synthetic Qt WebEngine proxy lab
+        run: go run -tags=m3browserlab ./experiments/m3-browser

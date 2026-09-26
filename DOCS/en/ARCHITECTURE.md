@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: planned product architecture. The Qt Widgets/MIQT desktop, limited [M1](M1-VALIDATION.md) HTTP workflow and [M2](M2-VALIDATION.md) intelligence/report workflow are implemented; the complete diagrammed cycle remains unfinished. The first M3 blocks add [policy](M3-BROWSER-GATE.md) and an [HTTP proxy](M3-BROWSER-PROXY.md), still without a browser runtime.
+Status: planned product architecture. The Qt Widgets/MIQT desktop, limited [M1](M1-VALIDATION.md) HTTP workflow and [M2](M2-VALIDATION.md) intelligence/report workflow are implemented; the complete diagrammed cycle remains unfinished. The first M3 blocks add [policy](M3-BROWSER-GATE.md), an [HTTP proxy](M3-BROWSER-PROXY.md) and a [Qt WebEngine lab](M3-BROWSER-LAB.md), still without a browser runtime in the desktop.
 
 ## Initial structure
 
