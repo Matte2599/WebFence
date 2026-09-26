@@ -2,7 +2,7 @@
 
 [Indice / Index](README.md) · [Italiano](#italiano) · [English](#english)
 
-Aggiornamento / Updated: 2026-09-25. Responsabile / Owner: Matteo Luigi Feroldi.
+Aggiornamento / Updated: 2026-09-26. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
@@ -56,6 +56,8 @@ Uscita: flusso progetto → scansione lab → risultati → riavvio verificato; 
 ### M2 — Intelligence e report verificabili
 
 Dipende da M1. Copre WF-04 e WF-06.
+
+Primo blocco core: [cache CVE/NVD](it/M2-INTELLIGENCE-CACHE.md) con sync transazionale, provenienza e stato. Integrazione GUI, matching e report restano da completare.
 
 - [ ] Adattatori CVE/NVD, cache incrementale, provenienza e stato di aggiornamento.
 - [ ] Matching con confidenza, versioni/backport e distinzione tra candidato e verificato.
@@ -165,6 +167,8 @@ Exit: verified project → lab scan → results → restart workflow; scope suit
 ### M2 — Intelligence and verifiable reports
 
 Depends on M1. Covers WF-04 and WF-06.
+
+First core block: [CVE/NVD cache](en/M2-INTELLIGENCE-CACHE.md) with transactional sync, provenance and status. GUI integration, matching and reports remain to be completed.
 
 - [ ] CVE/NVD adapters, incremental cache, provenance and freshness status.
 - [ ] Confidence-aware matching, versions/backports and candidate/verified distinction.
