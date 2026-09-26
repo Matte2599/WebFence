@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Matte2599/WebFence/internal/session"
 	"github.com/Matte2599/WebFence/internal/transport"
 	"golang.org/x/net/netutil"
 )
@@ -20,21 +21,41 @@ import (
 // future browser adapter. HTTPS CONNECT, WebSocket upgrades, cookies and
 // request bodies are deliberately unsupported in this first slice.
 type Proxy struct {
-	gate   *Gate
-	broker *transport.Broker
-	server *http.Server
-	listen net.Listener
-	ctx    context.Context
-	cancel context.CancelFunc
-	secret string
-	done   chan error
-	once   sync.Once
+	gate    *Gate
+	broker  *transport.Broker
+	session *session.Session
+	server  *http.Server
+	listen  net.Listener
+	ctx     context.Context
+	cancel  context.CancelFunc
+	secret  string
+	done    chan error
+	once    sync.Once
 }
 
 // NewProxy starts an ephemeral loopback listener. Only requests carrying the
 // per-instance Basic proxy secret can reach the gate or broker. The browser
 // process must still be configured and independently confined to this proxy.
 func NewProxy(ctx context.Context, gate *Gate, broker *transport.Broker) (*Proxy, error) {
+	return newProxy(ctx, gate, broker, nil)
+}
+
+// NewProxyWithSession binds exactly one verified test identity to this proxy
+// instance. Browser-supplied cookies remain ignored; the in-memory Session
+// attaches its own cookie only to exact-origin allowlisted GET requests.
+func NewProxyWithSession(ctx context.Context, gate *Gate, broker *transport.Broker, identity *session.Session) (*Proxy, error) {
+	if identity == nil || gate == nil || broker == nil || !identity.BoundTo(broker) || identity.ProjectID() == "" ||
+		identity.ProjectID() != gate.ProjectID() || identity.ProjectID() != broker.SessionProjectID() ||
+		identity.Revision() != gate.Revision() || identity.Revision() != broker.SessionRevision() {
+		return nil, ErrConfig
+	}
+	if err := identity.Verify(ctx); err != nil {
+		return nil, err
+	}
+	return newProxy(ctx, gate, broker, identity)
+}
+
+func newProxy(ctx context.Context, gate *Gate, broker *transport.Broker, identity *session.Session) (*Proxy, error) {
 	if ctx == nil || gate == nil || broker == nil {
 		return nil, ErrConfig
 	}
@@ -48,7 +69,7 @@ func NewProxy(ctx context.Context, gate *Gate, broker *transport.Broker) (*Proxy
 	}
 	listener = netutil.LimitListener(listener, 32)
 	run, cancel := context.WithCancel(ctx)
-	p := &Proxy{gate: gate, broker: broker, listen: listener, ctx: run, cancel: cancel,
+	p := &Proxy{gate: gate, broker: broker, session: identity, listen: listener, ctx: run, cancel: cancel,
 		secret: base64.RawURLEncoding.EncodeToString(secret[:]), done: make(chan error, 1)}
 	p.server = &http.Server{
 		Handler: p, ReadHeaderTimeout: 3 * time.Second, ReadTimeout: 10 * time.Second,
@@ -127,7 +148,16 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer release()
-	result, err := p.broker.FetchMethod(ctx, r.Method, r.URL.String())
+	var result transport.Result
+	if p.session != nil {
+		if r.Method != http.MethodGet {
+			writeProxyError(w, http.StatusForbidden, "browser_proxy_request_denied")
+			return
+		}
+		result, err = p.session.Fetch(ctx, r.URL.String())
+	} else {
+		result, err = p.broker.FetchMethod(ctx, r.Method, r.URL.String())
+	}
 	if err != nil {
 		writeProxyError(w, http.StatusBadGateway, "browser_proxy_fetch_failed")
 		return

@@ -1,9 +1,10 @@
 // Package transport contains a pinned HTTP broker for explicitly granted
-// loopback fixtures and public destinations. It is not wired into the desktop
-// and does not support private-network scanning, sessions or browser traffic.
+// loopback fixtures and public destinations. M3 session methods are limited to
+// an explicit loopback laboratory; they are not wired into the desktop.
 package transport
 
 import (
+	"bytes"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
@@ -66,7 +67,7 @@ type Result struct {
 }
 
 // Broker must not be copied. Close cancels in-flight and queued work.
-// Configuration is copied; requests cannot supply headers or credentials.
+// Configuration is copied; ordinary Fetch calls cannot supply headers or credentials.
 type Broker struct {
 	policy     scope.Policy
 	route      scope.RequestPolicy
@@ -84,6 +85,7 @@ type Broker struct {
 	permit     project.RunScope
 	authorized bool
 	stopPermit func() bool
+	session    *sessionRoutes
 }
 
 // LabBroker is retained as an alias for the original M0 laboratory API.
@@ -305,7 +307,7 @@ func (b *Broker) FetchMethod(ctx context.Context, method, raw string) (Result, e
 		if err := b.pace(ctx, origin(u)); err != nil {
 			return Result{}, err
 		}
-		result, next, err := b.exchange(ctx, method, u, ip)
+		result, next, err := b.exchange(ctx, method, u, ip, exchangeOptions{})
 		if err != nil {
 			return Result{}, err
 		}
@@ -378,7 +380,13 @@ func (b *Broker) resolve(ctx context.Context, u *url.URL) (netip.Addr, error) {
 	return selected, nil
 }
 
-func (b *Broker) exchange(ctx context.Context, method string, u *url.URL, ip netip.Addr) (Result, string, error) {
+type exchangeOptions struct {
+	body       []byte
+	cookie     string
+	noRedirect bool
+}
+
+func (b *Broker) exchange(ctx context.Context, method string, u *url.URL, ip netip.Addr, options exchangeOptions) (Result, string, error) {
 	port, _ := strconv.ParseUint(u.Port(), 10, 16) // scope already checked it
 	pinned := netip.AddrPortFrom(ip, uint16(port))
 	protocols := new(http.Protocols)
@@ -416,11 +424,21 @@ func (b *Broker) exchange(ctx context.Context, method string, u *url.URL, ip net
 		},
 	}
 	defer tr.CloseIdleConnections()
-	req, err := http.NewRequestWithContext(ctx, method, u.String(), nil)
+	var requestBody io.Reader
+	if options.body != nil {
+		requestBody = bytes.NewReader(options.body)
+	}
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), requestBody)
 	if err != nil {
 		return Result{}, "", scope.ErrInvalidURL
 	}
 	req.Header.Set("Accept-Encoding", "identity")
+	if options.body != nil {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
+	if options.cookie != "" {
+		req.Header.Set("Cookie", options.cookie)
+	}
 	// RoundTrip never follows redirects and adds no client cookie jar or referer.
 	resp, err := tr.RoundTrip(req)
 	if err != nil {
@@ -433,13 +451,15 @@ func (b *Broker) exchange(ctx context.Context, method string, u *url.URL, ip net
 		return Result{}, "", ErrNetwork
 	}
 	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case 301, 302, 303, 307, 308:
-		location := resp.Header.Get("Location")
-		if location == "" || len(location) > scope.MaxURLBytes {
-			return Result{}, "", ErrRedirect
+	if !options.noRedirect {
+		switch resp.StatusCode {
+		case 301, 302, 303, 307, 308:
+			location := resp.Header.Get("Location")
+			if location == "" || len(location) > scope.MaxURLBytes {
+				return Result{}, "", ErrRedirect
+			}
+			return Result{}, location, nil
 		}
-		return Result{}, location, nil
 	}
 	if encoding := resp.Header.Get("Content-Encoding"); encoding != "" && encoding != "identity" {
 		return Result{}, "", ErrEncoding

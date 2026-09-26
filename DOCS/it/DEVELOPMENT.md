@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/browser ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/browser ./internal/session ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -41,6 +41,7 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
 - `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
 - `internal/browser`: [gate M3](M3-BROWSER-GATE.md), [proxy HTTP confinato](M3-BROWSER-PROXY.md) e supervisore di helper; ancora senza runtime browser nel desktop.
+- `internal/session`: [login e sessioni di prova M3](M3-SESSIONS.md) solo in memoria su fixture controllate; il desktop non espone ancora account di test.
 - `experiments/m3-browser`: [laboratorio Qt WebEngine](M3-BROWSER-LAB.md) con fixture locali e [helper separato](ADR-011-BROWSER-HELPER.md); richiede Qt WebEngine 6.11.2 e il tag `m3browserlab`, non è incluso nei pacchetti.
 - `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md) e [crawler limitato](M1-CONTROLLED-CRAWL.md) con risultati persistenti. I test non aprono rete esterna.
 - `internal/intelligence` e `internal/reporting`: [cache/matching M2](M2-INTELLIGENCE-CACHE.md) e [bundle verificabili](M2-REPORTS.md), separati da Qt. `cmd/webfence-report` e `cmd/webfence-verify` sono ausili tecnici compilabili dal sorgente.

@@ -1,0 +1,13 @@
+# M3 — Test-account login and sessions: core block
+
+[Italiano](../it/M3-SESSIONS.md) · [ADR-012](ADR-012-TEST-SESSIONS.md) · [Roadmap](../ROADMAP.md) · [Threat model](THREAT-MODEL.md)
+
+This block adds a **loopback-only core laboratory**, not a desktop feature. A managed run lifecycle, pinned origin/IP, budgets, pacing and `SessionRoutes.LoginConfirmed` are mandatory. The broker permits one form POST (`application/x-www-form-urlencoded`, at most 4096 bytes) to the exact declared login URL and returns redirects without following them. Cookie-bearing GETs stay on the same origin and within the already authorized paths; an authenticated redirect is not followed. The ordinary M1 path remains credential-free GET/HEAD.
+
+`internal/session.Manager` receives an opaque secret reference from a `SecretSource`: the native `credentials.Store` satisfies the interface, but the desktop does not yet connect accounts or the keychain to this workflow. Tests use only a synthetic store. Before login the manager visits the validity URL anonymously; after the POST it accepts one unexpired host-only cookie with an explicit path and requires an authenticated `200` response whose **body exactly matches** the declared non-secret marker for that identity. If the marker was already visible anonymously, the result is inconclusive. Rejected login, ambiguous response, expiry or invalid session never become a “no issue” outcome. Each `Session` holds the cookie, identity, project and revision in memory, offers `Verify` before dependent checks and clears its owned cookie on close; Go/OS copies may remain in memory.
+
+`browser.NewProxyWithSession` binds a verified session to its own broker/run. The browser receives only the local proxy password, not the target credential. Browser-supplied cookies are ignored, target response cookies are not returned to it, and the parent attaches the selected cookie only to admitted same-origin/path GETs. The earlier anonymous HTTP proxy remains available.
+
+**Local checks on September 27, 2026:** race-detector tests for two identities on the same route, failed login, public marker, broad-domain cookie, cookie path, a broker from another run, credential-bearing redirect, revocation during POST and a closed session. Only `httptest` fixtures; no external target. Branch and merged-commit CI must be checked separately.
+
+CSRF login, MFA/OIDC, bearer tokens, cookie rotation, authenticated JavaScript/Qt flows, browser HTTPS, GUI-configured accounts, public grants for login and cross-platform runtime trials remain open. Exact-marker verification is a narrow check, not universal role identification. The second M3 criterion remains open.

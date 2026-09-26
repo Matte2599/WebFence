@@ -46,3 +46,5 @@ Before adding browsers, AI, plugins, an updater or shared users, update this mat
 ## Partial M3 browser evidence
 
 The [Qt lab](M3-BROWSER-LAB.md) exercises an excluded subresource, excluded redirect and admitted requests through the gate/proxy/broker on a local fixture. The [supervised helper](ADR-011-BROWSER-HELPER.md) adds descendant termination and bounded IPC. It does not prove independent egress, alternate browser paths, filesystem containment or cross-platform operation; the matrix's “Browser out of scope” row remains unmet.
+
+The [M3 session core](M3-SESSIONS.md) tests two identities, exact POST, host-only cookies, blocked credential-bearing redirects and failed login without negative check conclusions on fixtures. It remains loopback-only, without GUI, authenticated browsing or live target trials; the matrix's “Credential theft” row remains partial.

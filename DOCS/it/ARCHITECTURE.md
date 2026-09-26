@@ -2,7 +2,7 @@
 
 [English](../en/ARCHITECTURE.md) · [Indice](../README.md)
 
-Stato: architettura del prodotto pianificata. Sono implementati il desktop Qt Widgets/MIQT, il flusso HTTP limitato [M1](M1-VALIDATION.md) e il flusso intelligence/report [M2](M2-VALIDATION.md); il ciclo completo del diagramma resta da realizzare. I primi blocchi M3 aggiungono [policy](M3-BROWSER-GATE.md), [proxy HTTP](M3-BROWSER-PROXY.md) e un [laboratorio Qt WebEngine con helper supervisionato](M3-BROWSER-LAB.md), ancora senza runtime browser nel desktop.
+Stato: architettura del prodotto pianificata. Sono implementati il desktop Qt Widgets/MIQT, il flusso HTTP limitato [M1](M1-VALIDATION.md) e il flusso intelligence/report [M2](M2-VALIDATION.md); il ciclo completo del diagramma resta da realizzare. I primi blocchi M3 aggiungono [policy](M3-BROWSER-GATE.md), [proxy HTTP](M3-BROWSER-PROXY.md), un [laboratorio Qt WebEngine con helper supervisionato](M3-BROWSER-LAB.md) e [sessioni di prova solo nel core](M3-SESSIONS.md), ancora senza runtime browser nel desktop.
 
 ## Struttura iniziale
 
@@ -45,7 +45,7 @@ Il broker rappresenta un confine da implementare e provare anche per traffico br
 | `report` | Snapshot, rendering, manifest e firma tramite componente con accesso limitato alle chiavi |
 | `storage` | Transazioni, migrazioni, cancellazione e ripristino |
 
-La tabella descrive i contratti completi pianificati. Nell'[alpha M1](M1-VALIDATION.md), `internal/project` lega autorizzazione e origini, `internal/scope` e `internal/transport` impongono policy, budget e IP fissati, `internal/scanner` realizza visite controllate, discovery e un controllo di header, `internal/storage` conserva progetti e osservazioni redatte e `internal/desktop` espone il flusso IT/EN. [M2](M2-VALIDATION.md) aggiunge cache CVE, correlazioni e report verificabili. `internal/browser` contiene gate, proxy HTTP locale e supervisore di helper; browser operativo nel desktop e motori AI restano futuri. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
+La tabella descrive i contratti completi pianificati. Nell'[alpha M1](M1-VALIDATION.md), `internal/project` lega autorizzazione e origini, `internal/scope` e `internal/transport` impongono policy, budget e IP fissati, `internal/scanner` realizza visite controllate, discovery e un controllo di header, `internal/storage` conserva progetti e osservazioni redatte e `internal/desktop` espone il flusso IT/EN. [M2](M2-VALIDATION.md) aggiunge cache CVE, correlazioni e report verificabili. `internal/browser` contiene gate, proxy HTTP locale e supervisore di helper; `internal/session` mantiene account di prova solo in memoria. Browser operativo nel desktop e motori AI restano futuri. Evitare plugin Go dinamici nella prima versione: i controlli sono compilati e revisionati. Eventuali plugin di terzi richiederanno un processo isolato e un protocollo versionato.
 
 ## Persistenza e processi esterni
 
