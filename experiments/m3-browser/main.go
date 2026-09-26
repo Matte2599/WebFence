@@ -66,7 +66,7 @@ func run() error {
 			_, _ = fmt.Fprint(w, `<html><body><script src="/app/main.js"></script><img src="http://outside.test:8080/x"></body></html>`)
 		case "/app/main.js":
 			w.Header().Set("Content-Type", "application/javascript")
-			_, _ = fmt.Fprint(w, `fetch('/app/api').then(r => r.text()).then(x => { if (x === 'synthetic') console.log('wf-synthetic-api-ok') }); fetch('/app/redirect')`)
+			_, _ = fmt.Fprint(w, `fetch('/app/api').then(r => r.text()).then(x => { if (x === 'synthetic') console.log('wf-synthetic-api-ok') }); fetch('/app/redirect').then(r => { if (r.status === 502) console.log('wf-synthetic-redirect-blocked') })`)
 		case "/app/api":
 			w.Header().Set("Content-Type", "text/plain")
 			_, _ = fmt.Fprint(w, "synthetic")
@@ -146,6 +146,7 @@ func run() error {
 		return errors.New("browser profile is persistent")
 	}
 	var denied atomic.Int32
+	var outsideBlocked atomic.Bool
 	interceptor := webengine.NewQWebEngineUrlRequestInterceptor()
 	defer interceptor.Delete()
 	interceptor.OnInterceptRequest(func(info *webengine.QWebEngineUrlRequestInfo) {
@@ -165,6 +166,9 @@ func run() error {
 		if err != nil {
 			info.Block(true)
 			denied.Add(1)
+			if info.RequestUrl().ToString() == "http://outside.test:8080/x" {
+				outsideBlocked.Store(true)
+			}
 		}
 	})
 	profile.SetUrlRequestInterceptor(interceptor)
@@ -172,11 +176,14 @@ func run() error {
 	defer page.Delete()
 	var loaded atomic.Bool
 	var apiSeen atomic.Bool
+	var redirectBlocked atomic.Bool
 	page.OnLoadFinished(func(ok bool) { loaded.Store(ok) })
 	page.OnJavaScriptConsoleMessage(func(super func(webengine.QWebEnginePage__JavaScriptConsoleMessageLevel, string, int, string),
 		level webengine.QWebEnginePage__JavaScriptConsoleMessageLevel, message string, line int, source string) {
 		if message == "wf-synthetic-api-ok" {
 			apiSeen.Store(true)
+		} else if message == "wf-synthetic-redirect-blocked" {
+			redirectBlocked.Store(true)
 		}
 	})
 	timer := qt.NewQTimer()
@@ -185,10 +192,12 @@ func run() error {
 	timer.Start(5000)
 	page.Load(qt.NewQUrl3(origin + "/app"))
 	qt.QApplication_Exec()
-	if !loaded.Load() || !apiSeen.Load() || wrongHost.Load() || denied.Load() < 1 ||
+	if !loaded.Load() || !apiSeen.Load() || !redirectBlocked.Load() || !outsideBlocked.Load() ||
+		wrongHost.Load() || denied.Load() < 1 ||
 		targetHits.Load() != 4 || gate.RequestsUsed() != 4 || broker.RequestsUsed() != 4 {
-		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t host=%t denied=%d target=%d gate=%d broker=%d",
-			loaded.Load(), apiSeen.Load(), wrongHost.Load(), denied.Load(), targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed())
+		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d",
+			loaded.Load(), apiSeen.Load(), redirectBlocked.Load(), outsideBlocked.Load(), wrongHost.Load(),
+			denied.Load(), targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed())
 	}
 	return nil
 }
