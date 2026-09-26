@@ -2,7 +2,7 @@
 
 [English](../en/SCANNING.md) · [Indice](../README.md)
 
-Stato: motore di produzione da implementare. Sono disponibili il primo [controllo delle origini](M0-SCOPE.md), il [trasporto controllato](ADR-003-TRANSPORT.md), lo [snapshot M1 dell'autorizzazione dichiarata](M1-PROJECT-AUTHORIZATION.md), un [primo controllo HTTP su seed espliciti](M1-HEADER-LAB.md), [discovery HTML osservativa](M1-DISCOVERY-LAB.md) e [visite controllate con grant pubblici fissati](M1-CONTROLLED-CRAWL.md), esposte nel desktop M1. Il [gate browser M3](M3-BROWSER-GATE.md) non genera ancora traffico. Riferimento metodologico: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), con identificativi fissati alla versione usata dalle regole.
+Stato: motore di produzione da implementare. Sono disponibili il primo [controllo delle origini](M0-SCOPE.md), il [trasporto controllato](ADR-003-TRANSPORT.md), lo [snapshot M1 dell'autorizzazione dichiarata](M1-PROJECT-AUTHORIZATION.md), un [primo controllo HTTP su seed espliciti](M1-HEADER-LAB.md), [discovery HTML osservativa](M1-DISCOVERY-LAB.md) e [visite controllate con grant pubblici fissati](M1-CONTROLLED-CRAWL.md), esposte nel desktop M1. [Gate](M3-BROWSER-GATE.md) e [proxy HTTP M3](M3-BROWSER-PROXY.md) non sono ancora collegati a un browser. Riferimento metodologico: [OWASP WSTG](https://owasp.org/projects/web-security-testing-guide), con identificativi fissati alla versione usata dalle regole.
 
 ## Pipeline
 

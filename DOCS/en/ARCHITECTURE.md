@@ -2,7 +2,7 @@
 
 [Italiano](../it/ARCHITECTURE.md) · [Index](../README.md)
 
-Status: planned product architecture. The Qt Widgets/MIQT desktop, limited [M1](M1-VALIDATION.md) HTTP workflow and [M2](M2-VALIDATION.md) intelligence/report workflow are implemented; the complete diagrammed cycle remains unfinished. The [first M3 block](M3-BROWSER-GATE.md) introduces browser request policy only.
+Status: planned product architecture. The Qt Widgets/MIQT desktop, limited [M1](M1-VALIDATION.md) HTTP workflow and [M2](M2-VALIDATION.md) intelligence/report workflow are implemented; the complete diagrammed cycle remains unfinished. The first M3 blocks add [policy](M3-BROWSER-GATE.md) and an [HTTP proxy](M3-BROWSER-PROXY.md), still without a browser runtime.
 
 ## Initial structure
 
@@ -45,7 +45,7 @@ The broker represents a boundary to implement and test for browser traffic, redi
 | `report` | Snapshots, rendering, manifests and signing through a component with limited key access |
 | `storage` | Transactions, migrations, deletion and recovery |
 
-The table describes planned complete contracts. In the [M1 alpha](M1-VALIDATION.md), `internal/project` binds authorization and origins, `internal/scope` and `internal/transport` enforce policy, budgets and pinned IPs, `internal/scanner` provides controlled visits, discovery and one header check, `internal/storage` retains projects and redacted observations, and `internal/desktop` exposes the IT/EN workflow. [M2](M2-VALIDATION.md) adds CVE caching, correlations and verifiable reports. `internal/browser` now contains only the request gate; a working browser and AI engines remain future work. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
+The table describes planned complete contracts. In the [M1 alpha](M1-VALIDATION.md), `internal/project` binds authorization and origins, `internal/scope` and `internal/transport` enforce policy, budgets and pinned IPs, `internal/scanner` provides controlled visits, discovery and one header check, `internal/storage` retains projects and redacted observations, and `internal/desktop` exposes the IT/EN workflow. [M2](M2-VALIDATION.md) adds CVE caching, correlations and verifiable reports. `internal/browser` now contains a gate and local HTTP proxy; a working browser and AI engines remain future work. Avoid dynamic Go plugins in the first version: checks are compiled and reviewed. Future third-party plugins require an isolated process and versioned protocol.
 
 ## Persistence and external processes
 
