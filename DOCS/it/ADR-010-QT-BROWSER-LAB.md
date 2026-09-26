@@ -4,6 +4,8 @@
 
 Data: 2026-09-26. Stato: **adottato per il laboratorio M3**, non per una funzione desktop distribuibile.
 
+Il quarto blocco sposta la prova Qt in un helper separato: [ADR-011](ADR-011-BROWSER-HELPER.md). I limiti sotto descrivono la decisione iniziale del 26 settembre.
+
 ## Decisione e prova
 
 Usiamo Qt WebEngine 6.11.2 tramite MIQT 0.14.0 nel laboratorio sintetico. Mantiene lo stack Qt scelto dall'autore e offre un profilo [off-the-record](https://doc.qt.io/qt-6/qwebengineprofile.html), un [interceptor delle richieste](https://doc.qt.io/qt-6/qwebengineurlrequestinterceptor.html) e [supporto al proxy Qt Network](https://doc.qt.io/qt-6/qtwebengine-overview.html#proxy-support). Il laboratorio crea una fixture HTTP locale, la espone con origine `.test` tramite IP loopback fissato e usa il proxy autenticato M3. Una pagina carica script, esegue `fetch` e tenta una subresource di altra origine; la prova locale ha osservato quattro GET ammessi attraverso proxy/broker (documento, script, API e origine del redirect) e il blocco della subresource. La destinazione del redirect verso origine esclusa viene respinta dal broker. Nessun target esterno è previsto dal comando.

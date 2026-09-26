@@ -42,3 +42,7 @@ Before adding browsers, AI, plugins, an updater or shared users, update this mat
 ## M1 pinned public transport evidence
 
 [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) and [controlled visits](M1-CONTROLLED-CRAWL.md) add route policy, special-IP rejection, exact grants, broker-local pacing and per-hop checks. Tests simulate a public peer through a loopback server; they do not prove system egress, cross-process coordination or live public targets. Matrix controls needing a browser, credentials or UI remain open.
+
+## Partial M3 browser evidence
+
+The [Qt lab](M3-BROWSER-LAB.md) exercises an excluded subresource, excluded redirect and admitted requests through the gate/proxy/broker on a local fixture. The [supervised helper](ADR-011-BROWSER-HELPER.md) adds descendant termination and bounded IPC. It does not prove independent egress, alternate browser paths, filesystem containment or cross-platform operation; the matrix's “Browser out of scope” row remains unmet.

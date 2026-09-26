@@ -42,3 +42,7 @@ Prima di introdurre browser, AI, plugin, updater o multiutente, aggiornare quest
 ## Evidenze M1 del trasporto pubblico fissato
 
 [ADR-008](ADR-008-PINNED-PUBLIC-TRANSPORT.md) e le [visite controllate](M1-CONTROLLED-CRAWL.md) aggiungono policy di route, rifiuto di IP speciali, grant esatti, rate per broker e verifica a ogni hop. I test simulano il peer pubblico tramite un server loopback; non provano egress di sistema, coordinamento tra processi o target pubblici reali. Restano aperti i controlli della matrice che richiedono browser, credenziali o UI.
+
+## Evidenze parziali M3 del browser
+
+Il [laboratorio Qt](M3-BROWSER-LAB.md) verifica su fixture locale subresource esclusa, redirect escluso e richieste ammesse attraverso gate/proxy/broker. L'[helper supervisionato](ADR-011-BROWSER-HELPER.md) aggiunge terminazione dei discendenti e un confine IPC limitato. Non prova egress indipendente, vie alternative del browser, contenimento dei file o uso multipiattaforma; la riga «Browser fuori scope» della matrice non è ancora soddisfatta.
