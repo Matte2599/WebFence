@@ -9,3 +9,5 @@ Il proxy respinge `CONNECT` HTTPS, upgrade WebSocket, body, worker dichiarati e 
 **Questo blocco non avvia né configura un browser.** Un browser potrebbe ignorare il proxy o usare canali alternativi: servono runtime isolato, egress indipendente, intercettazione di tutti i tipi di risorsa, limiti di processi/memoria e prove su ogni piattaforma. HTTPS, autenticazione e WebSocket non sono supportati da questo proxy. Non usarlo come prova di contenimento M3 o per target esterni.
 
 Le prove `httptest` usano solo loopback e verificano richiesta valida, HEAD, header/CSP e mancato inoltro di cookie e credenziali, autenticazione proxy, origine terza, percorso escluso, worker, WebSocket, POST e redirect fuori scope. Non sono prove con un browser reale né misure di copertura SPA/API.
+
+Un blocco successivo aggiunge [`NewProxyWithSession`](M3-SESSIONS.md): solo su fixture loopback, una sessione verificata resta nel genitore e aggiunge il suo cookie alle GET ammesse. I cookie del browser continuano a non essere inoltrati. Questo non cambia il contratto anonimo di `NewProxy` descritto sopra.

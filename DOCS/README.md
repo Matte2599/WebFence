@@ -46,6 +46,9 @@
 | IP pubblici fissati / Pinned public IPs | [ADR-008 IT](it/ADR-008-PINNED-PUBLIC-TRANSPORT.md) | [ADR-008 EN](en/ADR-008-PINNED-PUBLIC-TRANSPORT.md) |
 | Confine HTTP browser / Browser HTTP boundary | [ADR-009 IT](it/ADR-009-BROWSER-HTTP-BOUNDARY.md) | [ADR-009 EN](en/ADR-009-BROWSER-HTTP-BOUNDARY.md) |
 | Laboratorio browser Qt / Qt browser lab | [ADR-010 IT](it/ADR-010-QT-BROWSER-LAB.md) | [ADR-010 EN](en/ADR-010-QT-BROWSER-LAB.md) |
+| Helper browser supervisionato / Supervised browser helper | [ADR-011 IT](it/ADR-011-BROWSER-HELPER.md) | [ADR-011 EN](en/ADR-011-BROWSER-HELPER.md) |
+| Login e sessioni M3 / M3 login and sessions | [IT](it/M3-SESSIONS.md) | [EN](en/M3-SESSIONS.md) |
+| Cookie e POST di prova / Test-account cookies and POST | [ADR-012 IT](it/ADR-012-TEST-SESSIONS.md) | [ADR-012 EN](en/ADR-012-TEST-SESSIONS.md) |
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |
 | Pacchetti Debian/Windows / Debian/Windows packages | [ADR-007 IT](it/ADR-007-PACKAGING.md) | [ADR-007 EN](en/ADR-007-PACKAGING.md) |
 | Sorgenti Windows / Windows sources | [IT](it/M0-WINDOWS-SOURCES.md) | [EN](en/M0-WINDOWS-SOURCES.md) |

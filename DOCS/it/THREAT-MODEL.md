@@ -46,3 +46,5 @@ Prima di introdurre browser, AI, plugin, updater o multiutente, aggiornare quest
 ## Evidenze parziali M3 del browser
 
 Il [laboratorio Qt](M3-BROWSER-LAB.md) verifica su fixture locale subresource esclusa, redirect escluso e richieste ammesse attraverso gate/proxy/broker. L'[helper supervisionato](ADR-011-BROWSER-HELPER.md) aggiunge terminazione dei discendenti e un confine IPC limitato. Non prova egress indipendente, vie alternative del browser, contenimento dei file o uso multipiattaforma; la riga «Browser fuori scope» della matrice non è ancora soddisfatta.
+
+Il [core sessioni M3](M3-SESSIONS.md) verifica su fixture due identità, POST esatto, cookie host-only, blocco dei redirect con credenziali e fallimento del login senza conclusioni negative. È ancora solo loopback, senza GUI, browser autenticato o prova su target reali; la riga «Furto credenziali» della matrice resta parziale.

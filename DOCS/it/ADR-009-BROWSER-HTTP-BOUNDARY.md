@@ -4,6 +4,8 @@
 
 Data: 2026-09-26. Stato: **adottato per il prototipo core M3**; runtime browser e uso su target esterni non approvati.
 
+Il successivo [ADR-012](ADR-012-TEST-SESSIONS.md) estende il core con un proxy opzionale legato a una sessione di prova; il confine anonimo deciso qui resta invariato.
+
 ## Contesto e decisione
 
 Il browser pianificato produce navigazioni, risorse e richieste JavaScript indipendenti dal crawler M1. Consentirgli l'accesso diretto alla rete aggirerebbe la policy Go e gli IP fissati. Il primo percorso di rete M3 è quindi un proxy HTTP locale autenticato: dopo il [gate](M3-BROWSER-GATE.md), il broker M1 esegue ogni GET/HEAD con verifiche di scope, percorso, DNS, peer, budget, cadenza e redirect. Il proxy ascolta su una porta effimera di `127.0.0.1`, richiede una credenziale casuale per istanza e non inoltra header o cookie del client.

@@ -4,6 +4,8 @@
 
 Date: 2026-09-26. Status: **adopted for the M3 core prototype**; a browser runtime and external-target use are not approved.
 
+The later [ADR-012](ADR-012-TEST-SESSIONS.md) extends the core with an optional proxy bound to a test session; the anonymous boundary decided here remains unchanged.
+
 ## Context and decision
 
 The planned browser produces navigations, resources and JavaScript requests independently of the M1 crawler. Direct browser networking would bypass Go policy and pinned IPs. The first M3 network path is therefore an authenticated local HTTP proxy: after the [gate](M3-BROWSER-GATE.md), the M1 broker performs every GET/HEAD with scope, path, DNS, peer, budget, pacing and redirect checks. The proxy listens on an ephemeral `127.0.0.1` port, requires a random per-instance credential and forwards no client headers or cookies.

@@ -92,6 +92,20 @@ func (g *Gate) RequestsUsed() int {
 	return g.used
 }
 
+func (g *Gate) ProjectID() string {
+	if g == nil {
+		return ""
+	}
+	return g.permit.ProjectID()
+}
+
+func (g *Gate) Revision() uint64 {
+	if g == nil {
+		return 0
+	}
+	return g.permit.Revision()
+}
+
 // Admit validates every navigation, redirect and resource before the adapter
 // permits it to reach the network. A successful caller must release the lease
 // after the request completes. Errors contain no URL or credential material.

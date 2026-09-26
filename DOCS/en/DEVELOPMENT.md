@@ -18,7 +18,7 @@ go run ./cmd/webfence
 
 ```sh
 go mod verify
-go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/browser ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
+go test -race ./internal/demo ./internal/i18n ./internal/preferences ./internal/scope ./internal/project ./internal/storage ./internal/transport ./internal/scanner ./internal/browser ./internal/session ./internal/foundation ./internal/signature ./internal/credentials ./internal/intelligence ./internal/reporting
 go vet ./...
 go build -o bin/webfence ./cmd/webfence
 QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
@@ -41,6 +41,7 @@ Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/p
 - `internal/project` and `internal/storage`: authorization model, [SQLite v4](M1-PROJECT-STORE.md) with redacted runs/observations and [local revocation](M1-MANAGED-RUNS.md).
 - `internal/scope` and `internal/transport`: [route policy and public IP-pinned broker](M1-CONTROLLED-CRAWL.md), used by the M1 desktop.
 - `internal/browser`: [M3 gate](M3-BROWSER-GATE.md), [confined HTTP proxy](M3-BROWSER-PROXY.md) and helper supervisor; still without a desktop browser runtime.
+- `internal/session`: [M3 test-account login and sessions](M3-SESSIONS.md) held only in memory on controlled fixtures; the desktop does not yet expose test accounts.
 - `experiments/m3-browser`: [Qt WebEngine lab](M3-BROWSER-LAB.md) using local fixtures and a [separate helper](ADR-011-BROWSER-HELPER.md); it requires Qt WebEngine 6.11.2 and the `m3browserlab` tag and is not packaged.
 - `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md) and [bounded crawler](M1-CONTROLLED-CRAWL.md) with persistent results. Tests open no external network connections.
 - `internal/intelligence` and `internal/reporting`: [M2 cache/matching](M2-INTELLIGENCE-CACHE.md) and [verifiable bundles](M2-REPORTS.md), independent of Qt. `cmd/webfence-report` and `cmd/webfence-verify` are technical helpers buildable from source.
