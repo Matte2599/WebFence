@@ -1,6 +1,6 @@
 // Package transport contains a pinned HTTP broker for explicitly granted
 // loopback fixtures and public destinations. M3 session methods are limited to
-// an explicit loopback laboratory; they are not wired into the desktop.
+// an explicit loopback laboratory used by the bounded desktop auth dialog.
 package transport
 
 import (
@@ -384,6 +384,7 @@ type exchangeOptions struct {
 	body       []byte
 	cookie     string
 	noRedirect bool
+	loginPage  bool
 }
 
 func (b *Broker) exchange(ctx context.Context, method string, u *url.URL, ip netip.Addr, options exchangeOptions) (Result, string, error) {

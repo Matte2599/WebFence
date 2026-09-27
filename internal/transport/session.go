@@ -18,7 +18,8 @@ const maxLoginFormBytes = 4096
 // permitted by this broker; the verification URL must also pass the ordinary
 // GET route policy. Neither URL may include query credentials or fragments.
 // LoginConfirmed is the caller's explicit confirmation for this POST flow;
-// the broker cannot independently prove target ownership.
+// the optional login-page GET shares that confirmation and exact URL. The
+// broker cannot independently prove target ownership.
 type SessionRoutes struct {
 	LoginURL       string
 	VerifyURL      string
@@ -80,21 +81,43 @@ func (b *Broker) validateSessionRoutes(routes SessionRoutes) (*sessionRoutes, er
 // The caller owns form and must erase it after use. Result headers can contain
 // sensitive Set-Cookie values and must not be logged or persisted.
 func (b *Broker) LoginForm(ctx context.Context, raw string, form []byte) (Result, error) {
+	return b.LoginFormWithCookie(ctx, raw, form, "")
+}
+
+// LoginFormWithCookie permits one explicitly selected pre-session cookie on
+// the exact login POST. It never follows a redirect or retains a cookie jar.
+func (b *Broker) LoginFormWithCookie(ctx context.Context, raw string, form []byte, cookie string) (Result, error) {
 	if b == nil || b.session == nil || len(form) == 0 || len(form) > maxLoginFormBytes {
 		return Result{}, ErrSessionRoute
 	}
-	return b.sessionRequest(ctx, "POST", raw, exchangeOptions{body: form, noRedirect: true})
+	if cookie != "" && !validSessionCookie(cookie) {
+		return Result{}, ErrSessionRoute
+	}
+	return b.sessionRequest(ctx, "POST", raw, exchangeOptions{body: form, cookie: cookie, noRedirect: true})
+}
+
+// FetchLoginForm performs one anonymous GET of the exact confirmed login URL.
+// It does not follow redirects and shares the POST's policy, budget and pace.
+func (b *Broker) FetchLoginForm(ctx context.Context) (Result, error) {
+	if b == nil || b.session == nil {
+		return Result{}, ErrSessionRoute
+	}
+	return b.sessionRequest(ctx, "GET", b.session.loginURL, exchangeOptions{noRedirect: true, loginPage: true})
 }
 
 // FetchSession sends a single GET with one caller-owned cookie pair. It never
 // follows redirects, which prevents a credential from crossing an origin.
 // Only an M3 session broker accepts this method; normal M1 Fetch is unchanged.
 func (b *Broker) FetchSession(ctx context.Context, raw, cookie string) (Result, error) {
-	if b == nil || b.session == nil || len(cookie) == 0 || len(cookie) > 2048 ||
-		strings.ContainsAny(cookie, "\r\n;") || strings.Count(cookie, "=") < 1 {
+	if b == nil || b.session == nil || !validSessionCookie(cookie) {
 		return Result{}, ErrSessionRoute
 	}
 	return b.sessionRequest(ctx, "GET", raw, exchangeOptions{cookie: cookie, noRedirect: true})
+}
+
+func validSessionCookie(cookie string) bool {
+	return len(cookie) > 0 && len(cookie) <= 2048 &&
+		!strings.ContainsAny(cookie, "\r\n;") && strings.Count(cookie, "=") >= 1
 }
 
 func (b *Broker) sessionRequest(ctx context.Context, method, raw string, options exchangeOptions) (Result, error) {
@@ -132,7 +155,10 @@ func (b *Broker) sessionRequest(ctx context.Context, method, raw string, options
 	if origin(u) != b.session.origin {
 		return Result{}, ErrSessionRoute
 	}
-	if method == "POST" {
+	if method == "POST" || options.loginPage {
+		if options.loginPage && (method != "GET" || options.cookie != "" || options.body != nil) {
+			return Result{}, ErrSessionRoute
+		}
 		if u.String() != b.session.loginURL {
 			return Result{}, ErrSessionRoute
 		}

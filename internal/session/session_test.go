@@ -209,3 +209,132 @@ func TestLoginRejectsDomainCookieAndPublicMarker(t *testing.T) {
 		})
 	}
 }
+
+func TestLoginWithCSRFPreSessionKeepsIdentitiesSeparate(t *testing.T) {
+	var mu sync.Mutex
+	pre := make(map[string]string)
+	var posts atomic.Int32
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.URL.Path == "/private/verify":
+			cookie, err := r.Cookie("sid")
+			if err != nil || !strings.HasSuffix(cookie.Value, "-session") {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			_, _ = io.WriteString(w, strings.TrimSuffix(cookie.Value, "-session"))
+		case r.URL.Path == "/auth/login" && r.Method == http.MethodGet:
+			if r.Header.Get("Cookie") != "" {
+				t.Error("login page received a cookie")
+			}
+			mu.Lock()
+			id := len(pre) + 1
+			value := "pre-" + string(rune('0'+id))
+			pre[value] = "token-" + value
+			mu.Unlock()
+			http.SetCookie(w, &http.Cookie{Name: "sid", Value: value, Path: "/auth", HttpOnly: true})
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			_, _ = io.WriteString(w, `<form><input type="hidden" name="csrf" value="token-`+value+`"></form>`)
+		case r.URL.Path == "/auth/login" && r.Method == http.MethodPost:
+			posts.Add(1)
+			_ = r.ParseForm()
+			cookie, err := r.Cookie("sid")
+			mu.Lock()
+			want := pre[cookieValue(cookie, err)]
+			mu.Unlock()
+			id := r.Form.Get("username")
+			if want == "" || r.Form.Get("csrf") != want || r.Form.Get("password") != id+"-pass" {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			http.SetCookie(w, &http.Cookie{Name: "sid", Value: id + "-session", Path: "/private", HttpOnly: true})
+			w.WriteHeader(http.StatusSeeOther)
+		default:
+			http.NotFound(w, r)
+		}
+	})
+	manager, broker, _ := fixtureManager(t, handler)
+	for _, id := range []string{"alice", "bob"} {
+		a := account(id, id+"-ref")
+		a.CSRFField, a.CSRFCookieName = "csrf", "sid"
+		s, err := manager.Login(context.Background(), a)
+		if err != nil {
+			t.Fatalf("%s login: %v", id, err)
+		}
+		if err := s.Verify(context.Background()); err != nil || s.Identity() != id {
+			t.Fatalf("%s verification: %v", id, err)
+		}
+		s.Close()
+	}
+	if posts.Load() != 2 || broker.RequestsUsed() != 10 {
+		t.Fatalf("unexpected POSTs or shared budget: %d, %d", posts.Load(), broker.RequestsUsed())
+	}
+}
+
+func cookieValue(cookie *http.Cookie, err error) string {
+	if err != nil || cookie == nil {
+		return ""
+	}
+	return cookie.Value
+}
+
+func TestCSRFLoginFailsClosed(t *testing.T) {
+	for _, tc := range []struct {
+		name, contentType, page, cookie string
+		status                          int
+		wantPost                        bool
+	}{
+		{"missing", "text/html", `<input type="hidden" name="other" value="x">`, "", 200, false},
+		{"duplicate", "text/html", `<input type="hidden" name="csrf" value="a"><input type="hidden" name="csrf" value="b">`, "", 200, false},
+		{"wrong-type", "text/html", `<input name="csrf" value="a">`, "", 200, false},
+		{"wrong-content-type", "text/plain", `<input type="hidden" name="csrf" value="a">`, "", 200, false},
+		{"redirect", "text/html", `<input type="hidden" name="csrf" value="a">`, "", 302, false},
+		{"broad-cookie", "text/html", `<input type="hidden" name="csrf" value="a">`, "sid=pre; Domain=127.0.0.1; Path=/auth", 200, false},
+		{"unrotated-cookie", "text/html", `<input type="hidden" name="csrf" value="a">`, "sid=pre; Path=/", 200, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var posts, external atomic.Int32
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.Path {
+				case "/private/verify":
+					w.WriteHeader(http.StatusUnauthorized)
+				case "/outside":
+					external.Add(1)
+				case "/auth/login":
+					if r.Method == http.MethodGet {
+						w.Header().Set("Content-Type", tc.contentType)
+						if tc.cookie != "" {
+							w.Header().Set("Set-Cookie", tc.cookie)
+						}
+						if tc.status == 302 {
+							w.Header().Set("Location", "/outside")
+						}
+						w.WriteHeader(tc.status)
+						_, _ = io.WriteString(w, tc.page)
+						return
+					}
+					posts.Add(1)
+					if tc.name == "unrotated-cookie" {
+						w.Header().Set("Set-Cookie", "sid=pre; Path=/")
+					} else {
+						w.Header().Set("Set-Cookie", "sid=pre; Path=/private")
+					}
+					w.WriteHeader(http.StatusSeeOther)
+				default:
+					http.NotFound(w, r)
+				}
+			})
+			manager, _, _ := fixtureManager(t, handler)
+			a := account("alice", "alice-ref")
+			a.CSRFField = "csrf"
+			if tc.cookie != "" {
+				a.CSRFCookieName = "sid"
+			}
+			s, err := manager.Login(context.Background(), a)
+			if s != nil || err == nil || (posts.Load() != 0) != tc.wantPost || external.Load() != 0 ||
+				tc.name == "unrotated-cookie" && !errors.Is(err, ErrLoginInvalid) {
+				t.Fatalf("unsafe CSRF login: session=%v err=%v posts=%d outside=%d", s, err, posts.Load(), external.Load())
+			}
+		})
+	}
+}
