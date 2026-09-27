@@ -33,8 +33,10 @@ import (
 type loopbackResolver struct{}
 
 type helperConfig struct {
+	Mode          string `json:"mode,omitempty"`
 	Origin        string `json:"origin"`
 	ProxyEndpoint string `json:"proxy_endpoint"`
+	SocketPath    string `json:"socket_path,omitempty"`
 	Username      string `json:"username"`
 	Password      string `json:"password"`
 }
@@ -65,14 +67,18 @@ func main() {
 		fmt.Fprintln(os.Stderr, "M3 browser lab failed:", err)
 		os.Exit(1)
 	}
-	fmt.Println("PASS M3 Qt browser HTTP fixture: document, DOM navigation, fetch, proxy and out-of-scope block")
+	if runtime.GOOS == "darwin" {
+		fmt.Println("PASS M3 Qt browser fixtures: HTTP proxy, DOM navigation, fetch and out-of-scope block; Unix-socket scheme document, script and fetch")
+	} else {
+		fmt.Println("PASS M3 Qt browser HTTP fixture: proxy, DOM navigation, fetch and out-of-scope block")
+	}
 }
 
 func run() error {
 	if len(os.Args) != 1 {
 		return errors.New("the lab accepts no target arguments")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
 	defer cancel()
 	var targetHits atomic.Int32
 	var wrongHost atomic.Bool
@@ -102,6 +108,15 @@ func run() error {
 		case "/app/dynamic":
 			w.Header().Set("Content-Type", "text/plain")
 			_, _ = fmt.Fprint(w, "synthetic-dynamic")
+		case "/app/scheme":
+			w.Header().Set("Content-Type", "text/html")
+			_, _ = fmt.Fprint(w, `<html><body><script src="/app/scheme.js"></script></body></html>`)
+		case "/app/scheme.js":
+			w.Header().Set("Content-Type", "application/javascript")
+			_, _ = fmt.Fprint(w, `console.log('wf-scheme-script-ok'); fetch('/app/scheme-api').then(r => r.text()).then(x => { if (x === 'scheme-synthetic') console.log('wf-scheme-api-ok') })`)
+		case "/app/scheme-api":
+			w.Header().Set("Content-Type", "text/plain")
+			_, _ = fmt.Fprint(w, "scheme-synthetic")
 		case "/app/redirect":
 			http.Redirect(w, r, "http://outside.test:8080/secret", http.StatusFound)
 		default:
@@ -136,7 +151,7 @@ func run() error {
 		return err
 	}
 	gate, err := browser.NewGate(ctx, permit, policy, browser.Limits{
-		MaxRequests: 20, MaxConcurrent: 1, MaxRuntime: 30 * time.Second,
+		MaxRequests: 20, MaxConcurrent: 1, MaxRuntime: 45 * time.Second,
 	})
 	if err != nil {
 		return err
@@ -145,7 +160,7 @@ func run() error {
 	broker, err := transport.NewAuthorizedLabWithPolicy(ctx, permit,
 		[]transport.Grant{{Origin: origin, Addresses: []netip.Addr{netip.MustParseAddr("127.0.0.1")}}},
 		transport.Limits{MaxRequests: 20, MaxConcurrent: 1, MaxRedirects: 2,
-			MaxBodyBytes: 1 << 20, RequestTimeout: 5 * time.Second, RunTimeout: 30 * time.Second,
+			MaxBodyBytes: 1 << 20, RequestTimeout: 5 * time.Second, RunTimeout: 45 * time.Second,
 			MinRequestInterval: time.Millisecond}, loopbackResolver{}, policy)
 	if err != nil {
 		return err
@@ -195,6 +210,11 @@ func run() error {
 			result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
 			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed(), len(observed), omitted)
 	}
+	if runtime.GOOS == "darwin" {
+		if err := runScheme(ctx, executable, origin, gate, broker, &targetHits); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -211,6 +231,12 @@ func runChild() error {
 	var extra any
 	if err := decoder.Decode(&extra); err != io.EOF {
 		return errors.New("invalid helper configuration")
+	}
+	if config.Mode == "scheme" {
+		return runSchemeChild(config)
+	}
+	if config.Mode != "" {
+		return errors.New("invalid helper mode")
 	}
 	if err := validateHelperConfig(config); err != nil {
 		return err

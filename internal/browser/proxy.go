@@ -98,12 +98,24 @@ func newProxy(ctx context.Context, gate *Gate, broker *transport.Broker, identit
 	if ctx == nil || gate == nil || broker == nil {
 		return nil, ErrConfig
 	}
-	var secret [32]byte
-	if _, err := rand.Read(secret[:]); err != nil {
-		return nil, ErrConfig
-	}
 	listener, err := net.Listen("tcp4", "127.0.0.1:0")
 	if err != nil {
+		return nil, ErrConfig
+	}
+	return newProxyOnListener(ctx, gate, broker, identity, observationLimit, listener)
+}
+
+func newProxyOnListener(ctx context.Context, gate *Gate, broker *transport.Broker,
+	identity *session.Session, observationLimit int, listener net.Listener) (*Proxy, error) {
+	if ctx == nil || gate == nil || broker == nil || listener == nil {
+		if listener != nil {
+			_ = listener.Close()
+		}
+		return nil, ErrConfig
+	}
+	var secret [32]byte
+	if _, err := rand.Read(secret[:]); err != nil {
+		_ = listener.Close()
 		return nil, ErrConfig
 	}
 	listener = netutil.LimitListener(listener, 32)
@@ -135,6 +147,9 @@ func newProxy(ctx context.Context, gate *Gate, broker *transport.Broker, identit
 // Endpoint and Credentials are for the browser process configuration only.
 // Do not log or persist the returned password.
 func (p *Proxy) Endpoint() string {
+	if p.listen.Addr().Network() != "tcp" {
+		return ""
+	}
 	return "http://" + p.listen.Addr().String()
 }
 

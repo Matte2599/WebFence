@@ -91,6 +91,8 @@ Quarto blocco sperimentale: [helper Qt supervisionato](it/ADR-011-BROWSER-HELPER
 
 Blocco successivo del browser: [limiti di risorse Unix nell'helper](it/M3-BROWSER-RESOURCE-LIMITS.md) per file, descrittori e core dump. Memoria, quota aggregata dei processi ed egress indipendente restano aperti su macOS/Linux.
 
+Prova successiva del browser: [proxy su socket Unix e schema Qt](it/M3-BROWSER-UNIX-SCHEME.md) per tre risorse sintetiche su macOS. Verifica un percorso IPC senza listener TCP; non impedisce connessioni dirette dal browser né conserva tutta la semantica HTTP. La prima voce M3 resta aperta.
+
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
@@ -242,6 +244,8 @@ The Qt lab also passed in the Ubuntu 24.04 CI job under a virtual display ([M3 s
 Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) with bounded IPC, deadline and process-tree termination; independent egress and hard macOS/Linux process limits remain open.
 
 Next browser block: [Unix helper resource limits](en/M3-BROWSER-RESOURCE-LIMITS.md) for files, descriptors and core dumps. Memory, aggregate process quota and independent egress remain open on macOS/Linux.
+
+Next browser trial: [Unix-socket proxy and Qt scheme](en/M3-BROWSER-UNIX-SCHEME.md) for three synthetic resources on macOS. It verifies an IPC path without a TCP listener; it neither prevents direct browser connections nor preserves complete HTTP semantics. The first M3 item remains open.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 
