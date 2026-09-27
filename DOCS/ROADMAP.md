@@ -103,7 +103,7 @@ Revisione CDP: l'[ADR-017](it/ADR-017-CDP-BROKER-BOUNDARY.md) collega la fixture
 
 Prova negativa Linux: il [laboratorio CDP](it/M3-BROWSER-CDP-LAB.md) richiede `EPERM` verso un canary TCP locale anche con rete container disponibile; senza il filtro WebFence la prova diagnostica fallisce. Non chiude gli altri requisiti del browser.
 
-Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
+Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; una successiva estensione legge un campo hidden CSRF e un cookie di pre-sessione facoltativo dall’URL di login esatto. Il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
 
@@ -267,7 +267,7 @@ CDP revision: [ADR-017](en/ADR-017-CDP-BROKER-BOUNDARY.md) connects the fixture 
 
 Linux negative trial: the [CDP lab](en/M3-BROWSER-CDP-LAB.md) requires `EPERM` for a local TCP canary even with container networking available; the diagnostic build fails without the WebFence filter. Other browser requirements remain open.
 
-Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
+Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; a later extension reads one hidden CSRF field and an optional pre-session cookie from the exact login URL. The bounded desktop workflow is described below. Real workflows remain open.
 
 Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an inventory of candidate static routes under scope/policy, without networking; selection of one seed in the GUI is described below. Dynamic crawling and checks remain open.
 

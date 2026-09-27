@@ -10,6 +10,8 @@ Login is a different operation from the M1 GET crawler. It requires a managed ru
 
 This is a conservative application of the cookie origin and path rules described by [RFC 6265](https://www.rfc-editor.org/rfc/rfc6265). Cookie Path alone is not a security boundary: the broker and run policy repeat checks before networking. Login and verification failures are separated from check outcomes.
 
+The September 27 extension permits one extra anonymous GET only to the exact login URL after run confirmation. One declared hidden token can be added to POST; one declared host-only pre-session cookie may accompany it only on that POST. The authenticated cookie must be new. Page content cannot widen scope, method or submitted fields. This specializes the existing boundary rather than crawling the form.
+
 ## Limits
 
-The form requires simple username/password fields and an exact validity marker; it does not discover CSRF or federated flows automatically. This module does not persist the secret, but Go/OS memory copies cannot be reliably erased. The authenticated broker is loopback-only and the session is not connected to the GUI or Qt helper yet. Cookies updated after login are not captured. Further trials are needed before M3 closure.
+The form requires simple username/password fields and an exact validity marker; it does not discover other CSRF or federated flows automatically. This module does not persist the secret, but Go/OS memory copies cannot be reliably erased. The authenticated broker is loopback-only and the session is connected to the loopback GUI dialog, but not to the Qt helper. Cookies updated after login are not captured. Further trials are needed before M3 closure.

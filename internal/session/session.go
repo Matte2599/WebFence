@@ -4,8 +4,11 @@
 package session
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
+	"mime"
 	"net/http"
 	"net/url"
 	"strings"
@@ -14,6 +17,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/Matte2599/WebFence/internal/transport"
+	"golang.org/x/net/html"
 )
 
 var (
@@ -39,6 +43,10 @@ type Account struct {
 	PasswordField string
 	CookieName    string
 	ExpectedBody  string
+	// CSRFField selects exactly one hidden input on the confirmed login page.
+	// CSRFCookieName optionally selects one host-only pre-session cookie for POST.
+	CSRFField      string
+	CSRFCookieName string
 }
 
 type Manager struct {
@@ -72,7 +80,10 @@ func ValidAccount(a Account) bool {
 		!strings.ContainsAny(a.Username, "\r\n\x00") && validToken(a.SecretID, 64) &&
 		validToken(a.UsernameField, 32) && validToken(a.PasswordField, 32) &&
 		a.UsernameField != a.PasswordField && validToken(a.CookieName, 64) &&
-		len(a.ExpectedBody) > 0 && len(a.ExpectedBody) <= 1024
+		len(a.ExpectedBody) > 0 && len(a.ExpectedBody) <= 1024 &&
+		(a.CSRFField == "" && a.CSRFCookieName == "" ||
+			validToken(a.CSRFField, 32) && (a.CSRFCookieName == "" || validToken(a.CSRFCookieName, 64)) &&
+				a.CSRFField != a.UsernameField && a.CSRFField != a.PasswordField)
 }
 
 // Login probes the validity route anonymously, posts the test credential once,
@@ -89,6 +100,32 @@ func (m *Manager) Login(ctx context.Context, a Account) (*Session, error) {
 	if baseline.StatusCode == http.StatusOK && string(baseline.Body) == a.ExpectedBody {
 		return nil, ErrInconclusive
 	}
+	var token, preCookie []byte
+	if a.CSRFField != "" {
+		page, fetchErr := m.broker.FetchLoginForm(ctx)
+		if fetchErr != nil || page.StatusCode != http.StatusOK {
+			return nil, ErrInconclusive
+		}
+		mediaType, _, mediaErr := mime.ParseMediaType(page.Header.Get("Content-Type"))
+		if mediaErr != nil || mediaType != "text/html" {
+			clear(page.Body)
+			return nil, ErrInconclusive
+		}
+		token, err = hiddenToken(page.Body, a.CSRFField)
+		clear(page.Body)
+		if err != nil {
+			return nil, ErrInconclusive
+		}
+		defer clear(token)
+		if a.CSRFCookieName != "" {
+			preCookie, _, _, err = selectCookie(page.Header, a.CSRFCookieName, m.broker.SessionOrigin(),
+				m.broker.LoginURL(), m.broker.SessionDeadline())
+			if err != nil {
+				return nil, ErrInconclusive
+			}
+			defer clear(preCookie)
+		}
+	}
 	secret, err := m.secrets.Get(ctx, a.SecretID)
 	if err != nil || len(secret) == 0 || len(secret) > 2048 {
 		clear(secret)
@@ -96,10 +133,13 @@ func (m *Manager) Login(ctx context.Context, a Account) (*Session, error) {
 	}
 	// Go and the OS can retain copies despite clearing the returned byte slice.
 	form := url.Values{a.UsernameField: {a.Username}, a.PasswordField: {string(secret)}}
+	if len(token) != 0 {
+		form.Set(a.CSRFField, string(token))
+	}
 	clear(secret)
 	encoded := []byte(form.Encode())
 	defer clear(encoded)
-	login, err := m.broker.LoginForm(ctx, m.broker.LoginURL(), encoded)
+	login, err := m.broker.LoginFormWithCookie(ctx, m.broker.LoginURL(), encoded, string(preCookie))
 	if err != nil {
 		return nil, ErrInconclusive
 	}
@@ -115,6 +155,10 @@ func (m *Manager) Login(ctx context.Context, a Account) (*Session, error) {
 	if err != nil {
 		return nil, ErrLoginInvalid
 	}
+	if len(preCookie) != 0 && bytes.Equal(preCookie, cookie) {
+		clear(cookie)
+		return nil, ErrLoginInvalid // a pre-session must not become the authenticated session
+	}
 	verified, err := m.broker.FetchSession(ctx, m.broker.VerifyURL(), string(cookie))
 	if err != nil || verified.StatusCode != http.StatusOK || string(verified.Body) != a.ExpectedBody {
 		clear(cookie)
@@ -125,6 +169,50 @@ func (m *Manager) Login(ctx context.Context, a Account) (*Session, error) {
 		revision: m.broker.SessionRevision(), identity: a.ID, cookie: cookie,
 		cookiePath: cookiePath, expiresAt: expires, expectedBody: a.ExpectedBody,
 		lifetime: lifetime, stop: stop}, nil
+}
+
+func hiddenToken(body []byte, name string) ([]byte, error) {
+	z := html.NewTokenizer(bytes.NewReader(body))
+	var chosen []byte
+	for {
+		switch z.Next() {
+		case html.ErrorToken:
+			if z.Err() == io.EOF && len(chosen) != 0 {
+				return chosen, nil
+			}
+			clear(chosen)
+			return nil, ErrInconclusive
+		case html.SelfClosingTagToken, html.StartTagToken:
+			tag, hasAttr := z.TagName()
+			if string(tag) != "input" || !hasAttr {
+				continue
+			}
+			var field, kind, value string
+			for {
+				key, val, more := z.TagAttr()
+				switch string(key) {
+				case "name":
+					field = string(val)
+				case "type":
+					kind = string(val)
+				case "value":
+					value = string(val)
+				}
+				if !more {
+					break
+				}
+			}
+			if field != name || !strings.EqualFold(kind, "hidden") {
+				continue
+			}
+			if len(chosen) != 0 || len(value) == 0 || len(value) > 1024 || !utf8.ValidString(value) ||
+				strings.ContainsAny(value, "\r\n\x00") {
+				clear(chosen)
+				return nil, ErrInconclusive
+			}
+			chosen = []byte(value)
+		}
+	}
 }
 
 func selectCookie(header http.Header, name, originRaw, verifyRaw string, deadline time.Time) ([]byte, string, time.Time, error) {

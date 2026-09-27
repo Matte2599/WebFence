@@ -22,6 +22,7 @@ type authUI struct {
 	intro, status                                      *qt.QLabel
 	loginURL, verifyURL, resourceURL, privateBody      *qt.QLineEdit
 	usernameField, passwordField, cookieName           *qt.QLineEdit
+	csrfField, csrfCookieName                          *qt.QLineEdit
 	ownerID, ownerUsername, ownerPassword, ownerMarker *qt.QLineEdit
 	otherID, otherUsername, otherPassword, otherMarker *qt.QLineEdit
 	loginConfirmed, resourceConfirmed, otherForbidden  *qt.QCheckBox
@@ -95,6 +96,9 @@ func newAuthUI(parent *scannerUI) *authUI {
 	row("auth_username_field", a.usernameField, 32)
 	row("auth_password_field", a.passwordField, 32)
 	row("auth_cookie_name", a.cookieName, 64)
+	a.csrfField, a.csrfCookieName = qt.NewQLineEdit2(), qt.NewQLineEdit2()
+	row("auth_csrf_field", a.csrfField, 32)
+	row("auth_csrf_cookie_name", a.csrfCookieName, 64)
 	a.ownerID, a.ownerUsername, a.ownerPassword, a.ownerMarker = qt.NewQLineEdit2(), qt.NewQLineEdit2(), qt.NewQLineEdit2(), qt.NewQLineEdit2()
 	a.ownerPassword.SetEchoMode(qt.QLineEdit__Password)
 	row("auth_owner_id", a.ownerID, 64)
@@ -190,10 +194,11 @@ func (a *authUI) startRun() {
 		return
 	}
 	usernameField, passwordField, cookieName := strings.TrimSpace(a.usernameField.Text()), strings.TrimSpace(a.passwordField.Text()), strings.TrimSpace(a.cookieName.Text())
+	csrfField, csrfCookieName := strings.TrimSpace(a.csrfField.Text()), strings.TrimSpace(a.csrfCookieName.Text())
 	account := func(id, username, marker, secretID string) session.Account {
 		return session.Account{ID: strings.TrimSpace(id), Username: username, SecretID: secretID,
 			UsernameField: usernameField, PasswordField: passwordField, CookieName: cookieName,
-			ExpectedBody: marker}
+			ExpectedBody: marker, CSRFField: csrfField, CSRFCookieName: csrfCookieName}
 	}
 	plan := checks.CrossRoleRunPlan{ProjectID: crawl.ProjectID, Origin: crawl.Grants[0].Origin,
 		Grant:  transport.Grant{Origin: crawl.Grants[0].Origin, Addresses: crawl.Grants[0].Addresses},

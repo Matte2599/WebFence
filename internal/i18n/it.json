@@ -70,6 +70,8 @@
   "auth_username_field": "Nome del campo username",
   "auth_password_field": "Nome del campo password",
   "auth_cookie_name": "Nome del cookie di sessione",
+  "auth_csrf_field": "Campo token CSRF del form (facoltativo)",
+  "auth_csrf_cookie_name": "Cookie di pre-sessione CSRF (facoltativo)",
   "auth_owner_id": "ID account proprietario",
   "auth_owner_username": "Username proprietario",
   "auth_owner_password": "Password proprietario (solo questa run)",

@@ -10,6 +10,8 @@ Il login è un'operazione diversa dal crawler GET M1. Richiede una run gestita e
 
 Questa scelta applica in modo prudente i confini di origine e percorso dei cookie descritti da [RFC 6265](https://www.rfc-editor.org/rfc/rfc6265). Il percorso di cookie da solo non costituisce una barriera di sicurezza: il broker e la policy di run ripetono i controlli prima della rete. Errori di login e verifica sono stati separati dagli esiti dei controlli.
 
+L'estensione del 27 settembre consente una GET anonima aggiuntiva soltanto all'URL di login esatto, previa conferma della run. Un unico token hidden dichiarato può essere aggiunto al POST; un cookie di pre-sessione host-only dichiarato può accompagnarlo soltanto su quel POST. Il cookie autenticato deve essere nuovo. La pagina non può ampliare scope, metodo o campi inviati. Questa è una specializzazione del confine già adottato, non un crawler del form.
+
 ## Limiti
 
-Il form richiede campi utente/password semplici e un marcatore esatto di validità; non scopre automaticamente CSRF o flussi federati. Il segreto non è persistito da questo modulo, ma copie in memoria Go/OS non possono essere azzerate con garanzia. Il broker autenticato è soltanto loopback e la sessione non è ancora collegata alla GUI o al helper Qt. Cookie aggiornati dopo il login non vengono acquisiti. Occorrono ulteriori prove prima di chiudere M3.
+Il form richiede campi utente/password semplici e un marcatore esatto di validità; non scopre automaticamente varianti CSRF o flussi federati. Il segreto non è persistito da questo modulo, ma copie in memoria Go/OS non possono essere azzerate con garanzia. Il broker autenticato è soltanto loopback e la sessione è collegata al dialogo GUI loopback, ma non al helper Qt. Cookie aggiornati dopo il login non vengono acquisiti. Occorrono ulteriori prove prima di chiudere M3.

@@ -70,6 +70,8 @@
   "auth_username_field": "Username field name",
   "auth_password_field": "Password field name",
   "auth_cookie_name": "Session cookie name",
+  "auth_csrf_field": "Form CSRF token field (optional)",
+  "auth_csrf_cookie_name": "CSRF pre-session cookie (optional)",
   "auth_owner_id": "Owner account ID",
   "auth_owner_username": "Owner username",
   "auth_owner_password": "Owner password (this run only)",

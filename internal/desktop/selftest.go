@@ -245,13 +245,25 @@ func selfTest(w *workspace) int {
 	// fixture, and renders only persisted redacted observations.
 	if w.scan != nil && w.scan.store != nil {
 		var hits atomic.Int32
+		var csrfMode atomic.Bool
+		var csrfSequence atomic.Int32
 		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			hits.Add(1)
 			switch request.URL.Path {
 			case "/auth/login":
+				if csrfMode.Load() && request.Method == http.MethodGet {
+					pre := fmt.Sprintf("pre-%d", csrfSequence.Add(1))
+					http.SetCookie(writer, &http.Cookie{Name: "sid", Value: pre, Path: "/auth", HttpOnly: true})
+					writer.Header().Set("Content-Type", "text/html")
+					_, _ = writer.Write([]byte(`<input type="hidden" name="csrf" value="` + pre + `-token">`))
+					return
+				}
 				_ = request.ParseForm()
 				name := request.Form.Get("username")
-				if request.Method != http.MethodPost || request.Header.Get("Cookie") != "" ||
+				preCookie, preErr := request.Cookie("sid")
+				validPre := !csrfMode.Load() && request.Header.Get("Cookie") == "" ||
+					csrfMode.Load() && preErr == nil && request.Form.Get("csrf") == preCookie.Value+"-token"
+				if request.Method != http.MethodPost || !validPre ||
 					(name != "alice" && name != "bob") || request.Form.Get("password") != name+"-pass" {
 					writer.WriteHeader(http.StatusUnauthorized)
 					return
@@ -662,6 +674,24 @@ func selfTest(w *workspace) int {
 		check(!a.busy && hits.Load() == beforeAuth && a.ownerPassword.Text() == "" && a.otherPassword.Text() == "" &&
 			!a.loginConfirmed.IsChecked() && !a.resourceConfirmed.IsChecked() && !a.otherForbidden.IsChecked(),
 			"M3 native account confirmations are required again for a new run")
+		csrfMode.Store(true)
+		a.csrfField.SetText("csrf")
+		a.csrfCookieName.SetText("sid")
+		a.loginConfirmed.SetChecked(true)
+		a.resourceConfirmed.SetChecked(true)
+		a.otherForbidden.SetChecked(true)
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.start.Click()
+		deadline = time.Now().Add(12 * time.Second)
+		for a.busy && time.Now().Before(deadline) {
+			qt.QCoreApplication_ProcessEvents()
+			time.Sleep(10 * time.Millisecond)
+		}
+		qt.QCoreApplication_ProcessEvents()
+		check(!a.busy && hits.Load() == beforeAuth+13 && csrfSequence.Load() == 2 &&
+			a.status.Text() == u.tr("auth_finding") && a.result.ToPlainText() == "cross_role_private_body_reproduced",
+			"M3 native two-account CSRF pre-session login")
 		u.confirmDelete = func() bool { return true }
 		u.deleteProject.Click()
 		check(u.selectedProjectID() == "" && u.runs.Count() == 0, "M1 native project deletion")
