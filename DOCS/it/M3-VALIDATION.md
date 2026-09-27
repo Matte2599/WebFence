@@ -19,6 +19,8 @@ Le credenziali, URL, query, header e corpi non sono inclusi nei risultati redatt
 
 **Revisione Linux con IPC preconnesso su `1c6ce89`:** in locale sono passati il test seccomp Linux ARM64 e il laboratorio Qt WebEngine 6.4 in container, il laboratorio Qt macOS, `go test ./...`, `go vet ./...`, 79 test Python (4 saltati) e verifica di 180 documenti/1664 link locali. La [CI del branch](https://github.com/Matte2599/WebFence/actions/runs/36317757369) è verde su Linux, macOS, Windows e packaging. Prova un percorso sintetico più ristretto, non la chiusura del browser né il test finale M3.
 
+**Prova CDP Linux del 27 settembre 2026:** un container ARM64 senza rete, in sola lettura e con quota di memoria/PID ha superato documento HTTP, script, `fetch`, risorsa e redirect esterni bloccati. Il processo Chromium ha ereditato seccomp e `no_new_privs`; due test negativi rifiutano frame CDP eccessivi e consumano il budget anche per richieste sconosciute. In locale sono passati `go test ./...`, `go vet ./...`, `go vet` sul laboratorio Linux e la verifica di 178 documenti/1697 link locali. Il laboratorio usa `--no-sandbox` e non è collegato al gate/broker: non è la convalida finale M3.
+
 ## Test complessivo
 
 **Verifica locale integrata del commit `b82693a`, 27 settembre 2026:** Apple Silicon, macOS 26.6.2, Go 1.27.1, Qt 6.11.2. Tutti i comandi seguenti sono terminati con codice zero; hanno usato solo fixture sintetiche e loopback.

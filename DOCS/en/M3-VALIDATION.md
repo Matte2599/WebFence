@@ -19,6 +19,8 @@ Credentials, URLs, queries, headers and bodies are absent from the redacted resu
 
 **Linux preconnected IPC revision on `1c6ce89`:** the local Linux ARM64 seccomp test and Qt WebEngine 6.4 lab in a container, the macOS Qt lab, `go test ./...`, `go vet ./...`, 79 Python tests (4 skipped) and checks of 180 documents/1664 local links passed. [Branch CI](https://github.com/Matte2599/WebFence/actions/runs/36317757369) passed on Linux, macOS, Windows and packaging. This verifies a narrower synthetic path, not browser closure or final M3 validation.
 
+**Linux CDP trial on September 27, 2026:** a networkless, read-only ARM64 container with memory/PID quotas passed an HTTP document, script, `fetch`, blocked outside resource and redirect. Chromium inherited seccomp and `no_new_privs`; two negative tests reject oversized CDP frames and charge unknown requests against the budget. Local `go test ./...`, `go vet ./...`, Linux-lab `go vet` and checks of 178 documents/1697 local links passed. The lab uses `--no-sandbox` and is not connected to the gate/broker: this is not the final M3 validation.
+
 ## Overall test
 
 **Integrated local verification of commit `b82693a`, September 27, 2026:** Apple Silicon, macOS 26.6.2, Go 1.27.1, Qt 6.11.2. Every command below exited successfully; only synthetic fixtures and loopback were used.
