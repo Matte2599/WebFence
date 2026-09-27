@@ -11,7 +11,11 @@
 | OpenAPI, dynamic and context | [Offline OpenAPI import](M3-OPENAPI-IMPORT.md), [selected static GET visits in the desktop](M3-API-DESKTOP.md), [core replay of observed `fetch` paths](M3-OBSERVED-CRAWL.md) and a first [cross-role check](M3-CROSS-ROLE.md). | Product DOM interaction crawler, dynamic parameters/queries under policy, API-specific checks, more resources/roles and measurements on a representative SPA/API corpus. |
 | Rule families | `HTTP-XCTO-001` observes an HTML header; `AUTH-CROSSROLE-001` requires exact positive evidence and confirmation that access is forbidden. Six synthetic cross-role cases yield one finding and five inconclusive results. | Further families with prerequisites, positive/negative fixtures and published measures; real-corpus sensitivity, specificity and false positives are unknown. |
 
+The [platform feasibility trial](M3-BROWSER-PLATFORM-FEASIBILITY.md) and [ADR-015](ADR-015-BROWSER-PLATFORM-BOUNDARY.md) explain why the first item cannot be checked based on the current labs. The local macOS outcomes need a reproducible packaging trial before a runtime is chosen.
+
 Credentials, URLs, queries, headers and bodies are absent from the redacted results of these blocks; GUI passwords are not saved, but Go, Qt or OS copies may remain in memory. No finding, or a different response, does not prove that access control is correct. GET can have effects: local fixtures do not authorize external trials.
+
+**Cumulative browser-block update on `9a4f4a6`, September 27, 2026:** local verification passed `go mod verify`, browser tests with the race detector, `go test ./...`, `go vet ./...`, tagged `m3browserlab` tests and Qt trial, IT/EN desktop self-test, a 10-second soak, 79 Python tests (4 skipped) and documentation link checks. A Linux ARM64 container trial checked the filter and descendant inheritance. [IPC branch CI](https://github.com/Matte2599/WebFence/actions/runs/36312004380), [its merge](https://github.com/Matte2599/WebFence/actions/runs/36312583122), [Linux branch CI](https://github.com/Matte2599/WebFence/actions/runs/36312923254) and [its merge](https://github.com/Matte2599/WebFence/actions/runs/36313511877) passed. This is an interim regression, not final M3 validation or proof of complete egress containment.
 
 ## Overall test
 
