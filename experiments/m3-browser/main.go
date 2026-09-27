@@ -37,6 +37,7 @@ type helperConfig struct {
 	Origin        string `json:"origin"`
 	ProxyEndpoint string `json:"proxy_endpoint"`
 	SocketPath    string `json:"socket_path,omitempty"`
+	BrokerFDs     int    `json:"broker_fds,omitempty"`
 	Username      string `json:"username"`
 	Password      string `json:"password"`
 }

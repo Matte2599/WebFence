@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -48,6 +49,9 @@ func TestValidateSchemeConfig(t *testing.T) {
 	defer listener.Close()
 	good := helperConfig{Mode: "scheme", Origin: "http://site.test:1234", SocketPath: socketPath,
 		Username: "webfence", Password: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+	if runtime.GOOS == "linux" {
+		good.BrokerFDs = schemeBrokerConnections
+	}
 	if err := validateSchemeConfig(good); err != nil {
 		t.Fatalf("valid local scheme configuration rejected: %v", err)
 	}
@@ -58,6 +62,7 @@ func TestValidateSchemeConfig(t *testing.T) {
 		"other socket":    func(c *helperConfig) { c.SocketPath = "/tmp/other.sock" },
 		"wrong mode":      func(c *helperConfig) { c.Mode = "other" },
 		"wrong secret":    func(c *helperConfig) { c.Password = "short" },
+		"wrong fds":       func(c *helperConfig) { c.BrokerFDs++ },
 	} {
 		t.Run(name, func(t *testing.T) {
 			config := good

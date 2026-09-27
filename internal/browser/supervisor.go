@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -23,6 +24,9 @@ var (
 type HelperLimits struct {
 	MaxRuntime     time.Duration
 	MaxOutputBytes int
+	// InheritedFiles are already connected, trusted IPC descriptors. On Unix,
+	// the helper receives them at descriptors 3 onward; Windows rejects them.
+	InheritedFiles []*os.File
 }
 
 // RunHelper starts a browser helper without a shell. The caller must provide
@@ -33,8 +37,15 @@ type HelperLimits struct {
 func RunHelper(ctx context.Context, executable string, payload []byte, limits HelperLimits) ([]byte, error) {
 	if ctx == nil || !filepath.IsAbs(executable) || len(payload) == 0 || len(payload) > 64<<10 ||
 		limits.MaxRuntime <= 0 || limits.MaxRuntime > 4*time.Hour ||
-		limits.MaxOutputBytes <= 0 || limits.MaxOutputBytes > 1<<20 {
+		limits.MaxOutputBytes <= 0 || limits.MaxOutputBytes > 1<<20 ||
+		len(limits.InheritedFiles) > 8 ||
+		(runtime.GOOS == "windows" && len(limits.InheritedFiles) != 0) {
 		return nil, ErrConfig
+	}
+	for _, file := range limits.InheritedFiles {
+		if file == nil {
+			return nil, ErrConfig
+		}
 	}
 	run, cancel := context.WithTimeout(ctx, limits.MaxRuntime)
 	defer cancel()
@@ -49,6 +60,7 @@ func RunHelper(ctx context.Context, executable string, payload []byte, limits He
 	cmd := exec.Command(executable, "--browser-helper")
 	cmd.Env = helperEnvironment(privateDir)
 	cmd.Dir = privateDir
+	cmd.ExtraFiles = limits.InheritedFiles
 	configureHelperProcess(cmd)
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
