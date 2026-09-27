@@ -93,6 +93,8 @@ Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture lo
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete né integrazione GUI; crawling dinamico e controlli restano aperti.
 
+Settimo blocco core: [osservazioni delle richieste browser](it/M3-DYNAMIC-OBSERVATIONS.md) da fixture Qt, inclusi `fetch` JavaScript, senza query o visite automatiche; navigazione DOM e controlli restano aperti.
+
 - [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
@@ -226,6 +228,8 @@ Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; Qt/desktop integration and real workflows remain open.
 
 Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an inventory of candidate static routes under scope/policy, without networking or GUI integration; dynamic crawling and checks remain open.
+
+Seventh core block: [browser request observations](en/M3-DYNAMIC-OBSERVATIONS.md) from the Qt fixture, including JavaScript `fetch`, without queries or automatic visits; DOM navigation and checks remain open.
 
 - [ ] Isolated browser, scope for subresources/redirects and process limits.
 - [ ] Test-account sessions/login flows, validity checks and identity separation.
