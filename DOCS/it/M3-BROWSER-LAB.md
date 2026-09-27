@@ -18,3 +18,7 @@ CGO_CXXFLAGS='-O0 -g0 -std=c++17' go test -tags=m3browserlab ./experiments/m3-br
 ```
 
 **Prova locale del 27 settembre 2026, Apple Silicon/macOS 26.6.2, Qt WebEngine 6.11.2:** il comando con helper ha restituito `PASS`. Il job CI macOS 26 è separato e va verificato sul commit del branch e del merge. Nessun collaudo Qt equivalente è ancora documentato su Windows o Linux. Il laboratorio non è una funzionalità GUI e non ha egress indipendente, limiti rigidi di processi/memoria su macOS/Linux, HTTPS o sessioni; non soddisfa il criterio browser M3.
+
+La CI include ora un job Linux Ubuntu 24.04 con Qt WebEngine e display virtuale: esegue il test di configurazione e la stessa fixture sintetica. Il job deve risultare verde sul commit pertinente prima di registrare una prova Linux riuscita. La prova locale macOS è stata ripetuta dopo l'aggiunta del job. Non è ancora una prova del contenimento indipendente dell'egress.
+
+Il primo tentativo Linux ha compilato il helper ma ha restituito `browser_helper_failed` nell'esecuzione. L'allowlist dell'ambiente del supervisor ometteva `XAUTHORITY`, necessario al display virtuale con autenticazione X11; il branch ora lo inoltra e ne verifica l'isolamento rispetto ad altre variabili. La causa è un'ipotesi da confermare con il successivo job.
