@@ -23,6 +23,8 @@ Le credenziali, URL, query, header e corpi non sono inclusi nei risultati redatt
 
 **Revisione CDP con broker:** la prova ARM64 ha superato 40 ripetizioni con container senza rete, quota 1 GiB/256 PID e filesystem in sola lettura. Sono passati documento, script e `fetch` attraverso gate/proxy/broker, immagine esterna bloccata dal gate, redirect esterno fermato dal broker, quattro contatti target e tre osservazioni redatte. Il limite precedente di 128 PID causava un errore intermittente di avvio Chromium. `go test ./...`, `go vet ./...`, `go vet` del laboratorio Linux e verifica documentale locale sono passati. L'uso di `--no-sandbox`, l'assenza di HTTPS e il confinamento solo nel container impediscono di chiudere la prima voce M3.
 
+**Prova negativa di rete Linux:** un listener TCP sintetico aperto dal genitore non è raggiungibile dall'helper filtrato (`EPERM`), sia in container senza rete sia con rete `bridge`; dieci ripetizioni locali per modalità sono passate. In una build diagnostica senza la chiamata al filtro, il medesimo controllo fallisce. `go test ./...`, `go vet ./...`, test/vet Linux del laboratorio e 181 documenti/1825 link locali sono passati. Il job CI ora ripete entrambe le modalità; non è una prova di sandbox del renderer o delle altre piattaforme.
+
 ## Test complessivo
 
 **Verifica locale integrata del commit `b82693a`, 27 settembre 2026:** Apple Silicon, macOS 26.6.2, Go 1.27.1, Qt 6.11.2. Tutti i comandi seguenti sono terminati con codice zero; hanno usato solo fixture sintetiche e loopback.

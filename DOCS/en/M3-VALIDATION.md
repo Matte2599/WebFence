@@ -23,6 +23,8 @@ Credentials, URLs, queries, headers and bodies are absent from the redacted resu
 
 **Broker-connected CDP revision:** the ARM64 trial passed 40 repetitions in a networkless container with a 1 GiB/256 PID quota and read-only filesystem. Document, script and `fetch` traversed gate/proxy/broker; the gate blocked an outside image, the broker stopped an outside redirect, with four target contacts and three redacted observations. The previous 128 PID cap caused an intermittent Chromium startup failure. `go test ./...`, `go vet ./...`, Linux-lab `go vet` and local documentation checks passed. `--no-sandbox`, missing HTTPS and confinement limited to the container prevent closure of the first M3 item.
 
+**Linux network negative trial:** a synthetic TCP listener opened by the parent cannot be reached by the filtered helper (`EPERM`), both with no container network and with `bridge` networking; ten local repetitions passed per mode. In a diagnostic build omitting the filter call, the same check failed. `go test ./...`, `go vet ./...`, Linux-lab tests/vet and checks of 181 documents/1825 local links passed. The CI job now repeats both modes; this is not proof of renderer sandboxing or other platforms.
+
 ## Overall test
 
 **Integrated local verification of commit `b82693a`, September 27, 2026:** Apple Silicon, macOS 26.6.2, Go 1.27.1, Qt 6.11.2. Every command below exited successfully; only synthetic fixtures and loopback were used.

@@ -44,8 +44,18 @@ func runParent() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var hits atomic.Int32
+	var canaryHits atomic.Int32
 	var wrongHost atomic.Bool
 	var host string
+	canary := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		canaryHits.Add(1)
+		http.NotFound(w, r)
+	}))
+	defer canary.Close()
+	canaryURL, err := url.Parse(canary.URL)
+	if err != nil {
+		return err
+	}
 	target := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Host != host || r.Header.Get("Cookie") != "" || r.Header.Get("Authorization") != "" ||
 			r.Header.Get("Proxy-Authorization") != "" {
@@ -141,7 +151,7 @@ func runParent() error {
 	if err != nil {
 		return err
 	}
-	payload, err := json.Marshal(helperConfig{Chrome: chrome, Origin: origin,
+	payload, err := json.Marshal(helperConfig{Chrome: chrome, Origin: origin, CanaryAddress: canaryURL.Host,
 		BrokerFDs: len(files), Username: username, Password: password})
 	if err != nil {
 		return err
@@ -159,12 +169,13 @@ func runParent() error {
 	if !result.Loaded || !result.ScriptSeen || !result.APISeen || !result.RedirectBlocked ||
 		result.Document != 1 || result.Script != 1 || result.API != 1 || result.Redirect != 1 ||
 		result.OutsideImage != 1 || result.OutsideRedirect != 0 || wrongHost.Load() ||
+		canaryHits.Load() != 0 ||
 		hits.Load() != 4 || broker.RequestsUsed() != 4 || dropped != 0 || len(observed) != 3 ||
 		observed[0].Path != "/app/" || observed[1].Path != "/app/main.js" ||
 		observed[2].Path != "/app/api" || gate.RequestsUsed() < 5 ||
 		gate.RequestsUsed() > maxRequests {
-		return fmt.Errorf("unexpected CDP broker result: %+v target=%d broker=%d gate=%d observed=%d dropped=%d",
-			result, hits.Load(), broker.RequestsUsed(), gate.RequestsUsed(), len(observed), dropped)
+		return fmt.Errorf("unexpected CDP broker result: %+v target=%d canary=%d broker=%d gate=%d observed=%d dropped=%d",
+			result, hits.Load(), canaryHits.Load(), broker.RequestsUsed(), gate.RequestsUsed(), len(observed), dropped)
 	}
 	return nil
 }

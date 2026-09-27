@@ -101,6 +101,8 @@ Prova Linux aggiuntiva: la prima versione del [laboratorio Chromium/CDP](it/M3-B
 
 Revisione CDP: l'[ADR-017](it/ADR-017-CDP-BROKER-BOUNDARY.md) collega la fixture al gate e al broker tramite socket Unix già connessi. Quattro richieste raggiungono il target loopback; risorsa fuori scope e redirect esterno sono negati. HTTPS, sandbox per pagine ostili, quote fuori dal container, desktop e altri OS restano aperti.
 
+Prova negativa Linux: il [laboratorio CDP](it/M3-BROWSER-CDP-LAB.md) richiede `EPERM` verso un canary TCP locale anche con rete container disponibile; senza il filtro WebFence la prova diagnostica fallisce. Non chiude gli altri requisiti del browser.
+
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
@@ -262,6 +264,8 @@ Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.
 Additional Linux trial: the first version of the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserved HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration was initially absent.
 
 CDP revision: [ADR-017](en/ADR-017-CDP-BROKER-BOUNDARY.md) connects the fixture to the gate and broker through already connected Unix sockets. Four requests reach the loopback target; an outside resource and redirect are denied. HTTPS, a sandbox for hostile pages, quotas outside the container, desktop integration and other OSs remain open.
+
+Linux negative trial: the [CDP lab](en/M3-BROWSER-CDP-LAB.md) requires `EPERM` for a local TCP canary even with container networking available; the diagnostic build fails without the WebFence filter. Other browser requirements remain open.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 
