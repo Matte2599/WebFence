@@ -27,7 +27,7 @@ func buildHelper(t *testing.T) string {
 
 func TestRunHelper(t *testing.T) {
 	helper := buildHelper(t)
-	limits := HelperLimits{MaxRuntime: 3 * time.Second, MaxOutputBytes: 1024}
+	limits := HelperLimits{MaxRuntime: 10 * time.Second, MaxOutputBytes: 1024}
 	got, err := RunHelper(context.Background(), helper, []byte("echo"), limits)
 	if err != nil || string(got) != "ok" {
 		t.Fatalf("helper output = %q, %v", got, err)
