@@ -19,7 +19,7 @@ import (
 	"github.com/Matte2599/WebFence/internal/transport"
 )
 
-func proxyFixture(t *testing.T) (*Proxy, *http.Client, string, *atomic.Int32) {
+func proxyFixture(t *testing.T, observationLimit ...int) (*Proxy, *http.Client, string, *atomic.Int32) {
 	t.Helper()
 	hits := new(atomic.Int32)
 	target := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +75,12 @@ func proxyFixture(t *testing.T) (*Proxy, *http.Client, string, *atomic.Int32) {
 		t.Fatal(err)
 	}
 	t.Cleanup(broker.Close)
-	proxy, err := NewProxy(context.Background(), gate, broker)
+	var proxy *Proxy
+	if len(observationLimit) != 0 {
+		proxy, err = NewObservedProxy(context.Background(), gate, broker, observationLimit[0])
+	} else {
+		proxy, err = NewProxy(context.Background(), gate, broker)
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,6 +94,37 @@ func proxyFixture(t *testing.T) (*Proxy, *http.Client, string, *atomic.Int32) {
 	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyURL)}}
 	t.Cleanup(client.CloseIdleConnections)
 	return proxy, client, origin, hits
+}
+
+func TestProxyObservesOnlySuccessfulBoundedRequestsWithoutQueries(t *testing.T) {
+	proxy, client, origin, _ := proxyFixture(t, 2)
+	request, err := http.NewRequest(http.MethodGet, origin+"/app/api?token=synthetic-secret", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("Sec-Fetch-Dest", "empty")
+	response, err := client.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	response.Body.Close()
+	for _, target := range []string{origin + "/app/script.js", origin + "/app/extra", "http://outside.test:8080/app"} {
+		response, err := client.Get(target)
+		if err != nil {
+			t.Fatal(err)
+		}
+		response.Body.Close()
+	}
+	got, dropped := proxy.Observations()
+	if len(got) != 2 || dropped != 1 || got[0].Method != http.MethodGet || got[0].Kind != Fetch ||
+		got[0].Path != "/app/api" || got[0].FinalPath != "/app/api" || got[0].StatusCode != http.StatusOK {
+		t.Fatalf("observations=%+v dropped=%d", got, dropped)
+	}
+	got[0].Path = "/changed"
+	again, _ := proxy.Observations()
+	if again[0].Path != "/app/api" {
+		t.Fatal("snapshot mutated stored observation")
+	}
 }
 
 func TestProxyForwardsOnlyAdmittedHTTP(t *testing.T) {

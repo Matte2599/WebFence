@@ -140,7 +140,7 @@ func run() error {
 		return err
 	}
 	defer broker.Close()
-	proxy, err := browser.NewProxy(ctx, gate, broker)
+	proxy, err := browser.NewObservedProxy(ctx, gate, broker, 16)
 	if err != nil {
 		return err
 	}
@@ -165,12 +165,19 @@ func run() error {
 	if err := json.Unmarshal(resultJSON, &result); err != nil {
 		return errors.New("invalid helper result")
 	}
+	observed, omitted := proxy.Observations()
+	apiObserved := false
+	for _, item := range observed {
+		if item.Path == "/app/api" && item.Method == http.MethodGet && item.StatusCode == http.StatusOK {
+			apiObserved = true
+		}
+	}
 	if !result.Loaded || !result.APISeen || !result.RedirectBlocked || !result.OutsideBlocked ||
-		wrongHost.Load() || result.Denied < 1 ||
+		wrongHost.Load() || result.Denied < 1 || !apiObserved || omitted != 0 || len(observed) != 3 ||
 		targetHits.Load() != 4 || gate.RequestsUsed() != 4 || broker.RequestsUsed() != 4 {
-		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d",
+		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d observed=%d omitted=%d",
 			result.Loaded, result.APISeen, result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
-			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed())
+			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed(), len(observed), omitted)
 	}
 	return nil
 }

@@ -40,7 +40,7 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/preferences`: sola lingua, indipendente dal toolkit.
 - `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
 - `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
-- `internal/browser`: [gate M3](M3-BROWSER-GATE.md), [proxy HTTP confinato](M3-BROWSER-PROXY.md) e supervisore di helper; ancora senza runtime browser nel desktop.
+- `internal/browser`: [gate M3](M3-BROWSER-GATE.md), [proxy HTTP confinato](M3-BROWSER-PROXY.md), [osservazioni delle richieste](M3-DYNAMIC-OBSERVATIONS.md) e supervisore di helper; ancora senza runtime browser nel desktop.
 - `internal/session`: [login e sessioni di prova M3](M3-SESSIONS.md) solo in memoria su fixture controllate; il desktop non espone ancora account di test.
 - `internal/apiimport`: [inventario OpenAPI offline M3](M3-OPENAPI-IMPORT.md), senza richieste di rete o integrazione desktop.
 - `experiments/m3-browser`: [laboratorio Qt WebEngine](M3-BROWSER-LAB.md) con fixture locali e [helper separato](ADR-011-BROWSER-HELPER.md); richiede Qt WebEngine 6.11.2 e il tag `m3browserlab`, non è incluso nei pacchetti.

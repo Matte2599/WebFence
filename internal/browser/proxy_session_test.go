@@ -120,7 +120,7 @@ func TestAuthenticatedProxyKeepsCookieInParent(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer identity.Close()
-	proxy, err := NewProxyWithSession(context.Background(), gate, broker, identity)
+	proxy, err := NewObservedProxyWithSession(context.Background(), gate, broker, identity, 4)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -130,7 +130,7 @@ func TestAuthenticatedProxyKeepsCookieInParent(t *testing.T) {
 	proxyURL.User = url.UserPassword(username, password)
 	client := &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyURL)}}
 	defer client.CloseIdleConnections()
-	req, _ := http.NewRequest("GET", origin+"/app/data", nil)
+	req, _ := http.NewRequest("GET", origin+"/app/data?token=synthetic", nil)
 	req.Header.Set("Cookie", "attacker=browser")
 	response, err := client.Do(req)
 	if err != nil {
@@ -150,6 +150,11 @@ func TestAuthenticatedProxyKeepsCookieInParent(t *testing.T) {
 	response.Body.Close()
 	if response.StatusCode != http.StatusBadGateway || outsideHits.Load() != 0 {
 		t.Fatalf("credential redirect escaped: status=%d outside=%d", response.StatusCode, outsideHits.Load())
+	}
+	observed, dropped := proxy.Observations()
+	if len(observed) != 1 || dropped != 0 || observed[0].Path != "/app/data" ||
+		observed[0].FinalPath != "/app/data" {
+		t.Fatalf("authenticated observations: %+v dropped=%d", observed, dropped)
 	}
 	if _, err := NewProxyWithSession(context.Background(), nil, broker, identity); !errors.Is(err, ErrConfig) {
 		t.Fatalf("proxy accepted an unbound gate: %v", err)
