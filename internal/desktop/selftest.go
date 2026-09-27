@@ -247,8 +247,13 @@ func selfTest(w *workspace) int {
 		var hits atomic.Int32
 		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			hits.Add(1)
-			writer.Header().Set("Content-Type", "text/html")
-			_, _ = writer.Write([]byte("<html><body>synthetic</body></html>"))
+			if request.URL.Path == "/app/a" || request.URL.Path == "/app/b" {
+				writer.Header().Set("Content-Type", "application/json")
+				_, _ = writer.Write([]byte(`{"private":"synthetic-api-body"}`))
+			} else {
+				writer.Header().Set("Content-Type", "text/html")
+				_, _ = writer.Write([]byte("<html><body>synthetic</body></html>"))
+			}
 		}))
 		defer server.Close()
 		u := w.scan
@@ -296,6 +301,37 @@ func selfTest(w *workspace) int {
 		qt.QCoreApplication_ProcessEvents()
 		check(u.done == nil && hits.Load() == 1 && strings.Contains(u.results.ToPlainText(), "nosniff_absent"), "M1 native owned-lab scan and result")
 		check(!strings.Contains(u.results.ToPlainText(), server.URL), "M1 native result redaction")
+		if specErr == nil {
+			batchErr := os.WriteFile(spec.Name(), []byte(`{"openapi":"3.1.1","servers":[{"url":"http://outside.test:8080"}],"paths":{"/app/a":{"get":{}},"/app/b":{"get":{}}}}`), 0o600)
+			check(batchErr == nil, "M3 synthetic API batch fixture")
+			if batchErr == nil {
+				u.chooseAPIRoutes = func([]string) ([]string, bool) { return nil, true }
+				u.scanAPI.Click()
+				check(u.done == nil && hits.Load() == 1 && u.status.Text() == u.tr("scan_api_batch_invalid"),
+					"M3 native empty API selection sends no request")
+				u.chooseAPIRoutes = func(paths []string) ([]string, bool) {
+					return []string{"/app/b", "/app/a"}, len(paths) == 2
+				}
+				u.scanAPI.Click()
+				deadline = time.Now().Add(12 * time.Second)
+				for u.done != nil && time.Now().Before(deadline) {
+					qt.QCoreApplication_ProcessEvents()
+					time.Sleep(10 * time.Millisecond)
+				}
+				qt.QCoreApplication_ProcessEvents()
+				runs, listErr := u.store.ListScanRuns(context.Background(), u.selectedProjectID())
+				batchComplete := false
+				for _, run := range runs {
+					if run.CompletedVisits == 2 && run.RequestsUsed == 2 && run.State == "complete" {
+						batchComplete = true
+					}
+				}
+				check(u.done == nil && listErr == nil && hits.Load() == 3 && batchComplete,
+					"M3 native selected API batch uses only two local GET routes")
+				check(!strings.Contains(u.results.ToPlainText(), server.URL) &&
+					!strings.Contains(u.results.ToPlainText(), "synthetic-api-body"), "M3 native API batch redaction")
+			}
+		}
 		m := u.m2
 		m.show()
 		m.keys, _ = reporting.NewKeyring(m.trust, &selfTestSecrets{data: map[string][]byte{}})
@@ -546,6 +582,7 @@ func selfTest(w *workspace) int {
 		w.englishAction.Trigger()
 		check(u.start.Text() == "Start scan" && strings.Contains(u.coverage.Text(), "queue"), "M1 native English translation")
 		check(u.importAPI.Text() == "Import OpenAPI JSON…", "M3 native OpenAPI English translation")
+		check(u.scanAPI.Text() == "Visit selected OpenAPI routes…", "M3 native API batch English translation")
 		check(m.match.Text() == "Assess selected run" && m.unsigned.Text() == "Export explicitly unsigned", "M2 native English translation")
 		check(m.tabs.TabText(2) == "Reports and keys" && m.rotate.Text() == "Rotate selected key", "M2 advanced English translation")
 		for i, label := range []string{"en-sources", "en-assessment", "en-reports"} {
