@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"syscall"
 	"testing"
 )
@@ -15,8 +16,34 @@ import (
 func TestLinuxNetworkIsolationAndInheritance(t *testing.T) {
 	switch os.Getenv("WF_NETWORK_FILTER_TEST_STAGE") {
 	case "child":
+		const workers = 3
+		ready := make(chan struct{}, workers)
+		release := make(chan struct{})
+		results := make(chan error, workers)
+		for range workers {
+			go func() {
+				runtime.LockOSThread()
+				defer runtime.UnlockOSThread()
+				ready <- struct{}{}
+				<-release
+				conn, err := net.Dial("tcp4", "127.0.0.1:9")
+				if conn != nil {
+					conn.Close()
+				}
+				results <- err
+			}()
+		}
+		for range workers {
+			<-ready
+		}
 		if err := ApplyHelperNetworkIsolation(); err != nil {
 			t.Fatalf("install network filter: %v", err)
+		}
+		close(release)
+		for range workers {
+			if err := <-results; !errors.Is(err, syscall.EPERM) {
+				t.Errorf("preexisting Go thread direct socket = %v, want EPERM", err)
+			}
 		}
 		checkDeniedINET(t)
 		directory, err := os.MkdirTemp("", "wf-net-")

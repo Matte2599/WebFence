@@ -2,7 +2,7 @@
 
 [English](../en/M3-BROWSER-LINUX-NETWORK.md) · [ADR-014](ADR-014-LINUX-BROWSER-NETWORK.md) · [Prova socket Unix](M3-BROWSER-UNIX-SCHEME.md) · [Stato M3](M3-VALIDATION.md)
 
-`ApplyHelperNetworkIsolation` installa nel secondo helper Linux un filtro seccomp prima di Qt. Il test in un processo isolato verifica che TCP IPv4/IPv6 verso loopback fallisca con `EPERM`, che un socket Unix locale funzioni e che un discendente non riacquisti socket INET. Non esegue scansioni. Il laboratorio Qt prova poi che documento e script sintetici attraversino ancora il proxy Unix sotto il filtro; il job Ubuntu 24.04 fornisce la prova su Qt WebEngine reale.
+`ApplyHelperNetworkIsolation` installa nel secondo helper Linux un filtro seccomp prima di Qt. Il test in un processo isolato verifica che TCP IPv4/IPv6 verso loopback fallisca con `EPERM`, anche da thread Go creati prima del filtro; controlla inoltre che un socket Unix locale funzioni e che un discendente non riacquisti socket INET. Non esegue scansioni. Il laboratorio Qt prova poi che documento e script sintetici attraversino ancora il proxy Unix sotto il filtro; il job Ubuntu 24.04 fornisce la prova su Qt WebEngine reale.
 
 Verifica locale del 27 settembre 2026: test Linux ARM64 crosscompilato e avviato in un container Debian con rete disponibile, `TestLinuxNetworkIsolationAndInheritance` passato. La prova Qt macOS è passata dopo la modifica, senza installare il filtro Linux. La CI Linux del branch e del merge va registrata nella [matrice M3](M3-VALIDATION.md) dopo l'esecuzione.
 
