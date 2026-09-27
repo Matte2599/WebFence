@@ -8,7 +8,7 @@ Data: 2026-09-27. Stato: **esperimento adottato solo nel laboratorio sintetico**
 
 Un secondo percorso del laboratorio macOS collega il genitore e l'helper Qt con un socket Unix in una directory privata, usando lo stesso gate, broker e segreto effimero del proxy HTTP. L'helper registra `wfsite` come schema Qt prima di creare l'applicazione e inoltra solo tre risorse GET della fixture al genitore. Questo consente di esercitare documento, script esterno e `fetch` senza un listener TCP per quel percorso. La prova precedente con proxy HTTP rimane per controllare redirect e richieste fuori scope.
 
-Il flag Qt `FetchApiAllowed`, disponibile da Qt 6.6, è necessario per `fetch` sullo schema personalizzato. MIQT 0.14.0 non espone il nome del flag: il laboratorio usa il valore Qt `0x100`. Il job Ubuntu 24.04 usa Qt 6.4, perciò esegue la prova HTTP precedente e i test del proxy Unix, ma non questo percorso Qt.
+Il flag Qt `FetchApiAllowed`, disponibile da Qt 6.6, è necessario per `fetch` sullo schema personalizzato. MIQT 0.14.0 non espone il nome del flag: il laboratorio macOS usa il valore Qt `0x100`. Il job Ubuntu 24.04 usa Qt 6.4: nel [blocco Linux successivo](ADR-014-LINUX-BROWSER-NETWORK.md) esegue documento e script sullo schema sotto filtro seccomp, ma non il `fetch` dello schema.
 
 ## Confini e limiti
 

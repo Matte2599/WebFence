@@ -93,6 +93,8 @@ Blocco successivo del browser: [limiti di risorse Unix nell'helper](it/M3-BROWSE
 
 Prova successiva del browser: [proxy su socket Unix e schema Qt](it/M3-BROWSER-UNIX-SCHEME.md) per tre risorse sintetiche su macOS. Verifica un percorso IPC senza listener TCP; non impedisce connessioni dirette dal browser né conserva tutta la semantica HTTP. La prima voce M3 resta aperta.
 
+Prova Linux successiva: [filtro seccomp del helper Qt](it/M3-BROWSER-LINUX-NETWORK.md) con TCP diretto negato, IPC Unix funzionante e filtro ereditato dai discendenti. I socket Unix verso servizi locali restano accessibili; non è ancora un confine di egress completo.
+
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
@@ -246,6 +248,8 @@ Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) 
 Next browser block: [Unix helper resource limits](en/M3-BROWSER-RESOURCE-LIMITS.md) for files, descriptors and core dumps. Memory, aggregate process quota and independent egress remain open on macOS/Linux.
 
 Next browser trial: [Unix-socket proxy and Qt scheme](en/M3-BROWSER-UNIX-SCHEME.md) for three synthetic resources on macOS. It verifies an IPC path without a TCP listener; it neither prevents direct browser connections nor preserves complete HTTP semantics. The first M3 item remains open.
+
+Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.md) with direct TCP denied, working Unix IPC and inheritance by descendants. Unix sockets to local services remain accessible; this is not yet a complete egress boundary.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 

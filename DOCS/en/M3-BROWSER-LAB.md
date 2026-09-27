@@ -19,6 +19,8 @@ CGO_CXXFLAGS='-O0 -g0 -std=c++17' go test -tags=m3browserlab ./experiments/m3-br
 
 An [additional macOS trial](M3-BROWSER-UNIX-SCHEME.md) uses a Qt scheme and Unix-socket proxy for three synthetic resources. It does not constitute process-level network isolation.
 
+On Linux, a [further trial](M3-BROWSER-LINUX-NETWORK.md) applies a seccomp filter to the second helper before Qt; the first HTTP path remains without that filter.
+
 **Local trial on September 27, 2026, Apple Silicon/macOS 26.6.2, Qt WebEngine 6.11.2:** the command with the helper and DOM click returned `PASS` in four earlier repeats and after the new Unix limits; tagged Go tests passed. The macOS 26 CI job is separate and must be checked on the branch and merged commit. No equivalent Qt trial is documented yet on Windows. The lab is not a GUI feature and lacks independent egress, memory limits or aggregate process quotas on macOS/Linux, HTTPS and sessions; it does not satisfy the M3 browser criterion.
 
 CI now includes a Linux Ubuntu 24.04 job with Qt WebEngine and a virtual display: the configuration test and synthetic fixture passed on branch `0da4e66` ([run 36281325352](https://github.com/Matte2599/WebFence/actions/runs/36281325352)). Check the merged commit separately. The local macOS trial was repeated after adding the job. This is not a trial of independent egress containment.
