@@ -47,6 +47,7 @@
 | Confine HTTP browser / Browser HTTP boundary | [ADR-009 IT](it/ADR-009-BROWSER-HTTP-BOUNDARY.md) | [ADR-009 EN](en/ADR-009-BROWSER-HTTP-BOUNDARY.md) |
 | Laboratorio browser Qt / Qt browser lab | [ADR-010 IT](it/ADR-010-QT-BROWSER-LAB.md) | [ADR-010 EN](en/ADR-010-QT-BROWSER-LAB.md) |
 | Helper browser supervisionato / Supervised browser helper | [ADR-011 IT](it/ADR-011-BROWSER-HELPER.md) | [ADR-011 EN](en/ADR-011-BROWSER-HELPER.md) |
+| Limiti di risorse helper M3 / M3 helper resource limits | [IT](it/M3-BROWSER-RESOURCE-LIMITS.md) | [EN](en/M3-BROWSER-RESOURCE-LIMITS.md) |
 | Login e sessioni M3 / M3 login and sessions | [IT](it/M3-SESSIONS.md) | [EN](en/M3-SESSIONS.md) |
 | Cookie e POST di prova / Test-account cookies and POST | [ADR-012 IT](it/ADR-012-TEST-SESSIONS.md) | [ADR-012 EN](en/ADR-012-TEST-SESSIONS.md) |
 | SQLite e JWS / SQLite and JWS | [ADR-004 IT](it/ADR-004-STORAGE-SIGNATURE.md) | [ADR-004 EN](en/ADR-004-STORAGE-SIGNATURE.md) |

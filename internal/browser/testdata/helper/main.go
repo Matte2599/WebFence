@@ -7,15 +7,24 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/Matte2599/WebFence/internal/browser"
 )
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--resource-child" {
+		fmt.Print(describeResources())
+		return
+	}
 	if len(os.Args) >= 3 && os.Args[1] == "--grandchild" {
 		time.Sleep(time.Second)
 		_ = os.WriteFile(os.Args[2], []byte("survived"), 0600)
 		return
 	}
 	if len(os.Args) != 2 || os.Args[1] != "--browser-helper" {
+		os.Exit(2)
+	}
+	if err := browser.ApplyHelperResourceLimits(); err != nil {
 		os.Exit(2)
 	}
 	// The production helper follows this contract: no children or network
@@ -35,6 +44,13 @@ func main() {
 		} else {
 			fmt.Print("isolated")
 		}
+	case string(config) == "resources":
+		child := exec.Command(os.Args[0], "--resource-child")
+		got, err := child.Output()
+		if err != nil || string(got) != describeResources() {
+			os.Exit(4)
+		}
+		fmt.Print(describeResources())
 	case string(config) == "fail":
 		fmt.Fprintln(os.Stderr, "secret diagnostic must not be returned")
 		os.Exit(3)

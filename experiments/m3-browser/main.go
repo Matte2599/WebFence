@@ -199,6 +199,9 @@ func run() error {
 }
 
 func runChild() error {
+	if err := browser.ApplyHelperResourceLimits(); err != nil {
+		return err
+	}
 	var config helperConfig
 	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 4096))
 	decoder.DisallowUnknownFields()

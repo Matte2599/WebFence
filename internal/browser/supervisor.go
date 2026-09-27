@@ -26,9 +26,10 @@ type HelperLimits struct {
 }
 
 // RunHelper starts a browser helper without a shell. The caller must provide
-// an executable whose first action is to read its configuration from stdin;
-// this prevents it from spawning browser processes before supervision is in
-// place. The payload and helper stderr are never included in returned errors.
+// an executable that applies resource limits and reads its configuration
+// before starting any browser processes. The parent installs process-tree
+// supervision before sending that configuration. The payload and helper
+// stderr are never included in returned errors.
 func RunHelper(ctx context.Context, executable string, payload []byte, limits HelperLimits) ([]byte, error) {
 	if ctx == nil || !filepath.IsAbs(executable) || len(payload) == 0 || len(payload) > 64<<10 ||
 		limits.MaxRuntime <= 0 || limits.MaxRuntime > 4*time.Hour ||
