@@ -115,7 +115,7 @@ func helperEnvironment(privateDir string) []string {
 	for _, name := range []string{
 		"PATH", "SystemRoot", "WINDIR", "QT_QPA_PLATFORM", "QT_PLUGIN_PATH",
 		"QT_QPA_PLATFORM_PLUGIN_PATH", "QTWEBENGINEPROCESS_PATH", "DISPLAY",
-		"WAYLAND_DISPLAY", "XDG_RUNTIME_DIR", "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH",
+		"XAUTHORITY", "WAYLAND_DISPLAY", "XDG_RUNTIME_DIR", "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH",
 	} {
 		if value, ok := os.LookupEnv(name); ok {
 			values = append(values, name+"="+value)

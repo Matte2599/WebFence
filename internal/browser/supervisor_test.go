@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"testing"
 	"time"
 )
@@ -62,5 +63,18 @@ func TestRunHelperKillsDescendantsOnTimeout(t *testing.T) {
 func TestRunHelperRejectsInvalidInput(t *testing.T) {
 	if _, err := RunHelper(context.Background(), "", []byte("x"), HelperLimits{}); !errors.Is(err, ErrConfig) {
 		t.Fatalf("invalid limits = %v", err)
+	}
+}
+
+func TestHelperEnvironmentKeepsVirtualDisplayAuthorityOnly(t *testing.T) {
+	t.Setenv("DISPLAY", ":99")
+	t.Setenv("XAUTHORITY", "/tmp/synthetic-xauth")
+	t.Setenv("WF_BROWSER_PRIVATE_SECRET", "synthetic-secret")
+	env := "\n" + strings.Join(helperEnvironment(t.TempDir()), "\n") + "\n"
+	if !strings.Contains(env, "\nDISPLAY=:99\n") || !strings.Contains(env, "\nXAUTHORITY=/tmp/synthetic-xauth\n") {
+		t.Fatalf("virtual display environment missing: %q", env)
+	}
+	if strings.Contains(env, "WF_BROWSER_PRIVATE_SECRET") {
+		t.Fatal("unapproved environment variable reached the helper")
 	}
 }
