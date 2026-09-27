@@ -352,7 +352,7 @@ jobs:
         run: docker build --file experiments/m3-cdp-browser/Dockerfile --tag webfence-m3-cdp-lab .
       - name: Synthetic HTTP-origin trial with no container network
         run: |
-          docker run --rm --network none --read-only --memory 1g --pids-limit 128 \
+          docker run --rm --network none --read-only --memory 1g --pids-limit 256 \
             --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,size=256m,mode=1777 \
             -e WF_CDP_CHROME=/usr/bin/chromium \
             --mount type=bind,src=/tmp/webfence-m3-cdp,dst=/wf-cdp,readonly \
