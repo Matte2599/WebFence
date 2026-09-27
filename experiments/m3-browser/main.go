@@ -42,6 +42,8 @@ type helperConfig struct {
 type helperResult struct {
 	Loaded          bool `json:"loaded"`
 	APISeen         bool `json:"api_seen"`
+	Navigated       bool `json:"navigated"`
+	DynamicSeen     bool `json:"dynamic_seen"`
 	RedirectBlocked bool `json:"redirect_blocked"`
 	OutsideBlocked  bool `json:"outside_blocked"`
 	Denied          int  `json:"denied"`
@@ -63,7 +65,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "M3 browser lab failed:", err)
 		os.Exit(1)
 	}
-	fmt.Println("PASS M3 Qt browser HTTP fixture: document, script, fetch, proxy and out-of-scope block")
+	fmt.Println("PASS M3 Qt browser HTTP fixture: document, DOM navigation, fetch, proxy and out-of-scope block")
 }
 
 func run() error {
@@ -84,13 +86,19 @@ func run() error {
 		switch r.URL.Path {
 		case "/app":
 			w.Header().Set("Content-Type", "text/html")
-			_, _ = fmt.Fprint(w, `<html><body><script src="/app/main.js"></script><img src="http://outside.test:8080/x"></body></html>`)
+			_, _ = fmt.Fprint(w, `<html><body><a id="next" href="/app/next">Next</a><script src="/app/main.js"></script><img src="http://outside.test:8080/x"></body></html>`)
 		case "/app/main.js":
 			w.Header().Set("Content-Type", "application/javascript")
 			_, _ = fmt.Fprint(w, `fetch('/app/api').then(r => r.text()).then(x => { if (x === 'synthetic') console.log('wf-synthetic-api-ok') }); fetch('/app/redirect').then(r => { if (r.status === 502) console.log('wf-synthetic-redirect-blocked') })`)
 		case "/app/api":
 			w.Header().Set("Content-Type", "text/plain")
 			_, _ = fmt.Fprint(w, "synthetic")
+		case "/app/next":
+			w.Header().Set("Content-Type", "text/html")
+			_, _ = fmt.Fprint(w, `<html><body><script>console.log('wf-synthetic-next-loaded'); fetch('/app/dynamic').then(r => r.text()).then(x => { if (x === 'synthetic-dynamic') console.log('wf-synthetic-dynamic-ok') })</script></body></html>`)
+		case "/app/dynamic":
+			w.Header().Set("Content-Type", "text/plain")
+			_, _ = fmt.Fprint(w, "synthetic-dynamic")
 		case "/app/redirect":
 			http.Redirect(w, r, "http://outside.test:8080/secret", http.StatusFound)
 		default:
@@ -166,17 +174,22 @@ func run() error {
 		return errors.New("invalid helper result")
 	}
 	observed, omitted := proxy.Observations()
-	apiObserved := false
+	apiObserved, dynamicObserved := false, false
 	for _, item := range observed {
 		if item.Path == "/app/api" && item.Method == http.MethodGet && item.StatusCode == http.StatusOK {
 			apiObserved = true
 		}
+		if item.Path == "/app/dynamic" && item.Method == http.MethodGet && item.StatusCode == http.StatusOK {
+			dynamicObserved = true
+		}
 	}
-	if !result.Loaded || !result.APISeen || !result.RedirectBlocked || !result.OutsideBlocked ||
-		wrongHost.Load() || result.Denied < 1 || !apiObserved || omitted != 0 || len(observed) != 3 ||
-		targetHits.Load() != 4 || broker.RequestsUsed() != 4 || gate.RequestsUsed() < broker.RequestsUsed() {
-		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d observed=%d omitted=%d",
-			result.Loaded, result.APISeen, result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
+	if !result.Loaded || !result.APISeen || !result.Navigated || !result.DynamicSeen ||
+		!result.RedirectBlocked || !result.OutsideBlocked || wrongHost.Load() || result.Denied < 1 ||
+		!apiObserved || !dynamicObserved || omitted != 0 || len(observed) != 5 ||
+		targetHits.Load() != 6 || broker.RequestsUsed() != 6 || gate.RequestsUsed() < broker.RequestsUsed() {
+		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t navigation=%t dynamic=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d observed=%d omitted=%d",
+			result.Loaded, result.APISeen, result.Navigated, result.DynamicSeen,
+			result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
 			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed(), len(observed), omitted)
 	}
 	return nil
@@ -253,12 +266,19 @@ func runChild() error {
 	defer page.Delete()
 	var loaded atomic.Bool
 	var apiSeen atomic.Bool
+	var navigated atomic.Bool
+	var dynamicSeen atomic.Bool
+	var clickStarted atomic.Bool
 	var redirectBlocked atomic.Bool
 	page.OnLoadFinished(func(ok bool) { loaded.Store(ok) })
 	page.OnJavaScriptConsoleMessage(func(super func(webengine.QWebEnginePage__JavaScriptConsoleMessageLevel, string, int, string),
 		level webengine.QWebEnginePage__JavaScriptConsoleMessageLevel, message string, line int, source string) {
 		if message == "wf-synthetic-api-ok" {
 			apiSeen.Store(true)
+		} else if message == "wf-synthetic-next-loaded" {
+			navigated.Store(true)
+		} else if message == "wf-synthetic-dynamic-ok" {
+			dynamicSeen.Store(true)
 		} else if message == "wf-synthetic-redirect-blocked" {
 			redirectBlocked.Store(true)
 		}
@@ -267,7 +287,11 @@ func runChild() error {
 	defer timer.Delete()
 	started := time.Now()
 	timer.OnTimeout(func() {
-		if (loaded.Load() && apiSeen.Load() && redirectBlocked.Load() && outsideBlocked.Load()) ||
+		if loaded.Load() && apiSeen.Load() && redirectBlocked.Load() && outsideBlocked.Load() &&
+			clickStarted.CompareAndSwap(false, true) {
+			page.RunJavaScriptWithScriptSource("document.getElementById('next').click()")
+		}
+		if (navigated.Load() && dynamicSeen.Load()) ||
 			time.Since(started) >= 12*time.Second {
 			qt.QCoreApplication_Quit()
 		}
@@ -276,6 +300,7 @@ func runChild() error {
 	page.Load(qt.NewQUrl3(config.Origin + "/app"))
 	qt.QApplication_Exec()
 	return json.NewEncoder(os.Stdout).Encode(helperResult{Loaded: loaded.Load(), APISeen: apiSeen.Load(),
+		Navigated: navigated.Load(), DynamicSeen: dynamicSeen.Load(),
 		RedirectBlocked: redirectBlocked.Load(), OutsideBlocked: outsideBlocked.Load(), Denied: int(denied.Load())})
 }
 
