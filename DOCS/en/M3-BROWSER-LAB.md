@@ -24,3 +24,5 @@ CI now includes a Linux Ubuntu 24.04 job with Qt WebEngine and a virtual display
 The first Linux attempt compiled the helper but returned `browser_helper_failed` during execution. The supervisor environment allowlist omitted `XAUTHORITY`, needed by the authenticated X11 virtual display; the same fixture passed after it was forwarded. That outcome supports the diagnosis without proving egress isolation.
 
 The Windows runtime remains open: the desktop uses MIQT/MinGW, while [Qt WebEngine 6.11 does not compile with MinGW](https://doc.qt.io/qt-6/qtwebengine-platform-notes.html). A separate helper with a compatible Qt toolchain is a proposal requiring an ADR and trials, not an implemented capability.
+
+The [CI for merge `cf504cf`](https://github.com/Matte2599/WebFence/actions/runs/36282644664) exposed a macOS lab timing failure: a fixed five-second timer stopped the page after document and script, before the `fetch` calls. The lab now exits once document, API, blocked redirect and blocked subresource are all observed, with a 12-second deadline and a 30-second parent limit. Five local macOS repetitions passed; the fix still needs green branch and merged CI.

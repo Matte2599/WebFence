@@ -70,7 +70,7 @@ func run() error {
 	if len(os.Args) != 1 {
 		return errors.New("the lab accepts no target arguments")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	var targetHits atomic.Int32
 	var wrongHost atomic.Bool
@@ -125,7 +125,7 @@ func run() error {
 		return err
 	}
 	gate, err := browser.NewGate(ctx, permit, policy, browser.Limits{
-		MaxRequests: 20, MaxConcurrent: 1, MaxRuntime: 20 * time.Second,
+		MaxRequests: 20, MaxConcurrent: 1, MaxRuntime: 30 * time.Second,
 	})
 	if err != nil {
 		return err
@@ -134,7 +134,7 @@ func run() error {
 	broker, err := transport.NewAuthorizedLabWithPolicy(ctx, permit,
 		[]transport.Grant{{Origin: origin, Addresses: []netip.Addr{netip.MustParseAddr("127.0.0.1")}}},
 		transport.Limits{MaxRequests: 20, MaxConcurrent: 1, MaxRedirects: 2,
-			MaxBodyBytes: 1 << 20, RequestTimeout: 5 * time.Second, RunTimeout: 20 * time.Second,
+			MaxBodyBytes: 1 << 20, RequestTimeout: 5 * time.Second, RunTimeout: 30 * time.Second,
 			MinRequestInterval: time.Millisecond}, loopbackResolver{}, policy)
 	if err != nil {
 		return err
@@ -156,7 +156,7 @@ func run() error {
 		return err
 	}
 	resultJSON, err := browser.RunHelper(ctx, executable, payload, browser.HelperLimits{
-		MaxRuntime: 15 * time.Second, MaxOutputBytes: 64 << 10,
+		MaxRuntime: 25 * time.Second, MaxOutputBytes: 64 << 10,
 	})
 	if err != nil {
 		return err
@@ -265,8 +265,14 @@ func runChild() error {
 	})
 	timer := qt.NewQTimer()
 	defer timer.Delete()
-	timer.OnTimeout(qt.QCoreApplication_Quit)
-	timer.Start(5000)
+	started := time.Now()
+	timer.OnTimeout(func() {
+		if (loaded.Load() && apiSeen.Load() && redirectBlocked.Load() && outsideBlocked.Load()) ||
+			time.Since(started) >= 12*time.Second {
+			qt.QCoreApplication_Quit()
+		}
+	})
+	timer.Start(100)
 	page.Load(qt.NewQUrl3(config.Origin + "/app"))
 	qt.QApplication_Exec()
 	return json.NewEncoder(os.Stdout).Encode(helperResult{Loaded: loaded.Load(), APISeen: apiSeen.Load(),
