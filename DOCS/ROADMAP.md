@@ -97,7 +97,9 @@ Prova Linux successiva: [filtro seccomp del helper Qt](it/M3-BROWSER-LINUX-NETWO
 
 La [fattibilità multipiattaforma](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) registra i limiti osservati di App Sandbox/WebKit su macOS, Qt WebEngine con MinGW su Windows e dello stack Qt/Unix su Ubuntu 24.04. L'autore ha confermato nell'[ADR-015](it/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) l'isolamento OS: il criterio resta aperto finché non esiste un confine ripetibile per ogni piattaforma in cui il browser sarà abilitato.
 
-Prova Linux aggiuntiva: il [laboratorio Chromium/CDP](it/M3-BROWSER-CDP-LAB.md) conserva l'origine HTTP per documento, script e `fetch` con rete autonoma negata e redirect/subresource esterni bloccati su fixture sintetiche. Usa un container e `--no-sandbox`; collegamento al gate/broker, sandbox completa e altre piattaforme restano aperti.
+Prova Linux aggiuntiva: la prima versione del [laboratorio Chromium/CDP](it/M3-BROWSER-CDP-LAB.md) conserva l'origine HTTP per documento, script e `fetch` con rete autonoma negata e redirect/subresource esterni bloccati su fixture sintetiche. Usa un container e `--no-sandbox`; inizialmente mancava il collegamento al gate/broker.
+
+Revisione CDP: l'[ADR-017](it/ADR-017-CDP-BROKER-BOUNDARY.md) collega la fixture al gate e al broker tramite socket Unix già connessi. Quattro richieste raggiungono il target loopback; risorsa fuori scope e redirect esterno sono negati. HTTPS, sandbox per pagine ostili, quote fuori dal container, desktop e altri OS restano aperti.
 
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
@@ -257,7 +259,9 @@ Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.
 
 [Cross-platform feasibility](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) records observed App Sandbox/WebKit limits on macOS, Qt WebEngine with MinGW on Windows and the Qt/Unix stack on Ubuntu 24.04. The author confirmed OS isolation in [ADR-015](en/ADR-015-BROWSER-PLATFORM-BOUNDARY.md): the item remains open until a repeatable boundary exists on every platform where the browser will be enabled.
 
-Additional Linux trial: the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserves HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration, a complete sandbox and other platforms remain open.
+Additional Linux trial: the first version of the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserved HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration was initially absent.
+
+CDP revision: [ADR-017](en/ADR-017-CDP-BROKER-BOUNDARY.md) connects the fixture to the gate and broker through already connected Unix sockets. Four requests reach the loopback target; an outside resource and redirect are denied. HTTPS, a sandbox for hostile pages, quotas outside the container, desktop integration and other OSs remain open.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 

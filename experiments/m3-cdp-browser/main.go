@@ -1,18 +1,18 @@
 //go:build m3cdplab && linux
 
-// This optional Linux lab uses only synthetic CDP responses. It is not a
-// desktop browser or a scanner and accepts no target URL.
+// This optional Linux lab mediates synthetic CDP requests through the
+// managed gate and broker. It is not a desktop browser or scanner.
 package main
 
 import (
 	"bufio"
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -24,19 +24,24 @@ import (
 )
 
 const (
-	syntheticOrigin = "http://site.test"
-	maxCDPFrame     = 64 << 10
-	maxRequests     = 10
+	maxCDPFrame = 64 << 10
+	maxRequests = 10
+	maxCDPBody  = 16 << 10
 )
 
 type helperConfig struct {
-	Chrome string `json:"chrome"`
+	Chrome    string `json:"chrome"`
+	Origin    string `json:"origin"`
+	BrokerFDs int    `json:"broker_fds"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
 }
 
 type trialResult struct {
 	Loaded          bool `json:"loaded"`
 	ScriptSeen      bool `json:"script_seen"`
 	APISeen         bool `json:"api_seen"`
+	RedirectBlocked bool `json:"redirect_blocked"`
 	Document        int  `json:"document"`
 	Script          int  `json:"script"`
 	API             int  `json:"api"`
@@ -59,45 +64,8 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 headless browser fixture: real HTTP origin, document, script, fetch, redirect and outside requests under Linux network filter")
+		fmt.Println("PASS M3 CDP broker fixture: real HTTP origin, document, script and fetch via gate/broker; outside resource and redirect blocked under Linux network filter")
 	}
-}
-
-func runParent() error {
-	chrome := os.Getenv("WF_CDP_CHROME")
-	if !filepath.IsAbs(chrome) || len(chrome) > 4096 {
-		return errors.New("absolute synthetic-lab Chromium path required")
-	}
-	info, err := os.Stat(chrome)
-	if err != nil || info.IsDir() {
-		return errors.New("Chromium executable is unavailable")
-	}
-	executable, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	payload, err := json.Marshal(helperConfig{Chrome: chrome})
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
-	defer cancel()
-	resultJSON, err := browser.RunHelper(ctx, executable, payload, browser.HelperLimits{
-		MaxRuntime: 20 * time.Second, MaxOutputBytes: 4096,
-	})
-	if err != nil {
-		return err
-	}
-	var result trialResult
-	if err := json.Unmarshal(resultJSON, &result); err != nil {
-		return errors.New("invalid CDP helper result")
-	}
-	if !result.Loaded || !result.ScriptSeen || !result.APISeen || result.Document != 1 ||
-		result.Script != 1 || result.API != 1 || result.Redirect != 1 ||
-		result.OutsideImage != 1 || result.OutsideRedirect != 1 {
-		return fmt.Errorf("unexpected synthetic CDP result: %+v", result)
-	}
-	return nil
 }
 
 func runChild() error {
@@ -111,8 +79,33 @@ func runChild() error {
 		return errors.New("invalid CDP helper configuration")
 	}
 	var extra any
-	if err := decoder.Decode(&extra); err != io.EOF || !filepath.IsAbs(config.Chrome) {
+	if err := decoder.Decode(&extra); err != io.EOF || !filepath.IsAbs(config.Chrome) ||
+		config.Origin == "" || config.BrokerFDs != brokerConnections ||
+		config.Username == "" || config.Password == "" {
 		return errors.New("invalid CDP helper configuration")
+	}
+	inherited := make(chan net.Conn, config.BrokerFDs)
+	defer func() {
+		close(inherited)
+		for conn := range inherited {
+			_ = conn.Close()
+		}
+	}()
+	for i := range config.BrokerFDs {
+		file := os.NewFile(uintptr(3+i), "broker-connection")
+		if file == nil {
+			return errors.New("missing inherited broker connection")
+		}
+		conn, err := net.FileConn(file)
+		_ = file.Close()
+		if err != nil {
+			return errors.New("invalid inherited broker connection")
+		}
+		if _, ok := conn.(*net.UnixConn); !ok {
+			_ = conn.Close()
+			return errors.New("broker connection is not Unix IPC")
+		}
+		inherited <- conn
 	}
 	if err := browser.ApplyHelperNetworkIsolation(); err != nil {
 		return err
@@ -128,7 +121,8 @@ func runChild() error {
 			return errors.New("direct browser networking is not blocked")
 		}
 	}
-	result, err := runCDP(config.Chrome)
+	client := brokerClient(config, inherited)
+	result, err := runCDP(config.Chrome, config.Origin, client)
 	if err != nil {
 		return err
 	}
@@ -151,9 +145,11 @@ type cdpPipe struct {
 	replies  map[int]cdpMessage
 	result   trialResult
 	requests int
+	origin   string
+	client   *http.Client
 }
 
-func runCDP(chrome string) (trialResult, error) {
+func runCDP(chrome, origin string, client *http.Client) (trialResult, error) {
 	var empty trialResult
 	profile, err := os.MkdirTemp("", "wf-cdp-profile-")
 	if err != nil {
@@ -195,7 +191,7 @@ func runCDP(chrome string) (trialResult, error) {
 		return empty, err
 	}
 	pipe := &cdpPipe{writer: parentWrite, reader: bufio.NewReaderSize(parentRead, maxCDPFrame),
-		replies: make(map[int]cdpMessage)}
+		replies: make(map[int]cdpMessage), origin: origin, client: client}
 	targetReply, err := pipe.command("Target.createTarget", map[string]any{"url": "about:blank"}, "")
 	if err != nil {
 		return empty, err
@@ -231,11 +227,11 @@ func runCDP(chrome string) (trialResult, error) {
 			return empty, err
 		}
 	}
-	if _, err := pipe.command("Page.navigate", map[string]any{"url": syntheticOrigin + "/app/"}, session); err != nil {
+	if _, err := pipe.command("Page.navigate", map[string]any{"url": origin + "/app/"}, session); err != nil {
 		return empty, err
 	}
 	for !(pipe.result.Loaded && pipe.result.ScriptSeen && pipe.result.APISeen &&
-		pipe.result.OutsideImage > 0 && pipe.result.OutsideRedirect > 0) {
+		pipe.result.RedirectBlocked && pipe.result.OutsideImage > 0) {
 		if err := pipe.receive(); err != nil {
 			return empty, err
 		}
@@ -328,6 +324,7 @@ func (p *cdpPipe) receive() error {
 		for _, arg := range event.Args {
 			p.result.ScriptSeen = p.result.ScriptSeen || arg.Value == "wf-script"
 			p.result.APISeen = p.result.APISeen || arg.Value == "wf-api-synthetic"
+			p.result.RedirectBlocked = p.result.RedirectBlocked || arg.Value == "wf-redirect-502"
 		}
 	}
 	return nil
@@ -335,8 +332,9 @@ func (p *cdpPipe) receive() error {
 
 func (p *cdpPipe) fulfill(message cdpMessage) error {
 	var event struct {
-		RequestID string `json:"requestId"`
-		Request   struct {
+		RequestID    string `json:"requestId"`
+		ResourceType string `json:"resourceType"`
+		Request      struct {
 			URL    string `json:"url"`
 			Method string `json:"method"`
 		} `json:"request"`
@@ -348,42 +346,66 @@ func (p *cdpPipe) fulfill(message cdpMessage) error {
 		return errors.New("CDP request budget exhausted")
 	}
 	p.requests++
-	var body, contentType, location string
-	if event.Request.Method == "GET" {
+	request, err := http.NewRequest(event.Request.Method, event.Request.URL, nil)
+	if err != nil || p.client == nil {
+		return p.failRequest(event.RequestID, message.SessionID)
+	}
+	destination := "image"
+	switch event.ResourceType {
+	case "Document":
+		destination = "document"
+	case "XHR", "Fetch":
+		destination = "empty"
+	case "Script":
+		destination = "script"
+	}
+	request.Header.Set("Sec-Fetch-Dest", destination)
+	response, err := p.client.Do(request)
+	if err != nil {
+		return p.failRequest(event.RequestID, message.SessionID)
+	}
+	body, readErr := io.ReadAll(io.LimitReader(response.Body, maxCDPBody+1))
+	_ = response.Body.Close()
+	if readErr != nil || len(body) > maxCDPBody {
+		return p.failRequest(event.RequestID, message.SessionID)
+	}
+	if event.Request.Method == http.MethodGet {
 		switch event.Request.URL {
-		case syntheticOrigin + "/app/":
-			p.result.Document++
-			body, contentType = `<html><body><script src="/main.js"></script><img src="http://outside.test/x"></body></html>`, "text/html"
-		case syntheticOrigin + "/main.js":
-			p.result.Script++
-			body, contentType = `console.log('wf-script'); fetch('/api').then(r => r.text()).then(x => console.log('wf-api-' + x)); fetch('/redirect')`, "application/javascript"
-		case syntheticOrigin + "/api":
-			p.result.API++
-			body, contentType = "synthetic", "text/plain"
-		case syntheticOrigin + "/redirect":
-			p.result.Redirect++
-			location = "http://outside.test/secret"
+		case p.origin + "/app/":
+			if response.StatusCode == http.StatusOK {
+				p.result.Document++
+			}
+		case p.origin + "/app/main.js":
+			if response.StatusCode == http.StatusOK {
+				p.result.Script++
+			}
+		case p.origin + "/app/api":
+			if response.StatusCode == http.StatusOK {
+				p.result.API++
+			}
+		case p.origin + "/app/redirect":
+			if response.StatusCode == http.StatusBadGateway {
+				p.result.Redirect++
+			}
 		case "http://outside.test/x":
-			p.result.OutsideImage++
+			if response.StatusCode == http.StatusForbidden {
+				p.result.OutsideImage++
+			}
 		case "http://outside.test/secret":
 			p.result.OutsideRedirect++
 		}
 	}
-	if body == "" && location == "" {
-		_, err := p.send("Fetch.failRequest", map[string]any{
-			"requestId": event.RequestID, "errorReason": "BlockedByClient",
-		}, message.SessionID)
-		return err
-	}
-	headers := []map[string]string{{"name": "Content-Type", "value": contentType}}
-	status := 200
-	if location != "" {
-		status = 302
-		headers = []map[string]string{{"name": "Location", "value": location}}
-	}
-	_, err := p.send("Fetch.fulfillRequest", map[string]any{
-		"requestId": event.RequestID, "responseCode": status,
-		"responseHeaders": headers, "body": base64.StdEncoding.EncodeToString([]byte(body)),
+	headers := []map[string]string{{"name": "Content-Type", "value": response.Header.Get("Content-Type")}}
+	_, err = p.send("Fetch.fulfillRequest", map[string]any{
+		"requestId": event.RequestID, "responseCode": response.StatusCode,
+		"responseHeaders": headers, "body": base64.StdEncoding.EncodeToString(body),
 	}, message.SessionID)
+	return err
+}
+
+func (p *cdpPipe) failRequest(id, session string) error {
+	_, err := p.send("Fetch.failRequest", map[string]any{
+		"requestId": id, "errorReason": "BlockedByClient",
+	}, session)
 	return err
 }

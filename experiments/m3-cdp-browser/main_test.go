@@ -6,6 +6,8 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"io"
+	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -26,7 +28,7 @@ func TestCDPUnknownRequestsConsumeBudget(t *testing.T) {
 	}
 	defer read.Close()
 	defer write.Close()
-	pipe := &cdpPipe{writer: write}
+	pipe := &cdpPipe{writer: write, client: &http.Client{Transport: deniedTransport{}}}
 	for i := 0; i < maxRequests; i++ {
 		params, err := json.Marshal(map[string]any{
 			"requestId": "request", "request": map[string]string{
@@ -47,4 +49,11 @@ func TestCDPUnknownRequestsConsumeBudget(t *testing.T) {
 	if pipe.requests != maxRequests {
 		t.Fatalf("requests used = %d, want %d", pipe.requests, maxRequests)
 	}
+}
+
+type deniedTransport struct{}
+
+func (deniedTransport) RoundTrip(*http.Request) (*http.Response, error) {
+	return &http.Response{StatusCode: http.StatusForbidden, Header: make(http.Header),
+		Body: io.NopCloser(strings.NewReader("denied"))}, nil
 }
