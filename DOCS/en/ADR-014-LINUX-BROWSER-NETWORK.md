@@ -12,6 +12,6 @@ Before creating Qt, the second Linux helper applies `no_new_privs` and a seccomp
 
 ## Limitations
 
-The filter prevents direct connections to new Unix sockets and creation of INET sockets, but it is not a filesystem sandbox or general proof against every IPC route or inherited descriptor. The browser is not integrated into the desktop; the first HTTP helper remains unfiltered. The revised Linux Qt trial must pass CI before treating this experimental path as verified. Faithful HTTP(S), aggregate quotas, macOS/Windows trials and desktop integration are still required for the first M3 item.
+The filter prevents direct connections to new Unix sockets and creation of INET sockets, but it is not a filesystem sandbox or general proof against every IPC route or inherited descriptor. The browser is not integrated into the desktop; the first HTTP helper remains unfiltered. The [revised Linux Qt CI job](https://github.com/Matte2599/WebFence/actions/runs/36317757369) passes, but faithful HTTP(S), aggregate quotas, macOS/Windows trials and desktop integration are still required for the first M3 item.
 
 Sources: [Linux seccomp BPF](https://kernel.org/doc/html/latest/userspace-api/seccomp_filter.html), [`TSYNC` semantics](https://man7.org/linux/man-pages/man2/seccomp.2.html), [Qt `FetchApiAllowed` flag](https://doc.qt.io/qt-6/qwebengineurlscheme.html).

@@ -2,7 +2,7 @@
 
 [English](../en/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) · [Prove](M3-BROWSER-PLATFORM-FEASIBILITY.md) · [Stato M3](M3-VALIDATION.md) · [ADR-014](ADR-014-LINUX-BROWSER-NETWORK.md)
 
-Data: 2026-09-27. Stato: **proposta di percorso, non adozione di un nuovo motore**.
+Data: 2026-09-27. Stato: **requisito di isolamento OS confermato dall'autore; scelta dei runtime aperta**.
 
 ## Contesto
 
@@ -10,9 +10,9 @@ Il desktop rimane Go con Qt Widgets/MIQT, come scelto dall'autore. Il laboratori
 
 Le [prove di fattibilità](M3-BROWSER-PLATFORM-FEASIBILITY.md) mostrano tre ostacoli distinti: su macOS il Qt WebEngine del laboratorio non parte in un bundle App Sandbox senza rete; una prova WebKit con schema personalizzato richiede il permesso di rete in uscita per caricare la pagina; su Windows Qt WebEngine non compila con la toolchain MinGW del desktop. Su Linux il filtro seccomp originale negava nuovi socket INET ma lasciava accessibili altri socket Unix; la [revisione](M3-BROWSER-LINUX-NETWORK.md) prova connessioni al broker preaperte e nega nuovi `connect`. Il Qt 6.4 della baseline non supporta `FetchApiAllowed`. Questi esiti non dimostrano l'impossibilità di ogni alternativa.
 
-## Decisione provvisoria
+## Decisione
 
-Non abilitare il browser nella GUI né chiudere la prima voce M3. Mantenere separati desktop e helper browser. Prima di scegliere un runtime per ciascun OS, esigere una prova ripetibile con: egress diretto e tramite servizi locali negato; traffico HTTP(S), redirect e subresource mediato dal broker senza allargare scope; budget e revoca; quote aggregate di memoria/processi; sessione e origine web preservate; packaging e collaudo sulle piattaforme target. Un helper che richieda privilegi aggiuntivi o virtualizzazione deve dichiararli prima dell'adozione e del supporto.
+L'autore ha scelto di mantenere l'isolamento a livello di sistema operativo. Il browser rimane un helper separato dal desktop Go/Qt; su ciascuna piattaforma la funzione sarà abilitata soltanto dopo una prova ripetibile di: egress diretto e tramite servizi locali negato; traffico HTTP(S), redirect e subresource mediato dal broker senza allargare scope; budget e revoca; quote aggregate di memoria/processi; sessione e origine web preservate; packaging e collaudo. Fino a quel momento non abilitare il browser nella GUI né chiudere la prima voce M3. Un helper che richieda privilegi aggiuntivi o virtualizzazione deve dichiararli prima dell'adozione e del supporto.
 
 La sola possibilità di usare un motore nativo per OS non costituisce una decisione di implementarlo. Un'eventuale revisione del requisito di isolamento o del supporto di piattaforma richiede una decisione esplicita dell'autore e una modifica della roadmap, non una spunta ottenuta dalle fixture correnti.
 

@@ -14,7 +14,7 @@ import (
 // inherited by its descendants. Authorized broker IPC must be connected by
 // the parent and inherited before this function is called.
 // It must run before Qt or any browser process starts, with no inherited
-// network descriptors. A separate broker holds all authorized target access.
+// INET descriptors. A separate broker holds all authorized target access.
 func ApplyHelperNetworkIsolation() error {
 	arch := uint32(unix.AUDIT_ARCH_X86_64)
 	if runtime.GOARCH == "arm64" {
