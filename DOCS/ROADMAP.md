@@ -2,11 +2,11 @@
 
 [Indice / Index](README.md) · [Italiano](#italiano) · [English](#english)
 
-Aggiornamento / Updated: 2026-09-26. Responsabile / Owner: Matteo Luigi Feroldi.
+Aggiornamento / Updated: 2026-09-27. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
-Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale, il prototipo desktop M0 e le alpha tecniche M1/M2; stato e limiti sono nelle matrici [M0](it/M0-VALIDATION.md), [M1](it/M1-VALIDATION.md) e [M2](it/M2-VALIDATION.md). Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
+Questa roadmap è basata su dipendenze e criteri di uscita, senza date di rilascio promesse. Esistono la fondazione documentale, il prototipo desktop M0 e le alpha tecniche M1/M2; stato e limiti sono nelle matrici [M0](it/M0-VALIDATION.md), [M1](it/M1-VALIDATION.md), [M2](it/M2-VALIDATION.md) e nello [stato M3](it/M3-VALIDATION.md). Lo sviluppo di un prodotto paragonabile per profondità a scanner commerciali richiede iterazioni e benchmark; non è una singola milestone.
 
 ### Fondazione documentale — completata
 
@@ -85,7 +85,7 @@ Primo blocco core: [gate delle richieste browser](it/M3-BROWSER-GATE.md) per sco
 Secondo blocco core: [proxy HTTP confinato](it/M3-BROWSER-PROXY.md) che inoltra richieste ammesse al broker con IP fissati; solo fixture loopback, ancora senza browser operativo.
 
 Terzo blocco sperimentale: [laboratorio Qt WebEngine](it/M3-BROWSER-LAB.md) su fixture locali per documento, script e `fetch`; runtime desktop, limiti di processo e prove multipiattaforma restano aperti.
-Un job CI Ubuntu 24.04 ora prova il laboratorio Qt con display virtuale; registrare l'esito sul commit pertinente prima di considerare verificata la piattaforma Linux.
+Il laboratorio Qt è passato anche nel job CI Ubuntu 24.04 con display virtuale ([matrice M3](it/M3-VALIDATION.md)); la prova non copre Windows né il contenimento dell'egress.
 
 Quarto blocco sperimentale: [helper Qt supervisionato](it/ADR-011-BROWSER-HELPER.md) con IPC limitato, scadenza e terminazione dell'albero di processi; egress indipendente e limiti rigidi su macOS/Linux restano aperti.
 
@@ -156,7 +156,7 @@ CLI/CI, import SBOM, arricchimenti KEV/EPSS, verifiche su specifici framework, s
 
 ## English
 
-This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation, M0 desktop prototype and technical M1/M2 alphas exist; status and limits are in the [M0](en/M0-VALIDATION.md), [M1](en/M1-VALIDATION.md) and [M2](en/M2-VALIDATION.md) matrices. Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
+This roadmap uses dependencies and exit criteria, without promised release dates. The documentation foundation, M0 desktop prototype and technical M1/M2 alphas exist; status and limits are in the [M0](en/M0-VALIDATION.md), [M1](en/M1-VALIDATION.md), [M2](en/M2-VALIDATION.md) matrices and the [M3 status](en/M3-VALIDATION.md) document. Building coverage comparable in depth to commercial scanners requires iterations and benchmarks, not one milestone.
 
 ### Documentation foundation — complete
 
@@ -235,7 +235,7 @@ First core block: [browser request gate](en/M3-BROWSER-GATE.md) for scope, polic
 Second core block: [confined HTTP proxy](en/M3-BROWSER-PROXY.md) forwarding admitted requests through the pinned broker; loopback fixtures only, still without a working browser.
 
 Third experimental block: [Qt WebEngine lab](en/M3-BROWSER-LAB.md) on local document, script and `fetch` fixtures; the desktop runtime, process limits and cross-platform trials remain open.
-A Ubuntu 24.04 CI job now exercises the Qt lab under a virtual display; check the relevant commit before treating Linux as verified.
+The Qt lab also passed in the Ubuntu 24.04 CI job under a virtual display ([M3 status](en/M3-VALIDATION.md)); that trial does not cover Windows or egress containment.
 
 Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) with bounded IPC, deadline and process-tree termination; independent egress and hard macOS/Linux process limits remain open.
 
