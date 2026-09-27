@@ -148,7 +148,8 @@ func TestCrossRolePositiveEvidenceAndInconclusiveCases(t *testing.T) {
 		t.Run(string(tt.mode), func(t *testing.T) {
 			broker, owner, other, resource := accessFixture(t, tt.mode)
 			got, err := CheckCrossRole(context.Background(), broker, owner, other,
-				CrossRolePlan{ResourceURL: resource, PrivateBody: "private-alice", Confirmed: true})
+				CrossRolePlan{ResourceURL: resource, PrivateBody: "private-alice",
+					ResourceConfirmed: true, OtherForbiddenConfirmed: true})
 			if err != nil || got.RuleID != CrossRoleRuleID || got.RuleRevision != CrossRoleRuleRevision ||
 				got.Outcome != tt.want || got.EvidenceCode != tt.code {
 				t.Fatalf("got %+v, %v", got, err)
@@ -159,16 +160,22 @@ func TestCrossRolePositiveEvidenceAndInconclusiveCases(t *testing.T) {
 
 func TestCrossRoleRequiresDistinctBoundConfirmedIdentities(t *testing.T) {
 	broker, owner, other, resource := accessFixture(t, vulnerable)
-	base := CrossRolePlan{ResourceURL: resource, PrivateBody: "private-alice", Confirmed: true}
+	base := CrossRolePlan{ResourceURL: resource, PrivateBody: "private-alice",
+		ResourceConfirmed: true, OtherForbiddenConfirmed: true}
 	for _, tt := range []struct {
 		name         string
 		owner, other *session.Session
 		plan         CrossRolePlan
 	}{
 		{"same identity", owner, owner, base},
-		{"unconfirmed", owner, other, CrossRolePlan{ResourceURL: resource, PrivateBody: "private-alice"}},
-		{"empty marker", owner, other, CrossRolePlan{ResourceURL: resource, Confirmed: true}},
-		{"outside origin", owner, other, CrossRolePlan{ResourceURL: "http://outside.test/private", PrivateBody: "private-alice", Confirmed: true}},
+		{"resource unconfirmed", owner, other, CrossRolePlan{ResourceURL: resource,
+			PrivateBody: "private-alice", OtherForbiddenConfirmed: true}},
+		{"access policy unconfirmed", owner, other, CrossRolePlan{ResourceURL: resource,
+			PrivateBody: "private-alice", ResourceConfirmed: true}},
+		{"empty marker", owner, other, CrossRolePlan{ResourceURL: resource,
+			ResourceConfirmed: true, OtherForbiddenConfirmed: true}},
+		{"outside origin", owner, other, CrossRolePlan{ResourceURL: "http://outside.test/private",
+			PrivateBody: "private-alice", ResourceConfirmed: true, OtherForbiddenConfirmed: true}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			if _, err := CheckCrossRole(context.Background(), broker, tt.owner, tt.other, tt.plan); !errors.Is(err, ErrCrossRolePlan) {

@@ -29,10 +29,12 @@ const (
 
 type CrossRolePlan struct {
 	// ResourceURL and PrivateBody are operator-declared, ephemeral inputs.
-	// The exact body must be specific to the owner's private resource.
-	ResourceURL string
-	PrivateBody string
-	Confirmed   bool
+	// The exact body must be specific to the owner's private resource. The
+	// operator must also confirm that the other identity is not entitled to it.
+	ResourceURL             string
+	PrivateBody             string
+	ResourceConfirmed       bool
+	OtherForbiddenConfirmed bool
 }
 
 // CrossRoleResult deliberately excludes URLs, response bodies and identities.
@@ -58,7 +60,8 @@ func CheckCrossRole(ctx context.Context, broker *transport.Broker, owner, other 
 		!owner.BoundTo(broker) || !other.BoundTo(broker) || owner.Identity() == "" ||
 		owner.Identity() == other.Identity() || owner.ProjectID() == "" ||
 		owner.ProjectID() != other.ProjectID() || owner.Revision() != other.Revision() ||
-		!plan.Confirmed || plan.ResourceURL == "" || len(plan.PrivateBody) == 0 ||
+		!plan.ResourceConfirmed || !plan.OtherForbiddenConfirmed ||
+		plan.ResourceURL == "" || len(plan.PrivateBody) == 0 ||
 		len(plan.PrivateBody) > 1024 || !utf8.ValidString(plan.PrivateBody) {
 		return CrossRoleResult{}, ErrCrossRolePlan
 	}
