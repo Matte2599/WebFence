@@ -22,6 +22,8 @@ The [first M1 HTTP check](DOCS/en/M1-HEADER-LAB.md) uses managed runs and explic
 
 The [M2 alpha](DOCS/en/M2-VALIDATION.md) adds an on-demand CVE/NVD cache, conservative matching with operator-declared product/version and offline-verifiable IT/EN report bundles. The [desktop](DOCS/en/M2-GUI-EXTENSION.md) exposes CPE identity, explicit attestations and local key management for the selected run; the [simulation](DOCS/en/M2-ACCURACY-SIMULATION.md) does not measure accuracy on real CVEs, and no live source sync was performed.
 
+The [M3 blocks](DOCS/en/M3-VALIDATION.md) add narrow browser, test-session, OpenAPI visit and first cross-role trials. M3 remains open: the browser lab is not a shipped scan runtime and SPA/API coverage has not been measured on real targets.
+
 **The author selected Qt** after the [practical comparison](DOCS/en/GUI-COMPARISON.md). The main command uses Qt Widgets through MIQT; [accepted ADR](DOCS/en/ADR-002-GUI.md). Technical choices and prototype limitations are in the [development guide](DOCS/en/DEVELOPMENT.md).
 
 ## Why WebFence
@@ -43,7 +45,7 @@ WebFence is intended to assess authorized websites and APIs, connect each findin
 | Project memory | Retain inventory and history until deletion; handle credentials and raw evidence under separate retention policies. |
 | Fix validation | Targeted retests, baseline comparisons and regression discovery within the reassessed scope. |
 
-The table describes product goals, **not completed features**; current capabilities and limits are in the [M1](DOCS/en/M1-VALIDATION.md) and [M2](DOCS/en/M2-VALIDATION.md) matrices. Milestones and acceptance criteria are in the [roadmap](DOCS/ROADMAP.md).
+The table describes product goals, **not completed features**; current capabilities and limits are in the [M1](DOCS/en/M1-VALIDATION.md), [M2](DOCS/en/M2-VALIDATION.md) and [M3 status](DOCS/en/M3-VALIDATION.md) documents. Milestones and acceptance criteria are in the [roadmap](DOCS/ROADMAP.md).
 
 ## Technical direction
 

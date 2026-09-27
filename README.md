@@ -22,6 +22,8 @@ Le [visite HTTP controllate M1](DOCS/it/M1-CONTROLLED-CRAWL.md) aggiungono polic
 
 La [alpha M2](DOCS/it/M2-VALIDATION.md) aggiunge cache CVE/NVD aggiornata su richiesta, correlazione conservativa con prodotto/versione dichiarati dall'operatore e bundle di report IT/EN verificabili offline. Il [desktop](DOCS/it/M2-GUI-EXTENSION.md) espone identità CPE, attestazioni esplicite e gestione locale delle chiavi per la run selezionata; la [simulazione](DOCS/it/M2-ACCURACY-SIMULATION.md) non misura accuratezza su CVE reali e non è stato eseguito sync live delle fonti.
 
+I [blocchi M3](DOCS/it/M3-VALIDATION.md) aggiungono prove circoscritte di browser, sessioni di prova, visite OpenAPI e un primo controllo tra ruoli. M3 resta aperta: il laboratorio browser non è un runtime di scansione distribuito e la copertura SPA/API non è stata misurata su target reali.
+
 **Qt è stato scelto dall’autore** dopo il [confronto pratico](DOCS/it/GUI-COMPARISON.md). Il comando principale usa Qt Widgets tramite MIQT; [ADR accettato](DOCS/it/ADR-002-GUI.md). Le scelte tecniche e i limiti del prototipo sono nella [guida di sviluppo](DOCS/it/DEVELOPMENT.md).
 
 ## Perché WebFence
@@ -43,7 +45,7 @@ WebFence nasce per analizzare siti e API autorizzati, associare ogni problema al
 | Memoria dei progetti | Inventario e cronologia persistenti fino alla cancellazione; credenziali e prove grezze con conservazione distinta. |
 | Convalida fix | Nuovo controllo mirato, confronto con la baseline e ricerca di regressioni nel perimetro riesaminato. |
 
-La tabella descrive obiettivi di prodotto, **non funzionalità completate**; le capacità attuali e i limiti sono nelle matrici [M1](DOCS/it/M1-VALIDATION.md) e [M2](DOCS/it/M2-VALIDATION.md). Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
+La tabella descrive obiettivi di prodotto, **non funzionalità completate**; le capacità attuali e i limiti sono nelle matrici [M1](DOCS/it/M1-VALIDATION.md), [M2](DOCS/it/M2-VALIDATION.md) e nello [stato M3](DOCS/it/M3-VALIDATION.md). Le milestone e i criteri di accettazione sono nella [roadmap](DOCS/ROADMAP.md).
 
 ## Direzione tecnica
 
