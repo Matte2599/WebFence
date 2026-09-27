@@ -8,4 +8,4 @@ La regola produce `finding` solo se il proprietario e l'altra identità ricevono
 
 **Fixture sintetiche locali del 27 settembre 2026:** sei scenari: accesso incrociato riprodotto (1 `finding`), accesso negato, marcatore pubblico con `200`, `403` o dentro una risposta più ampia, e risposta del proprietario diversa (5 `inconclusive`, nessun esito negativo). Test con race detector superato. Questi conteggi verificano il comportamento sui casi costruiti, non misurano sensibilità o specificità reali. La CI del branch e del merge va verificata separatamente.
 
-Il controllo non prova che una risposta diversa sia sicura, non inferisce proprietà da OpenAPI e non copre ID enumerati, endpoint con token/bearer, ruoli multipli nel desktop, grant pubblici o report persistenti. Le voci M3 su accessi tra ruoli ed espansione delle regole restano aperte.
+Il controllo non prova che una risposta diversa sia sicura, non inferisce proprietà da OpenAPI e non copre ID enumerati, endpoint con token/bearer, un inventario persistente dei ruoli nel desktop, grant pubblici o report persistenti. Le voci M3 su accessi tra ruoli ed espansione delle regole restano aperte.

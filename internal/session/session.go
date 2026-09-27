@@ -27,9 +27,10 @@ type SecretSource interface {
 	Get(context.Context, string) ([]byte, error)
 }
 
-// Account describes one explicitly authorized test identity. SecretID refers
-// to the native credential store; ExpectedBody must be an exact, non-secret
-// marker returned only for this identity by the declared validity URL.
+// Account describes one explicitly authorized test identity. SecretID is an
+// opaque reference resolved by the supplied SecretSource, which can be a
+// native credential store or a one-run source. ExpectedBody must be an exact,
+// non-secret marker returned only for this identity by the declared validity URL.
 type Account struct {
 	ID            string
 	Username      string

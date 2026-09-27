@@ -247,10 +247,32 @@ func selfTest(w *workspace) int {
 		var hits atomic.Int32
 		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			hits.Add(1)
-			if request.URL.Path == "/app/a" || request.URL.Path == "/app/b" {
+			switch request.URL.Path {
+			case "/auth/login":
+				_ = request.ParseForm()
+				name := request.Form.Get("username")
+				if request.Method != http.MethodPost || request.Header.Get("Cookie") != "" ||
+					(name != "alice" && name != "bob") || request.Form.Get("password") != name+"-pass" {
+					writer.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+				http.SetCookie(writer, &http.Cookie{Name: "sid", Value: name, Path: "/app", HttpOnly: true})
+			case "/app/verify", "/app/private":
+				cookie, err := request.Cookie("sid")
+				if err != nil {
+					writer.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+				if request.URL.Path == "/app/verify" {
+					_, _ = writer.Write([]byte(cookie.Value))
+				} else {
+					_, _ = writer.Write([]byte("private-alice"))
+				}
+			case "/app/a", "/app/b":
 				writer.Header().Set("Content-Type", "application/json")
 				_, _ = writer.Write([]byte(`{"private":"synthetic-api-body"}`))
-			} else {
+			default:
+
 				writer.Header().Set("Content-Type", "text/html")
 				_, _ = writer.Write([]byte("<html><body>synthetic</body></html>"))
 			}
@@ -583,6 +605,8 @@ func selfTest(w *workspace) int {
 		check(u.start.Text() == "Start scan" && strings.Contains(u.coverage.Text(), "queue"), "M1 native English translation")
 		check(u.importAPI.Text() == "Import OpenAPI JSON…", "M3 native OpenAPI English translation")
 		check(u.scanAPI.Text() == "Visit selected OpenAPI routes…", "M3 native API batch English translation")
+		check(u.authOpen.Text() == "Test accounts and cross-role access…", "M3 native auth English translation")
+
 		check(m.match.Text() == "Assess selected run" && m.unsigned.Text() == "Export explicitly unsigned", "M2 native English translation")
 		check(m.tabs.TabText(2) == "Reports and keys" && m.rotate.Text() == "Rotate selected key", "M2 advanced English translation")
 		for i, label := range []string{"en-sources", "en-assessment", "en-reports"} {
@@ -590,6 +614,54 @@ func selfTest(w *workspace) int {
 			captureM2(label)
 		}
 		w.italianAction.Trigger()
+		a := u.auth
+		u.authOpen.Click()
+		a.loginURL.SetText(server.URL + "/auth/login")
+		a.verifyURL.SetText(server.URL + "/app/verify")
+		a.resourceURL.SetText(server.URL + "/app/private")
+		a.privateBody.SetText("private-alice")
+		a.ownerID.SetText("alice")
+		a.ownerUsername.SetText("alice")
+		a.ownerMarker.SetText("alice")
+		a.otherID.SetText("bob")
+		a.otherUsername.SetText("bob")
+		a.otherMarker.SetText("bob")
+		beforeAuth := hits.Load()
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.dialog.Close()
+		check(hits.Load() == beforeAuth && a.ownerPassword.Text() == "" && a.otherPassword.Text() == "",
+			"M3 native closing account dialog clears unsubmitted passwords")
+		u.authOpen.Click()
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.start.Click()
+		check(!a.busy && hits.Load() == beforeAuth && a.ownerPassword.Text() == "" && a.otherPassword.Text() == "",
+			"M3 native unconfirmed auth sends no request and clears passwords")
+		a.loginConfirmed.SetChecked(true)
+		a.resourceConfirmed.SetChecked(true)
+		a.otherForbidden.SetChecked(true)
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.start.Click()
+		deadline = time.Now().Add(12 * time.Second)
+		for a.busy && time.Now().Before(deadline) {
+			qt.QCoreApplication_ProcessEvents()
+			time.Sleep(10 * time.Millisecond)
+		}
+		qt.QCoreApplication_ProcessEvents()
+		check(!a.busy && hits.Load() == beforeAuth+11 && a.status.Text() == u.tr("auth_finding") &&
+			a.result.ToPlainText() == "cross_role_private_body_reproduced", "M3 native cross-role managed loopback check")
+		check(a.ownerPassword.Text() == "" && a.otherPassword.Text() == "" &&
+			!strings.Contains(a.result.ToPlainText(), server.URL) && !strings.Contains(a.result.ToPlainText(), "alice-pass"),
+			"M3 native auth password and result redaction")
+		beforeAuth = hits.Load()
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.start.Click()
+		check(!a.busy && hits.Load() == beforeAuth && a.ownerPassword.Text() == "" && a.otherPassword.Text() == "" &&
+			!a.loginConfirmed.IsChecked() && !a.resourceConfirmed.IsChecked() && !a.otherForbidden.IsChecked(),
+			"M3 native account confirmations are required again for a new run")
 		u.confirmDelete = func() bool { return true }
 		u.deleteProject.Click()
 		check(u.selectedProjectID() == "" && u.runs.Count() == 0, "M1 native project deletion")

@@ -89,15 +89,17 @@ Un job CI Ubuntu 24.04 ora prova il laboratorio Qt con display virtuale; registr
 
 Quarto blocco sperimentale: [helper Qt supervisionato](it/ADR-011-BROWSER-HELPER.md) con IPC limitato, scadenza e terminazione dell'albero di processi; egress indipendente e limiti rigidi su macOS/Linux restano aperti.
 
-Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; integrazione Qt/desktop e flussi reali restano aperti.
+Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
 
 Settimo blocco core: [osservazioni delle richieste browser](it/M3-DYNAMIC-OBSERVATIONS.md) da fixture Qt, inclusi `fetch` JavaScript, senza query o visite automatiche; navigazione DOM e controlli restano aperti.
 
-Ottavo blocco core: [primo controllo contestuale tra ruoli](it/M3-CROSS-ROLE.md) con due sessioni di prova e prova positiva esatta su fixture loopback; inventario di risorse, UI e misure reali restano aperti.
+Ottavo blocco core: [primo controllo contestuale tra ruoli](it/M3-CROSS-ROLE.md) con due sessioni di prova e prova positiva esatta su fixture loopback; inventario di risorse e misure reali restano aperti.
 
-Blocco di orchestrazione: [controllo tra ruoli in una run gestita](it/M3-CROSS-ROLE-RUN.md), con due login e budget condiviso solo loopback; GUI, grant pubblici e misure reali restano aperti.
+Blocco di orchestrazione: [controllo tra ruoli in una run gestita](it/M3-CROSS-ROLE-RUN.md), con due login e budget condiviso solo loopback; grant pubblici e misure reali restano aperti.
+
+Blocco desktop autenticazione: [due account di prova e controllo tra ruoli](it/M3-AUTH-DESKTOP.md) configurati per una run loopback nella GUI Qt, con conferme separate e risultati redatti; non copre login reali complessi o target pubblici.
 
 Blocco desktop: [scelta OpenAPI offline](it/M3-OPENAPI-DESKTOP.md) di un seed GET ammesso nella finestra di scansione; non è una scansione API multi-route.
 
@@ -235,15 +237,17 @@ A Ubuntu 24.04 CI job now exercises the Qt lab under a virtual display; check th
 
 Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) with bounded IPC, deadline and process-tree termination; independent egress and hard macOS/Linux process limits remain open.
 
-Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; Qt/desktop integration and real workflows remain open.
+Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 
 Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an inventory of candidate static routes under scope/policy, without networking; selection of one seed in the GUI is described below. Dynamic crawling and checks remain open.
 
 Seventh core block: [browser request observations](en/M3-DYNAMIC-OBSERVATIONS.md) from the Qt fixture, including JavaScript `fetch`, without queries or automatic visits; DOM navigation and checks remain open.
 
-Eighth core block: [first contextual cross-role check](en/M3-CROSS-ROLE.md) with two test sessions and exact positive evidence on loopback fixtures; resource inventory, UI and real-world measurements remain open.
+Eighth core block: [first contextual cross-role check](en/M3-CROSS-ROLE.md) with two test sessions and exact positive evidence on loopback fixtures; resource inventory and real-world measurements remain open.
 
-Orchestration block: [cross-role check in one managed run](en/M3-CROSS-ROLE-RUN.md), with two logins and a shared budget on loopback only; GUI, public grants and real measurements remain open.
+Orchestration block: [cross-role check in one managed run](en/M3-CROSS-ROLE-RUN.md), with two logins and a shared budget on loopback only; public grants and real measurements remain open.
+
+Desktop authentication block: [two test accounts and a cross-role check](en/M3-AUTH-DESKTOP.md) configured for one loopback run in the Qt GUI, with separate confirmations and redacted results; complex real-world login and public targets are not covered.
 
 Desktop block: [offline OpenAPI selection](en/M3-OPENAPI-DESKTOP.md) of one admitted GET seed in the scan window; it is not a multi-route API scan.
 

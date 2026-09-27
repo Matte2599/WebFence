@@ -8,4 +8,4 @@ The rule emits a `finding` only if both the owner and other identity receive `20
 
 **Local synthetic fixtures on September 27, 2026:** six scenarios: reproduced cross-role access (1 `finding`), denied access, public marker with `200`, `403` or inside a larger response, and different owner response (5 `inconclusive`, no negative verdict). The race-detector test passed. These counts verify behavior on constructed cases; they do not estimate real sensitivity or specificity. Branch and merged CI must be checked separately.
 
-The check does not prove that a different response is safe, infer ownership from OpenAPI or cover enumerated IDs, bearer tokens, multiple desktop roles, public grants or persisted reports. The M3 cross-role access and rule-expansion items remain open.
+The check does not prove that a different response is safe, infer ownership from OpenAPI or cover enumerated IDs, bearer tokens, a persistent desktop role inventory, public grants or persisted reports. The M3 cross-role access and rule-expansion items remain open.
