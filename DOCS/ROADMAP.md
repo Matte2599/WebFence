@@ -97,6 +97,8 @@ Settimo blocco core: [osservazioni delle richieste browser](it/M3-DYNAMIC-OBSERV
 
 Ottavo blocco core: [primo controllo contestuale tra ruoli](it/M3-CROSS-ROLE.md) con due sessioni di prova e prova positiva esatta su fixture loopback; inventario di risorse, UI e misure reali restano aperti.
 
+Blocco di orchestrazione: [controllo tra ruoli in una run gestita](it/M3-CROSS-ROLE-RUN.md), con due login e budget condiviso solo loopback; GUI, grant pubblici e misure reali restano aperti.
+
 Blocco desktop: [scelta OpenAPI offline](it/M3-OPENAPI-DESKTOP.md) di un seed GET ammesso nella finestra di scansione; non è una scansione API multi-route.
 
 Blocco API core: [visite statiche OpenAPI selezionate](it/M3-API-BATCH.md) sotto run, scope, policy e IP fissati, senza seguire link o eseguire controlli API specifici.
@@ -240,6 +242,8 @@ Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an invent
 Seventh core block: [browser request observations](en/M3-DYNAMIC-OBSERVATIONS.md) from the Qt fixture, including JavaScript `fetch`, without queries or automatic visits; DOM navigation and checks remain open.
 
 Eighth core block: [first contextual cross-role check](en/M3-CROSS-ROLE.md) with two test sessions and exact positive evidence on loopback fixtures; resource inventory, UI and real-world measurements remain open.
+
+Orchestration block: [cross-role check in one managed run](en/M3-CROSS-ROLE-RUN.md), with two logins and a shared budget on loopback only; GUI, public grants and real measurements remain open.
 
 Desktop block: [offline OpenAPI selection](en/M3-OPENAPI-DESKTOP.md) of one admitted GET seed in the scan window; it is not a multi-route API scan.
 

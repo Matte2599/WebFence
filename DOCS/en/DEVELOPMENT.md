@@ -43,7 +43,7 @@ Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/p
 - `internal/browser`: [M3 gate](M3-BROWSER-GATE.md), [confined HTTP proxy](M3-BROWSER-PROXY.md), [request observations](M3-DYNAMIC-OBSERVATIONS.md) and helper supervisor; still without a desktop browser runtime.
 - `internal/session`: [M3 test-account login and sessions](M3-SESSIONS.md) held only in memory on controlled fixtures; the desktop does not yet expose test accounts.
 - `internal/apiimport`: [offline M3 OpenAPI inventory](M3-OPENAPI-IMPORT.md), without import-time requests; the desktop uses one candidate GET as a seed.
-- `internal/checks`: [M3 contextual cross-role check](M3-CROSS-ROLE.md) on synthetic fixtures, without persistence or desktop integration.
+- `internal/checks`: [M3 contextual cross-role check](M3-CROSS-ROLE.md) and [managed-run orchestration](M3-CROSS-ROLE-RUN.md) on synthetic fixtures, without persistence or desktop integration.
 - `internal/desktop`: [offline M3 OpenAPI selection](M3-OPENAPI-DESKTOP.md) of one GET seed and [selected static API visits](M3-API-DESKTOP.md), checked by the Qt self-test on local fixtures.
 - `experiments/m3-browser`: [Qt WebEngine lab](M3-BROWSER-LAB.md) using local fixtures and a [separate helper](ADR-011-BROWSER-HELPER.md); it requires Qt WebEngine 6.11.2 and the `m3browserlab` tag and is not packaged.
 - `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md), [bounded crawler](M1-CONTROLLED-CRAWL.md) and [explicit static API visits](M3-API-BATCH.md) with persistent results. Tests open no external network connections.

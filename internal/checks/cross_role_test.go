@@ -25,11 +25,12 @@ func (syntheticSecrets) Get(context.Context, string) ([]byte, error) {
 type accessMode string
 
 const (
-	vulnerable accessMode = "vulnerable"
-	protected  accessMode = "protected"
-	public     accessMode = "public"
-	public403  accessMode = "public_403"
-	ownerBad   accessMode = "owner_bad"
+	vulnerable    accessMode = "vulnerable"
+	protected     accessMode = "protected"
+	public        accessMode = "public"
+	public403     accessMode = "public_403"
+	publicWrapped accessMode = "public_wrapped"
+	ownerBad      accessMode = "owner_bad"
 )
 
 func accessFixture(t *testing.T, mode accessMode) (*transport.Broker, *session.Session, *session.Session, string) {
@@ -73,11 +74,15 @@ func accessFixture(t *testing.T, mode accessMode) (*transport.Broker, *session.S
 					w.WriteHeader(http.StatusForbidden)
 				}
 			default:
-				if mode == public || mode == public403 {
+				if mode == public || mode == public403 || mode == publicWrapped {
 					if mode == public403 {
 						w.WriteHeader(http.StatusForbidden)
 					}
-					_, _ = w.Write([]byte("private-alice"))
+					if mode == publicWrapped {
+						_, _ = w.Write([]byte("public wrapper: private-alice"))
+					} else {
+						_, _ = w.Write([]byte("private-alice"))
+					}
 				} else {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -143,6 +148,7 @@ func TestCrossRolePositiveEvidenceAndInconclusiveCases(t *testing.T) {
 		{protected, Inconclusive, "other_resource_unverified"},
 		{public, Inconclusive, "private_marker_public"},
 		{public403, Inconclusive, "private_marker_public"},
+		{publicWrapped, Inconclusive, "private_marker_public"},
 		{ownerBad, Inconclusive, "owner_resource_unverified"},
 	} {
 		t.Run(string(tt.mode), func(t *testing.T) {
