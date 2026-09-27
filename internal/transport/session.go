@@ -24,6 +24,9 @@ type SessionRoutes struct {
 	LoginURL       string
 	VerifyURL      string
 	LoginConfirmed bool
+	// PublicConfirmed separately acknowledges credential transmission to a
+	// pinned public HTTPS origin. The loopback constructor ignores this flag.
+	PublicConfirmed bool
 }
 
 type sessionRoutes struct {
@@ -48,6 +51,30 @@ func NewAuthorizedLabWithSession(ctx context.Context, permit project.RunScope, g
 	if err != nil {
 		b.Close()
 		return nil, err
+	}
+	b.session = configured
+	return b, nil
+}
+
+// NewAuthorizedPublicWithSession admits test credentials only to one exact,
+// separately confirmed HTTPS origin with public IP pins. The ordinary public
+// broker remains anonymous. The caller owns the authorization evidence and
+// must keep credentials ephemeral; this constructor cannot prove ownership.
+func NewAuthorizedPublicWithSession(ctx context.Context, permit project.RunScope, grants []Grant,
+	limits Limits, resolver Resolver, route scope.RequestPolicy, routes SessionRoutes) (*Broker, error) {
+	if !routes.LoginConfirmed || !routes.PublicConfirmed || len(grants) != 1 ||
+		limits.MaxRequests > 128 || limits.RunTimeout > 15*time.Minute ||
+		limits.MinRequestInterval < 500*time.Millisecond {
+		return nil, ErrConfig
+	}
+	b, err := NewAuthorizedPublic(ctx, permit, grants, limits, resolver, route)
+	if err != nil {
+		return nil, err
+	}
+	configured, err := b.validateSessionRoutes(routes)
+	if err != nil || configured.origin != grants[0].Origin || !strings.HasPrefix(configured.origin, "https://") {
+		b.Close()
+		return nil, ErrConfig
 	}
 	b.session = configured
 	return b, nil
