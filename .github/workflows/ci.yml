@@ -344,6 +344,8 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go mod download && go mod verify
+      - name: Check bounded CDP protocol
+        run: go test -tags=m3cdplab ./experiments/m3-cdp-browser
       - name: Build synthetic CDP lab
         run: CGO_ENABLED=0 go build -tags=m3cdplab -o /tmp/webfence-m3-cdp ./experiments/m3-cdp-browser
       - name: Build disposable Chromium image
