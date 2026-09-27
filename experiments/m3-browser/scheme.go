@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/Matte2599/WebFence/internal/browser"
@@ -64,10 +65,16 @@ func runScheme(ctx context.Context, executable, origin string, gate *browser.Gat
 		return errors.New("invalid scheme helper result")
 	}
 	observed, dropped := proxy.Observations()
-	if !result.Loaded || !result.ScriptSeen || !result.APISeen || broker.RequestsUsed()-beforeBroker != 3 ||
-		targetHits.Load()-beforeTarget != 3 || dropped != 0 || len(observed) != 3 ||
+	minimum := 2
+	if runtime.GOOS == "darwin" {
+		minimum = 3
+	}
+	if !result.Loaded || !result.ScriptSeen || (runtime.GOOS == "darwin" && !result.APISeen) ||
+		broker.RequestsUsed()-beforeBroker < minimum || broker.RequestsUsed()-beforeBroker > 3 ||
+		targetHits.Load()-beforeTarget != int32(broker.RequestsUsed()-beforeBroker) ||
+		dropped != 0 || len(observed) != broker.RequestsUsed()-beforeBroker ||
 		observed[0].Path != "/app/scheme" || observed[1].Path != "/app/scheme.js" ||
-		observed[2].Path != "/app/scheme-api" {
+		(len(observed) == 3 && observed[2].Path != "/app/scheme-api") {
 		return fmt.Errorf("unexpected scheme observations: loaded=%t script=%t api=%t broker=%d target=%d observed=%d dropped=%d",
 			result.Loaded, result.ScriptSeen, result.APISeen, broker.RequestsUsed()-beforeBroker,
 			targetHits.Load()-beforeTarget, len(observed), dropped)
@@ -76,11 +83,24 @@ func runScheme(ctx context.Context, executable, origin string, gate *browser.Gat
 }
 
 func runSchemeChild(config helperConfig) error {
-	if runtime.GOOS != "darwin" {
-		return errors.New("scheme fixture requires Qt 6.6 or later on macOS")
-	}
 	if err := validateSchemeConfig(config); err != nil {
 		return err
+	}
+	if runtime.GOOS == "linux" {
+		if err := applyLinuxSchemeNetworkIsolation(); err != nil {
+			return err
+		}
+		for _, probe := range []struct{ network, address string }{
+			{"tcp4", "127.0.0.1:9"}, {"tcp6", "[::1]:9"},
+		} {
+			conn, err := net.DialTimeout(probe.network, probe.address, 100*time.Millisecond)
+			if conn != nil {
+				conn.Close()
+			}
+			if !errors.Is(err, syscall.EPERM) {
+				return errors.New("browser helper direct network is not blocked")
+			}
+		}
 	}
 	if err := os.Setenv("QTWEBENGINE_CHROMIUM_FLAGS",
 		"--disable-background-networking --disable-component-update --disable-sync --disable-extensions --disable-default-apps --renderer-process-limit=4"); err != nil {
@@ -88,7 +108,11 @@ func runSchemeChild(config helperConfig) error {
 	}
 	scheme := webengine.NewQWebEngineUrlScheme2([]byte("wfsite"))
 	scheme.SetSyntax(webengine.QWebEngineUrlScheme__Host)
-	scheme.SetFlags(webengine.QWebEngineUrlScheme__CorsEnabled | qtFetchAPIAllowed)
+	flags := webengine.QWebEngineUrlScheme__CorsEnabled
+	if runtime.GOOS == "darwin" {
+		flags |= qtFetchAPIAllowed
+	}
+	scheme.SetFlags(flags)
 	webengine.QWebEngineUrlScheme_RegisterScheme(scheme)
 	defer scheme.Delete()
 
@@ -154,7 +178,11 @@ func runSchemeChild(config helperConfig) error {
 	defer timer.Delete()
 	started := time.Now()
 	timer.OnTimeout(func() {
-		if (loaded.Load() && apiSeen.Load()) || time.Since(started) > 9*time.Second {
+		complete := loaded.Load() && scriptSeen.Load()
+		if runtime.GOOS == "darwin" {
+			complete = loaded.Load() && apiSeen.Load()
+		}
+		if complete || time.Since(started) > 9*time.Second {
 			qt.QCoreApplication_Quit()
 		}
 	})

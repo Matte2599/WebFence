@@ -69,6 +69,8 @@ func main() {
 	}
 	if runtime.GOOS == "darwin" {
 		fmt.Println("PASS M3 Qt browser fixtures: HTTP proxy, DOM navigation, fetch and out-of-scope block; Unix-socket scheme document, script and fetch")
+	} else if runtime.GOOS == "linux" {
+		fmt.Println("PASS M3 Qt browser fixtures: HTTP proxy, DOM navigation, fetch and out-of-scope block; Linux filtered Unix-socket scheme document and script")
 	} else {
 		fmt.Println("PASS M3 Qt browser HTTP fixture: proxy, DOM navigation, fetch and out-of-scope block")
 	}
@@ -210,7 +212,7 @@ func run() error {
 			result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
 			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed(), len(observed), omitted)
 	}
-	if runtime.GOOS == "darwin" {
+	if runtime.GOOS == "darwin" || runtime.GOOS == "linux" {
 		if err := runScheme(ctx, executable, origin, gate, broker, &targetHits); err != nil {
 			return err
 		}
