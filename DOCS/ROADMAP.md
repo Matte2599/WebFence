@@ -99,6 +99,8 @@ Ottavo blocco core: [primo controllo contestuale tra ruoli](it/M3-CROSS-ROLE.md)
 
 Blocco desktop: [scelta OpenAPI offline](it/M3-OPENAPI-DESKTOP.md) di un seed GET ammesso nella finestra di scansione; non è una scansione API multi-route.
 
+Blocco API core: [visite statiche OpenAPI selezionate](it/M3-API-BATCH.md) sotto run, scope, policy e IP fissati, senza seguire link o eseguire controlli API specifici; la GUI multi-route resta aperta.
+
 - [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
@@ -238,6 +240,8 @@ Seventh core block: [browser request observations](en/M3-DYNAMIC-OBSERVATIONS.md
 Eighth core block: [first contextual cross-role check](en/M3-CROSS-ROLE.md) with two test sessions and exact positive evidence on loopback fixtures; resource inventory, UI and real-world measurements remain open.
 
 Desktop block: [offline OpenAPI selection](en/M3-OPENAPI-DESKTOP.md) of one admitted GET seed in the scan window; it is not a multi-route API scan.
+
+Core API block: [explicit static OpenAPI visits](en/M3-API-BATCH.md) under managed runs, scope, policy and pinned IPs, without following links or running API-specific checks; multi-route GUI remains open.
 
 - [ ] Isolated browser, scope for subresources/redirects and process limits.
 - [ ] Test-account sessions/login flows, validity checks and identity separation.
