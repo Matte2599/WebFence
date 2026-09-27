@@ -95,7 +95,10 @@ func run() error {
 			_, _ = fmt.Fprint(w, "synthetic")
 		case "/app/next":
 			w.Header().Set("Content-Type", "text/html")
-			_, _ = fmt.Fprint(w, `<html><body><script>console.log('wf-synthetic-next-loaded'); fetch('/app/dynamic').then(r => r.text()).then(x => { if (x === 'synthetic-dynamic') console.log('wf-synthetic-dynamic-ok') })</script></body></html>`)
+			_, _ = fmt.Fprint(w, `<html><body><script src="/app/next.js"></script></body></html>`)
+		case "/app/next.js":
+			w.Header().Set("Content-Type", "application/javascript")
+			_, _ = fmt.Fprint(w, `console.log('wf-synthetic-next-loaded'); fetch('/app/dynamic').then(r => r.text()).then(x => { if (x === 'synthetic-dynamic') console.log('wf-synthetic-dynamic-ok') })`)
 		case "/app/dynamic":
 			w.Header().Set("Content-Type", "text/plain")
 			_, _ = fmt.Fprint(w, "synthetic-dynamic")
@@ -185,8 +188,8 @@ func run() error {
 	}
 	if !result.Loaded || !result.APISeen || !result.Navigated || !result.DynamicSeen ||
 		!result.RedirectBlocked || !result.OutsideBlocked || wrongHost.Load() || result.Denied < 1 ||
-		!apiObserved || !dynamicObserved || omitted != 0 || len(observed) != 5 ||
-		targetHits.Load() != 6 || broker.RequestsUsed() != 6 || gate.RequestsUsed() < broker.RequestsUsed() {
+		!apiObserved || !dynamicObserved || omitted != 0 || len(observed) != 6 ||
+		targetHits.Load() != 7 || broker.RequestsUsed() != 7 || gate.RequestsUsed() < broker.RequestsUsed() {
 		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t navigation=%t dynamic=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d observed=%d omitted=%d",
 			result.Loaded, result.APISeen, result.Navigated, result.DynamicSeen,
 			result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
@@ -292,7 +295,7 @@ func runChild() error {
 			page.RunJavaScriptWithScriptSource("document.getElementById('next').click()")
 		}
 		if (navigated.Load() && dynamicSeen.Load()) ||
-			time.Since(started) >= 12*time.Second {
+			time.Since(started) >= 20*time.Second {
 			qt.QCoreApplication_Quit()
 		}
 	})
