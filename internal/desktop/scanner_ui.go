@@ -26,31 +26,32 @@ import (
 // GUI thread. The worker receives an immutable plan and sends counts/results
 // over channels; no target URL or response content is rendered as evidence.
 type scannerUI struct {
-	w                                                                            *workspace
-	store                                                                        *storage.Store
-	dialog                                                                       *qt.QDialog
-	timer                                                                        *qt.QTimer
-	labels                                                                       map[string]*qt.QLabel
-	intro, status, coverage                                                      *qt.QLabel
-	projects, runs, mode                                                         *qt.QComboBox
-	id, name, owner, reference, expiry, origin                                   *qt.QLineEdit
-	seed, allowed, excluded, pins                                                *qt.QLineEdit
-	confirmed, follow                                                            *qt.QCheckBox
-	maxPages, maxDepth, budget                                                   *qt.QSpinBox
-	create, deleteProject, start, cancelRun, refresh, m2Open, importAPI, scanAPI *qt.QPushButton
-	progress                                                                     *qt.QProgressBar
-	results                                                                      *qt.QPlainTextEdit
-	projectIDs, runIDs                                                           []string
-	initErr                                                                      error
-	cancel                                                                       context.CancelFunc
-	done                                                                         chan struct{}
-	progressUpdates                                                              chan int
-	finished                                                                     chan scanCompletion
-	confirmDelete                                                                func() bool
-	chooseAPIFile                                                                func() string
-	chooseAPIRoute                                                               func([]string) (string, bool)
-	chooseAPIRoutes                                                              func([]string) ([]string, bool)
-	m2                                                                           *m2UI
+	w                                                                                      *workspace
+	store                                                                                  *storage.Store
+	dialog                                                                                 *qt.QDialog
+	timer                                                                                  *qt.QTimer
+	labels                                                                                 map[string]*qt.QLabel
+	intro, status, coverage                                                                *qt.QLabel
+	projects, runs, mode                                                                   *qt.QComboBox
+	id, name, owner, reference, expiry, origin                                             *qt.QLineEdit
+	seed, allowed, excluded, pins                                                          *qt.QLineEdit
+	confirmed, follow                                                                      *qt.QCheckBox
+	maxPages, maxDepth, budget                                                             *qt.QSpinBox
+	create, deleteProject, start, cancelRun, refresh, m2Open, importAPI, scanAPI, authOpen *qt.QPushButton
+	progress                                                                               *qt.QProgressBar
+	results                                                                                *qt.QPlainTextEdit
+	projectIDs, runIDs                                                                     []string
+	initErr                                                                                error
+	cancel                                                                                 context.CancelFunc
+	done                                                                                   chan struct{}
+	progressUpdates                                                                        chan int
+	finished                                                                               chan scanCompletion
+	confirmDelete                                                                          func() bool
+	chooseAPIFile                                                                          func() string
+	chooseAPIRoute                                                                         func([]string) (string, bool)
+	chooseAPIRoutes                                                                        func([]string) ([]string, bool)
+	m2                                                                                     *m2UI
+	auth                                                                                   *authUI
 }
 
 type scanCompletion struct {
@@ -145,10 +146,12 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 	u.deleteProject = qt.NewQPushButton2()
 	u.refresh = qt.NewQPushButton2()
 	u.m2Open = qt.NewQPushButton2()
+	u.authOpen = qt.NewQPushButton2()
 	bar.AddWidget(u.cancelRun.QWidget)
 	bar.AddWidget(u.deleteProject.QWidget)
 	bar.AddWidget(u.refresh.QWidget)
 	bar.AddWidget(u.m2Open.QWidget)
+	bar.AddWidget(u.authOpen.QWidget)
 	outer.AddWidget(controls)
 	u.status = qt.NewQLabel2()
 	u.status.SetWordWrap(true)
@@ -213,6 +216,8 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 		u.start.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.importAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.scanAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
+		u.authOpen.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
+
 		u.deleteProject.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.refreshRuns()
 	})
@@ -235,6 +240,7 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 	})
 	u.refresh.OnClicked(func() { u.refreshProjects(); u.refreshRuns() })
 	u.m2Open.OnClicked(func() { u.m2.show() })
+	u.authOpen.OnClicked(func() { u.auth.show() })
 	u.follow.OnToggled(func(on bool) { u.maxDepth.SetEnabled(on) })
 	u.maxDepth.SetEnabled(false)
 	u.cancelRun.SetEnabled(false)
@@ -242,6 +248,7 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 	u.translate()
 	u.refreshProjects()
 	u.m2 = newM2UI(u, cache, cacheErr, trust, trustErr)
+	u.auth = newAuthUI(u)
 	return u
 }
 
@@ -262,6 +269,10 @@ func (u *scannerUI) translate() {
 	u.cancelRun.SetText(u.tr("scan_cancel"))
 	u.refresh.SetText(u.tr("scan_refresh"))
 	u.m2Open.SetText(u.tr("m2_open"))
+	u.authOpen.SetText(u.tr("auth_open"))
+	if u.auth != nil {
+		u.auth.translate()
+	}
 	u.mode.SetItemText(0, u.tr("scan_loopback"))
 	u.mode.SetItemText(1, u.tr("scan_public"))
 	if u.projects.Count() > 0 {
@@ -291,6 +302,8 @@ func (u *scannerUI) refreshProjects() {
 		u.start.SetEnabled(false)
 		u.importAPI.SetEnabled(false)
 		u.scanAPI.SetEnabled(false)
+		u.authOpen.SetEnabled(false)
+
 		return
 	}
 	projects, err := u.store.ListProjects(context.Background())
@@ -316,6 +329,8 @@ func (u *scannerUI) refreshProjects() {
 	u.start.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 	u.importAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 	u.scanAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
+	u.authOpen.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
+
 }
 
 func (u *scannerUI) selectedProjectID() string {
@@ -359,7 +374,7 @@ func (u *scannerUI) createProject() {
 
 func (u *scannerUI) removeProject() {
 	id := u.selectedProjectID()
-	if id == "" || u.store == nil || u.done != nil {
+	if id == "" || u.store == nil || u.done != nil || (u.auth != nil && u.auth.busy) {
 		return
 	}
 	if !u.confirmDelete() {
@@ -388,8 +403,9 @@ func splitPaths(text string) []string {
 // networking. Both desktop workflows present only GET routes admitted by the
 // current authorization and policy; execution later starts a fresh run.
 func (u *scannerUI) importCandidates() ([]byte, string, []string, map[string]string, bool) {
-	if u.store == nil || u.done != nil || u.selectedProjectID() == "" {
+	if u.store == nil || u.done != nil || (u.auth != nil && u.auth.busy) || u.selectedProjectID() == "" {
 		return nil, "", nil, nil, false
+
 	}
 	path := u.chooseAPIFile()
 	if path == "" {
@@ -477,11 +493,18 @@ func (u *scannerUI) importOpenAPI() {
 // startAPIScan requires explicit route selection and then delegates every
 // request to the managed crawler with the UI's current grants and budget.
 func (u *scannerUI) startAPIScan() {
+	if u.auth != nil && u.auth.busy {
+		return
+	}
 	document, origin, paths, _, ready := u.importCandidates()
 	if !ready {
 		return
 	}
 	selected, ok := u.chooseAPIRoutes(paths)
+	if u.auth != nil && u.auth.busy {
+		clear(document)
+		return
+	}
 	if !ok {
 		clear(document)
 		return
@@ -563,7 +586,7 @@ func (u *scannerUI) plan() (scanner.CrawlPlan, error) {
 }
 
 func (u *scannerUI) startScan() {
-	if u.store == nil || u.done != nil {
+	if u.store == nil || u.done != nil || (u.auth != nil && u.auth.busy) {
 		return
 	}
 	plan, err := u.plan()
@@ -589,6 +612,8 @@ func (u *scannerUI) launchScan(run func(context.Context, func(int)) (scanner.Cra
 	u.start.SetEnabled(false)
 	u.importAPI.SetEnabled(false)
 	u.scanAPI.SetEnabled(false)
+	u.authOpen.SetEnabled(false)
+
 	u.deleteProject.SetEnabled(false)
 	u.cancelRun.SetEnabled(true)
 	onProgress := func(count int) {
@@ -622,6 +647,8 @@ func (u *scannerUI) poll() {
 		u.start.SetEnabled(u.selectedProjectID() != "")
 		u.importAPI.SetEnabled(u.selectedProjectID() != "")
 		u.scanAPI.SetEnabled(u.selectedProjectID() != "")
+		u.authOpen.SetEnabled(u.selectedProjectID() != "")
+
 		u.deleteProject.SetEnabled(u.selectedProjectID() != "")
 		u.progress.SetValue(result.report.CompletedVisits)
 		if result.err != nil {
@@ -710,6 +737,9 @@ func (u *scannerUI) dispose() {
 		<-u.done
 	}
 	u.timer.Stop()
+	if u.auth != nil {
+		u.auth.dispose()
+	}
 	if u.m2 != nil {
 		u.m2.dispose()
 	}

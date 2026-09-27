@@ -25,7 +25,7 @@ QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-Il self-test usa Qt reale senza display e una directory temporanea per lingua e DB; la copia è intercettata per non modificare gli appunti. Verifica anche una scansione M1, record CVE/NVD sintetici da `httptest` locale, correlazioni/attestazioni, export M2 firmato e non firmato e gestione chiavi con un portachiavi sintetico isolato: **nessun target esterno**. Con `WEBFENCE_UI_SNAPSHOT_DIR` salva schermate sintetiche per controllo visivo; su macOS può usare anche `QT_QPA_PLATFORM=cocoa`. Non è una prova con screen reader. Il tag Fyne `ci` non serve più. `go test ./...` richiede le dipendenze Qt per compilare il desktop.
+Il self-test usa Qt reale senza display e una directory temporanea per lingua e DB; la copia è intercettata per non modificare gli appunti. Verifica anche una scansione M1, record CVE/NVD sintetici da `httptest` locale, correlazioni/attestazioni, export M2 firmato e non firmato, gestione chiavi con un portachiavi sintetico isolato e il [controllo M3 tra due account](M3-AUTH-DESKTOP.md): **nessun target esterno**. Con `WEBFENCE_UI_SNAPSHOT_DIR` salva schermate sintetiche per controllo visivo; su macOS può usare anche `QT_QPA_PLATFORM=cocoa`. Non è una prova con screen reader. Il tag Fyne `ci` non serve più. `go test ./...` richiede le dipendenze Qt per compilare il desktop.
 
 Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. Dalla shell UCRT64, usare le stesse variabili e compilare con `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; eseguire `./bin/webfence.exe --self-test` con `QT_QPA_PLATFORM=offscreen`. Qt DLL e plugin devono essere disponibili; il file exe da solo non è un pacchetto distribuibile. La CI usa [setup-msys2](https://github.com/msys2/setup-msys2); MSVC non è il compilatore CGO di questa configurazione.
 
@@ -41,10 +41,11 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
 - `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
 - `internal/browser`: [gate M3](M3-BROWSER-GATE.md), [proxy HTTP confinato](M3-BROWSER-PROXY.md), [osservazioni delle richieste](M3-DYNAMIC-OBSERVATIONS.md) e supervisore di helper; ancora senza runtime browser nel desktop.
-- `internal/session`: [login e sessioni di prova M3](M3-SESSIONS.md) solo in memoria su fixture controllate; il desktop non espone ancora account di test.
+- `internal/session`: [login e sessioni di prova M3](M3-SESSIONS.md) solo in memoria su fixture controllate; il desktop espone un [flusso effimero a due account](M3-AUTH-DESKTOP.md) solo loopback.
 - `internal/apiimport`: [inventario OpenAPI offline M3](M3-OPENAPI-IMPORT.md), senza richieste durante l'import; il desktop ne usa una sola candidata GET come seed.
-- `internal/checks`: [controllo contestuale tra ruoli M3](M3-CROSS-ROLE.md) e [orchestrazione su run gestita](M3-CROSS-ROLE-RUN.md) su fixture sintetiche, senza persistenza o integrazione desktop.
+- `internal/checks`: [controllo contestuale tra ruoli M3](M3-CROSS-ROLE.md) e [orchestrazione su run gestita](M3-CROSS-ROLE-RUN.md) su fixture sintetiche, senza persistenza; il [flusso desktop](M3-AUTH-DESKTOP.md) è limitato a loopback.
 - `internal/desktop`: [scelta OpenAPI offline M3](M3-OPENAPI-DESKTOP.md) di un seed GET e [visite API statiche selezionate](M3-API-DESKTOP.md), verificate nel self-test Qt su fixture locali.
+
 - `experiments/m3-browser`: [laboratorio Qt WebEngine](M3-BROWSER-LAB.md) con fixture locali e [helper separato](ADR-011-BROWSER-HELPER.md); richiede Qt WebEngine 6.11.2 e il tag `m3browserlab`, non è incluso nei pacchetti.
 - `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md), [crawler limitato](M1-CONTROLLED-CRAWL.md) e [visite API statiche selezionate](M3-API-BATCH.md) con risultati persistenti. I test non aprono rete esterna.
 - `internal/intelligence` e `internal/reporting`: [cache/matching M2](M2-INTELLIGENCE-CACHE.md) e [bundle verificabili](M2-REPORTS.md), separati da Qt. `cmd/webfence-report` e `cmd/webfence-verify` sono ausili tecnici compilabili dal sorgente.

@@ -25,7 +25,7 @@ QT_QPA_PLATFORM=offscreen ./bin/webfence --self-test
 git diff --check
 ```
 
-The self-test uses real Qt without a display and a temporary directory for language and DB; copying is intercepted to preserve the clipboard. It also checks an M1 scan, synthetic CVE/NVD records from local `httptest`, assessments/attestations, signed and unsigned M2 export and key management with an isolated synthetic credential store: **no external target**. `WEBFENCE_UI_SNAPSHOT_DIR` saves synthetic screenshots for visual inspection; macOS can also use `QT_QPA_PLATFORM=cocoa`. This is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` needs Qt dependencies to compile the desktop.
+The self-test uses real Qt without a display and a temporary directory for language and DB; copying is intercepted to preserve the clipboard. It also checks an M1 scan, synthetic CVE/NVD records from local `httptest`, assessments/attestations, signed and unsigned M2 export, key management with an isolated synthetic credential store and the [M3 two-account check](M3-AUTH-DESKTOP.md): **no external target**. `WEBFENCE_UI_SNAPSHOT_DIR` saves synthetic screenshots for visual inspection; macOS can also use `QT_QPA_PLATFORM=cocoa`. This is not a screen-reader test. Fyne's `ci` tag is no longer needed. `go test ./...` needs Qt dependencies to compile the desktop.
 
 On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w64-ucrt-x86_64-gcc`, `mingw-w64-ucrt-x86_64-pkgconf`, `mingw-w64-ucrt-x86_64-qt6-base`. In UCRT64 use the same variables and build with `go build -ldflags "-H=windowsgui -s -w" -o bin/webfence.exe ./cmd/webfence`; run `./bin/webfence.exe --self-test` with `QT_QPA_PLATFORM=offscreen`. Qt DLLs and plugins must be available; the exe alone is not a distributable package. CI uses [setup-msys2](https://github.com/msys2/setup-msys2); MSVC is not the CGO compiler in this setup.
 
@@ -41,10 +41,11 @@ Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/p
 - `internal/project` and `internal/storage`: authorization model, [SQLite v4](M1-PROJECT-STORE.md) with redacted runs/observations and [local revocation](M1-MANAGED-RUNS.md).
 - `internal/scope` and `internal/transport`: [route policy and public IP-pinned broker](M1-CONTROLLED-CRAWL.md), used by the M1 desktop.
 - `internal/browser`: [M3 gate](M3-BROWSER-GATE.md), [confined HTTP proxy](M3-BROWSER-PROXY.md), [request observations](M3-DYNAMIC-OBSERVATIONS.md) and helper supervisor; still without a desktop browser runtime.
-- `internal/session`: [M3 test-account login and sessions](M3-SESSIONS.md) held only in memory on controlled fixtures; the desktop does not yet expose test accounts.
+- `internal/session`: [M3 test-account login and sessions](M3-SESSIONS.md) held only in memory on controlled fixtures; the desktop exposes an [ephemeral two-account workflow](M3-AUTH-DESKTOP.md) on loopback only.
 - `internal/apiimport`: [offline M3 OpenAPI inventory](M3-OPENAPI-IMPORT.md), without import-time requests; the desktop uses one candidate GET as a seed.
-- `internal/checks`: [M3 contextual cross-role check](M3-CROSS-ROLE.md) and [managed-run orchestration](M3-CROSS-ROLE-RUN.md) on synthetic fixtures, without persistence or desktop integration.
+- `internal/checks`: [M3 contextual cross-role check](M3-CROSS-ROLE.md) and [managed-run orchestration](M3-CROSS-ROLE-RUN.md) on synthetic fixtures, without persistence; the [desktop workflow](M3-AUTH-DESKTOP.md) is loopback-only.
 - `internal/desktop`: [offline M3 OpenAPI selection](M3-OPENAPI-DESKTOP.md) of one GET seed and [selected static API visits](M3-API-DESKTOP.md), checked by the Qt self-test on local fixtures.
+
 - `experiments/m3-browser`: [Qt WebEngine lab](M3-BROWSER-LAB.md) using local fixtures and a [separate helper](ADR-011-BROWSER-HELPER.md); it requires Qt WebEngine 6.11.2 and the `m3browserlab` tag and is not packaged.
 - `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md), [bounded crawler](M1-CONTROLLED-CRAWL.md) and [explicit static API visits](M3-API-BATCH.md) with persistent results. Tests open no external network connections.
 - `internal/intelligence` and `internal/reporting`: [M2 cache/matching](M2-INTELLIGENCE-CACHE.md) and [verifiable bundles](M2-REPORTS.md), independent of Qt. `cmd/webfence-report` and `cmd/webfence-verify` are technical helpers buildable from source.
