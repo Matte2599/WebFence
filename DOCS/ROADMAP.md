@@ -95,6 +95,8 @@ Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come invent
 
 Settimo blocco core: [osservazioni delle richieste browser](it/M3-DYNAMIC-OBSERVATIONS.md) da fixture Qt, inclusi `fetch` JavaScript, senza query o visite automatiche; navigazione DOM e controlli restano aperti.
 
+Ottavo blocco core: [primo controllo contestuale tra ruoli](it/M3-CROSS-ROLE.md) con due sessioni di prova e prova positiva esatta su fixture loopback; inventario di risorse, UI e misure reali restano aperti.
+
 - [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
@@ -230,6 +232,8 @@ Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopba
 Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an inventory of candidate static routes under scope/policy, without networking or GUI integration; dynamic crawling and checks remain open.
 
 Seventh core block: [browser request observations](en/M3-DYNAMIC-OBSERVATIONS.md) from the Qt fixture, including JavaScript `fetch`, without queries or automatic visits; DOM navigation and checks remain open.
+
+Eighth core block: [first contextual cross-role check](en/M3-CROSS-ROLE.md) with two test sessions and exact positive evidence on loopback fixtures; resource inventory, UI and real-world measurements remain open.
 
 - [ ] Isolated browser, scope for subresources/redirects and process limits.
 - [ ] Test-account sessions/login flows, validity checks and identity separation.
