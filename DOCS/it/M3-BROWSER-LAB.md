@@ -17,7 +17,7 @@ go test -race ./internal/browser -run '^TestRunHelper' -count=1
 CGO_CXXFLAGS='-O0 -g0 -std=c++17' go test -tags=m3browserlab ./experiments/m3-browser
 ```
 
-**Prova locale del 27 settembre 2026, Apple Silicon/macOS 26.6.2, Qt WebEngine 6.11.2:** il comando con helper e click DOM ha restituito `PASS` in quattro ripetizioni precedenti e dopo i nuovi limiti Unix; test Go con tag passati. Il job CI macOS 26 è separato e va verificato sul commit del branch e del merge. Nessun collaudo Qt equivalente è ancora documentato su Windows. Il laboratorio non è una funzionalità GUI e non ha egress indipendente, memoria macOS o quota aggregata di processi/memoria su macOS/Linux, HTTPS o sessioni; non soddisfa il criterio browser M3.
+**Prova locale del 27 settembre 2026, Apple Silicon/macOS 26.6.2, Qt WebEngine 6.11.2:** il comando con helper e click DOM ha restituito `PASS` in quattro ripetizioni precedenti e dopo i nuovi limiti Unix; test Go con tag passati. Il job CI macOS 26 è separato e va verificato sul commit del branch e del merge. Nessun collaudo Qt equivalente è ancora documentato su Windows. Il laboratorio non è una funzionalità GUI e non ha egress indipendente, limiti di memoria o quota aggregata di processi su macOS/Linux, HTTPS o sessioni; non soddisfa il criterio browser M3.
 
 La CI include ora un job Linux Ubuntu 24.04 con Qt WebEngine e display virtuale: test di configurazione e fixture sintetica sono passati sul branch `0da4e66` ([run 36281325352](https://github.com/Matte2599/WebFence/actions/runs/36281325352)). Verificare separatamente il commit integrato. La prova locale macOS è stata ripetuta dopo l'aggiunta del job. Non è una prova del contenimento indipendente dell'egress.
 

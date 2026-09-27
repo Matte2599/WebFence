@@ -13,16 +13,14 @@ const (
 // Qt WebEngine or any descendant. Limits are inherited by children, but they
 // apply to each process separately, not to the process tree as a whole.
 func ApplyHelperResourceLimits() error {
-	limits := []struct {
+	for _, item := range []struct {
 		resource int
 		maximum  uint64
 	}{
 		{unix.RLIMIT_NOFILE, helperOpenFilesLimit},
 		{unix.RLIMIT_FSIZE, helperFileSizeLimit},
 		{unix.RLIMIT_CORE, 0},
-	}
-	limits = append(limits, platformHelperResourceLimits()...)
-	for _, item := range limits {
+	} {
 		var current unix.Rlimit
 		if err := unix.Getrlimit(item.resource, &current); err != nil {
 			return ErrHelperFailed

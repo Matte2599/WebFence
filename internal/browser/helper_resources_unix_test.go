@@ -5,7 +5,6 @@ package browser
 import (
 	"context"
 	"fmt"
-	"runtime"
 	"testing"
 	"time"
 
@@ -31,13 +30,8 @@ func TestRunHelperAppliesInheritedResourceLimits(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	wantAS := beforeAS
-	if runtime.GOOS == "linux" {
-		cap := uint64(16 << 30)
-		wantAS.Cur, wantAS.Max = min(beforeAS.Cur, beforeAS.Max, cap), min(beforeAS.Cur, beforeAS.Max, cap)
-	}
 	want := fmt.Sprintf("%d:%d:%d:%d:%d:%d:%d:%d",
-		wantAS.Cur, wantAS.Max,
+		beforeAS.Cur, beforeAS.Max,
 		min(beforeFiles.Cur, beforeFiles.Max, uint64(helperOpenFilesLimit)),
 		min(beforeFiles.Cur, beforeFiles.Max, uint64(helperOpenFilesLimit)),
 		min(beforeSize.Cur, beforeSize.Max, uint64(helperFileSizeLimit)),

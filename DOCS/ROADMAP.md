@@ -89,7 +89,7 @@ Il laboratorio Qt è passato anche nel job CI Ubuntu 24.04 con display virtuale 
 
 Quarto blocco sperimentale: [helper Qt supervisionato](it/ADR-011-BROWSER-HELPER.md) con IPC limitato, scadenza e terminazione dell'albero di processi; egress indipendente e limiti rigidi su macOS/Linux restano aperti.
 
-Blocco successivo del browser: [limiti di risorse Unix nell'helper](it/M3-BROWSER-RESOURCE-LIMITS.md) per file, descrittori e core dump, più spazio virtuale per processo su Linux. Memoria macOS, quota aggregata dei processi ed egress indipendente restano aperti.
+Blocco successivo del browser: [limiti di risorse Unix nell'helper](it/M3-BROWSER-RESOURCE-LIMITS.md) per file, descrittori e core dump. Memoria, quota aggregata dei processi ed egress indipendente restano aperti su macOS/Linux.
 
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
@@ -241,7 +241,7 @@ The Qt lab also passed in the Ubuntu 24.04 CI job under a virtual display ([M3 s
 
 Fourth experimental block: [supervised Qt helper](en/ADR-011-BROWSER-HELPER.md) with bounded IPC, deadline and process-tree termination; independent egress and hard macOS/Linux process limits remain open.
 
-Next browser block: [Unix helper resource limits](en/M3-BROWSER-RESOURCE-LIMITS.md) for files, descriptors and core dumps, plus per-process virtual address space on Linux. macOS memory, aggregate process quota and independent egress remain open.
+Next browser block: [Unix helper resource limits](en/M3-BROWSER-RESOURCE-LIMITS.md) for files, descriptors and core dumps. Memory, aggregate process quota and independent egress remain open on macOS/Linux.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 
