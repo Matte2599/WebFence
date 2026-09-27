@@ -8,7 +8,7 @@ Data: 2026-09-25. Stato: **adottato per il core M1 sperimentale**; distribuzione
 
 Il broker M0 prova i confini HTTP su loopback, ma non permette di verificare l'integrazione con origini pubbliche autorizzate. Uno scope basato sul solo hostname non impedisce DNS rebinding o redirect verso reti interne. Estendiamo il broker con `NewAuthorizedPublic`: ogni origine esatta deve comparire nello snapshot dell'autorizzazione e avere IP pubblici esplicitamente fissati; ogni risposta DNS deve contenere solo quegli IP. Un lifecycle vincolato è obbligatorio; `RunCrawl` lo ottiene dallo store. Le singole run sono sequenziali, con budget e cadenza per origine. La policy indipendente dei metodi e dei prefissi di percorso viene ricontrollata su ogni hop.
 
-Un grant non dimostra la titolarità del target. Solo l'operatore può attestare l'autorizzazione e scegliere percorsi senza effetti indesiderati. Non supportiamo per ora reti private/VPN, override di IP speciali, proxy, cookie, autenticazione o browser. Questa scelta è volutamente restrittiva: accessi a target interni richiederanno un modello di autorizzazione e di egress separato.
+Un grant non dimostra la titolarità del target. Solo l'operatore può attestare l'autorizzazione e scegliere percorsi senza effetti indesiderati. Il costruttore M1 resta anonimo e non supporta reti private/VPN, override di IP speciali, proxy, cookie, autenticazione o browser. Il successivo [ADR-018](ADR-018-AUTHENTICATED-PUBLIC-TRANSPORT.md) introduce un costruttore M3 distinto per login HTTPS esplicitamente confermato. Questa scelta è volutamente restrittiva: accessi a target interni richiederanno un modello di autorizzazione e di egress separato.
 
 ## Confini applicati
 

@@ -1,6 +1,6 @@
 // Package transport contains a pinned HTTP broker for explicitly granted
-// loopback fixtures and public destinations. M3 session methods are limited to
-// an explicit loopback laboratory used by the bounded desktop auth dialog.
+// loopback fixtures and public destinations. M3 session methods require an
+// explicit constructor; the desktop auth dialog remains loopback-only.
 package transport
 
 import (

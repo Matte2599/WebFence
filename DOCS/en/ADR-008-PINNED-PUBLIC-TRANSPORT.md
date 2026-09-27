@@ -8,7 +8,7 @@ Date: 2026-09-25. Status: **adopted for the experimental M1 core**; distribution
 
 The M0 broker tests HTTP boundaries on loopback but cannot exercise integration with authorized public origins. Hostname-only scope does not stop DNS rebinding or redirects into internal networks. We extend the broker with `NewAuthorizedPublic`: every exact origin must be in the authorization snapshot and have explicit public IP pins; every DNS answer must contain only those IPs. A bound lifecycle is mandatory; `RunCrawl` obtains it from the store. Individual runs are sequential, with budgets and per-origin pacing. An independent method/path-prefix policy is rechecked on every hop.
 
-A grant does not prove target ownership. Only the operator can attest authorization and choose routes without unwanted effects. Private/VPN targets, special-address overrides, proxies, cookies, authentication and browsers are unsupported for now. This deliberately restrictive choice means internal targets need a separate authorization and egress design.
+A grant does not prove target ownership. Only the operator can attest authorization and choose routes without unwanted effects. The M1 constructor remains anonymous and does not support private/VPN targets, special-address overrides, proxies, cookies, authentication or browsers. The later [ADR-018](ADR-018-AUTHENTICATED-PUBLIC-TRANSPORT.md) introduces a separate M3 constructor for explicitly confirmed HTTPS login. This deliberately restrictive choice means internal targets need a separate authorization and egress design.
 
 ## Enforced boundaries
 
