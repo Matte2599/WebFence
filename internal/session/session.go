@@ -165,10 +165,15 @@ func (m *Manager) Login(ctx context.Context, a Account) (*Session, error) {
 		return nil, ErrInconclusive
 	}
 	lifetime, stop := context.WithCancel(context.Background())
-	return &Session{broker: m.broker, projectID: m.broker.SessionProjectID(),
+	s := &Session{broker: m.broker, projectID: m.broker.SessionProjectID(),
 		revision: m.broker.SessionRevision(), identity: a.ID, cookie: cookie,
-		cookiePath: cookiePath, expiresAt: expires, expectedBody: a.ExpectedBody,
-		lifetime: lifetime, stop: stop}, nil
+		cookieName: a.CookieName, cookiePath: cookiePath, expiresAt: expires,
+		expectedBody: a.ExpectedBody, lifetime: lifetime, stop: stop}
+	if err := s.acceptRotation(ctx, cookie, expires, verified.Header); err != nil {
+		s.Close()
+		return nil, err
+	}
+	return s, nil
 }
 
 func hiddenToken(body []byte, name string) ([]byte, error) {
@@ -269,10 +274,12 @@ type Session struct {
 	revision     uint64
 	identity     string
 	expectedBody string
+	cookieName   string
 	cookiePath   string
 	expiresAt    time.Time
 	lifetime     context.Context
 	stop         context.CancelFunc
+	requestMu    sync.Mutex // serializes requests so an older cookie cannot race a rotation
 	mu           sync.Mutex
 	cookie       []byte
 	closed       bool
@@ -309,6 +316,10 @@ func (s *Session) Close() {
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.closeLocked()
+}
+
+func (s *Session) closeLocked() {
 	clear(s.cookie)
 	s.cookie = nil
 	s.closed = true
@@ -317,16 +328,16 @@ func (s *Session) Close() {
 	}
 }
 
-func (s *Session) cookieCopy() ([]byte, error) {
+func (s *Session) cookieCopy() ([]byte, time.Time, error) {
 	if s == nil {
-		return nil, ErrConfig
+		return nil, time.Time{}, ErrConfig
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.closed || !time.Now().Before(s.expiresAt) {
-		return nil, ErrExpired
+		return nil, time.Time{}, ErrExpired
 	}
-	return append([]byte(nil), s.cookie...), nil
+	return append([]byte(nil), s.cookie...), s.expiresAt, nil
 }
 
 // Verify checks the declared validity URL again before a dependent check.
@@ -335,19 +346,21 @@ func (s *Session) Verify(ctx context.Context) error {
 	if s == nil || ctx == nil {
 		return ErrConfig
 	}
-	cookie, err := s.cookieCopy()
+	s.requestMu.Lock()
+	defer s.requestMu.Unlock()
+	cookie, expires, err := s.cookieCopy()
 	if err != nil {
 		return err
 	}
 	defer clear(cookie)
-	run, cancel := s.requestContext(ctx)
+	run, cancel := s.requestContext(ctx, expires)
 	defer cancel()
 	result, err := s.broker.FetchSession(run, s.broker.VerifyURL(), string(cookie))
 	if err != nil || result.StatusCode != http.StatusOK || string(result.Body) != s.expectedBody {
 		s.Close()
 		return ErrInconclusive
 	}
-	return nil
+	return s.acceptRotation(ctx, cookie, expires, result.Header)
 }
 
 // Fetch performs one same-origin, allowlisted GET and does not follow a
@@ -361,12 +374,14 @@ func (s *Session) Fetch(ctx context.Context, raw string) (transport.Result, erro
 	if parseErr != nil || !cookiePathMatches(u.EscapedPath(), s.cookiePath) {
 		return transport.Result{}, ErrInconclusive
 	}
-	cookie, err := s.cookieCopy()
+	s.requestMu.Lock()
+	defer s.requestMu.Unlock()
+	cookie, expires, err := s.cookieCopy()
 	if err != nil {
 		return transport.Result{}, err
 	}
 	defer clear(cookie)
-	run, cancel := s.requestContext(ctx)
+	run, cancel := s.requestContext(ctx, expires)
 	defer cancel()
 	result, err := s.broker.FetchSession(run, raw, string(cookie))
 	if err != nil {
@@ -377,11 +392,88 @@ func (s *Session) Fetch(ctx context.Context, raw string) (transport.Result, erro
 		s.Close()
 		return transport.Result{}, ErrInconclusive
 	}
+	if err := s.acceptRotation(ctx, cookie, expires, result.Header); err != nil {
+		return transport.Result{}, err
+	}
 	return result, nil
 }
 
-func (s *Session) requestContext(ctx context.Context) (context.Context, context.CancelFunc) {
-	run, cancel := context.WithDeadline(ctx, s.expiresAt)
+// acceptRotation keeps at most one new cookie from a response. A second exact
+// validity probe must prove the same identity with it before replacement.
+// The caller holds requestMu, except during Login before publishing the session.
+func (s *Session) acceptRotation(ctx context.Context, old []byte, deadline time.Time, header http.Header) error {
+	next, nextExpiry, present, err := s.rotatedCookie(header, deadline)
+	if err != nil {
+		s.Close()
+		return ErrInconclusive
+	}
+	if !present {
+		return nil
+	}
+	defer clear(next)
+	if !bytes.Equal(next, old) {
+		run, cancel := s.requestContext(ctx, deadline)
+		verified, verifyErr := s.broker.FetchSession(run, s.broker.VerifyURL(), string(next))
+		cancel()
+		if verifyErr != nil || verified.StatusCode != http.StatusOK || string(verified.Body) != s.expectedBody {
+			s.Close()
+			return ErrInconclusive
+		}
+		follow, followExpiry, followPresent, followErr := s.rotatedCookie(verified.Header, nextExpiry)
+		if followErr != nil || followPresent && !bytes.Equal(follow, next) {
+			clear(follow)
+			s.Close()
+			return ErrInconclusive
+		}
+		if followPresent && followExpiry.Before(nextExpiry) {
+			nextExpiry = followExpiry
+		}
+		clear(follow)
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.closed || !time.Now().Before(nextExpiry) {
+		if !s.closed {
+			s.closeLocked()
+		}
+		return ErrInconclusive
+	}
+	if !bytes.Equal(next, old) {
+		clear(s.cookie)
+		s.cookie = append([]byte(nil), next...)
+	}
+	if nextExpiry.Before(s.expiresAt) {
+		s.expiresAt = nextExpiry
+	}
+	return nil
+}
+
+func (s *Session) rotatedCookie(header http.Header, deadline time.Time) ([]byte, time.Time, bool, error) {
+	count := 0
+	for _, raw := range header.Values("Set-Cookie") {
+		first := strings.SplitN(raw, ";", 2)[0]
+		name, _, _ := strings.Cut(first, "=")
+		if strings.TrimSpace(name) == s.cookieName {
+			count++
+		}
+	}
+	if count == 0 {
+		return nil, time.Time{}, false, nil
+	}
+	if count != 1 {
+		return nil, time.Time{}, true, ErrInconclusive
+	}
+	cookie, path, expires, err := selectCookie(header, s.cookieName, s.broker.SessionOrigin(),
+		s.broker.VerifyURL(), deadline)
+	if err != nil || path != s.cookiePath {
+		clear(cookie)
+		return nil, time.Time{}, true, ErrInconclusive
+	}
+	return cookie, expires, true, nil
+}
+
+func (s *Session) requestContext(ctx context.Context, deadline time.Time) (context.Context, context.CancelFunc) {
+	run, cancel := context.WithDeadline(ctx, deadline)
 	stop := context.AfterFunc(s.lifetime, cancel)
 	return run, func() { stop(); cancel() }
 }
