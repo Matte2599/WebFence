@@ -107,6 +107,8 @@ Blocco API core: [visite statiche OpenAPI selezionate](it/M3-API-BATCH.md) sotto
 
 Blocco desktop API: [scelta multipla esplicita](it/M3-API-DESKTOP.md) di route GET statiche con conferma prima delle visite e risultati redatti; controlli API specifici e crawling dinamico restano aperti.
 
+Blocco core route osservate: [ripetizione esplicita di `fetch` GET](it/M3-OBSERVED-CRAWL.md) selezionate dal laboratorio browser, sotto una nuova run gestita; navigazione DOM e integrazione desktop restano aperte.
+
 - [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
@@ -254,6 +256,8 @@ Desktop block: [offline OpenAPI selection](en/M3-OPENAPI-DESKTOP.md) of one admi
 Core API block: [explicit static OpenAPI visits](en/M3-API-BATCH.md) under managed runs, scope, policy and pinned IPs, without following links or running API-specific checks.
 
 Desktop API block: [explicit multiple selection](en/M3-API-DESKTOP.md) of static GET routes with confirmation before visits and redacted results; API-specific checks and dynamic crawling remain open.
+
+Observed-route core block: [explicit replay of GET `fetch` paths](en/M3-OBSERVED-CRAWL.md) selected from the browser lab, under a fresh managed run; DOM navigation and desktop integration remain open.
 
 - [ ] Isolated browser, scope for subresources/redirects and process limits.
 - [ ] Test-account sessions/login flows, validity checks and identity separation.
