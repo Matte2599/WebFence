@@ -1,0 +1,9 @@
+# M3 — Linux CDP lab with HTTP origin
+
+[Italiano](../it/M3-BROWSER-CDP-LAB.md) · [ADR-016](ADR-016-LINUX-CDP-TRIAL.md) · [M3 status](M3-VALIDATION.md)
+
+`experiments/m3-cdp-browser` is an optional Linux fixture, not a GUI feature. It needs Go, Docker and Chromium **only inside the trial container**. It accepts no URL or external target. The parent passes only the absolute Chromium path to its helper; the helper applies limits and seccomp before starting Chromium. The CDP pipes and all responses are local. The page `http://site.test/app/` loads a script, calls `fetch('/api')`, requests an outside image and follows a redirect to another origin: the last two requests are intercepted and blocked. The program fails if expected events are absent, the browser did not inherit the filter or protocol limits are exceeded.
+
+Linux AMD64 CI trial and local ARM64 trial on September 27, 2026: build with `CGO_ENABLED=0 go build -tags=m3cdplab -o /tmp/webfence-m3-cdp ./experiments/m3-cdp-browser`; build the image with `docker build -f experiments/m3-cdp-browser/Dockerfile -t webfence-m3-cdp-lab .`; run the binary mounted as `/wf-cdp` in the container without networking, read-only, with temporary `/tmp`, user 1000, `--cap-drop ALL`, `--security-opt no-new-privileges`, `--memory 1g` and `--pids-limit 128`. The complete versioned command is in the `m3-cdp-lab-linux` CI job. The local ARM64 trial passed with these limits; branch and `main` CI need separate checks.
+
+The trial preserves HTTP origin in browser requests and denies autonomous networking on this experimental path. It does **not** connect the browser to the WebFence gate/broker, test HTTPS or login, or prove a safe sandbox for untrusted pages: Chromium uses `--no-sandbox` here only, the container is part of the trial boundary, and browser filesystem access is not mediated. Aggregate quotas outside the container, other OSs, the GUI and the first M3 item remain open.
