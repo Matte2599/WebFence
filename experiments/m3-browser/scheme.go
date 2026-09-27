@@ -34,6 +34,7 @@ type schemeResult struct {
 
 // Qt 6.6 added FetchApiAllowed (0x100); MIQT 0.14.0 does not name this flag.
 const qtFetchAPIAllowed = webengine.QWebEngineUrlScheme__Flag(0x100)
+const schemeBrokerConnections = 4
 
 func runScheme(ctx context.Context, executable, origin string, gate *browser.Gate,
 	broker *transport.Broker, targetHits *atomic.Int32) error {
@@ -47,15 +48,35 @@ func runScheme(ctx context.Context, executable, origin string, gate *browser.Gat
 		return err
 	}
 	defer proxy.Close()
+	var brokerFiles []*os.File
+	defer func() {
+		for _, file := range brokerFiles {
+			_ = file.Close()
+		}
+	}()
+	if runtime.GOOS == "linux" {
+		for range schemeBrokerConnections {
+			conn, err := net.DialUnix("unix", nil, &net.UnixAddr{Name: socketPath, Net: "unix"})
+			if err != nil {
+				return err
+			}
+			file, fileErr := conn.File()
+			_ = conn.Close()
+			if fileErr != nil {
+				return fileErr
+			}
+			brokerFiles = append(brokerFiles, file)
+		}
+	}
 	username, password := proxy.Credentials()
 	payload, err := json.Marshal(helperConfig{Mode: "scheme", Origin: origin,
-		SocketPath: socketPath, Username: username, Password: password})
+		SocketPath: socketPath, BrokerFDs: len(brokerFiles), Username: username, Password: password})
 	if err != nil {
 		return err
 	}
 	beforeBroker, beforeTarget := broker.RequestsUsed(), targetHits.Load()
 	resultJSON, err := browser.RunHelper(ctx, executable, payload, browser.HelperLimits{
-		MaxRuntime: 12 * time.Second, MaxOutputBytes: 64 << 10,
+		MaxRuntime: 12 * time.Second, MaxOutputBytes: 64 << 10, InheritedFiles: brokerFiles,
 	})
 	if err != nil {
 		return err
@@ -86,7 +107,35 @@ func runSchemeChild(config helperConfig) error {
 	if err := validateSchemeConfig(config); err != nil {
 		return err
 	}
+	var inherited chan net.Conn
 	if runtime.GOOS == "linux" {
+		// The lab is headless so the helper needs no display-server socket.
+		if err := os.Setenv("QT_QPA_PLATFORM", "offscreen"); err != nil {
+			return err
+		}
+		inherited = make(chan net.Conn, config.BrokerFDs)
+		defer func() {
+			close(inherited)
+			for conn := range inherited {
+				_ = conn.Close()
+			}
+		}()
+		for i := range config.BrokerFDs {
+			file := os.NewFile(uintptr(3+i), "broker-connection")
+			if file == nil {
+				return errors.New("missing inherited broker connection")
+			}
+			conn, err := net.FileConn(file)
+			_ = file.Close()
+			if err != nil {
+				return errors.New("invalid inherited broker connection")
+			}
+			if _, ok := conn.(*net.UnixConn); !ok {
+				_ = conn.Close()
+				return errors.New("inherited broker connection is not Unix IPC")
+			}
+			inherited <- conn
+		}
 		if err := applyLinuxSchemeNetworkIsolation(); err != nil {
 			return err
 		}
@@ -125,9 +174,18 @@ func runSchemeChild(config helperConfig) error {
 	}
 	proxyURL := &url.URL{Scheme: "http", Host: "127.0.0.1"}
 	proxyURL.User = url.UserPassword(config.Username, config.Password)
-	transport := &http.Transport{Proxy: http.ProxyURL(proxyURL), DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
-		return (&net.Dialer{}).DialContext(ctx, "unix", config.SocketPath)
-	}}
+	transport := &http.Transport{Proxy: http.ProxyURL(proxyURL), DisableKeepAlives: runtime.GOOS == "linux",
+		DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+			if runtime.GOOS == "linux" {
+				select {
+				case conn := <-inherited:
+					return conn, nil
+				case <-ctx.Done():
+					return nil, ctx.Err()
+				}
+			}
+			return (&net.Dialer{}).DialContext(ctx, "unix", config.SocketPath)
+		}}
 	defer transport.CloseIdleConnections()
 	client := &http.Client{Transport: transport, Timeout: 5 * time.Second}
 	handler := webengine.NewQWebEngineUrlSchemeHandler()
@@ -197,6 +255,10 @@ func validateSchemeConfig(c helperConfig) error {
 	if c.Mode != "scheme" || c.ProxyEndpoint != "" || c.Username != "webfence" ||
 		!filepath.IsAbs(c.SocketPath) || filepath.Base(c.SocketPath) != "broker.sock" {
 		return errors.New("invalid scheme helper configuration")
+	}
+	if (runtime.GOOS == "linux" && c.BrokerFDs != schemeBrokerConnections) ||
+		(runtime.GOOS != "linux" && c.BrokerFDs != 0) {
+		return errors.New("invalid inherited broker connection count")
 	}
 	u, err := url.Parse(c.Origin)
 	if err != nil || u.Scheme != "http" || u.Hostname() != "site.test" || u.Port() == "" ||

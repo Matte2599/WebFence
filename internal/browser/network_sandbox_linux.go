@@ -9,10 +9,12 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// ApplyHelperNetworkIsolation denies creation of non-Unix sockets by every
-// thread in the trusted helper. The filter is inherited by its descendants.
+// ApplyHelperNetworkIsolation denies direct network sockets and new connections
+// to local services by every thread in the trusted helper. The filter is
+// inherited by its descendants. Authorized broker IPC must be connected by
+// the parent and inherited before this function is called.
 // It must run before Qt or any browser process starts, with no inherited
-// network descriptors. A separate broker holds all authorized target access.
+// INET descriptors. A separate broker holds all authorized target access.
 func ApplyHelperNetworkIsolation() error {
 	arch := uint32(unix.AUDIT_ARCH_X86_64)
 	if runtime.GOARCH == "arm64" {
@@ -22,6 +24,7 @@ func ApplyHelperNetworkIsolation() error {
 		load  = unix.BPF_LD | unix.BPF_W | unix.BPF_ABS
 		jeq   = unix.BPF_JMP | unix.BPF_JEQ | unix.BPF_K
 		jge   = unix.BPF_JMP | unix.BPF_JGE | unix.BPF_K
+		band  = unix.BPF_ALU | unix.BPF_AND | unix.BPF_K
 		ret   = unix.BPF_RET | unix.BPF_K
 		deny  = unix.SECCOMP_RET_ERRNO | uint32(unix.EPERM)
 		allow = unix.SECCOMP_RET_ALLOW
@@ -34,13 +37,29 @@ func ApplyHelperNetworkIsolation() error {
 		{Code: load, K: 0},                // seccomp_data.nr
 		{Code: jge, K: 0x40000000, Jf: 1}, // reject x32 and high syscall numbers
 		{Code: ret, K: kill},
-		{Code: jeq, K: unix.SYS_SOCKET, Jt: 4},         // socket(domain, ...)
-		{Code: jeq, K: unix.SYS_SOCKETPAIR, Jt: 3},     // socketpair(domain, ...)
-		{Code: jeq, K: unix.SYS_IO_URING_SETUP, Jt: 1}, // no async socket bypass
+		{Code: jeq, K: unix.SYS_IO_URING_SETUP, Jf: 1}, // no async socket bypass
+		{Code: ret, K: deny},
+		{Code: jeq, K: unix.SYS_CONNECT, Jf: 1}, // no local pathname or abstract sockets
+		{Code: ret, K: deny},
+		{Code: jeq, K: unix.SYS_SENDTO, Jf: 6}, // allow only a null destination
+		{Code: load, K: 48},                    // args[4], destination pointer low
+		{Code: jeq, K: 0, Jf: 3},
+		{Code: load, K: 52}, // destination pointer high
+		{Code: jeq, K: 0, Jf: 1},
 		{Code: ret, K: allow},
 		{Code: ret, K: deny},
+		{Code: jeq, K: unix.SYS_SENDMMSG, Jf: 1},
+		{Code: ret, K: deny},
+		{Code: jeq, K: unix.SYS_SOCKET, Jt: 2},
+		{Code: jeq, K: unix.SYS_SOCKETPAIR, Jt: 1},
+		{Code: ret, K: allow},
 		{Code: load, K: 16}, // seccomp_data.args[0], low 32 bits
 		{Code: jeq, K: unix.AF_UNIX, Jt: 1},
+		{Code: ret, K: deny},
+		{Code: load, K: 24},  // seccomp_data.args[1], low 32 bits
+		{Code: band, K: 0xf}, // SOCK_CLOEXEC and SOCK_NONBLOCK are outside type bits
+		{Code: jeq, K: unix.SOCK_STREAM, Jt: 2},
+		{Code: jeq, K: unix.SOCK_SEQPACKET, Jt: 1},
 		{Code: ret, K: deny},
 		{Code: ret, K: allow},
 	}

@@ -64,6 +64,11 @@ func TestRunHelperRejectsInvalidInput(t *testing.T) {
 	if _, err := RunHelper(context.Background(), "", []byte("x"), HelperLimits{}); !errors.Is(err, ErrConfig) {
 		t.Fatalf("invalid limits = %v", err)
 	}
+	if _, err := RunHelper(context.Background(), "/synthetic/helper", []byte("x"), HelperLimits{
+		MaxRuntime: time.Second, MaxOutputBytes: 1024, InheritedFiles: []*os.File{nil},
+	}); !errors.Is(err, ErrConfig) {
+		t.Fatalf("nil inherited file = %v", err)
+	}
 }
 
 func TestHelperEnvironmentKeepsVirtualDisplayAuthorityOnly(t *testing.T) {

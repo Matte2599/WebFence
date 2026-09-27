@@ -93,9 +93,9 @@ Blocco successivo del browser: [limiti di risorse Unix nell'helper](it/M3-BROWSE
 
 Prova successiva del browser: [proxy su socket Unix e schema Qt](it/M3-BROWSER-UNIX-SCHEME.md) per tre risorse sintetiche su macOS. Verifica un percorso IPC senza listener TCP; non impedisce connessioni dirette dal browser né conserva tutta la semantica HTTP. La prima voce M3 resta aperta.
 
-Prova Linux successiva: [filtro seccomp del helper Qt](it/M3-BROWSER-LINUX-NETWORK.md) con TCP diretto negato, IPC Unix funzionante e filtro ereditato dai discendenti. I socket Unix verso servizi locali restano accessibili; non è ancora un confine di egress completo.
+Prova Linux successiva: [filtro seccomp del helper Qt](it/M3-BROWSER-LINUX-NETWORK.md) con TCP diretto negato, IPC Unix funzionante e filtro ereditato dai discendenti. La revisione passa connessioni al broker già aperte dal genitore e nega nuove connessioni Unix. La prima voce M3 richiede ancora semantica HTTP(S), quote aggregate, runtime sulle altre piattaforme e integrazione desktop.
 
-La [fattibilità multipiattaforma](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) registra i limiti osservati di App Sandbox/WebKit su macOS, Qt WebEngine con MinGW su Windows e dello stack Qt/Unix su Ubuntu 24.04. L'[ADR-015](it/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) mantiene aperto il criterio finché non esiste un confine ripetibile per ogni piattaforma dichiarata.
+La [fattibilità multipiattaforma](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) registra i limiti osservati di App Sandbox/WebKit su macOS, Qt WebEngine con MinGW su Windows e dello stack Qt/Unix su Ubuntu 24.04. L'autore ha confermato nell'[ADR-015](it/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) l'isolamento OS: il criterio resta aperto finché non esiste un confine ripetibile per ogni piattaforma in cui il browser sarà abilitato.
 
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
@@ -251,9 +251,9 @@ Next browser block: [Unix helper resource limits](en/M3-BROWSER-RESOURCE-LIMITS.
 
 Next browser trial: [Unix-socket proxy and Qt scheme](en/M3-BROWSER-UNIX-SCHEME.md) for three synthetic resources on macOS. It verifies an IPC path without a TCP listener; it neither prevents direct browser connections nor preserves complete HTTP semantics. The first M3 item remains open.
 
-Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.md) with direct TCP denied, working Unix IPC and inheritance by descendants. Unix sockets to local services remain accessible; this is not yet a complete egress boundary.
+Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.md) with direct TCP denied, working Unix IPC and inheritance by descendants. The revision passes parent-connected broker descriptors and denies new Unix connections. The first M3 item still needs HTTP(S) semantics, aggregate quotas, runtimes on other platforms and desktop integration.
 
-[Cross-platform feasibility](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) records observed App Sandbox/WebKit limits on macOS, Qt WebEngine with MinGW on Windows and the Qt/Unix stack on Ubuntu 24.04. [ADR-015](en/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) keeps the item open until a repeatable boundary exists for every declared platform.
+[Cross-platform feasibility](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) records observed App Sandbox/WebKit limits on macOS, Qt WebEngine with MinGW on Windows and the Qt/Unix stack on Ubuntu 24.04. The author confirmed OS isolation in [ADR-015](en/ADR-015-BROWSER-PLATFORM-BOUNDARY.md): the item remains open until a repeatable boundary exists on every platform where the browser will be enabled.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; the bounded desktop workflow is described below. Real workflows remain open.
 
