@@ -2,7 +2,7 @@
 
 [English](../en/M3-OPENAPI-IMPORT.md) · [Roadmap](../ROADMAP.md) · [Scansione](SCANNING.md)
 
-`internal/apiimport.Import` legge in memoria un documento JSON OpenAPI 3.0.x o 3.1.x e restituisce un inventario ordinato di operazioni. È un **blocco core**, non ancora un importatore nella GUI né un piano di scansione. Durante l'import non apre connessioni, non visita route e non risolve `$ref`.
+`internal/apiimport.Import` legge in memoria un documento JSON OpenAPI 3.0.x o 3.1.x e restituisce un inventario ordinato di operazioni. È un **blocco core** ora usato per [scegliere un seed GET nel desktop](M3-OPENAPI-DESKTOP.md), non un piano di scansione API multi-route. Durante l'import non apre connessioni, non visita route e non risolve `$ref`.
 
 L'operatore deve fornire separatamente un'origine esatta già ammessa dalla `project.RunScope` e una `scope.RequestPolicy` valida. I valori `servers` del documento non cambiano l'origine. Soltanto GET/HEAD statiche, senza requisiti di sicurezza OpenAPI e ammesse da scope/percorso, ricevono un URL candidato. Le altre operazioni restano nell'inventario con un codice di esclusione: template da parametrizzare, autenticazione, metodo, policy, percorso ambiguo o riferimento irrisolto. Un candidato non viene eseguito automaticamente: la futura selezione esplicita dovrà ancora passare dal broker con grant IP, budget, cadenza e controlli per richiesta.
 

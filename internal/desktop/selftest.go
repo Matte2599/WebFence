@@ -262,6 +262,31 @@ func selfTest(w *workspace) int {
 		u.confirmed.SetChecked(true)
 		u.create.Click()
 		check(u.selectedProjectID() == "m1-native-selftest", "M1 native project creation")
+		spec, specErr := os.CreateTemp("", "webfence-openapi-*.json")
+		if specErr == nil {
+			defer os.Remove(spec.Name())
+			_, specErr = spec.WriteString(`{"openapi":"3.1.1","servers":[{"url":"http://outside.test:8080"}],"paths":{"/app/api":{"get":{}}}}`)
+			if closeErr := spec.Close(); specErr == nil {
+				specErr = closeErr
+			}
+		}
+		check(specErr == nil, "M3 synthetic OpenAPI fixture file")
+		if specErr == nil {
+			u.chooseAPIFile = func() string { return spec.Name() }
+			u.chooseAPIRoute = func(paths []string) (string, bool) {
+				return "/app/api", len(paths) == 1 && paths[0] == "/app/api"
+			}
+			u.importAPI.Click()
+			check(u.seed.Text() == server.URL+"/app/api" && hits.Load() == 0,
+				"M3 native OpenAPI import selects a GET seed without network")
+			invalidErr := os.WriteFile(spec.Name(), []byte(`{"openapi":"3.1.1","paths":{"/app/api":{"get":{},"get":{}}}}`), 0o600)
+			check(invalidErr == nil, "M3 synthetic invalid OpenAPI fixture")
+			if invalidErr == nil {
+				u.importAPI.Click()
+				check(u.seed.Text() == server.URL+"/app/api" && hits.Load() == 0 &&
+					u.status.Text() == u.tr("scan_import_failed"), "M3 invalid OpenAPI import preserves the seed")
+			}
+		}
 		u.start.Click()
 		deadline := time.Now().Add(12 * time.Second)
 		for u.done != nil && time.Now().Before(deadline) {
@@ -520,6 +545,7 @@ func selfTest(w *workspace) int {
 		m.dialog.Resize(820, 740)
 		w.englishAction.Trigger()
 		check(u.start.Text() == "Start scan" && strings.Contains(u.coverage.Text(), "queue"), "M1 native English translation")
+		check(u.importAPI.Text() == "Import OpenAPI JSON…", "M3 native OpenAPI English translation")
 		check(m.match.Text() == "Assess selected run" && m.unsigned.Text() == "Export explicitly unsigned", "M2 native English translation")
 		check(m.tabs.TabText(2) == "Reports and keys" && m.rotate.Text() == "Rotate selected key", "M2 advanced English translation")
 		for i, label := range []string{"en-sources", "en-assessment", "en-reports"} {
