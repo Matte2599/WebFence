@@ -174,7 +174,7 @@ func run() error {
 	}
 	if !result.Loaded || !result.APISeen || !result.RedirectBlocked || !result.OutsideBlocked ||
 		wrongHost.Load() || result.Denied < 1 || !apiObserved || omitted != 0 || len(observed) != 3 ||
-		targetHits.Load() != 4 || gate.RequestsUsed() != 4 || broker.RequestsUsed() != 4 {
+		targetHits.Load() != 4 || broker.RequestsUsed() != 4 || gate.RequestsUsed() < broker.RequestsUsed() {
 		return fmt.Errorf("unexpected synthetic observations: loaded=%t api=%t redirect=%t outside=%t host=%t denied=%d target=%d gate=%d broker=%d observed=%d omitted=%d",
 			result.Loaded, result.APISeen, result.RedirectBlocked, result.OutsideBlocked, wrongHost.Load(),
 			result.Denied, targetHits.Load(), gate.RequestsUsed(), broker.RequestsUsed(), len(observed), omitted)

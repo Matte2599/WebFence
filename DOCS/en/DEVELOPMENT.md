@@ -46,7 +46,7 @@ Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/p
 - `internal/checks`: [M3 contextual cross-role check](M3-CROSS-ROLE.md) on synthetic fixtures, without persistence or desktop integration.
 - `internal/desktop`: [offline M3 OpenAPI selection](M3-OPENAPI-DESKTOP.md) of one GET seed and [selected static API visits](M3-API-DESKTOP.md), checked by the Qt self-test on local fixtures.
 - `experiments/m3-browser`: [Qt WebEngine lab](M3-BROWSER-LAB.md) using local fixtures and a [separate helper](ADR-011-BROWSER-HELPER.md); it requires Qt WebEngine 6.11.2 and the `m3browserlab` tag and is not packaged.
-- `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md), [bounded crawler](M1-CONTROLLED-CRAWL.md) and [explicit static API visits](M3-API-BATCH.md) with persistent results. Tests open no external network connections.
+- `internal/scanner`: [first HTTP check](M1-HEADER-LAB.md), [HTML discovery](M1-DISCOVERY-LAB.md), [bounded crawler](M1-CONTROLLED-CRAWL.md) [explicit static API visits](M3-API-BATCH.md) and [explicit replay of observed GET paths](M3-OBSERVED-CRAWL.md) with persistent results. Tests open no external network connections.
 - `internal/intelligence` and `internal/reporting`: [M2 cache/matching](M2-INTELLIGENCE-CACHE.md) and [verifiable bundles](M2-REPORTS.md), independent of Qt. `cmd/webfence-report` and `cmd/webfence-verify` are technical helpers buildable from source.
 
 Future engine packages remain Qt-independent. Do not use the fixture cache as a retention design for real data. Fyne and the old Qt laboratory remain in Git history, not in the current build.
