@@ -26,30 +26,31 @@ import (
 // GUI thread. The worker receives an immutable plan and sends counts/results
 // over channels; no target URL or response content is rendered as evidence.
 type scannerUI struct {
-	w                                                                   *workspace
-	store                                                               *storage.Store
-	dialog                                                              *qt.QDialog
-	timer                                                               *qt.QTimer
-	labels                                                              map[string]*qt.QLabel
-	intro, status, coverage                                             *qt.QLabel
-	projects, runs, mode                                                *qt.QComboBox
-	id, name, owner, reference, expiry, origin                          *qt.QLineEdit
-	seed, allowed, excluded, pins                                       *qt.QLineEdit
-	confirmed, follow                                                   *qt.QCheckBox
-	maxPages, maxDepth, budget                                          *qt.QSpinBox
-	create, deleteProject, start, cancelRun, refresh, m2Open, importAPI *qt.QPushButton
-	progress                                                            *qt.QProgressBar
-	results                                                             *qt.QPlainTextEdit
-	projectIDs, runIDs                                                  []string
-	initErr                                                             error
-	cancel                                                              context.CancelFunc
-	done                                                                chan struct{}
-	progressUpdates                                                     chan int
-	finished                                                            chan scanCompletion
-	confirmDelete                                                       func() bool
-	chooseAPIFile                                                       func() string
-	chooseAPIRoute                                                      func([]string) (string, bool)
-	m2                                                                  *m2UI
+	w                                                                            *workspace
+	store                                                                        *storage.Store
+	dialog                                                                       *qt.QDialog
+	timer                                                                        *qt.QTimer
+	labels                                                                       map[string]*qt.QLabel
+	intro, status, coverage                                                      *qt.QLabel
+	projects, runs, mode                                                         *qt.QComboBox
+	id, name, owner, reference, expiry, origin                                   *qt.QLineEdit
+	seed, allowed, excluded, pins                                                *qt.QLineEdit
+	confirmed, follow                                                            *qt.QCheckBox
+	maxPages, maxDepth, budget                                                   *qt.QSpinBox
+	create, deleteProject, start, cancelRun, refresh, m2Open, importAPI, scanAPI *qt.QPushButton
+	progress                                                                     *qt.QProgressBar
+	results                                                                      *qt.QPlainTextEdit
+	projectIDs, runIDs                                                           []string
+	initErr                                                                      error
+	cancel                                                                       context.CancelFunc
+	done                                                                         chan struct{}
+	progressUpdates                                                              chan int
+	finished                                                                     chan scanCompletion
+	confirmDelete                                                                func() bool
+	chooseAPIFile                                                                func() string
+	chooseAPIRoute                                                               func([]string) (string, bool)
+	chooseAPIRoutes                                                              func([]string) ([]string, bool)
+	m2                                                                           *m2UI
 }
 
 type scanCompletion struct {
@@ -105,6 +106,8 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 	row("scan_seed", u.seed.QWidget)
 	u.importAPI = qt.NewQPushButton2()
 	form.AddRowWithWidget(u.importAPI.QWidget)
+	u.scanAPI = qt.NewQPushButton2()
+	form.AddRowWithWidget(u.scanAPI.QWidget)
 	u.allowed = qt.NewQLineEdit2()
 	u.allowed.SetMaxLength(2048)
 	u.allowed.SetText("/")
@@ -176,11 +179,40 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 			u.tr("scan_import_choose"), paths, 0, false, &ok)
 		return selected, ok
 	}
+	u.chooseAPIRoutes = func(paths []string) ([]string, bool) {
+		dialog := qt.NewQDialog(u.dialog.QWidget)
+		defer dialog.Delete()
+		dialog.SetWindowTitle(u.tr("scan_api_batch_title"))
+		dialog.Resize(460, 420)
+		layout := qt.NewQVBoxLayout(dialog.QWidget)
+		intro := qt.NewQLabel2()
+		intro.SetWordWrap(true)
+		intro.SetText(u.tr("scan_api_batch_choose", scanner.MaxHeaderLabSeeds))
+		layout.AddWidget(intro.QWidget)
+		list := qt.NewQListWidget2()
+		list.QAbstractItemView.SetSelectionMode(qt.QAbstractItemView__MultiSelection)
+		list.AddItems(paths)
+		layout.AddWidget(list.QWidget)
+		buttons := qt.NewQDialogButtonBox4(qt.QDialogButtonBox__Ok | qt.QDialogButtonBox__Cancel)
+		buttons.OnAccepted(dialog.Accept)
+		buttons.OnRejected(dialog.Reject)
+		layout.AddWidget(buttons.QWidget)
+		if dialog.Exec() != int(qt.QDialog__Accepted) {
+			return nil, false
+		}
+		items := list.SelectedItems()
+		selected := make([]string, 0, len(items))
+		for _, item := range items {
+			selected = append(selected, item.Text())
+		}
+		return selected, true
+	}
 	u.timer.OnTimeout(u.poll)
 	u.timer.Start(100)
 	u.projects.OnCurrentIndexChanged(func(int) {
 		u.start.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.importAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
+		u.scanAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.deleteProject.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 		u.refreshRuns()
 	})
@@ -195,6 +227,7 @@ func newScannerUI(w *workspace, store *storage.Store, initErr error, cache *inte
 	u.deleteProject.OnClicked(u.removeProject)
 	u.start.OnClicked(u.startScan)
 	u.importAPI.OnClicked(u.importOpenAPI)
+	u.scanAPI.OnClicked(u.startAPIScan)
 	u.cancelRun.OnClicked(func() {
 		if u.cancel != nil {
 			u.cancel()
@@ -225,6 +258,7 @@ func (u *scannerUI) translate() {
 	u.deleteProject.SetText(u.tr("scan_delete"))
 	u.start.SetText(u.tr("scan_start"))
 	u.importAPI.SetText(u.tr("scan_import_openapi"))
+	u.scanAPI.SetText(u.tr("scan_api_batch_start"))
 	u.cancelRun.SetText(u.tr("scan_cancel"))
 	u.refresh.SetText(u.tr("scan_refresh"))
 	u.m2Open.SetText(u.tr("m2_open"))
@@ -256,6 +290,7 @@ func (u *scannerUI) refreshProjects() {
 		u.create.SetEnabled(false)
 		u.start.SetEnabled(false)
 		u.importAPI.SetEnabled(false)
+		u.scanAPI.SetEnabled(false)
 		return
 	}
 	projects, err := u.store.ListProjects(context.Background())
@@ -280,6 +315,7 @@ func (u *scannerUI) refreshProjects() {
 	u.deleteProject.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 	u.start.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 	u.importAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
+	u.scanAPI.SetEnabled(u.selectedProjectID() != "" && u.done == nil)
 }
 
 func (u *scannerUI) selectedProjectID() string {
@@ -348,54 +384,59 @@ func splitPaths(text string) []string {
 	return out
 }
 
-// importOpenAPI only prepares one explicitly selected GET seed. The file is
-// bounded and parsed offline; a later scan creates a fresh managed run and
-// repeats all transport checks before any request is made.
-func (u *scannerUI) importOpenAPI() {
+// importCandidates reads and parses one bounded local document without target
+// networking. Both desktop workflows present only GET routes admitted by the
+// current authorization and policy; execution later starts a fresh run.
+func (u *scannerUI) importCandidates() ([]byte, string, []string, map[string]string, bool) {
 	if u.store == nil || u.done != nil || u.selectedProjectID() == "" {
-		return
+		return nil, "", nil, nil, false
 	}
 	path := u.chooseAPIFile()
 	if path == "" {
-		return
+		return nil, "", nil, nil, false
 	}
 	f, err := os.Open(path)
 	if err != nil {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		return nil, "", nil, nil, false
 	}
 	defer f.Close()
 	info, err := f.Stat()
 	if err != nil || !info.Mode().IsRegular() || info.Size() > apiimport.MaxDocumentBytes {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		return nil, "", nil, nil, false
 	}
 	document, err := io.ReadAll(io.LimitReader(f, apiimport.MaxDocumentBytes+1))
 	if err != nil || len(document) > apiimport.MaxDocumentBytes {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		clear(document)
+		return nil, "", nil, nil, false
 	}
 	ctx := context.Background()
 	p, err := u.store.LoadProject(ctx, u.selectedProjectID())
 	if err != nil || len(p.Origins()) != 1 {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		clear(document)
+		return nil, "", nil, nil, false
 	}
 	policy, err := scope.NewRequestPolicy([]string{"GET"}, splitPaths(u.allowed.Text()), splitPaths(u.excluded.Text()))
 	if err != nil {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		clear(document)
+		return nil, "", nil, nil, false
 	}
 	run, err := u.store.BeginRun(ctx, p.ID())
 	if err != nil {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		clear(document)
+		return nil, "", nil, nil, false
 	}
 	inv, importErr := apiimport.Import(document, p.Origins()[0], run.Scope(), policy)
 	run.Close()
 	if importErr != nil {
 		u.status.SetText(u.tr("scan_import_failed"))
-		return
+		clear(document)
+		return nil, "", nil, nil, false
 	}
 	paths := make([]string, 0)
 	selectedURL := make(map[string]string)
@@ -407,8 +448,19 @@ func (u *scannerUI) importOpenAPI() {
 	}
 	if len(paths) == 0 {
 		u.status.SetText(u.tr("scan_import_none"))
+		clear(document)
+		return nil, "", nil, nil, false
+	}
+	return document, p.Origins()[0], paths, selectedURL, true
+}
+
+// importOpenAPI prepares one selected GET seed for the ordinary scan.
+func (u *scannerUI) importOpenAPI() {
+	document, _, paths, selectedURL, ready := u.importCandidates()
+	if !ready {
 		return
 	}
+	defer clear(document)
 	selected, ok := u.chooseAPIRoute(paths)
 	if !ok {
 		return
@@ -420,6 +472,42 @@ func (u *scannerUI) importOpenAPI() {
 	}
 	u.seed.SetText(chosen)
 	u.status.SetText(u.tr("scan_import_ready", len(paths)))
+}
+
+// startAPIScan requires explicit route selection and then delegates every
+// request to the managed crawler with the UI's current grants and budget.
+func (u *scannerUI) startAPIScan() {
+	document, origin, paths, _, ready := u.importCandidates()
+	if !ready {
+		return
+	}
+	selected, ok := u.chooseAPIRoutes(paths)
+	if !ok {
+		clear(document)
+		return
+	}
+	if len(selected) == 0 || len(selected) > scanner.MaxHeaderLabSeeds {
+		clear(document)
+		u.status.SetText(u.tr("scan_api_batch_invalid"))
+		return
+	}
+	plan, err := u.plan()
+	if err != nil {
+		clear(document)
+		u.status.SetText(u.tr("scan_error", err))
+		return
+	}
+	plan.SeedURLs = nil
+	plan.FollowLinks = false
+	plan.MaxDepth = 0
+	plan.MaxPages = len(selected)
+	apiPlan := scanner.APICrawlPlan{Document: document, Origin: origin,
+		SelectedPaths: append([]string(nil), selected...), Crawl: plan}
+	u.launchScan(func(ctx context.Context, onProgress func(int)) (scanner.CrawlReport, error) {
+		defer clear(apiPlan.Document)
+		apiPlan.Crawl.OnProgress = onProgress
+		return scanner.RunAPICrawl(ctx, u.store, apiPlan)
+	})
 }
 
 func (u *scannerUI) plan() (scanner.CrawlPlan, error) {
@@ -483,6 +571,13 @@ func (u *scannerUI) startScan() {
 		u.status.SetText(u.tr("scan_error", err))
 		return
 	}
+	u.launchScan(func(ctx context.Context, onProgress func(int)) (scanner.CrawlReport, error) {
+		plan.OnProgress = onProgress
+		return scanner.RunCrawl(ctx, u.store, plan)
+	})
+}
+
+func (u *scannerUI) launchScan(run func(context.Context, func(int)) (scanner.CrawlReport, error)) {
 	ctx, cancel := context.WithCancel(context.Background())
 	u.cancel = cancel
 	u.done = make(chan struct{})
@@ -493,9 +588,10 @@ func (u *scannerUI) startScan() {
 	u.status.SetText(u.tr("scan_running"))
 	u.start.SetEnabled(false)
 	u.importAPI.SetEnabled(false)
+	u.scanAPI.SetEnabled(false)
 	u.deleteProject.SetEnabled(false)
 	u.cancelRun.SetEnabled(true)
-	plan.OnProgress = func(count int) {
+	onProgress := func(count int) {
 		select {
 		case progressUpdates <- count:
 		default:
@@ -503,7 +599,7 @@ func (u *scannerUI) startScan() {
 	}
 	go func() {
 		defer close(done)
-		report, err := scanner.RunCrawl(ctx, u.store, plan)
+		report, err := run(ctx, onProgress)
 		finished <- scanCompletion{report: report, err: err}
 	}()
 }
@@ -525,6 +621,7 @@ func (u *scannerUI) poll() {
 		u.cancelRun.SetEnabled(false)
 		u.start.SetEnabled(u.selectedProjectID() != "")
 		u.importAPI.SetEnabled(u.selectedProjectID() != "")
+		u.scanAPI.SetEnabled(u.selectedProjectID() != "")
 		u.deleteProject.SetEnabled(u.selectedProjectID() != "")
 		u.progress.SetValue(result.report.CompletedVisits)
 		if result.err != nil {
