@@ -12,4 +12,6 @@ Le password nei campi mascherati sono usate per **una sola run**; i campi vengon
 
 La successiva prova CSRF nel self-test Qt IT/EN ha completato due login con pre-sessioni distinte e 13 richieste loopback, confermando ancora l’esito redatto. La suite Go e il race detector mirato passano; la CI del branch e del merge va verificata per il relativo commit.
 
+Il servizio di sessione usato dal dialogo conferma anche una rotazione circoscritta del cookie, con la verifica aggiuntiva nel budget della run; fixture core e run tra ruoli coprono questa variante. Il self-test del dialogo continua a usare cookie stabili.
+
 Questa è una prova circoscritta, non un controllo generale di autorizzazione. Non copre target pubblici, altri flussi CSRF, MFA/OIDC, token bearer, browser JavaScript autenticato, ruoli multipli persistiti, stato nel report o una misura di accuratezza reale. La seconda e terza voce M3 restano aperte.

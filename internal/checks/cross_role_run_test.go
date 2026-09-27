@@ -31,14 +31,18 @@ func (s runSecrets) Get(_ context.Context, id string) ([]byte, error) {
 	return nil, errors.New("missing synthetic test credential")
 }
 
-func crossRoleRunFixture(t *testing.T, vulnerable bool) (*storage.Store, CrossRoleRunPlan, *atomic.Int32) {
+func crossRoleRunFixture(t *testing.T, vulnerable bool, rotate ...bool) (*storage.Store, CrossRoleRunPlan, *atomic.Int32) {
 	t.Helper()
+	rotating := len(rotate) != 0 && rotate[0]
 	var hits atomic.Int32
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits.Add(1)
-		identity := ""
+		identity, stage := "", ""
 		if cookie, err := r.Cookie("sid"); err == nil {
 			identity = cookie.Value
+			if rotating {
+				identity, stage, _ = strings.Cut(cookie.Value, "-")
+			}
 		}
 		switch r.URL.Path {
 		case "/auth/login":
@@ -51,14 +55,30 @@ func crossRoleRunFixture(t *testing.T, vulnerable bool) (*storage.Store, CrossRo
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
-			http.SetCookie(w, &http.Cookie{Name: "sid", Value: name, Path: "/app", HttpOnly: true})
+			value := name
+			if rotating {
+				value += "-login"
+			}
+			http.SetCookie(w, &http.Cookie{Name: "sid", Value: value, Path: "/app", HttpOnly: true})
 		case "/app/verify":
-			if identity == "" {
+			if identity == "" || rotating && stage != "login" && stage != "ready" && stage != "data" {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
+			if rotating && stage == "login" {
+				http.SetCookie(w, &http.Cookie{Name: "sid", Value: identity + "-ready", Path: "/app", HttpOnly: true})
+			}
 			_, _ = w.Write([]byte(identity))
 		case "/app/private":
+			if rotating {
+				if stage != "ready" && stage != "data" {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+				if stage == "ready" {
+					http.SetCookie(w, &http.Cookie{Name: "sid", Value: identity + "-data", Path: "/app", HttpOnly: true})
+				}
+			}
 			switch identity {
 			case "alice":
 				_, _ = w.Write([]byte("private-alice"))
@@ -116,6 +136,16 @@ func crossRoleRunFixture(t *testing.T, vulnerable bool) (*storage.Store, CrossRo
 		Owner:  account("alice"), Other: account("bob"),
 		Check: CrossRolePlan{ResourceURL: server.URL + "/app/private", PrivateBody: "private-alice",
 			ResourceConfirmed: true, OtherForbiddenConfirmed: true}}, &hits
+}
+
+func TestRunCrossRoleManagedCookieRotation(t *testing.T) {
+	store, plan, hits := crossRoleRunFixture(t, true, true)
+	got, err := RunCrossRole(t.Context(), store,
+		runSecrets{"alice-ref": "alice-pass", "bob-ref": "bob-pass"}, plan)
+	if err != nil || got.Outcome != Finding || got.EvidenceCode != "cross_role_private_body_reproduced" ||
+		hits.Load() != 15 {
+		t.Fatalf("rotated identities in managed check: %+v hits=%d err=%v", got, hits.Load(), err)
+	}
 }
 
 func TestRunCrossRoleManagedPositiveAndDenied(t *testing.T) {

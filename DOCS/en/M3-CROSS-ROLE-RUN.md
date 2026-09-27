@@ -6,4 +6,6 @@
 
 Before networking it validates the plan, current authorization, in-scope resource and route policy. One broker applies pinned IPs, budget, pacing, body size and revocation to both logins and the check. Sessions, broker and run close on every exit. A failed or ambiguous login yields `inconclusive`, never a negative outcome; interruption keeps an inconclusive outcome with its cause. The result contains only rule ID/revision, outcome and a redacted code. It is not written to the M1 database or M2 report.
 
+A later fixture with confirmed rotation for both identities produces the expected finding with 15 requests under the same budget; rotation errors instead make dependent checks inconclusive.
+
 **Local synthetic fixtures on September 27, 2026:** reproduced cross-role access and denied access (11 managed requests each), missing second secret, out-of-scope/unconfirmed plan and exhausted budget. Package race-detector tests passed; no external target. Branch and merged CI must be checked per commit. The later [desktop workflow](M3-AUTH-DESKTOP.md) exposes a two-account loopback trial; public grants, other CSRF flows, MFA/OIDC login and real accuracy measurements remain open.

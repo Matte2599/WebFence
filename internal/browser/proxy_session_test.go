@@ -48,11 +48,12 @@ func TestAuthenticatedProxyKeepsCookieInParent(t *testing.T) {
 			}
 			http.SetCookie(w, &http.Cookie{Name: "sid", Value: "alice-token", Path: "/app", HttpOnly: true})
 		case "/app/verify", "/app/data", "/app/redirect":
-			if r.Header.Get("Cookie") != "" && r.Header.Get("Cookie") != "sid=alice-token" {
+			if r.Header.Get("Cookie") != "" && r.Header.Get("Cookie") != "sid=alice-token" &&
+				r.Header.Get("Cookie") != "sid=rotated" {
 				wrongCookieHits.Add(1)
 			}
 			cookie, err := r.Cookie("sid")
-			if err != nil || cookie.Value != "alice-token" {
+			if err != nil || cookie.Value != "alice-token" && cookie.Value != "rotated" {
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
@@ -64,7 +65,9 @@ func TestAuthenticatedProxyKeepsCookieInParent(t *testing.T) {
 			if r.URL.Path == "/app/verify" {
 				_, _ = io.WriteString(w, "alice")
 			} else {
-				w.Header().Set("Set-Cookie", "sid=rotated; Path=/app")
+				if cookie.Value == "alice-token" {
+					w.Header().Set("Set-Cookie", "sid=rotated; Path=/app")
+				}
 				_, _ = io.WriteString(w, "private fixture")
 			}
 		default:
@@ -139,7 +142,7 @@ func TestAuthenticatedProxyKeepsCookieInParent(t *testing.T) {
 	body, _ := io.ReadAll(response.Body)
 	response.Body.Close()
 	if response.StatusCode != http.StatusOK || string(body) != "private fixture" ||
-		response.Header.Get("Set-Cookie") != "" || wrongCookieHits.Load() != 0 || authorizedHits.Load() != 3 {
+		response.Header.Get("Set-Cookie") != "" || wrongCookieHits.Load() != 0 || authorizedHits.Load() != 4 {
 		t.Fatalf("authenticated proxy result: status=%d body=%q wrong=%d authorized=%d",
 			response.StatusCode, body, wrongCookieHits.Load(), authorizedHits.Load())
 	}

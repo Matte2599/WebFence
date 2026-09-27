@@ -10,4 +10,4 @@ The proxy rejects HTTPS `CONNECT`, WebSocket upgrades, request bodies, declared 
 
 `httptest` exercises loopback only and checks a valid request, HEAD, headers/CSP and no forwarding of cookies or credentials, proxy authentication, third-party origin, excluded path, worker, WebSocket, POST and out-of-scope redirect. These are neither real-browser tests nor SPA/API coverage measurements.
 
-A later block adds [`NewProxyWithSession`](M3-SESSIONS.md): on loopback fixtures only, one verified session stays in the parent and attaches its cookie to admitted GETs. Browser cookies are still never forwarded. This does not change the anonymous `NewProxy` contract above.
+A later block adds [`NewProxyWithSession`](M3-SESSIONS.md): on loopback fixtures only, one verified session stays in the parent and attaches its cookie to admitted GETs. Browser cookies are still never forwarded. A later synthetic test confirms parent-side rotation of the same cookie without exposing Set-Cookie to the browser. This does not change the anonymous `NewProxy` contract above.

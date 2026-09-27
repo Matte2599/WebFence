@@ -10,4 +10,4 @@ Il proxy respinge `CONNECT` HTTPS, upgrade WebSocket, body, worker dichiarati e 
 
 Le prove `httptest` usano solo loopback e verificano richiesta valida, HEAD, header/CSP e mancato inoltro di cookie e credenziali, autenticazione proxy, origine terza, percorso escluso, worker, WebSocket, POST e redirect fuori scope. Non sono prove con un browser reale né misure di copertura SPA/API.
 
-Un blocco successivo aggiunge [`NewProxyWithSession`](M3-SESSIONS.md): solo su fixture loopback, una sessione verificata resta nel genitore e aggiunge il suo cookie alle GET ammesse. I cookie del browser continuano a non essere inoltrati. Questo non cambia il contratto anonimo di `NewProxy` descritto sopra.
+Un blocco successivo aggiunge [`NewProxyWithSession`](M3-SESSIONS.md): solo su fixture loopback, una sessione verificata resta nel genitore e aggiunge il suo cookie alle GET ammesse. I cookie del browser continuano a non essere inoltrati. Una successiva prova sintetica conferma la rotazione parent-side dello stesso cookie senza esporre Set-Cookie al browser. Questo non cambia il contratto anonimo di `NewProxy` descritto sopra.

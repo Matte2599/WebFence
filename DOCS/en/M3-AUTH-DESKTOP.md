@@ -12,4 +12,6 @@ Passwords in masked fields are used for **one run only**; fields are cleared whe
 
 The later CSRF trial in the IT/EN Qt self-test completed two logins with separate pre-sessions and 13 loopback requests, again confirming the redacted outcome. The Go suite and targeted race detector passed; branch and merged CI must be checked for the relevant commit.
 
+The session service used by this dialog also confirms bounded cookie rotation, with the extra validity request charged to the run budget; core and managed cross-role fixtures cover that variant. The dialog self-test still uses stable cookies.
+
 This is a narrow trial, not a general authorization test. It does not cover public targets, other CSRF flows, MFA/OIDC login, bearer tokens, authenticated JavaScript browsing, persistent multiple roles, report state or real-world accuracy measurement. The second and third M3 criteria remain open.
