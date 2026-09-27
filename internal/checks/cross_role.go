@@ -3,6 +3,7 @@
 package checks
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"net/http"
@@ -79,7 +80,9 @@ func CheckCrossRole(ctx context.Context, broker *transport.Broker, owner, other 
 	if err != nil || anonymous.StatusCode == 0 || anonymous.StatusCode >= 500 {
 		return result(Inconclusive, "anonymous_baseline_unavailable"), nil
 	}
-	if string(anonymous.Body) == plan.PrivateBody {
+	// A public wrapper around the marker is also public exposure. Treat it
+	// as ambiguous rather than claiming the other identity crossed roles.
+	if bytes.Contains(anonymous.Body, []byte(plan.PrivateBody)) {
 		return result(Inconclusive, "private_marker_public"), nil
 	}
 	owned, err := owner.Fetch(ctx, plan.ResourceURL)

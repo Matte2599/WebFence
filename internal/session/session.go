@@ -66,7 +66,7 @@ func validToken(s string, max int) bool {
 	return true
 }
 
-func validAccount(a Account) bool {
+func ValidAccount(a Account) bool {
 	return validToken(a.ID, 64) && len(a.Username) > 0 && len(a.Username) <= 128 && utf8.ValidString(a.Username) &&
 		!strings.ContainsAny(a.Username, "\r\n\x00") && validToken(a.SecretID, 64) &&
 		validToken(a.UsernameField, 32) && validToken(a.PasswordField, 32) &&
@@ -78,7 +78,7 @@ func validAccount(a Account) bool {
 // then requires a distinct exact positive response with the captured host-only
 // cookie. It returns no Session on any ambiguous or failed login.
 func (m *Manager) Login(ctx context.Context, a Account) (*Session, error) {
-	if m == nil || m.broker == nil || ctx == nil || !validAccount(a) {
+	if m == nil || m.broker == nil || ctx == nil || !ValidAccount(a) {
 		return nil, ErrConfig
 	}
 	baseline, err := m.broker.VerifyAnonymous(ctx)
