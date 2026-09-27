@@ -357,3 +357,10 @@ jobs:
             -e WF_CDP_CHROME=/usr/bin/chromium \
             --mount type=bind,src=/tmp/webfence-m3-cdp,dst=/wf-cdp,readonly \
             webfence-m3-cdp-lab /wf-cdp
+      - name: Synthetic direct-egress denial with container network available
+        run: |
+          docker run --rm --network bridge --read-only --memory 1g --pids-limit 256 \
+            --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,size=256m,mode=1777 \
+            -e WF_CDP_CHROME=/usr/bin/chromium \
+            --mount type=bind,src=/tmp/webfence-m3-cdp,dst=/wf-cdp,readonly \
+            webfence-m3-cdp-lab /wf-cdp

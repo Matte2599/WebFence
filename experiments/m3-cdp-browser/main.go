@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -30,11 +31,12 @@ const (
 )
 
 type helperConfig struct {
-	Chrome    string `json:"chrome"`
-	Origin    string `json:"origin"`
-	BrokerFDs int    `json:"broker_fds"`
-	Username  string `json:"username"`
-	Password  string `json:"password"`
+	Chrome        string `json:"chrome"`
+	Origin        string `json:"origin"`
+	CanaryAddress string `json:"canary_address"`
+	BrokerFDs     int    `json:"broker_fds"`
+	Username      string `json:"username"`
+	Password      string `json:"password"`
 }
 
 type trialResult struct {
@@ -64,7 +66,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixture: real HTTP origin, document, script and fetch via gate/broker; outside resource and redirect blocked under Linux network filter")
+		fmt.Println("PASS M3 CDP broker fixture: HTTP document, script and fetch via gate/broker; outside resource, redirect and direct TCP canary blocked")
 	}
 }
 
@@ -80,7 +82,7 @@ func runChild() error {
 	}
 	var extra any
 	if err := decoder.Decode(&extra); err != io.EOF || !filepath.IsAbs(config.Chrome) ||
-		config.Origin == "" || config.BrokerFDs != brokerConnections ||
+		config.Origin == "" || config.CanaryAddress == "" || config.BrokerFDs != brokerConnections ||
 		config.Username == "" || config.Password == "" {
 		return errors.New("invalid CDP helper configuration")
 	}
@@ -110,8 +112,13 @@ func runChild() error {
 	if err := browser.ApplyHelperNetworkIsolation(); err != nil {
 		return err
 	}
+	canaryHost, canaryPort, err := net.SplitHostPort(config.CanaryAddress)
+	port, portErr := strconv.Atoi(canaryPort)
+	if err != nil || portErr != nil || canaryHost != "127.0.0.1" || port < 1 || port > 65535 {
+		return errors.New("invalid synthetic canary address")
+	}
 	for _, probe := range []struct{ network, address string }{
-		{"tcp4", "127.0.0.1:9"}, {"tcp6", "[::1]:9"},
+		{"tcp4", config.CanaryAddress}, {"tcp6", "[::1]:9"},
 	} {
 		conn, err := net.DialTimeout(probe.network, probe.address, 100*time.Millisecond)
 		if conn != nil {
