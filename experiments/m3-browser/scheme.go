@@ -109,8 +109,7 @@ func runSchemeChild(config helperConfig) error {
 	}
 	var inherited chan net.Conn
 	if runtime.GOOS == "linux" {
-		// The helper cannot open a display-server socket after connect(2) is
-		// denied. This lab renders offscreen; it does not test desktop embedding.
+		// The lab is headless so the helper needs no display-server socket.
 		if err := os.Setenv("QT_QPA_PLATFORM", "offscreen"); err != nil {
 			return err
 		}

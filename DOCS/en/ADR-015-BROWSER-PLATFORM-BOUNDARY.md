@@ -8,7 +8,7 @@ Date: 2026-09-27. Status: **proposed path, not adoption of a new engine**.
 
 The desktop remains Go with Qt Widgets/MIQT, as chosen by the author. The Qt WebEngine lab is separate from the product and proves only a synthetic subset. The first M3 item requires every document, resource and redirect to remain under scope and budget, the browser to be unable to bypass the broker, and the process tree to be bounded on declared platforms. An interceptor and proxy alone do not enforce an OS boundary.
 
-The [feasibility trials](M3-BROWSER-PLATFORM-FEASIBILITY.md) reveal three separate obstacles: on macOS the lab's Qt WebEngine does not start in a network-denied App Sandbox bundle; a custom-scheme WebKit trial needs outbound network permission to load; on Windows Qt WebEngine does not compile with the desktop's MinGW toolchain. On Linux the existing seccomp filter denies new INET sockets but leaves other Unix sockets reachable, and baseline Qt 6.4 lacks `FetchApiAllowed`. These observations do not prove every alternative impossible.
+The [feasibility trials](M3-BROWSER-PLATFORM-FEASIBILITY.md) reveal three separate obstacles: on macOS the lab's Qt WebEngine does not start in a network-denied App Sandbox bundle; a custom-scheme WebKit trial needs outbound network permission to load; on Windows Qt WebEngine does not compile with the desktop's MinGW toolchain. On Linux the original seccomp filter denied new INET sockets but left other Unix sockets reachable; the [revision](M3-BROWSER-LINUX-NETWORK.md) tries parent-connected broker IPC and denies new `connect` calls. Baseline Qt 6.4 lacks `FetchApiAllowed`. These observations do not prove every alternative impossible.
 
 ## Interim decision
 

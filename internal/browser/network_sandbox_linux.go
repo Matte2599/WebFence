@@ -41,7 +41,12 @@ func ApplyHelperNetworkIsolation() error {
 		{Code: ret, K: deny},
 		{Code: jeq, K: unix.SYS_CONNECT, Jf: 1}, // no local pathname or abstract sockets
 		{Code: ret, K: deny},
-		{Code: jeq, K: unix.SYS_SENDTO, Jf: 1}, // no unconnected datagram destinations
+		{Code: jeq, K: unix.SYS_SENDTO, Jf: 6}, // allow only a null destination
+		{Code: load, K: 48},                    // args[4], destination pointer low
+		{Code: jeq, K: 0, Jf: 3},
+		{Code: load, K: 52}, // destination pointer high
+		{Code: jeq, K: 0, Jf: 1},
+		{Code: ret, K: allow},
 		{Code: ret, K: deny},
 		{Code: jeq, K: unix.SYS_SENDMMSG, Jf: 1},
 		{Code: ret, K: deny},

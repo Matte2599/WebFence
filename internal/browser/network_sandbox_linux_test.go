@@ -82,6 +82,9 @@ func TestLinuxNetworkIsolationAndInheritance(t *testing.T) {
 		if _, err := unix.SendmsgN(paired[0], []byte("i"), nil, nil, 0); err != nil {
 			t.Fatalf("connected process IPC sendmsg blocked: %v", err)
 		}
+		if err := unix.Sendto(paired[0], []byte("i"), 0, nil); err != nil {
+			t.Fatalf("connected process IPC sendto blocked: %v", err)
+		}
 		grandchild := exec.Command(os.Args[0], "-test.run=^TestLinuxNetworkIsolationAndInheritance$")
 		grandchild.Env = append(os.Environ(), "WF_NETWORK_FILTER_TEST_STAGE=grandchild",
 			"WF_NETWORK_FILTER_SOCKET="+path)
