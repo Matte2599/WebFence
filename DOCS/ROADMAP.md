@@ -107,7 +107,7 @@ Estensione HTTPS Linux: l'[ADR-019](it/ADR-019-CDP-HTTPS-BOUNDARY.md) aggiunge u
 
 Prova di revoca nella pagina Linux: il [laboratorio CDP HTTP(S)](it/M3-BROWSER-CDP-LAB.md) revoca la run durante un `fetch` lento; la richiesta in corso viene cancellata e quella successiva non raggiunge il target. La prova resta confinata alla fixture; la revoca nel runtime desktop è ancora da verificare.
 
-Prova Linux del filesystem: l'[ADR-020](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) aggiunge Landlock alla fixture CDP prima di avviare Chromium. Un file sintetico leggibile prima del confine è negato in lettura e scrittura dopo il confine, anche a un processo figlio; la directory privata resta utilizzabile. Non è una sandbox per pagine ostili né un confine del prodotto desktop.
+Prova Linux del filesystem: l'[ADR-020](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) aggiunge Landlock alla fixture CDP prima di avviare Chromium. Un file sintetico leggibile prima del confine è negato in lettura e scrittura dopo il confine, anche a un processo figlio; la directory privata resta utilizzabile. Una prova successiva naviga con Chromium verso due file sintetici: quello privato viene letto, quello esterno riceve `ERR_ACCESS_DENIED`; una build diagnostica senza Landlock fallisce il controllo. Non è una sandbox per pagine ostili né un confine del prodotto desktop.
 
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; successive estensioni leggono un campo hidden CSRF e un cookie di pre-sessione facoltativo dall’URL di login esatto, e confermano una rotazione circoscritta del cookie durante la sessione. Il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
@@ -286,7 +286,7 @@ Linux HTTPS extension: [ADR-019](en/ADR-019-CDP-HTTPS-BOUNDARY.md) adds a TLS fi
 
 Linux in-page revocation trial: the [HTTP(S) CDP lab](en/M3-BROWSER-CDP-LAB.md) revokes the run during a slow `fetch`; the in-flight request is canceled and the next one never reaches the target. This remains a fixture trial; revocation in a desktop runtime is still unverified.
 
-Linux filesystem trial: [ADR-020](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) adds Landlock to the CDP fixture before Chromium starts. A synthetic file readable before confinement is denied for reads and writes afterward, including in a child process; the private directory remains usable. This is neither a hostile-page sandbox nor a desktop product boundary.
+Linux filesystem trial: [ADR-020](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) adds Landlock to the CDP fixture before Chromium starts. A synthetic file readable before confinement is denied for reads and writes afterward, including in a child process; the private directory remains usable. A later trial navigates Chromium to two synthetic files: it reads the private file, while the outside file returns `ERR_ACCESS_DENIED`; a diagnostic build without Landlock fails the check. This is neither a hostile-page sandbox nor a desktop product boundary.
 
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; later extensions read one hidden CSRF field and an optional pre-session cookie from the exact login URL, and confirm a bounded cookie rotation during the session. The bounded desktop workflow is described below. Real workflows remain open.
 
