@@ -13,6 +13,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -48,6 +49,8 @@ type trialResult struct {
 	RedirectBlocked    bool `json:"redirect_blocked"`
 	RevokedBlocked     bool `json:"revoked_blocked"`
 	AfterRevokedDenied bool `json:"after_revoked_denied"`
+	AllowedFileLoaded  bool `json:"allowed_file_loaded"`
+	DeniedFileBlocked  bool `json:"denied_file_blocked"`
 	SecureContext      bool `json:"secure_context"`
 	Document           int  `json:"document"`
 	Script             int  `json:"script"`
@@ -73,7 +76,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, in-page revocation, direct TCP and private-file canaries checked")
+		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, in-page revocation, direct TCP and Chromium file canaries checked")
 	}
 }
 
@@ -157,14 +160,15 @@ type cdpMessage struct {
 }
 
 type cdpPipe struct {
-	writer   *os.File
-	reader   *bufio.Reader
-	nextID   int
-	replies  map[int]cdpMessage
-	result   trialResult
-	requests int
-	origin   string
-	client   *http.Client
+	writer     *os.File
+	reader     *bufio.Reader
+	nextID     int
+	replies    map[int]cdpMessage
+	result     trialResult
+	requests   int
+	loadEvents int
+	origin     string
+	client     *http.Client
 }
 
 func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult, error) {
@@ -264,7 +268,65 @@ func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult
 			return empty, err
 		}
 	}
+	if err := pipe.checkBrowserFileBoundary(session, profile, deniedFile); err != nil {
+		return empty, err
+	}
 	return pipe.result, nil
+}
+
+// The HTTP(S) fixture is complete before disabling Fetch interception. Only
+// two locally created plaintext files are navigated through this CDP session.
+func (p *cdpPipe) checkBrowserFileBoundary(session, profile, deniedFile string) error {
+	allowedFile := filepath.Join(profile, "allowed-canary.txt")
+	const allowedContent = "synthetic-browser-private-allowed"
+	if err := os.WriteFile(allowedFile, []byte(allowedContent), 0600); err != nil {
+		return errors.New("cannot prepare allowed browser file canary")
+	}
+	if _, err := p.command("Fetch.disable", nil, session); err != nil {
+		return err
+	}
+	allowedURL := (&url.URL{Scheme: "file", Path: allowedFile}).String()
+	priorLoads := p.loadEvents
+	response, err := p.command("Page.navigate", map[string]any{"url": allowedURL}, session)
+	if err != nil {
+		return err
+	}
+	var navigation struct {
+		ErrorText string `json:"errorText"`
+	}
+	if err := json.Unmarshal(response, &navigation); err != nil || navigation.ErrorText != "" {
+		return errors.New("Chromium could not navigate to allowed file canary")
+	}
+	for p.loadEvents == priorLoads {
+		if err := p.receive(); err != nil {
+			return err
+		}
+	}
+	response, err = p.command("Runtime.evaluate", map[string]any{
+		"expression": "document.body && document.body.innerText", "returnByValue": true,
+	}, session)
+	if err != nil {
+		return err
+	}
+	var evaluated struct {
+		Result struct {
+			Value string `json:"value"`
+		} `json:"result"`
+	}
+	if err := json.Unmarshal(response, &evaluated); err != nil || evaluated.Result.Value != allowedContent {
+		return errors.New("Chromium could not read allowed file canary")
+	}
+	p.result.AllowedFileLoaded = true
+	deniedURL := (&url.URL{Scheme: "file", Path: deniedFile}).String()
+	response, err = p.command("Page.navigate", map[string]any{"url": deniedURL}, session)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(response, &navigation); err != nil || navigation.ErrorText != "net::ERR_ACCESS_DENIED" {
+		return fmt.Errorf("Chromium denied-file navigation was not blocked by Landlock: %q", navigation.ErrorText)
+	}
+	p.result.DeniedFileBlocked = true
+	return nil
 }
 
 func checkChromeConfinement(pid int) error {
@@ -340,6 +402,7 @@ func (p *cdpPipe) receive() error {
 		return p.fulfill(message)
 	case "Page.loadEventFired":
 		p.result.Loaded = true
+		p.loadEvents++
 	case "Runtime.consoleAPICalled":
 		var event struct {
 			Args []struct {
