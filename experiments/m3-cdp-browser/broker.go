@@ -63,6 +63,8 @@ func runTrial(chrome, scheme string) error {
 	var hits atomic.Int32
 	var canaryHits atomic.Int32
 	var wrongHost atomic.Bool
+	slowStarted := make(chan struct{})
+	slowCanceled := make(chan struct{})
 	var host string
 	canary := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		canaryHits.Add(1)
@@ -86,12 +88,16 @@ func runTrial(chrome, scheme string) error {
 			_, _ = io.WriteString(w, `<html><body><script src="/app/main.js"></script><img src="`+outside+`/x"></body></html>`)
 		case "/app/main.js":
 			w.Header().Set("Content-Type", "application/javascript")
-			_, _ = io.WriteString(w, `console.log('wf-script'); console.log('wf-secure-' + isSecureContext); fetch('/app/api').then(r => r.text()).then(x => console.log('wf-api-' + x)); fetch('/app/redirect').then(r => console.log('wf-redirect-' + r.status))`)
+			_, _ = io.WriteString(w, `console.log('wf-script'); console.log('wf-secure-' + isSecureContext); fetch('/app/api').then(r => r.text()).then(x => { console.log('wf-api-' + x); return fetch('/app/redirect'); }).then(r => { console.log('wf-redirect-' + r.status); return fetch('/app/slow'); }).then(r => { console.log('wf-revoked-' + r.status); return fetch('/app/after-revoke'); }).then(r => console.log('wf-after-revoke-' + r.status))`)
 		case "/app/api":
 			w.Header().Set("Content-Type", "text/plain")
 			_, _ = io.WriteString(w, "synthetic")
 		case "/app/redirect":
 			http.Redirect(w, r, outside+"/secret", http.StatusFound)
+		case "/app/slow":
+			close(slowStarted)
+			<-r.Context().Done()
+			close(slowCanceled)
 		default:
 			http.NotFound(w, r)
 		}
@@ -123,7 +129,9 @@ func runTrial(chrome, scheme string) error {
 	if err != nil {
 		return err
 	}
-	permit, err = permit.BindLifecycle(ctx)
+	lifecycle, revoke := context.WithCancelCause(ctx)
+	defer revoke(context.Canceled)
+	permit, err = permit.BindLifecycle(lifecycle)
 	if err != nil {
 		return err
 	}
@@ -163,6 +171,13 @@ func runTrial(chrome, scheme string) error {
 		return err
 	}
 	defer proxy.Close()
+	go func() {
+		select {
+		case <-slowStarted:
+			revoke(project.ErrAuthorizationRevoked)
+		case <-ctx.Done():
+		}
+	}()
 	var files []*os.File
 	defer func() {
 		for _, file := range files {
@@ -202,16 +217,24 @@ func runTrial(chrome, scheme string) error {
 	}
 	observed, dropped := proxy.Observations()
 	if !result.Loaded || !result.ScriptSeen || !result.APISeen || !result.RedirectBlocked ||
+		!result.RevokedBlocked || !result.AfterRevokedDenied ||
 		result.SecureContext != (scheme == "https") ||
 		result.Document != 1 || result.Script != 1 || result.API != 1 || result.Redirect != 1 ||
+		result.Revoked != 1 || result.AfterRevoked != 1 ||
 		result.OutsideImage != 1 || result.OutsideRedirect != 0 || wrongHost.Load() ||
 		canaryHits.Load() != 0 ||
-		hits.Load() != 4 || broker.RequestsUsed() != 4 || dropped != 0 || len(observed) != 3 ||
+		!errors.Is(context.Cause(lifecycle), project.ErrAuthorizationRevoked) ||
+		hits.Load() != 5 || broker.RequestsUsed() != 5 || dropped != 0 || len(observed) != 3 ||
 		observed[0].Path != "/app/" || observed[1].Path != "/app/main.js" ||
-		observed[2].Path != "/app/api" || gate.RequestsUsed() < 5 ||
+		observed[2].Path != "/app/api" || gate.RequestsUsed() < 7 ||
 		gate.RequestsUsed() > maxRequests {
 		return fmt.Errorf("unexpected CDP broker result: %+v target=%d canary=%d broker=%d gate=%d observed=%d dropped=%d",
 			result, hits.Load(), canaryHits.Load(), broker.RequestsUsed(), gate.RequestsUsed(), len(observed), dropped)
+	}
+	select {
+	case <-slowCanceled:
+	case <-time.After(time.Second):
+		return errors.New("revocation did not cancel the in-flight target request")
 	}
 	return nil
 }

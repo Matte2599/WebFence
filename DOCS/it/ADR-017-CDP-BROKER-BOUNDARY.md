@@ -4,7 +4,7 @@
 
 Data: 2026-09-27. Stato: **prova sperimentale, solo fixture sintetiche**.
 
-La successiva [ADR-019](ADR-019-CDP-HTTPS-BOUNDARY.md) estende questo percorso a una seconda fixture HTTPS; la decisione iniziale qui descritta era limitata a HTTP.
+La successiva [ADR-019](ADR-019-CDP-HTTPS-BOUNDARY.md) estende questo percorso a una seconda fixture HTTPS; il [laboratorio CDP](M3-BROWSER-CDP-LAB.md) prova poi la revoca durante un `fetch` in entrambe le varianti. La decisione iniziale qui descritta era limitata a HTTP e non includeva quella prova.
 
 ## Contesto e decisione
 
@@ -12,4 +12,4 @@ La prima prova CDP serviva risposte codificate direttamente nell'helper: conserv
 
 La fixture verifica quattro contatti con il target locale: documento, script, `fetch` e endpoint che risponde con redirect esterno. Il gate nega la risorsa fuori scope senza contattare il target; il broker rifiuta il redirect dopo la risposta iniziale. Si controllano conteggi del target, budget gate/broker e osservazioni redatte. Le richieste sconosciute consumano il budget CDP. Il container CI senza rete aggiunge quote aggregate di memoria e PID alla prova.
 
-Non è un adattatore browser di prodotto. Il laboratorio resta Linux/container, con Chromium `--no-sandbox`, fixture unica, HTTP soltanto e credenziale di proxy effimera in memoria. La sandbox dei file, il confinamento fuori dal container, TLS/HTTPS, cookie e sessioni, revoca durante la pagina, profili per utenti e integrazione desktop richiedono nuove prove. Il desktop Go/Qt Widgets/MIQT e il requisito di isolamento OS dell'ADR-015 restano invariati; la prima voce M3 è aperta.
+Non è un adattatore browser di prodotto. La versione iniziale del laboratorio era Linux/container, con Chromium `--no-sandbox`, fixture unica, HTTP soltanto e credenziale di proxy effimera in memoria. La sandbox dei file, il confinamento fuori dal container, TLS/HTTPS, cookie e sessioni, revoca durante la pagina, profili per utenti e integrazione desktop richiedevano nuove prove. Il desktop Go/Qt Widgets/MIQT e il requisito di isolamento OS dell'ADR-015 restano invariati; la prima voce M3 è aperta.

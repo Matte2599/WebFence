@@ -40,17 +40,21 @@ type helperConfig struct {
 }
 
 type trialResult struct {
-	Loaded          bool `json:"loaded"`
-	ScriptSeen      bool `json:"script_seen"`
-	APISeen         bool `json:"api_seen"`
-	RedirectBlocked bool `json:"redirect_blocked"`
-	SecureContext   bool `json:"secure_context"`
-	Document        int  `json:"document"`
-	Script          int  `json:"script"`
-	API             int  `json:"api"`
-	Redirect        int  `json:"redirect"`
-	OutsideImage    int  `json:"outside_image"`
-	OutsideRedirect int  `json:"outside_redirect"`
+	Loaded             bool `json:"loaded"`
+	ScriptSeen         bool `json:"script_seen"`
+	APISeen            bool `json:"api_seen"`
+	RedirectBlocked    bool `json:"redirect_blocked"`
+	RevokedBlocked     bool `json:"revoked_blocked"`
+	AfterRevokedDenied bool `json:"after_revoked_denied"`
+	SecureContext      bool `json:"secure_context"`
+	Document           int  `json:"document"`
+	Script             int  `json:"script"`
+	API                int  `json:"api"`
+	Redirect           int  `json:"redirect"`
+	Revoked            int  `json:"revoked"`
+	AfterRevoked       int  `json:"after_revoked"`
+	OutsideImage       int  `json:"outside_image"`
+	OutsideRedirect    int  `json:"outside_redirect"`
 }
 
 func main() {
@@ -67,7 +71,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) document, script and fetch via gate/broker; outside resource, redirect and direct TCP canary blocked")
+		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) document, script and fetch via gate/broker; outside resource, redirect, in-page revocation and direct TCP canary blocked")
 	}
 }
 
@@ -239,7 +243,8 @@ func runCDP(chrome, origin string, client *http.Client) (trialResult, error) {
 		return empty, err
 	}
 	for !(pipe.result.Loaded && pipe.result.ScriptSeen && pipe.result.APISeen &&
-		pipe.result.RedirectBlocked && pipe.result.OutsideImage > 0) {
+		pipe.result.RedirectBlocked && pipe.result.RevokedBlocked && pipe.result.AfterRevokedDenied &&
+		pipe.result.OutsideImage > 0) {
 		if err := pipe.receive(); err != nil {
 			return empty, err
 		}
@@ -334,6 +339,8 @@ func (p *cdpPipe) receive() error {
 			p.result.SecureContext = p.result.SecureContext || arg.Value == "wf-secure-true"
 			p.result.APISeen = p.result.APISeen || arg.Value == "wf-api-synthetic"
 			p.result.RedirectBlocked = p.result.RedirectBlocked || arg.Value == "wf-redirect-502"
+			p.result.RevokedBlocked = p.result.RevokedBlocked || arg.Value == "wf-revoked-502"
+			p.result.AfterRevokedDenied = p.result.AfterRevokedDenied || arg.Value == "wf-after-revoke-403"
 		}
 	}
 	return nil
@@ -399,6 +406,14 @@ func (p *cdpPipe) fulfill(message cdpMessage) error {
 		case p.origin + "/app/redirect":
 			if response.StatusCode == http.StatusBadGateway {
 				p.result.Redirect++
+			}
+		case p.origin + "/app/slow":
+			if response.StatusCode == http.StatusBadGateway {
+				p.result.Revoked++
+			}
+		case p.origin + "/app/after-revoke":
+			if response.StatusCode == http.StatusForbidden {
+				p.result.AfterRevoked++
 			}
 		case outside + "/x":
 			if response.StatusCode == http.StatusForbidden {
