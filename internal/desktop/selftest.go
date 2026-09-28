@@ -618,6 +618,8 @@ func selfTest(w *workspace) int {
 		check(u.importAPI.Text() == "Import OpenAPI JSON…", "M3 native OpenAPI English translation")
 		check(u.scanAPI.Text() == "Visit selected OpenAPI routes…", "M3 native API batch English translation")
 		check(u.authOpen.Text() == "Test accounts and cross-role access…", "M3 native auth English translation")
+		check(u.auth.publicConfirmed.Text() == "I confirm sending test credentials to the public HTTPS origin shown above",
+			"M3 native public auth English translation")
 
 		check(m.match.Text() == "Assess selected run" && m.unsigned.Text() == "Export explicitly unsigned", "M2 native English translation")
 		check(m.tabs.TabText(2) == "Reports and keys" && m.rotate.Text() == "Rotate selected key", "M2 advanced English translation")
@@ -628,6 +630,7 @@ func selfTest(w *workspace) int {
 		w.italianAction.Trigger()
 		a := u.auth
 		u.authOpen.Click()
+		check(a.selectedOrigin.Text() == server.URL, "M3 native account dialog shows the exact selected origin")
 		a.loginURL.SetText(server.URL + "/auth/login")
 		a.verifyURL.SetText(server.URL + "/app/verify")
 		a.resourceURL.SetText(server.URL + "/app/private")
@@ -692,6 +695,26 @@ func selfTest(w *workspace) int {
 		check(!a.busy && hits.Load() == beforeAuth+13 && csrfSequence.Load() == 2 &&
 			a.status.Text() == u.tr("auth_finding") && a.result.ToPlainText() == "cross_role_private_body_reproduced",
 			"M3 native two-account CSRF pre-session login")
+		beforeAuth = hits.Load()
+		u.mode.SetCurrentIndex(1)
+		u.pins.SetText("8.8.8.8")
+		a.loginConfirmed.SetChecked(true)
+		a.resourceConfirmed.SetChecked(true)
+		a.otherForbidden.SetChecked(true)
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.start.Click()
+		check(!a.busy && hits.Load() == beforeAuth && a.ownerPassword.Text() == "" && a.otherPassword.Text() == "",
+			"M3 native public auth without extra confirmation sends no request")
+		a.publicConfirmed.SetChecked(true)
+		a.ownerPassword.SetText("alice-pass")
+		a.otherPassword.SetText("bob-pass")
+		a.start.Click()
+		check(!a.busy && hits.Load() == beforeAuth && !a.publicConfirmed.IsChecked() &&
+			a.ownerPassword.Text() == "" && a.otherPassword.Text() == "",
+			"M3 native public auth rejects cleartext origin before networking")
+		u.mode.SetCurrentIndex(0)
+		u.pins.Clear()
 		u.confirmDelete = func() bool { return true }
 		u.deleteProject.Click()
 		check(u.selectedProjectID() == "" && u.runs.Count() == 0, "M1 native project deletion")

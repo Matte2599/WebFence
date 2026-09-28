@@ -41,9 +41,9 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/project` e `internal/storage`: modello di autorizzazione, [SQLite v4](M1-PROJECT-STORE.md) con run/osservazioni redatte e [revoca locale](M1-MANAGED-RUNS.md).
 - `internal/scope` e `internal/transport`: [policy per route e broker con IP pubblici fissati](M1-CONTROLLED-CRAWL.md), usati dal desktop M1.
 - `internal/browser`: [gate M3](M3-BROWSER-GATE.md), [proxy HTTP confinato](M3-BROWSER-PROXY.md), [osservazioni delle richieste](M3-DYNAMIC-OBSERVATIONS.md) e supervisore di helper; ancora senza runtime browser nel desktop.
-- `internal/session`: [login e sessioni di prova M3](M3-SESSIONS.md) solo in memoria su fixture controllate; il desktop espone un [flusso effimero a due account](M3-AUTH-DESKTOP.md) solo loopback.
+- `internal/session`: [login e sessioni di prova M3](M3-SESSIONS.md) solo in memoria su fixture controllate; il desktop espone un [flusso effimero a due account](M3-AUTH-DESKTOP.md) su loopback o grant pubblico HTTPS confermato.
 - `internal/apiimport`: [inventario OpenAPI offline M3](M3-OPENAPI-IMPORT.md), senza richieste durante l'import; il desktop ne usa una sola candidata GET come seed.
-- `internal/checks`: [controllo contestuale tra ruoli M3](M3-CROSS-ROLE.md) e [orchestrazione su run gestita](M3-CROSS-ROLE-RUN.md) su fixture sintetiche, senza persistenza; il [flusso desktop](M3-AUTH-DESKTOP.md) è limitato a loopback.
+- `internal/checks`: [controllo contestuale tra ruoli M3](M3-CROSS-ROLE.md) e [orchestrazione su run gestita](M3-CROSS-ROLE-RUN.md) su fixture sintetiche, senza persistenza; il [flusso desktop](M3-AUTH-DESKTOP.md) richiede una conferma aggiuntiva per l’origine pubblica.
 - `internal/desktop`: [scelta OpenAPI offline M3](M3-OPENAPI-DESKTOP.md) di un seed GET e [visite API statiche selezionate](M3-API-DESKTOP.md), verificate nel self-test Qt su fixture locali.
 
 - `experiments/m3-browser`: [laboratorio Qt WebEngine](M3-BROWSER-LAB.md) con fixture locali e [helper separato](ADR-011-BROWSER-HELPER.md); richiede Qt WebEngine 6.11.2 e il tag `m3browserlab`, non è incluso nei pacchetti.
