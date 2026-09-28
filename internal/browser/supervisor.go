@@ -68,7 +68,7 @@ func RunHelper(ctx context.Context, executable string, payload []byte, limits He
 	}
 	output := &boundedHelperOutput{max: limits.MaxOutputBytes, exceeded: make(chan struct{})}
 	cmd.Stdout = output
-	cmd.Stderr = output.stderrWriter()
+	cmd.Stderr = os.Stderr // Temporary CI diagnostic; remove before merge.
 	if err := cmd.Start(); err != nil {
 		return nil, ErrHelperFailed
 	}
