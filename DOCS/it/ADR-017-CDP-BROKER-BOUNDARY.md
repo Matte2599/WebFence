@@ -4,6 +4,8 @@
 
 Data: 2026-09-27. Stato: **prova sperimentale, solo fixture sintetiche**.
 
+La successiva [ADR-019](ADR-019-CDP-HTTPS-BOUNDARY.md) estende questo percorso a una seconda fixture HTTPS; la decisione iniziale qui descritta era limitata a HTTP.
+
 ## Contesto e decisione
 
 La prima prova CDP serviva risposte codificate direttamente nell'helper: conservava l'origine HTTP nel renderer e dimostrava l'eredità del filtro Linux, ma non esercitava le policy WebFence. Il percorso sperimentale viene ora collegato a un'origine `httptest` locale tramite progetto/run dichiarati, gate, broker con IP loopback fissato e proxy Unix autenticato. Il genitore apre otto connessioni al proxy prima di avviare l'helper; il figlio le riceve come descrittori e installa seccomp prima di Chromium. Il client HTTP del figlio può usare soltanto questi descrittori e non segue redirect per proprio conto. CDP intercetta ogni richiesta e trasmette status, corpo limitato e tipo essenziale della risposta del proxy al renderer.

@@ -16,4 +16,6 @@ The author chose to preserve operating-system-level isolation. The browser remai
 
 The possibility of using an OS-native engine is not a decision to implement one. Any relaxation of the isolation requirement or platform support needs an explicit author decision and roadmap change, rather than a checkmark based on the current fixtures.
 
+The later [Linux CDP HTTPS fixture](ADR-019-CDP-HTTPS-BOUNDARY.md) checks TLS and origin in a trial container; it does not change the gate for enabling the desktop browser on any platform.
+
 Primary sources: [Qt WebEngine on macOS and Windows](https://doc.qt.io/qt-6/qtwebengine-platform-notes.html), [Qt 6.6 Fetch API flag](https://doc.qt.io/qt-6/qwebengineurlscheme.html), [App Sandbox networking](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.network.client), [Landlock Unix socket ABI](https://cdn.kernel.org/doc/html/latest/userspace-api/landlock.html).

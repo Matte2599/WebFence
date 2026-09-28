@@ -52,6 +52,7 @@
 | Confine browser multipiattaforma M3 / M3 cross-platform browser boundary | [ADR-015 IT](it/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) · [Prove IT](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) | [ADR-015 EN](en/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) · [Trials EN](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) |
 | Laboratorio Chromium/CDP Linux M3 / M3 Linux Chromium/CDP lab | [ADR-016 IT](it/ADR-016-LINUX-CDP-TRIAL.md) · [Prova IT](it/M3-BROWSER-CDP-LAB.md) | [ADR-016 EN](en/ADR-016-LINUX-CDP-TRIAL.md) · [Trial EN](en/M3-BROWSER-CDP-LAB.md) |
 | Mediazione CDP tramite broker M3 / M3 CDP broker mediation | [ADR-017 IT](it/ADR-017-CDP-BROKER-BOUNDARY.md) | [ADR-017 EN](en/ADR-017-CDP-BROKER-BOUNDARY.md) |
+| HTTPS mediato nel laboratorio CDP M3 / M3 broker-mediated HTTPS in the CDP lab | [ADR-019 IT](it/ADR-019-CDP-HTTPS-BOUNDARY.md) | [ADR-019 EN](en/ADR-019-CDP-HTTPS-BOUNDARY.md) |
 | Limiti di risorse helper M3 / M3 helper resource limits | [IT](it/M3-BROWSER-RESOURCE-LIMITS.md) | [EN](en/M3-BROWSER-RESOURCE-LIMITS.md) |
 | Login e sessioni M3 / M3 login and sessions | [IT](it/M3-SESSIONS.md) | [EN](en/M3-SESSIONS.md) |
 | Cookie e POST di prova / Test-account cookies and POST | [ADR-012 IT](it/ADR-012-TEST-SESSIONS.md) | [ADR-012 EN](en/ADR-012-TEST-SESSIONS.md) |

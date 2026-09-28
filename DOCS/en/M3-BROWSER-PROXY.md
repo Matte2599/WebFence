@@ -6,7 +6,9 @@
 
 The proxy rejects HTTPS `CONNECT`, WebSocket upgrades, request bodies, declared workers and unsupported methods. It forwards no client headers, including credentials and cookies, to the target; the broker creates its own request without authentication headers. The response includes only headers needed for rendering and basic restrictions, excludes `Set-Cookie`, and uses `Cache-Control: no-store` to avoid uncounted reuse. The proxy does not implement an authenticated session or expand scope based on page content.
 
-**This block does not launch or configure a browser.** A browser could ignore the proxy or use alternate channels: an isolated runtime, independent egress, interception of all resource types, process/memory limits and tests on every platform are still needed. HTTPS, authentication and WebSockets are unsupported by this proxy. Do not treat it as proof of M3 containment or use it for external targets.
+An [experimental extension](ADR-019-CDP-HTTPS-BOUNDARY.md) admits absolute-form `https://` URLs **only on the CDP lab's private Unix listener**. The broker, not the browser, establishes TLS and verifies certificate and hostname. The TCP listener remains HTTP-only and `CONNECT` stays denied. A synthetic-certificate test checks an admitted request, wrong hostname and outside origin; this is not an enabled public browser transport in the product.
+
+**This block does not launch or configure a browser.** A browser could ignore the proxy or use alternate channels: an isolated runtime, independent egress, interception of all resource types, process/memory limits and tests on every platform are still needed. HTTPS on the Unix path remains limited to the fixture; authentication and WebSockets are unsupported by the anonymous proxy. Do not treat it as proof of M3 containment or use it for external targets.
 
 `httptest` exercises loopback only and checks a valid request, HEAD, headers/CSP and no forwarding of cookies or credentials, proxy authentication, third-party origin, excluded path, worker, WebSocket, POST and out-of-scope redirect. These are neither real-browser tests nor SPA/API coverage measurements.
 

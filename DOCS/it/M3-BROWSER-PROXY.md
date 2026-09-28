@@ -6,7 +6,9 @@
 
 Il proxy respinge `CONNECT` HTTPS, upgrade WebSocket, body, worker dichiarati e metodi non ammessi. Non inoltra al target gli header del client, inclusi credenziali e cookie; il broker crea una propria richiesta senza header di autenticazione. La risposta riporta solo gli header necessari alla resa e alle restrizioni base, escludendo `Set-Cookie`; `Cache-Control: no-store` evita riusi non conteggiati. Il proxy non implementa una sessione autenticata e non modifica lo scope in base al contenuto della pagina.
 
-**Questo blocco non avvia né configura un browser.** Un browser potrebbe ignorare il proxy o usare canali alternativi: servono runtime isolato, egress indipendente, intercettazione di tutti i tipi di risorsa, limiti di processi/memoria e prove su ogni piattaforma. HTTPS, autenticazione e WebSocket non sono supportati da questo proxy. Non usarlo come prova di contenimento M3 o per target esterni.
+Una [estensione sperimentale](ADR-019-CDP-HTTPS-BOUNDARY.md) ammette URL `https://` in forma assoluta **solo sul listener Unix privato** del laboratorio CDP. Il broker, non il browser, stabilisce TLS e verifica certificato e hostname. Il listener TCP resta HTTP e `CONNECT` resta negato. Un test con certificato sintetico conferma richiesta valida, hostname errato e origine fuori scope; non è un trasporto browser pubblico abilitato nel prodotto.
+
+**Questo blocco non avvia né configura un browser.** Un browser potrebbe ignorare il proxy o usare canali alternativi: servono runtime isolato, egress indipendente, intercettazione di tutti i tipi di risorsa, limiti di processi/memoria e prove su ogni piattaforma. L'HTTPS del percorso Unix resta limitato alla fixture; autenticazione e WebSocket non sono supportati dal proxy anonimo. Non usarlo come prova di contenimento M3 o per target esterni.
 
 Le prove `httptest` usano solo loopback e verificano richiesta valida, HEAD, header/CSP e mancato inoltro di cookie e credenziali, autenticazione proxy, origine terza, percorso escluso, worker, WebSocket, POST e redirect fuori scope. Non sono prove con un browser reale né misure di copertura SPA/API.
 

@@ -5,6 +5,7 @@
 Data: 2026-09-26. Stato: **adottato per il prototipo core M3**; runtime browser e uso su target esterni non approvati.
 
 Il successivo [ADR-012](ADR-012-TEST-SESSIONS.md) estende il core con un proxy opzionale legato a una sessione di prova; il confine anonimo deciso qui resta invariato.
+L'[ADR-019](ADR-019-CDP-HTTPS-BOUNDARY.md) aggiunge in seguito HTTPS in forma assoluta sul solo socket Unix del laboratorio CDP, senza abilitare `CONNECT`.
 
 ## Contesto e decisione
 
@@ -14,4 +15,4 @@ Per questo blocco rifiutiamo `CONNECT` e tutti i metodi con body. Un tunnel HTTP
 
 ## Conseguenze e prossima decisione
 
-Il proxy permette di collaudare il percorso HTTP su fixture locali, ma non obbliga un futuro browser a usarlo. La sua credenziale difende il listener da chiamanti locali non autorizzati, non è una sandbox del processo. Rimangono assenti runtime, egress indipendente, limiti di processi/memoria, HTTPS, sessioni, cookie e verifica delle vie alternative. La scelta tra Qt WebEngine e un driver separato, insieme al modello HTTPS e ai vincoli OS, richiede una decisione successiva con prove su macOS, Windows e Linux. Nessuna voce M3 è chiusa da questo ADR.
+Il proxy permette di collaudare il percorso HTTP su fixture locali, ma non obbliga un futuro browser a usarlo. La sua credenziale difende il listener da chiamanti locali non autorizzati, non è una sandbox del processo. In questo primo blocco restano assenti runtime, egress indipendente, limiti di processi/memoria, HTTPS, sessioni, cookie e verifica delle vie alternative; la successiva prova HTTPS è circoscritta dal citato ADR-019. La scelta tra Qt WebEngine e un driver separato, insieme al modello HTTPS di prodotto e ai vincoli OS, richiede prove su macOS, Windows e Linux. Nessuna voce M3 è chiusa da questo ADR.
