@@ -111,9 +111,9 @@ Settimo blocco core: [osservazioni delle richieste browser](it/M3-DYNAMIC-OBSERV
 
 Ottavo blocco core: [primo controllo contestuale tra ruoli](it/M3-CROSS-ROLE.md) con due sessioni di prova e prova positiva esatta su fixture loopback; inventario di risorse e misure reali restano aperti.
 
-Blocco di orchestrazione: [controllo tra ruoli in una run gestita](it/M3-CROSS-ROLE-RUN.md), con due login e budget condiviso solo loopback; grant pubblici e misure reali restano aperti.
+Blocco di orchestrazione: [controllo tra ruoli in una run gestita](it/M3-CROSS-ROLE-RUN.md), con due login e budget condiviso su loopback; una modalità core successiva seleziona esplicitamente il grant pubblico HTTPS, mentre GUI, prova end-to-end su staging autorizzato e misure reali restano aperte.
 
-Blocco desktop autenticazione: [due account di prova e controllo tra ruoli](it/M3-AUTH-DESKTOP.md) configurati per una run loopback nella GUI Qt, con conferme separate e risultati redatti; non copre login reali complessi o target pubblici. Il [trasporto pubblico autenticato core](it/ADR-018-AUTHENTICATED-PUBLIC-TRANSPORT.md) richiede HTTPS e una conferma separata; la GUI e la run a due account restano loopback.
+Blocco desktop autenticazione: [due account di prova e controllo tra ruoli](it/M3-AUTH-DESKTOP.md) configurati per una run loopback nella GUI Qt, con conferme separate e risultati redatti; non copre login reali complessi o target pubblici. Il [trasporto pubblico autenticato core](it/ADR-018-AUTHENTICATED-PUBLIC-TRANSPORT.md) richiede HTTPS e una conferma separata; la GUI resta loopback; la run core a due account può scegliere il grant pubblico.
 
 Blocco desktop: [scelta OpenAPI offline](it/M3-OPENAPI-DESKTOP.md) di un seed GET ammesso nella finestra di scansione; non è una scansione API multi-route.
 
@@ -275,9 +275,9 @@ Seventh core block: [browser request observations](en/M3-DYNAMIC-OBSERVATIONS.md
 
 Eighth core block: [first contextual cross-role check](en/M3-CROSS-ROLE.md) with two test sessions and exact positive evidence on loopback fixtures; resource inventory and real-world measurements remain open.
 
-Orchestration block: [cross-role check in one managed run](en/M3-CROSS-ROLE-RUN.md), with two logins and a shared budget on loopback only; public grants and real measurements remain open.
+Orchestration block: [cross-role check in one managed run](en/M3-CROSS-ROLE-RUN.md), with two logins and a shared budget on loopback; a later core mode explicitly selects the public HTTPS grant, while GUI support, an end-to-end trial on authorized staging and real measurements remain open.
 
-Desktop authentication block: [two test accounts and a cross-role check](en/M3-AUTH-DESKTOP.md) configured for one loopback run in the Qt GUI, with separate confirmations and redacted results; complex real-world login and public targets are not covered. The [authenticated public core transport](en/ADR-018-AUTHENTICATED-PUBLIC-TRANSPORT.md) requires HTTPS and a separate confirmation; the GUI and two-account run remain loopback-only.
+Desktop authentication block: [two test accounts and a cross-role check](en/M3-AUTH-DESKTOP.md) configured for one loopback run in the Qt GUI, with separate confirmations and redacted results; complex real-world login and public targets are not covered. The [authenticated public core transport](en/ADR-018-AUTHENTICATED-PUBLIC-TRANSPORT.md) requires HTTPS and a separate confirmation; the GUI remains loopback-only; the core two-account run can select the public grant.
 
 Desktop block: [offline OpenAPI selection](en/M3-OPENAPI-DESKTOP.md) of one admitted GET seed in the scan window; it is not a multi-route API scan.
 
