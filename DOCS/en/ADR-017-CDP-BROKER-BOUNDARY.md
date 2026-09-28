@@ -4,7 +4,7 @@
 
 Date: 2026-09-27. Status: **experimental trial, synthetic fixtures only**.
 
-The later [ADR-019](ADR-019-CDP-HTTPS-BOUNDARY.md) extends this path to a second HTTPS fixture; the initial decision described here was limited to HTTP.
+The later [ADR-019](ADR-019-CDP-HTTPS-BOUNDARY.md) extends this path to a second HTTPS fixture; the [CDP lab](M3-BROWSER-CDP-LAB.md) subsequently tests revocation during a `fetch` in both variants. The initial decision described here was limited to HTTP and did not include that trial.
 
 ## Context and decision
 
@@ -12,4 +12,4 @@ The first CDP trial served hard-coded responses inside the helper: it preserved 
 
 The fixture verifies four local target contacts: document, script, `fetch` and an endpoint returning an outside redirect. The gate denies the outside resource without contacting the target; the broker rejects the redirect after the initial response. Target counts, gate/broker budgets and redacted observations are checked. Unknown requests consume the CDP budget. The networkless CI container adds aggregate memory and PID quotas to the trial.
 
-This is not a product browser adapter. The lab remains Linux/container only, with Chromium `--no-sandbox`, one fixture, HTTP only and an ephemeral proxy credential in memory. Filesystem sandboxing, containment outside the container, TLS/HTTPS, cookies and sessions, revocation during a page, user profiles and desktop integration need new trials. The Go/Qt Widgets/MIQT desktop and ADR-015 OS-isolation requirement are unchanged; the first M3 item remains open.
+This is not a product browser adapter. The initial lab was Linux/container only, with Chromium `--no-sandbox`, one fixture, HTTP only and an ephemeral proxy credential in memory. Filesystem sandboxing, containment outside the container, TLS/HTTPS, cookies and sessions, revocation during a page, user profiles and desktop integration needed new trials. The Go/Qt Widgets/MIQT desktop and ADR-015 OS-isolation requirement are unchanged; the first M3 item remains open.
