@@ -839,6 +839,17 @@
       "args": [],
       "includes": {},
       "excludes": {}
+    },
+    {
+      "comment": "Return ENOSYS for glibc posix_spawn clone fallback, as in the current Docker default profile",
+      "names": [
+        "clone3"
+      ],
+      "action": "SCMP_ACT_ERRNO",
+      "errnoRet": 38,
+      "args": [],
+      "includes": {},
+      "excludes": {}
     }
   ]
 }

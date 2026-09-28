@@ -206,7 +206,7 @@ func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult
 		"--user-data-dir="+profile)
 	cmd.ExtraFiles = []*os.File{chromeRead, chromeWrite}
 	cmd.Stdout = io.Discard
-	cmd.Stderr = os.Stderr // Temporary CI diagnostic; remove before merge.
+	cmd.Stderr = io.Discard
 	if err := cmd.Start(); err != nil {
 		_ = chromeRead.Close()
 		_ = chromeWrite.Close()
