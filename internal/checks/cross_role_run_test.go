@@ -24,6 +24,12 @@ import (
 
 type runSecrets map[string]string
 
+type runResolverFunc func(context.Context, string, string) ([]netip.Addr, error)
+
+func (f runResolverFunc) LookupNetIP(ctx context.Context, network, host string) ([]netip.Addr, error) {
+	return f(ctx, network, host)
+}
+
 func (s runSecrets) Get(_ context.Context, id string) ([]byte, error) {
 	if secret := s[id]; secret != "" {
 		return []byte(secret), nil
@@ -198,5 +204,68 @@ func TestRunCrossRoleBudgetCannotProduceFinding(t *testing.T) {
 	got, err := RunCrossRole(t.Context(), store, runSecrets{"alice-ref": "alice-pass", "bob-ref": "bob-pass"}, plan)
 	if err != nil || got.Outcome != Inconclusive || got.EvidenceCode != "anonymous_baseline_unavailable" || hits.Load() != 8 {
 		t.Fatalf("budget exhaustion: %+v hits=%d err=%v", got, hits.Load(), err)
+	}
+}
+
+func TestRunCrossRolePublicModeRequiresExplicitGrantAndConfirmation(t *testing.T) {
+	origin := "https://public.fixture.test:443"
+	store, err := storage.Open(t.Context(), filepath.Join(t.TempDir(), "public-auth-run.sqlite"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = store.Close() })
+	p, err := project.New(project.Draft{ID: "public-auth-run", Name: "Synthetic public authorization",
+		TargetOwner: "Fixture", AuthorizationReference: "synthetic local permission",
+		AuthorizationConfirmed: true, AuthorizationExpiresAt: time.Now().Add(time.Hour), Origins: []string{origin}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := store.CreateProject(t.Context(), p); err != nil {
+		t.Fatal(err)
+	}
+	policy, err := scope.NewRequestPolicy([]string{"GET"}, []string{"/app"}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var lookups atomic.Int32
+	resolver := runResolverFunc(func(context.Context, string, string) ([]netip.Addr, error) {
+		lookups.Add(1)
+		return nil, errors.New("synthetic DNS failure")
+	})
+	account := func(name string) session.Account {
+		return session.Account{ID: name, Username: name, SecretID: name + "-ref",
+			UsernameField: "username", PasswordField: "password", CookieName: "sid", ExpectedBody: name}
+	}
+	plan := CrossRoleRunPlan{ProjectID: p.ID(), Mode: CrossRoleRunPinnedPublic, Origin: origin,
+		Grant:  transport.Grant{Origin: origin, Addresses: []netip.Addr{netip.MustParseAddr("8.8.8.8")}},
+		Policy: policy, Limits: transport.Limits{MaxRequests: 20, MaxConcurrent: 1, MaxRedirects: 0,
+			MaxBodyBytes: 4096, RequestTimeout: 3 * time.Second, RunTimeout: time.Minute,
+			MinRequestInterval: 500 * time.Millisecond}, Resolver: resolver,
+		Routes: transport.SessionRoutes{LoginURL: origin + "/auth/login", VerifyURL: origin + "/app/verify",
+			LoginConfirmed: true, PublicConfirmed: true},
+		Owner: account("alice"), Other: account("bob"),
+		Check: CrossRolePlan{ResourceURL: origin + "/app/private", PrivateBody: "private-alice",
+			ResourceConfirmed: true, OtherForbiddenConfirmed: true}}
+	for _, alter := range []func(*CrossRoleRunPlan){
+		func(p *CrossRoleRunPlan) { p.Routes.PublicConfirmed = false },
+		func(p *CrossRoleRunPlan) { p.Mode = "unknown" },
+		func(p *CrossRoleRunPlan) { p.Mode = CrossRoleRunLoopback },
+		func(p *CrossRoleRunPlan) { p.Origin = "http://public.fixture.test:443" },
+		func(p *CrossRoleRunPlan) { p.Grant.Addresses = []netip.Addr{netip.MustParseAddr("127.0.0.1")} },
+	} {
+		invalid := plan
+		alter(&invalid)
+		if _, err := RunCrossRole(t.Context(), store, runSecrets{}, invalid); !errors.Is(err, ErrCrossRoleRunPlan) || lookups.Load() != 0 {
+			t.Fatalf("invalid public plan reached DNS: err=%v lookups=%d", err, lookups.Load())
+		}
+	}
+	invalidPin := plan
+	invalidPin.Grant.Addresses = []netip.Addr{netip.MustParseAddr("192.0.2.1")}
+	if _, err := RunCrossRole(t.Context(), store, runSecrets{}, invalidPin); !errors.Is(err, transport.ErrConfig) || lookups.Load() != 0 {
+		t.Fatalf("special IP reached DNS: err=%v lookups=%d", err, lookups.Load())
+	}
+	got, err := RunCrossRole(t.Context(), store, runSecrets{}, plan)
+	if err != nil || got.Outcome != Inconclusive || got.EvidenceCode != "owner_login_unverified" || lookups.Load() != 1 {
+		t.Fatalf("public managed mode did not fail closed on DNS: %+v err=%v lookups=%d", got, err, lookups.Load())
 	}
 }

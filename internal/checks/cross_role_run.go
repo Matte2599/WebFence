@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/netip"
+	"strings"
 	"unicode/utf8"
 
 	"github.com/Matte2599/WebFence/internal/scope"
@@ -14,11 +15,20 @@ import (
 
 var ErrCrossRoleRunPlan = errors.New("check_cross_role_run_invalid_plan")
 
+type CrossRoleRunMode string
+
+const (
+	CrossRoleRunLoopback     CrossRoleRunMode = "loopback"
+	CrossRoleRunPinnedPublic CrossRoleRunMode = "pinned_public"
+)
+
 // CrossRoleRunPlan binds both test identities and the declared resource to a
-// single loopback-only managed run. Secrets are referenced by ID; neither
+// single managed run. The zero mode retains the loopback-only desktop flow;
+// public HTTPS requires an explicit mode and separate confirmation. Neither
 // credentials nor response bodies are written to the project store.
 type CrossRoleRunPlan struct {
 	ProjectID string
+	Mode      CrossRoleRunMode
 	Origin    string
 	Grant     transport.Grant
 	Policy    scope.RequestPolicy
@@ -35,8 +45,12 @@ type CrossRoleRunPlan struct {
 // result. The run, broker and both ephemeral sessions are closed on every path.
 func RunCrossRole(ctx context.Context, store *storage.Store, secrets session.SecretSource,
 	plan CrossRoleRunPlan) (CrossRoleResult, error) {
+	public := plan.Mode == CrossRoleRunPinnedPublic
 	if ctx == nil || store == nil || secrets == nil || plan.ProjectID == "" || plan.Origin == "" ||
-		plan.Grant.Origin != plan.Origin || len(plan.Grant.Addresses) == 0 || len(plan.Grant.Addresses) > 8 ||
+		(plan.Mode != "" && plan.Mode != CrossRoleRunLoopback && !public) ||
+		(public && (!plan.Routes.PublicConfirmed || !strings.HasPrefix(plan.Origin, "https://"))) ||
+		plan.Grant.Origin != plan.Origin || len(plan.Grant.Addresses) == 0 ||
+		len(plan.Grant.Addresses) > 16 || (!public && len(plan.Grant.Addresses) > 8) ||
 		!plan.Policy.Valid() || !plan.Routes.LoginConfirmed ||
 		!plan.Check.ResourceConfirmed || !plan.Check.OtherForbiddenConfirmed ||
 		len(plan.Check.PrivateBody) == 0 || len(plan.Check.PrivateBody) > 1024 ||
@@ -47,7 +61,8 @@ func RunCrossRole(ctx context.Context, store *storage.Store, secrets session.Sec
 		return CrossRoleResult{}, ErrCrossRoleRunPlan
 	}
 	for _, ip := range plan.Grant.Addresses {
-		if !ip.IsValid() || !ip.IsLoopback() || ip.Is4In6() {
+		if !ip.IsValid() || ip.Is4In6() || ip.Zone() != "" ||
+			(public && ip.IsLoopback()) || (!public && !ip.IsLoopback()) {
 			return CrossRoleResult{}, ErrCrossRoleRunPlan
 		}
 	}
@@ -74,9 +89,15 @@ func RunCrossRole(ctx context.Context, store *storage.Store, secrets session.Sec
 	if err := plan.Policy.Check("GET", resource); err != nil {
 		return CrossRoleResult{}, err
 	}
-	broker, err := transport.NewAuthorizedLabWithSession(run.Context(), permit,
-		[]transport.Grant{{Origin: plan.Origin, Addresses: append([]netip.Addr(nil), plan.Grant.Addresses...)}},
-		plan.Limits, plan.Resolver, plan.Policy, plan.Routes)
+	grants := []transport.Grant{{Origin: plan.Origin, Addresses: append([]netip.Addr(nil), plan.Grant.Addresses...)}}
+	var broker *transport.Broker
+	if public {
+		broker, err = transport.NewAuthorizedPublicWithSession(run.Context(), permit,
+			grants, plan.Limits, plan.Resolver, plan.Policy, plan.Routes)
+	} else {
+		broker, err = transport.NewAuthorizedLabWithSession(run.Context(), permit,
+			grants, plan.Limits, plan.Resolver, plan.Policy, plan.Routes)
+	}
 	if err != nil {
 		return CrossRoleResult{}, err
 	}

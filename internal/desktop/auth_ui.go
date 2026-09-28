@@ -200,7 +200,8 @@ func (a *authUI) startRun() {
 			UsernameField: usernameField, PasswordField: passwordField, CookieName: cookieName,
 			ExpectedBody: marker, CSRFField: csrfField, CSRFCookieName: csrfCookieName}
 	}
-	plan := checks.CrossRoleRunPlan{ProjectID: crawl.ProjectID, Origin: crawl.Grants[0].Origin,
+	plan := checks.CrossRoleRunPlan{ProjectID: crawl.ProjectID, Mode: checks.CrossRoleRunLoopback,
+		Origin: crawl.Grants[0].Origin,
 		Grant:  transport.Grant{Origin: crawl.Grants[0].Origin, Addresses: crawl.Grants[0].Addresses},
 		Policy: crawl.Policy, Limits: crawl.Limits, Resolver: crawl.Resolver,
 		Routes: transport.SessionRoutes{LoginURL: strings.TrimSpace(a.loginURL.Text()),
