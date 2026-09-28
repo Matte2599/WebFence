@@ -27,8 +27,9 @@ const (
 
 // applyCDPFileBoundary is confined to the disposable Linux fixture. It must
 // be called on the locked OS thread that starts Chromium. The allowlist grants
-// system files read/execute access and grants writes only to the helper's
-// private directory. Lack of Landlock support is a trial failure.
+// system files read/execute access, grants writes in the helper's private
+// directory, and permits writes to existing proc files for Chromium's user
+// namespace setup. Lack of Landlock support is a trial failure.
 func applyCDPFileBoundary(privateDir, deniedFile string) error {
 	if !filepath.IsAbs(privateDir) || !filepath.IsAbs(deniedFile) ||
 		filepath.Clean(privateDir) == filepath.Clean(deniedFile) {
@@ -50,7 +51,11 @@ func applyCDPFileBoundary(privateDir, deniedFile string) error {
 		if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 			continue
 		}
-		if err := addCDPFileRule(int(ruleset), path, fileRead); err != nil {
+		access := uint64(fileRead)
+		if path == "/proc" {
+			access |= unix.LANDLOCK_ACCESS_FS_WRITE_FILE
+		}
+		if err := addCDPFileRule(int(ruleset), path, access); err != nil {
 			return err
 		}
 	}
