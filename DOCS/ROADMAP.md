@@ -109,6 +109,8 @@ Prova di revoca nella pagina Linux: il [laboratorio CDP HTTP(S)](it/M3-BROWSER-C
 
 Prova Linux del filesystem: l'[ADR-020](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) aggiunge Landlock alla fixture CDP prima di avviare Chromium. Un file sintetico leggibile prima del confine è negato in lettura e scrittura dopo il confine, anche a un processo figlio; la directory privata resta utilizzabile. Una prova successiva naviga con Chromium verso due file sintetici: quello privato viene letto, quello esterno riceve `ERR_ACCESS_DENIED`; una build diagnostica senza Landlock fallisce il controllo. Non è una sandbox per pagine ostili né un confine del prodotto desktop.
 
+Prova Linux della sandbox Chromium: l'[ADR-021](it/ADR-021-CDP-CHROMIUM-SANDBOX.md) rimuove `--no-sandbox` dalla fixture CDP, usa un profilo seccomp Docker esplicito e verifica uno user namespace distinto, seccomp e `no_new_privs` nel renderer. Il filtro di rete WebFence, Landlock, i canary HTTP(S)/file e i limiti del container restano applicati; un controllo diagnostico con `--no-sandbox` fallisce. Non dimostra contenimento di pagine ostili o del runtime desktop.
+
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; successive estensioni leggono un campo hidden CSRF e un cookie di pre-sessione facoltativo dall’URL di login esatto, e confermano una rotazione circoscritta del cookie durante la sessione. Il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
@@ -131,7 +133,7 @@ Blocco core route osservate: [ripetizione esplicita di `fetch` GET](it/M3-OBSERV
 
 **Blocchi M3 già verificati, con perimetro circoscritto:**
 
-- [x] [Gate e proxy browser](it/M3-BROWSER-PROXY.md) e laboratori [Qt](it/M3-BROWSER-LAB.md)/[CDP HTTP(S)](it/M3-BROWSER-CDP-LAB.md) su fixture: subresource e redirect fuori scope fermati, revoca in pagina provata nel CDP; [filtro di rete Linux](it/M3-BROWSER-LINUX-NETWORK.md) e [prova Landlock](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) nel percorso sperimentale.
+- [x] [Gate e proxy browser](it/M3-BROWSER-PROXY.md) e laboratori [Qt](it/M3-BROWSER-LAB.md)/[CDP HTTP(S)](it/M3-BROWSER-CDP-LAB.md) su fixture: subresource e redirect fuori scope fermati, revoca in pagina provata nel CDP; [filtro di rete Linux](it/M3-BROWSER-LINUX-NETWORK.md), [Landlock](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) e [renderer Chromium con user namespace](it/ADR-021-CDP-CHROMIUM-SANDBOX.md) nel percorso sperimentale.
 - [x] [Login form e sessioni verificate per due identità](it/M3-SESSIONS.md), [run tra ruoli](it/M3-CROSS-ROLE-RUN.md) e [dialogo Qt](it/M3-AUTH-DESKTOP.md) con conferma distinta per il grant pubblico HTTPS.
 - [x] [Import OpenAPI offline](it/M3-OPENAPI-IMPORT.md), [visite GET statiche selezionate](it/M3-API-DESKTOP.md), [ripetizione esplicita di `fetch` GET](it/M3-OBSERVED-CRAWL.md) e [primo controllo tra ruoli](it/M3-CROSS-ROLE.md).
 - [x] Prima regola contestuale M3, [`AUTH-CROSSROLE-001`](it/M3-CROSS-ROLE.md), con fixture sintetiche positive/negative ed esiti nella [matrice M3](it/M3-VALIDATION.md).
@@ -288,6 +290,8 @@ Linux in-page revocation trial: the [HTTP(S) CDP lab](en/M3-BROWSER-CDP-LAB.md) 
 
 Linux filesystem trial: [ADR-020](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) adds Landlock to the CDP fixture before Chromium starts. A synthetic file readable before confinement is denied for reads and writes afterward, including in a child process; the private directory remains usable. A later trial navigates Chromium to two synthetic files: it reads the private file, while the outside file returns `ERR_ACCESS_DENIED`; a diagnostic build without Landlock fails the check. This is neither a hostile-page sandbox nor a desktop product boundary.
 
+Linux Chromium sandbox trial: [ADR-021](en/ADR-021-CDP-CHROMIUM-SANDBOX.md) removes `--no-sandbox` from the CDP fixture, uses an explicit Docker seccomp profile and verifies a distinct user namespace, seccomp and `no_new_privs` in a renderer. WebFence's network filter, Landlock, HTTP(S)/file canaries and container limits remain applied; a diagnostic check with `--no-sandbox` fails. This does not demonstrate hostile-page containment or a desktop runtime boundary.
+
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; later extensions read one hidden CSRF field and an optional pre-session cookie from the exact login URL, and confirm a bounded cookie rotation during the session. The bounded desktop workflow is described below. Real workflows remain open.
 
 Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an inventory of candidate static routes under scope/policy, without networking; selection of one seed in the GUI is described below. Dynamic crawling and checks remain open.
@@ -310,7 +314,7 @@ Observed-route core block: [explicit replay of GET `fetch` paths](en/M3-OBSERVED
 
 **Verified M3 blocks with limited scope:**
 
-- [x] [Browser gate and proxy](en/M3-BROWSER-PROXY.md) and [Qt](en/M3-BROWSER-LAB.md)/[HTTP(S) CDP](en/M3-BROWSER-CDP-LAB.md) labs on fixtures: out-of-scope subresources and redirects stopped, in-page revocation tested in CDP; [Linux network filter](en/M3-BROWSER-LINUX-NETWORK.md) and [Landlock trial](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) on the experimental path.
+- [x] [Browser gate and proxy](en/M3-BROWSER-PROXY.md) and [Qt](en/M3-BROWSER-LAB.md)/[HTTP(S) CDP](en/M3-BROWSER-CDP-LAB.md) labs on fixtures: out-of-scope subresources and redirects stopped, in-page revocation tested in CDP; [Linux network filter](en/M3-BROWSER-LINUX-NETWORK.md), [Landlock](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) and a [Chromium renderer in a user namespace](en/ADR-021-CDP-CHROMIUM-SANDBOX.md) on the experimental path.
 - [x] [Form login and verified sessions for two identities](en/M3-SESSIONS.md), [cross-role run](en/M3-CROSS-ROLE-RUN.md) and [Qt dialog](en/M3-AUTH-DESKTOP.md) with separate confirmation for a public HTTPS grant.
 - [x] [Offline OpenAPI import](en/M3-OPENAPI-IMPORT.md), [selected static GET visits](en/M3-API-DESKTOP.md), [explicit replay of GET `fetch` paths](en/M3-OBSERVED-CRAWL.md) and a [first cross-role check](en/M3-CROSS-ROLE.md).
 - [x] First M3 contextual rule, [`AUTH-CROSSROLE-001`](en/M3-CROSS-ROLE.md), with positive/negative synthetic fixtures and outcomes in the [M3 matrix](en/M3-VALIDATION.md).

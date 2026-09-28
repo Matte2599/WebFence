@@ -76,7 +76,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, in-page revocation, direct TCP and Chromium file canaries checked")
+		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, revocation, direct TCP, Chromium file and renderer sandbox canaries checked")
 	}
 }
 
@@ -199,7 +199,7 @@ func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult
 		return empty, err
 	}
 	cmd := exec.Command(chrome,
-		"--headless=new", "--no-sandbox", "--disable-dev-shm-usage",
+		"--headless=new", "--disable-dev-shm-usage",
 		"--disable-background-networking", "--disable-component-update",
 		"--disable-sync", "--disable-extensions", "--no-first-run",
 		"--no-default-browser-check", "--remote-debugging-pipe",
@@ -267,6 +267,9 @@ func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult
 		if err := pipe.receive(); err != nil {
 			return empty, err
 		}
+	}
+	if err := checkRendererSandbox(cmd.Process.Pid); err != nil {
+		return empty, err
 	}
 	if err := pipe.checkBrowserFileBoundary(session, profile, deniedFile); err != nil {
 		return empty, err
@@ -339,6 +342,83 @@ func checkChromeConfinement(pid int) error {
 		return errors.New("Chromium did not inherit no-new-privileges and seccomp")
 	}
 	return nil
+}
+
+// A Chromium renderer must enter a user namespace distinct from its browser
+// process. This guards against a successful fixture run with Chromium's
+// sandbox silently disabled by a future launch or container change.
+func checkRendererSandbox(browserPID int) error {
+	browserNamespace, err := os.Readlink(fmt.Sprintf("/proc/%d/ns/user", browserPID))
+	if err != nil {
+		return errors.New("cannot inspect Chromium user namespace")
+	}
+	browserStatus, err := os.ReadFile(fmt.Sprintf("/proc/%d/status", browserPID))
+	if err != nil {
+		return errors.New("cannot inspect Chromium seccomp filters")
+	}
+	browserFilters := seccompFilterCount(browserStatus)
+	if browserFilters < 1 {
+		return errors.New("Chromium browser seccomp filter was not observed")
+	}
+	entries, err := os.ReadDir("/proc")
+	if err != nil {
+		return errors.New("cannot inspect Chromium renderers")
+	}
+	for _, entry := range entries {
+		pid, err := strconv.Atoi(entry.Name())
+		if err != nil || pid == browserPID || !chromeDescendant(pid, browserPID) {
+			continue
+		}
+		command, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid))
+		if err != nil || !strings.Contains(string(command), "--type=renderer") {
+			continue
+		}
+		status, err := os.ReadFile(fmt.Sprintf("/proc/%d/status", pid))
+		if err != nil || !strings.Contains(string(status), "NoNewPrivs:\t1\n") ||
+			!strings.Contains(string(status), "Seccomp:\t2\n") ||
+			seccompFilterCount(status) <= browserFilters {
+			continue
+		}
+		rendererNamespace, err := os.Readlink(fmt.Sprintf("/proc/%d/ns/user", pid))
+		if err == nil && rendererNamespace != browserNamespace {
+			return nil
+		}
+	}
+	return errors.New("Chromium renderer user-namespace sandbox was not observed")
+}
+
+func seccompFilterCount(status []byte) int {
+	for _, line := range strings.Split(string(status), "\n") {
+		if strings.HasPrefix(line, "Seccomp_filters:") {
+			count, _ := strconv.Atoi(strings.TrimSpace(strings.TrimPrefix(line, "Seccomp_filters:")))
+			return count
+		}
+	}
+	return 0
+}
+
+func chromeDescendant(pid, ancestor int) bool {
+	for range 8 {
+		status, err := os.ReadFile(fmt.Sprintf("/proc/%d/status", pid))
+		if err != nil {
+			return false
+		}
+		var parent int
+		for _, line := range strings.Split(string(status), "\n") {
+			if strings.HasPrefix(line, "PPid:") {
+				parent, _ = strconv.Atoi(strings.TrimSpace(strings.TrimPrefix(line, "PPid:")))
+				break
+			}
+		}
+		if parent == ancestor {
+			return true
+		}
+		if parent <= 1 || parent == pid {
+			return false
+		}
+		pid = parent
+	}
+	return false
 }
 
 func (p *cdpPipe) send(method string, params any, session string) (int, error) {
