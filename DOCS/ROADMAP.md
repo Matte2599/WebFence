@@ -2,7 +2,7 @@
 
 [Indice / Index](README.md) · [Italiano](#italiano) · [English](#english)
 
-Aggiornamento / Updated: 2026-09-27. Responsabile / Owner: Matteo Luigi Feroldi.
+Aggiornamento / Updated: 2026-09-28. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
@@ -123,10 +123,19 @@ Blocco desktop API: [scelta multipla esplicita](it/M3-API-DESKTOP.md) di route G
 
 Blocco core route osservate: [ripetizione esplicita di `fetch` GET](it/M3-OBSERVED-CRAWL.md) selezionate dal laboratorio browser, sotto una nuova run gestita; navigazione DOM e integrazione desktop restano aperte.
 
-- [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo.
-- [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità.
-- [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli.
-- [ ] Espansione delle famiglie di regole soltanto con fixture e misure pubblicate.
+**Blocchi M3 già verificati, con perimetro circoscritto:**
+
+- [x] [Gate e proxy browser](it/M3-BROWSER-PROXY.md) e laboratori [Qt](it/M3-BROWSER-LAB.md)/[CDP](it/M3-BROWSER-CDP-LAB.md) su fixture: subresource e redirect fuori scope fermati; [filtro di rete Linux](it/M3-BROWSER-LINUX-NETWORK.md) nel percorso sperimentale.
+- [x] [Login form e sessioni verificate per due identità](it/M3-SESSIONS.md), [run tra ruoli](it/M3-CROSS-ROLE-RUN.md) e [dialogo Qt](it/M3-AUTH-DESKTOP.md) con conferma distinta per il grant pubblico HTTPS.
+- [x] [Import OpenAPI offline](it/M3-OPENAPI-IMPORT.md), [visite GET statiche selezionate](it/M3-API-DESKTOP.md), [ripetizione esplicita di `fetch` GET](it/M3-OBSERVED-CRAWL.md) e [primo controllo tra ruoli](it/M3-CROSS-ROLE.md).
+- [x] Prima regola contestuale M3, [`AUTH-CROSSROLE-001`](it/M3-CROSS-ROLE.md), con fixture sintetiche positive/negative ed esiti nella [matrice M3](it/M3-VALIDATION.md).
+
+**Criteri di uscita M3:** le quattro caselle seguenti descrivono il risultato completo di ciascuna area, non i blocchi intermedi già spuntati. Restano aperte per i limiti specificati nella [matrice M3](it/M3-VALIDATION.md).
+
+- [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo: mancano runtime desktop confinato, HTTPS mediato, quote aggregate e prove sulle piattaforme abilitate.
+- [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità: mancano flussi oltre il form circoscritto e una prova completa su staging pubblico autorizzato.
+- [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli: mancano crawler DOM nel prodotto, parametri dinamici e controlli API specifici.
+- [ ] Espansione delle famiglie di regole soltanto con fixture e misure pubblicate: manca l'espansione oltre la prima regola contestuale M3 e la misura su un corpus rappresentativo.
 
 Uscita: SPA e API del corpus coperte nelle parti dichiarate, traffico fuori scope bloccato, credenziali non inoltrate a terzi, nessun errore di login presentato come esito negativo del test.
 
@@ -287,10 +296,19 @@ Desktop API block: [explicit multiple selection](en/M3-API-DESKTOP.md) of static
 
 Observed-route core block: [explicit replay of GET `fetch` paths](en/M3-OBSERVED-CRAWL.md) selected from the browser lab, under a fresh managed run; DOM navigation and desktop integration remain open.
 
-- [ ] Isolated browser, scope for subresources/redirects and process limits.
-- [ ] Test-account sessions/login flows, validity checks and identity separation.
-- [ ] OpenAPI import, dynamic crawling, contextual checks and cross-role access testing.
-- [ ] Additional rule families only with fixtures and published measurements.
+**Verified M3 blocks with limited scope:**
+
+- [x] [Browser gate and proxy](en/M3-BROWSER-PROXY.md) and [Qt](en/M3-BROWSER-LAB.md)/[CDP](en/M3-BROWSER-CDP-LAB.md) labs on fixtures: out-of-scope subresources and redirects stopped; [Linux network filter](en/M3-BROWSER-LINUX-NETWORK.md) on the experimental path.
+- [x] [Form login and verified sessions for two identities](en/M3-SESSIONS.md), [cross-role run](en/M3-CROSS-ROLE-RUN.md) and [Qt dialog](en/M3-AUTH-DESKTOP.md) with separate confirmation for a public HTTPS grant.
+- [x] [Offline OpenAPI import](en/M3-OPENAPI-IMPORT.md), [selected static GET visits](en/M3-API-DESKTOP.md), [explicit replay of GET `fetch` paths](en/M3-OBSERVED-CRAWL.md) and a [first cross-role check](en/M3-CROSS-ROLE.md).
+- [x] First M3 contextual rule, [`AUTH-CROSSROLE-001`](en/M3-CROSS-ROLE.md), with positive/negative synthetic fixtures and outcomes in the [M3 matrix](en/M3-VALIDATION.md).
+
+**M3 exit criteria:** the following four boxes represent the complete outcome of each area, not the intermediate blocks checked above. They remain open for the limits listed in the [M3 matrix](en/M3-VALIDATION.md).
+
+- [ ] Isolated browser, scope for subresources/redirects and process limits: a confined desktop runtime, mediated HTTPS, aggregate quotas and trials on enabled platforms remain missing.
+- [ ] Test-account sessions/login flows, validity checks and identity separation: flows beyond the narrow form login and a complete authorized public staging trial remain missing.
+- [ ] OpenAPI import, dynamic crawling, contextual checks and cross-role access testing: a product DOM crawler, dynamic parameters and API-specific checks remain missing.
+- [ ] Additional rule families only with fixtures and published measurements: expansion beyond the first M3 contextual rule and measurement on a representative corpus remain missing.
 
 Exit: declared corpus SPA/API surfaces covered, out-of-scope traffic blocked, no credentials forwarded to third parties, no login error presented as a negative test result.
 
