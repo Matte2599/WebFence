@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -34,6 +35,7 @@ type helperConfig struct {
 	Chrome        string `json:"chrome"`
 	Origin        string `json:"origin"`
 	CanaryAddress string `json:"canary_address"`
+	DeniedFile    string `json:"denied_file"`
 	BrokerFDs     int    `json:"broker_fds"`
 	Username      string `json:"username"`
 	Password      string `json:"password"`
@@ -71,7 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) document, script and fetch via gate/broker; outside resource, redirect, in-page revocation and direct TCP canary blocked")
+		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, in-page revocation, direct TCP and private-file canaries checked")
 	}
 }
 
@@ -87,7 +89,8 @@ func runChild() error {
 	}
 	var extra any
 	if err := decoder.Decode(&extra); err != io.EOF || !filepath.IsAbs(config.Chrome) ||
-		config.Origin == "" || config.CanaryAddress == "" || config.BrokerFDs != brokerConnections ||
+		config.Origin == "" || config.CanaryAddress == "" || !filepath.IsAbs(config.DeniedFile) ||
+		config.BrokerFDs != brokerConnections ||
 		config.Username == "" || config.Password == "" {
 		return errors.New("invalid CDP helper configuration")
 	}
@@ -133,8 +136,11 @@ func runChild() error {
 			return errors.New("direct browser networking is not blocked")
 		}
 	}
+	if body, err := os.ReadFile(config.DeniedFile); err != nil || string(body) != "synthetic-private-file" {
+		return errors.New("synthetic private file was unavailable before confinement")
+	}
 	client := brokerClient(config, inherited)
-	result, err := runCDP(config.Chrome, config.Origin, client)
+	result, err := runCDP(config.Chrome, config.Origin, config.DeniedFile, client)
 	if err != nil {
 		return err
 	}
@@ -161,7 +167,7 @@ type cdpPipe struct {
 	client   *http.Client
 }
 
-func runCDP(chrome, origin string, client *http.Client) (trialResult, error) {
+func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult, error) {
 	var empty trialResult
 	profile, err := os.MkdirTemp("", "wf-cdp-profile-")
 	if err != nil {
@@ -179,6 +185,15 @@ func runCDP(chrome, origin string, client *http.Client) (trialResult, error) {
 		return empty, err
 	}
 	defer parentRead.Close()
+	// Landlock restricts the calling thread and the Chromium process forked
+	// from it. Never release this thread back to Go's scheduler: the helper
+	// exits immediately after this single trial.
+	runtime.LockOSThread()
+	if err := applyCDPFileBoundary(os.Getenv("HOME"), deniedFile); err != nil {
+		_ = chromeRead.Close()
+		_ = chromeWrite.Close()
+		return empty, err
+	}
 	cmd := exec.Command(chrome,
 		"--headless=new", "--no-sandbox", "--disable-dev-shm-usage",
 		"--disable-background-networking", "--disable-component-update",
