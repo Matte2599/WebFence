@@ -75,6 +75,15 @@ func runTrial(chrome, scheme string) error {
 	if err != nil {
 		return err
 	}
+	deniedDirectory, err := os.MkdirTemp("", "wf-cdp-denied-")
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(deniedDirectory)
+	deniedFile := filepath.Join(deniedDirectory, "synthetic-private-file")
+	if err := os.WriteFile(deniedFile, []byte("synthetic-private-file"), 0600); err != nil {
+		return err
+	}
 	outside := scheme + "://outside.test"
 	target := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Host != host || r.Header.Get("Cookie") != "" || r.Header.Get("Authorization") != "" ||
@@ -202,7 +211,8 @@ func runTrial(chrome, scheme string) error {
 		return err
 	}
 	payload, err := json.Marshal(helperConfig{Chrome: chrome, Origin: origin, CanaryAddress: canaryURL.Host,
-		BrokerFDs: len(files), Username: username, Password: password})
+		DeniedFile: deniedFile,
+		BrokerFDs:  len(files), Username: username, Password: password})
 	if err != nil {
 		return err
 	}

@@ -344,20 +344,20 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go mod download && go mod verify
-      - name: Check bounded CDP protocol and HTTPS IPC
+      - name: Check bounded CDP protocol, HTTPS IPC and file boundary
         run: go test -tags=m3cdplab ./experiments/m3-cdp-browser
       - name: Build synthetic CDP lab
         run: CGO_ENABLED=0 go build -tags=m3cdplab -o /tmp/webfence-m3-cdp ./experiments/m3-cdp-browser
       - name: Build disposable Chromium image
         run: docker build --file experiments/m3-cdp-browser/Dockerfile --tag webfence-m3-cdp-lab .
-      - name: Synthetic HTTP(S)-origin and revocation trial with no container network
+      - name: Synthetic HTTP(S), revocation and Landlock trial with no container network
         run: |
           docker run --rm --network none --read-only --memory 1g --pids-limit 256 \
             --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,size=256m,mode=1777 \
             -e WF_CDP_CHROME=/usr/bin/chromium \
             --mount type=bind,src=/tmp/webfence-m3-cdp,dst=/wf-cdp,readonly \
             webfence-m3-cdp-lab /wf-cdp
-      - name: Synthetic revocation and direct-egress denial with container network available
+      - name: Synthetic revocation, direct-egress and file denial with container network available
         run: |
           docker run --rm --network bridge --read-only --memory 1g --pids-limit 256 \
             --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,size=256m,mode=1777 \
