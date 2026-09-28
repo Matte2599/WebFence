@@ -1,6 +1,6 @@
 // Package transport contains a pinned HTTP broker for explicitly granted
 // loopback fixtures and public destinations. M3 session methods require an
-// explicit constructor; the desktop auth dialog remains loopback-only.
+// explicit constructor; public desktop credentials require separate confirmation.
 package transport
 
 import (
@@ -81,7 +81,7 @@ type Broker struct {
 	used       int
 	next       map[string]time.Time
 	dial       func(context.Context, string, string) (net.Conn, error)
-	roots      *x509.CertPool // fixture roots are injected only by same-package tests
+	roots      *x509.CertPool // optional fixture roots are limited to loopback lab brokers
 	permit     project.RunScope
 	authorized bool
 	stopPermit func() bool
@@ -165,6 +165,22 @@ func NewAuthorizedLabWithPolicy(ctx context.Context, permit project.RunScope, gr
 		return nil, err
 	}
 	b.route = route
+	return b, nil
+}
+
+// NewAuthorizedLabWithPolicyTLSRoots trusts additional fixture certificates
+// only in a loopback-pinned lab broker. TLS and hostname verification remain
+// enabled; public destinations must use the ordinary public constructor.
+func NewAuthorizedLabWithPolicyTLSRoots(ctx context.Context, permit project.RunScope, grants []Grant,
+	limits Limits, resolver Resolver, route scope.RequestPolicy, roots *x509.CertPool) (*Broker, error) {
+	if roots == nil {
+		return nil, ErrConfig
+	}
+	b, err := NewAuthorizedLabWithPolicy(ctx, permit, grants, limits, resolver, route)
+	if err != nil {
+		return nil, err
+	}
+	b.roots = roots.Clone()
 	return b, nil
 }
 

@@ -19,8 +19,9 @@ import (
 )
 
 // Proxy is an authenticated, loopback-only HTTP forwarding boundary for a
-// future browser adapter. HTTPS CONNECT, WebSocket upgrades, cookies and
-// request bodies are deliberately unsupported in this first slice.
+// future browser adapter. A private Unix listener also accepts absolute-form
+// HTTPS URLs for broker-mediated TLS. CONNECT, WebSocket upgrades, cookies and
+// request bodies remain unsupported.
 type Proxy struct {
 	gate    *Gate
 	broker  *transport.Broker
@@ -192,7 +193,8 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		writeProxyError(w, http.StatusProxyAuthRequired, "browser_proxy_auth_required")
 		return
 	}
-	if r.Method == http.MethodConnect || r.URL == nil || !r.URL.IsAbs() || r.URL.Scheme != "http" ||
+	if r.Method == http.MethodConnect || r.URL == nil || !r.URL.IsAbs() ||
+		(r.URL.Scheme != "http" && (r.URL.Scheme != "https" || p.listen.Addr().Network() != "unix")) ||
 		r.URL.Host != r.Host || r.Header.Get("Upgrade") != "" || r.ContentLength > 0 || len(r.TransferEncoding) != 0 {
 		writeProxyError(w, http.StatusForbidden, "browser_proxy_request_denied")
 		return

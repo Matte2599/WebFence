@@ -16,4 +16,6 @@ L'autore ha scelto di mantenere l'isolamento a livello di sistema operativo. Il 
 
 La sola possibilità di usare un motore nativo per OS non costituisce una decisione di implementarlo. Un'eventuale revisione del requisito di isolamento o del supporto di piattaforma richiede una decisione esplicita dell'autore e una modifica della roadmap, non una spunta ottenuta dalle fixture correnti.
 
+La successiva [fixture HTTPS CDP Linux](ADR-019-CDP-HTTPS-BOUNDARY.md) verifica TLS e origine in un container di prova; non modifica il gate per abilitare il browser nel desktop su nessuna piattaforma.
+
 Fonti primarie: [Qt WebEngine su macOS e Windows](https://doc.qt.io/qt-6/qtwebengine-platform-notes.html), [flag Qt 6.6 per Fetch API](https://doc.qt.io/qt-6/qwebengineurlscheme.html), [App Sandbox e rete](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.network.client), [Landlock ABI per socket Unix](https://cdn.kernel.org/doc/html/latest/userspace-api/landlock.html).

@@ -103,6 +103,8 @@ Revisione CDP: l'[ADR-017](it/ADR-017-CDP-BROKER-BOUNDARY.md) collega la fixture
 
 Prova negativa Linux: il [laboratorio CDP](it/M3-BROWSER-CDP-LAB.md) richiede `EPERM` verso un canary TCP locale anche con rete container disponibile; senza il filtro WebFence la prova diagnostica fallisce. Non chiude gli altri requisiti del browser.
 
+Estensione HTTPS Linux: l'[ADR-019](it/ADR-019-CDP-HTTPS-BOUNDARY.md) aggiunge una fixture TLS al percorso CDP mediato: URL HTTPS in forma assoluta solo sul socket Unix, certificato e hostname verificati dal broker, origine sicura preservata nel renderer. `CONNECT` e HTTPS sul listener TCP restano negati; runtime desktop e prova su target pubblici restano aperti.
+
 Quinto blocco core: [login e sessioni di prova](it/M3-SESSIONS.md) su fixture loopback, con POST esplicito, verifica e identità separate; successive estensioni leggono un campo hidden CSRF e un cookie di pre-sessione facoltativo dall’URL di login esatto, e confermano una rotazione circoscritta del cookie durante la sessione. Il flusso desktop circoscritto è descritto sotto. Flussi reali restano aperti.
 
 Sesto blocco core: [import OpenAPI offline](it/M3-OPENAPI-IMPORT.md) come inventario di route statiche candidate sotto scope/policy, senza rete; la selezione di un seed nella GUI è descritta sotto. Crawling dinamico e controlli restano aperti.
@@ -125,14 +127,14 @@ Blocco core route osservate: [ripetizione esplicita di `fetch` GET](it/M3-OBSERV
 
 **Blocchi M3 già verificati, con perimetro circoscritto:**
 
-- [x] [Gate e proxy browser](it/M3-BROWSER-PROXY.md) e laboratori [Qt](it/M3-BROWSER-LAB.md)/[CDP](it/M3-BROWSER-CDP-LAB.md) su fixture: subresource e redirect fuori scope fermati; [filtro di rete Linux](it/M3-BROWSER-LINUX-NETWORK.md) nel percorso sperimentale.
+- [x] [Gate e proxy browser](it/M3-BROWSER-PROXY.md) e laboratori [Qt](it/M3-BROWSER-LAB.md)/[CDP HTTP(S)](it/M3-BROWSER-CDP-LAB.md) su fixture: subresource e redirect fuori scope fermati; [filtro di rete Linux](it/M3-BROWSER-LINUX-NETWORK.md) nel percorso sperimentale.
 - [x] [Login form e sessioni verificate per due identità](it/M3-SESSIONS.md), [run tra ruoli](it/M3-CROSS-ROLE-RUN.md) e [dialogo Qt](it/M3-AUTH-DESKTOP.md) con conferma distinta per il grant pubblico HTTPS.
 - [x] [Import OpenAPI offline](it/M3-OPENAPI-IMPORT.md), [visite GET statiche selezionate](it/M3-API-DESKTOP.md), [ripetizione esplicita di `fetch` GET](it/M3-OBSERVED-CRAWL.md) e [primo controllo tra ruoli](it/M3-CROSS-ROLE.md).
 - [x] Prima regola contestuale M3, [`AUTH-CROSSROLE-001`](it/M3-CROSS-ROLE.md), con fixture sintetiche positive/negative ed esiti nella [matrice M3](it/M3-VALIDATION.md).
 
 **Criteri di uscita M3:** le quattro caselle seguenti descrivono il risultato completo di ciascuna area, non i blocchi intermedi già spuntati. Restano aperte per i limiti specificati nella [matrice M3](it/M3-VALIDATION.md).
 
-- [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo: mancano runtime desktop confinato, HTTPS mediato, quote aggregate e prove sulle piattaforme abilitate.
+- [ ] Browser isolato, scope anche su subresource/redirect e limiti di processo: mancano runtime desktop confinato con HTTPS mediato, quote aggregate e prove sulle piattaforme abilitate.
 - [ ] Sessioni e flussi di login per account di test, verifica validità e separazione identità: mancano flussi oltre il form circoscritto e una prova completa su staging pubblico autorizzato.
 - [ ] Import OpenAPI, crawling dinamico, controlli contestuali e accessi tra ruoli: mancano crawler DOM nel prodotto, parametri dinamici e controlli API specifici.
 - [ ] Espansione delle famiglie di regole soltanto con fixture e misure pubblicate: manca l'espansione oltre la prima regola contestuale M3 e la misura su un corpus rappresentativo.
@@ -276,6 +278,8 @@ CDP revision: [ADR-017](en/ADR-017-CDP-BROKER-BOUNDARY.md) connects the fixture 
 
 Linux negative trial: the [CDP lab](en/M3-BROWSER-CDP-LAB.md) requires `EPERM` for a local TCP canary even with container networking available; the diagnostic build fails without the WebFence filter. Other browser requirements remain open.
 
+Linux HTTPS extension: [ADR-019](en/ADR-019-CDP-HTTPS-BOUNDARY.md) adds a TLS fixture to the broker-mediated CDP path: absolute-form HTTPS URLs only on the Unix socket, certificate and hostname verified by the broker, and secure origin preserved in the renderer. `CONNECT` and HTTPS on the TCP listener remain denied; the desktop runtime and a public-target trial remain open.
+
 Fifth core block: [test-account login and sessions](en/M3-SESSIONS.md) on loopback fixtures, with explicit POST, verification and separate identities; later extensions read one hidden CSRF field and an optional pre-session cookie from the exact login URL, and confirm a bounded cookie rotation during the session. The bounded desktop workflow is described below. Real workflows remain open.
 
 Sixth core block: [offline OpenAPI import](en/M3-OPENAPI-IMPORT.md) as an inventory of candidate static routes under scope/policy, without networking; selection of one seed in the GUI is described below. Dynamic crawling and checks remain open.
@@ -298,14 +302,14 @@ Observed-route core block: [explicit replay of GET `fetch` paths](en/M3-OBSERVED
 
 **Verified M3 blocks with limited scope:**
 
-- [x] [Browser gate and proxy](en/M3-BROWSER-PROXY.md) and [Qt](en/M3-BROWSER-LAB.md)/[CDP](en/M3-BROWSER-CDP-LAB.md) labs on fixtures: out-of-scope subresources and redirects stopped; [Linux network filter](en/M3-BROWSER-LINUX-NETWORK.md) on the experimental path.
+- [x] [Browser gate and proxy](en/M3-BROWSER-PROXY.md) and [Qt](en/M3-BROWSER-LAB.md)/[HTTP(S) CDP](en/M3-BROWSER-CDP-LAB.md) labs on fixtures: out-of-scope subresources and redirects stopped; [Linux network filter](en/M3-BROWSER-LINUX-NETWORK.md) on the experimental path.
 - [x] [Form login and verified sessions for two identities](en/M3-SESSIONS.md), [cross-role run](en/M3-CROSS-ROLE-RUN.md) and [Qt dialog](en/M3-AUTH-DESKTOP.md) with separate confirmation for a public HTTPS grant.
 - [x] [Offline OpenAPI import](en/M3-OPENAPI-IMPORT.md), [selected static GET visits](en/M3-API-DESKTOP.md), [explicit replay of GET `fetch` paths](en/M3-OBSERVED-CRAWL.md) and a [first cross-role check](en/M3-CROSS-ROLE.md).
 - [x] First M3 contextual rule, [`AUTH-CROSSROLE-001`](en/M3-CROSS-ROLE.md), with positive/negative synthetic fixtures and outcomes in the [M3 matrix](en/M3-VALIDATION.md).
 
 **M3 exit criteria:** the following four boxes represent the complete outcome of each area, not the intermediate blocks checked above. They remain open for the limits listed in the [M3 matrix](en/M3-VALIDATION.md).
 
-- [ ] Isolated browser, scope for subresources/redirects and process limits: a confined desktop runtime, mediated HTTPS, aggregate quotas and trials on enabled platforms remain missing.
+- [ ] Isolated browser, scope for subresources/redirects and process limits: a confined desktop runtime with mediated HTTPS, aggregate quotas and trials on enabled platforms remain missing.
 - [ ] Test-account sessions/login flows, validity checks and identity separation: flows beyond the narrow form login and a complete authorized public staging trial remain missing.
 - [ ] OpenAPI import, dynamic crawling, contextual checks and cross-role access testing: a product DOM crawler, dynamic parameters and API-specific checks remain missing.
 - [ ] Additional rule families only with fixtures and published measurements: expansion beyond the first M3 contextual rule and measurement on a representative corpus remain missing.

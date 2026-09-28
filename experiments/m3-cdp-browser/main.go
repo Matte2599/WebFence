@@ -44,6 +44,7 @@ type trialResult struct {
 	ScriptSeen      bool `json:"script_seen"`
 	APISeen         bool `json:"api_seen"`
 	RedirectBlocked bool `json:"redirect_blocked"`
+	SecureContext   bool `json:"secure_context"`
 	Document        int  `json:"document"`
 	Script          int  `json:"script"`
 	API             int  `json:"api"`
@@ -66,7 +67,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixture: HTTP document, script and fetch via gate/broker; outside resource, redirect and direct TCP canary blocked")
+		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) document, script and fetch via gate/broker; outside resource, redirect and direct TCP canary blocked")
 	}
 }
 
@@ -330,6 +331,7 @@ func (p *cdpPipe) receive() error {
 		}
 		for _, arg := range event.Args {
 			p.result.ScriptSeen = p.result.ScriptSeen || arg.Value == "wf-script"
+			p.result.SecureContext = p.result.SecureContext || arg.Value == "wf-secure-true"
 			p.result.APISeen = p.result.APISeen || arg.Value == "wf-api-synthetic"
 			p.result.RedirectBlocked = p.result.RedirectBlocked || arg.Value == "wf-redirect-502"
 		}
@@ -377,6 +379,10 @@ func (p *cdpPipe) fulfill(message cdpMessage) error {
 		return p.failRequest(event.RequestID, message.SessionID)
 	}
 	if event.Request.Method == http.MethodGet {
+		outside := "http://outside.test"
+		if strings.HasPrefix(p.origin, "https://") {
+			outside = "https://outside.test"
+		}
 		switch event.Request.URL {
 		case p.origin + "/app/":
 			if response.StatusCode == http.StatusOK {
@@ -394,11 +400,11 @@ func (p *cdpPipe) fulfill(message cdpMessage) error {
 			if response.StatusCode == http.StatusBadGateway {
 				p.result.Redirect++
 			}
-		case "http://outside.test/x":
+		case outside + "/x":
 			if response.StatusCode == http.StatusForbidden {
 				p.result.OutsideImage++
 			}
-		case "http://outside.test/secret":
+		case outside + "/secret":
 			p.result.OutsideRedirect++
 		}
 	}

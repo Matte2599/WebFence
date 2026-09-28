@@ -1,6 +1,7 @@
 package browser
 
 import (
+	"bufio"
 	"context"
 	"encoding/base64"
 	"io"
@@ -232,5 +233,26 @@ func TestProxyRejectsUnauthenticatedAndConnect(t *testing.T) {
 	}
 	if !strings.Contains(string(buffer[:n]), "403 Forbidden") || hits.Load() != 0 {
 		t.Fatalf("CONNECT was not rejected: %q, hits=%d", buffer[:n], hits.Load())
+	}
+	absolute, err := net.DialTimeout("tcp", strings.TrimPrefix(proxy.Endpoint(), "http://"), time.Second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer absolute.Close()
+	request, err := http.NewRequest(http.MethodGet, "https://site.test/app/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("Proxy-Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(username+":"+password)))
+	if err := request.WriteProxy(absolute); err != nil {
+		t.Fatal(err)
+	}
+	denied, err := http.ReadResponse(bufio.NewReader(absolute), request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	denied.Body.Close()
+	if denied.StatusCode != http.StatusForbidden || hits.Load() != 0 {
+		t.Fatalf("TCP proxy accepted absolute HTTPS: status=%d hits=%d", denied.StatusCode, hits.Load())
 	}
 }
