@@ -2,7 +2,7 @@
 
 [Italiano](../it/M3-VALIDATION.md) · [Roadmap](../ROADMAP.md) · [Development](DEVELOPMENT.md)
 
-**M3 is not closed.** The blocks below are narrow trials on synthetic fixtures; no external target scan was run. The four roadmap items remain open until their respective exit criteria are met. Green CI shows that code, self-tests and packaging specified by the jobs pass for the cited commit; it does not prove browser isolation or sufficient real-world coverage.
+**M3 is not closed.** The blocks below are narrow trials on synthetic fixtures; no external target scan was run. The roadmap checks verified intermediate blocks but leaves the four exit criteria open until they are met. Green CI shows that code, self-tests and packaging specified by the jobs pass for the cited commit; it does not prove browser isolation or sufficient real-world coverage.
 
 | M3 item | Implemented and verifiable | Missing for closure |
 | --- | --- | --- |

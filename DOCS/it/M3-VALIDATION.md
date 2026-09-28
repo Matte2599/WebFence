@@ -2,7 +2,7 @@
 
 [English](../en/M3-VALIDATION.md) · [Roadmap](../ROADMAP.md) · [Sviluppo](DEVELOPMENT.md)
 
-**M3 non è chiusa.** I blocchi sotto sono prove circoscritte su fixture sintetiche; nessuna scansione di target esterni è stata eseguita. Le quattro voci della roadmap restano aperte finché non sono soddisfatti i rispettivi criteri di uscita. La CI verde dimostra che codice, self-test e packaging previsti dai job passano sul commit indicato, non che il browser sia isolato o che la copertura reale sia sufficiente.
+**M3 non è chiusa.** I blocchi sotto sono prove circoscritte su fixture sintetiche; nessuna scansione di target esterni è stata eseguita. La roadmap spunta i blocchi intermedi verificati, ma lascia aperti i quattro criteri di uscita finché non sono soddisfatti. La CI verde dimostra che codice, self-test e packaging previsti dai job passano sul commit indicato, non che il browser sia isolato o che la copertura reale sia sufficiente.
 
 | Voce M3 | Implementato e verificabile | Mancante per la chiusura |
 | --- | --- | --- |
