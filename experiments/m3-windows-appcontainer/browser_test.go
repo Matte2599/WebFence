@@ -47,7 +47,7 @@ func TestCDPBoundary(t *testing.T) {
 func TestBrowserEnvironmentDoesNotInheritSecrets(t *testing.T) {
 	t.Setenv("WF_SYNTHETIC_SECRET", "must-not-reach-browser")
 	t.Setenv("SystemRoot", `C:\Windows`)
-	block := browserEnvironment(`C:\fixture`)
+	block := browserEnvironment(`C:\fixture`, true)
 	decoded := string(utf16.Decode(block))
 	if strings.Contains(decoded, "WF_SYNTHETIC_SECRET") || strings.Contains(decoded, "must-not-reach-browser") {
 		t.Fatal("secret inherited")

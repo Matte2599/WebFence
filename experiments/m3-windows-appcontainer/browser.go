@@ -152,7 +152,7 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool, o
 	startup.Cb = uint32(unsafe.Sizeof(startup))
 	startup.Flags = windows.STARTF_USESTDHANDLES
 	startup.StdInput, startup.StdOutput, startup.StdErr = handles[0], handles[2], handles[2]
-	environment := browserEnvironment(profile)
+	environment := browserEnvironment(profile, outerOnly)
 	var process windows.ProcessInformation
 	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|windows.CREATE_UNICODE_ENVIRONMENT, &environment[0], nil, &startup.StartupInfo, &process); err != nil {
 		return fmt.Errorf("CreateProcess: %w", err)
@@ -330,9 +330,19 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 
 // Deliberately exclude the runner/user environment and its credentials. Profile
 // paths refer only to the disposable directory already granted to the container.
-func browserEnvironment(profile string) []uint16 {
+func browserEnvironment(profile string, privateHome bool) []uint16 {
 	system := os.Getenv("SystemRoot")
 	entries := []string{"SystemRoot=" + system, "WINDIR=" + system, "SystemDrive=" + filepath.VolumeName(system), "PATH=" + filepath.Join(system, "System32"), "TEMP=" + profile, "TMP=" + profile, "USERPROFILE=" + profile, "LOCALAPPDATA=" + profile, "APPDATA=" + profile}
+	// Desktop Chrome verifies that --user-data-dir differs from its known
+	// default directory; preserve only these OS path variables for that control.
+	if !privateHome {
+		entries = entries[:6]
+		for _, key := range []string{"USERPROFILE", "LOCALAPPDATA", "APPDATA"} {
+			if value := os.Getenv(key); value != "" {
+				entries = append(entries, key+"="+value)
+			}
+		}
+	}
 	var block []uint16
 	for _, entry := range entries {
 		block = append(block, windows.StringToUTF16(entry)...)
