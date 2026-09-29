@@ -228,7 +228,7 @@ func runTrial(chrome, scheme string) error {
 	observed, dropped := proxy.Observations()
 	if !result.Loaded || !result.ScriptSeen || !result.APISeen || !result.RedirectBlocked ||
 		!result.RevokedBlocked || !result.AfterRevokedDenied ||
-		!result.AllowedFileLoaded || !result.DeniedFileBlocked ||
+		!result.AllowedFileLoaded || !result.DeniedFileBlocked || !result.BrowserNavigationBlocked ||
 		result.SecureContext != (scheme == "https") ||
 		result.Document != 1 || result.Script != 1 || result.API != 1 || result.Redirect != 1 ||
 		result.Revoked != 1 || result.AfterRevoked != 1 ||

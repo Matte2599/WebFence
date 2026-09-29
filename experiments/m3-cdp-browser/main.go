@@ -43,23 +43,24 @@ type helperConfig struct {
 }
 
 type trialResult struct {
-	Loaded             bool `json:"loaded"`
-	ScriptSeen         bool `json:"script_seen"`
-	APISeen            bool `json:"api_seen"`
-	RedirectBlocked    bool `json:"redirect_blocked"`
-	RevokedBlocked     bool `json:"revoked_blocked"`
-	AfterRevokedDenied bool `json:"after_revoked_denied"`
-	AllowedFileLoaded  bool `json:"allowed_file_loaded"`
-	DeniedFileBlocked  bool `json:"denied_file_blocked"`
-	SecureContext      bool `json:"secure_context"`
-	Document           int  `json:"document"`
-	Script             int  `json:"script"`
-	API                int  `json:"api"`
-	Redirect           int  `json:"redirect"`
-	Revoked            int  `json:"revoked"`
-	AfterRevoked       int  `json:"after_revoked"`
-	OutsideImage       int  `json:"outside_image"`
-	OutsideRedirect    int  `json:"outside_redirect"`
+	Loaded                   bool `json:"loaded"`
+	ScriptSeen               bool `json:"script_seen"`
+	APISeen                  bool `json:"api_seen"`
+	RedirectBlocked          bool `json:"redirect_blocked"`
+	RevokedBlocked           bool `json:"revoked_blocked"`
+	AfterRevokedDenied       bool `json:"after_revoked_denied"`
+	AllowedFileLoaded        bool `json:"allowed_file_loaded"`
+	DeniedFileBlocked        bool `json:"denied_file_blocked"`
+	BrowserNavigationBlocked bool `json:"browser_navigation_blocked"`
+	SecureContext            bool `json:"secure_context"`
+	Document                 int  `json:"document"`
+	Script                   int  `json:"script"`
+	API                      int  `json:"api"`
+	Redirect                 int  `json:"redirect"`
+	Revoked                  int  `json:"revoked"`
+	AfterRevoked             int  `json:"after_revoked"`
+	OutsideImage             int  `json:"outside_image"`
+	OutsideRedirect          int  `json:"outside_redirect"`
 }
 
 func main() {
@@ -76,7 +77,7 @@ func main() {
 		os.Exit(1)
 	}
 	if len(os.Args) == 1 {
-		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, revocation, direct TCP, Chromium file and renderer sandbox canaries checked")
+		fmt.Println("PASS M3 CDP broker fixtures: HTTP(S) gate/broker, outside resource/redirect, revocation, direct TCP and browser navigation, Chromium file and renderer sandbox canaries checked")
 	}
 }
 
@@ -143,7 +144,7 @@ func runChild() error {
 		return errors.New("synthetic private file was unavailable before confinement")
 	}
 	client := brokerClient(config, inherited)
-	result, err := runCDP(config.Chrome, config.Origin, config.DeniedFile, client)
+	result, err := runCDP(config.Chrome, config.Origin, config.CanaryAddress, config.DeniedFile, client)
 	if err != nil {
 		return err
 	}
@@ -171,7 +172,7 @@ type cdpPipe struct {
 	client     *http.Client
 }
 
-func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult, error) {
+func runCDP(chrome, origin, canaryAddress, deniedFile string, client *http.Client) (trialResult, error) {
 	var empty trialResult
 	profile, err := os.MkdirTemp("", "wf-cdp-profile-")
 	if err != nil {
@@ -271,22 +272,46 @@ func runCDP(chrome, origin, deniedFile string, client *http.Client) (trialResult
 	if err := checkRendererSandbox(cmd.Process.Pid); err != nil {
 		return empty, err
 	}
+	if err := pipe.checkBrowserDirectNavigation(session, canaryAddress); err != nil {
+		return empty, err
+	}
 	if err := pipe.checkBrowserFileBoundary(session, profile, deniedFile); err != nil {
 		return empty, err
 	}
 	return pipe.result, nil
 }
 
-// The HTTP(S) fixture is complete before disabling Fetch interception. Only
-// two locally created plaintext files are navigated through this CDP session.
+// Once the mediated HTTP(S) fixture is complete, turn off CDP interception
+// and navigate the browser directly to a synthetic listener. An error from
+// Chromium alone is insufficient: the parent also requires zero hits at the
+// listener, including when the container has a working network.
+func (p *cdpPipe) checkBrowserDirectNavigation(session, canaryAddress string) error {
+	if _, err := p.command("Fetch.disable", nil, session); err != nil {
+		return err
+	}
+	response, err := p.command("Page.navigate", map[string]any{
+		"url": "http://" + canaryAddress + "/canary-navigation",
+	}, session)
+	if err != nil {
+		return err
+	}
+	var navigation struct {
+		ErrorText string `json:"errorText"`
+	}
+	if err := json.Unmarshal(response, &navigation); err != nil || navigation.ErrorText == "" {
+		return errors.New("browser direct navigation was not denied")
+	}
+	p.result.BrowserNavigationBlocked = true
+	return nil
+}
+
+// The HTTP(S) fixture and direct-navigation canary are complete before these
+// two locally created plaintext files are navigated through the CDP session.
 func (p *cdpPipe) checkBrowserFileBoundary(session, profile, deniedFile string) error {
 	allowedFile := filepath.Join(profile, "allowed-canary.txt")
 	const allowedContent = "synthetic-browser-private-allowed"
 	if err := os.WriteFile(allowedFile, []byte(allowedContent), 0600); err != nil {
 		return errors.New("cannot prepare allowed browser file canary")
-	}
-	if _, err := p.command("Fetch.disable", nil, session); err != nil {
-		return err
 	}
 	allowedURL := (&url.URL{Scheme: "file", Path: allowedFile}).String()
 	priorLoads := p.loadEvents
