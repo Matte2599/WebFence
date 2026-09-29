@@ -1,0 +1,33 @@
+name: M3 Windows browser feasibility (known unsupported)
+
+# Explicit experimental run. A failed confined startup remains a failed job;
+# it is never converted into a passing runtime or a completed M3 criterion.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-11-arm]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    env:
+      CGO_ENABLED: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - name: Compile optional lab
+        shell: pwsh
+        run: |
+          go build -o m3-appcontainer.exe ./experiments/m3-windows-appcontainer
+          if ($LASTEXITCODE -ne 0) { throw 'Lab compilation failed' }
+      - name: Require CDP and DOM inside AppContainer
+        shell: pwsh
+        run: ./experiments/m3-windows-appcontainer/run-browser.ps1

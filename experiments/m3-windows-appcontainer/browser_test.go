@@ -20,6 +20,8 @@ func TestCDPBoundary(t *testing.T) {
 		{"synthetic DOM", valid, true},
 		{"event before response", `{"method":"Target.targetCreated"}` + "\x00" + valid, true},
 		{"closed pipe", "", false},
+		{"missing target", strings.Replace(valid, `"targetId":"target"`, `"targetId":""`, 1), false},
+		{"missing session", strings.Replace(valid, `"sessionId":"session"`, `"sessionId":""`, 1), false},
 		{"oversized frame", strings.Repeat("x", 64<<10) + "\x00", false},
 		{"protocol error", `{"id":1,"error":{"code":-1}}` + "\x00", false},
 		{"DOM mismatch", strings.Replace(valid, "local fixture", "wrong", 1), false},

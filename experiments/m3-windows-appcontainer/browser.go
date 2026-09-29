@@ -19,14 +19,18 @@ import (
 
 // browserTrial keeps the browser's own sandbox enabled. The control establishes
 // that this browser accepts the inherited CDP handles before testing AppContainer.
-func browserTrial(executable string, sid *windows.SID) error {
+func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
 	if !filepath.IsAbs(executable) {
 		return errors.New("absolute browser path required")
 	}
 	if info, err := os.Stat(executable); err != nil || !info.Mode().IsRegular() {
 		return errors.New("browser executable unavailable")
 	}
-	for _, confined := range []bool{false, true} {
+	modes := []bool{false, true}
+	if controlOnly {
+		modes = []bool{false}
+	}
+	for _, confined := range modes {
 		label := "control"
 		if confined {
 			label = "appcontainer"
@@ -173,7 +177,11 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	browserWrite.Close()
 	logWrite.Close()
 	logs := make(chan string, 1)
-	go func() { data, _ := io.ReadAll(io.LimitReader(logRead, 8192)); logs <- string(data) }()
+	go func() {
+		data, _ := io.ReadAll(io.LimitReader(logRead, 8192))
+		logs <- string(data)
+		_, _ = io.Copy(io.Discard, logRead)
+	}()
 	done := make(chan error, 1)
 	go func() { done <- checkBrowserCDP(parentRead, parentWrite) }()
 	select {
@@ -184,8 +192,12 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	var exitCode uint32
 	windows.GetExitCodeProcess(process.Process, &exitCode)
 	// Stop all descendants before inspecting logs and deleting the profile.
-	windows.TerminateJobObject(job, 1)
-	windows.WaitForSingleObject(process.Process, 5000)
+	if stopErr := windows.TerminateJobObject(job, 1); stopErr != nil {
+		return fmt.Errorf("terminate browser job: %w", stopErr)
+	}
+	if state, waitErr := windows.WaitForSingleObject(process.Process, 5000); waitErr != nil || state != windows.WAIT_OBJECT_0 {
+		return fmt.Errorf("browser cleanup wait=%d error=%v", state, waitErr)
+	}
 	if err != nil {
 		select {
 		case log := <-logs:
@@ -252,11 +264,17 @@ func checkBrowserCDP(input io.Reader, output io.Writer) error {
 	if err := call("Target.createTarget", map[string]any{"url": "about:blank"}, "", &target); err != nil {
 		return err
 	}
+	if target.ID == "" {
+		return errors.New("missing CDP target")
+	}
 	var session struct {
 		ID string `json:"sessionId"`
 	}
 	if err := call("Target.attachToTarget", map[string]any{"targetId": target.ID, "flatten": true}, "", &session); err != nil {
 		return err
+	}
+	if session.ID == "" {
+		return errors.New("missing CDP session")
 	}
 	var result struct {
 		Result struct {

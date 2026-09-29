@@ -297,31 +297,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'AppContainer canary failed' }
           go test ./experiments/m3-windows-appcontainer
           if ($LASTEXITCODE -ne 0) { throw 'CDP protocol tests failed' }
-      - name: Browser startup inside AppContainer
+      - name: Browser CDP and DOM positive controls (no AppContainer browser claim)
         shell: pwsh
-        run: |
-          $candidates = @(
-            "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe",
-            "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe",
-            "$env:ProgramFiles\Google\Chrome\Application\chrome.exe",
-            "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe"
-          )
-          $browsers = @($candidates | Where-Object { Test-Path $_ })
-          if (!$browsers.Count) { throw 'Browser executable unavailable' }
-          $failed = $false
-          foreach ($browser in $browsers) {
-            Write-Output "Browser trial: $browser"
-            ./m3-appcontainer.exe --browser $browser
-            if ($LASTEXITCODE -ne 0) { $failed = $true }
-          }
-          if ($failed) { throw 'AppContainer browser trial failed' }
-      - name: Browser failure diagnostics
-        if: failure()
-        shell: pwsh
-        run: |
-          $events = Get-WinEvent -FilterHashtable @{LogName='Application'; Id=1000; StartTime=(Get-Date).AddMinutes(-10)} -ErrorAction SilentlyContinue
-          $events | Where-Object { $_.Message -match 'msedge.exe|chrome.exe' } | Select-Object -First 4 -ExpandProperty Message
-          exit 0
+        run: ./experiments/m3-windows-appcontainer/run-browser.ps1 -ControlOnly
 
   debian-package:
     strategy:

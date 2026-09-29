@@ -49,6 +49,8 @@ Le credenziali, URL, query, header e corpi non sono inclusi nei risultati redatt
 
 **Prova intermedia di egress dal browser, 29 settembre 2026:** dopo la fixture HTTP(S) il laboratorio Linux CDP disabilita l’intercettazione e verifica che una navigazione HTTP diretta fallisca senza alcun contatto con il listener locale. Una build diagnostica senza il filtro, e senza il controllo TCP iniziale, fallisce la prova HTTP; un tentativo WebSocket non discriminava il filtro e non è usato come evidenza. Su ARM64 sono passate tre ripetizioni della prova completa per ciascuna modalità container `none`/`bridge`, con quota 1 GiB/256 PID. La prova riguarda questo percorso sintetico; non dimostra contenimento completo di pagine ostili o del runtime desktop sulle tre piattaforme. CI di branch e merge da verificare separatamente.
 
+**Avvio browser Windows, 29 settembre 2026:** il [confronto Edge/Chrome](M3-BROWSER-PLATFORM-FEASIBILITY.md#avvio-browser-windows--29-settembre-2026) passa nei controlli CDP/DOM fuori AppContainer sui due runner; dentro AppContainer entrambi falliscono prima della risposta CDP. Chrome segnala una pipe Crashpad negata, Edge termina con `0xc0000005`. Il workflow sperimentale completo conserva il fallimento; la CI ordinaria verifica canary, protocollo e controlli positivi. Nessun runtime Windows abilitato e nessun criterio M3 chiuso.
+
 ## Test complessivo
 
 **Verifica locale integrata del commit `b82693a`, 27 settembre 2026:** Apple Silicon, macOS 26.6.2, Go 1.27.1, Qt 6.11.2. Tutti i comandi seguenti sono terminati con codice zero; hanno usato solo fixture sintetiche e loopback.

@@ -49,6 +49,8 @@ Credentials, URLs, queries, headers and bodies are absent from the redacted resu
 
 **Intermediate browser-egress trial, September 29, 2026:** after the HTTP(S) fixture, the Linux CDP lab disables interception and verifies that direct HTTP navigation fails without any contact with the local listener. A diagnostic build without the filter and the initial TCP check fails the HTTP trial; a WebSocket attempt did not discriminate the filter and is not used as evidence. On ARM64, three repetitions of the complete trial passed for each container mode (`none`/`bridge`) with a 1 GiB/256 PID quota. This checks one synthetic path; it does not prove complete hostile-page containment or the desktop runtime on all three platforms. Branch and merge CI remain to be checked separately.
 
+**Windows browser startup, September 29, 2026:** the [Edge/Chrome comparison](M3-BROWSER-PLATFORM-FEASIBILITY.md#windows-browser-startup--september-29-2026) passes CDP/DOM controls outside AppContainer on both runners; inside AppContainer both fail before the CDP response. Chrome reports a denied Crashpad pipe; Edge exits with `0xc0000005`. The complete experimental workflow preserves the failure; ordinary CI verifies the canary, protocol and positive controls. No Windows runtime is enabled and no M3 criterion is closed.
+
 ## Overall test
 
 **Integrated local verification of commit `b82693a`, September 27, 2026:** Apple Silicon, macOS 26.6.2, Go 1.27.1, Qt 6.11.2. Every command below exited successfully; only synthetic fixtures and loopback were used.
