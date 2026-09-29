@@ -270,6 +270,22 @@ jobs:
         shell: pwsh
         run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources
 
+  m3-windows-appcontainer-lab:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    env:
+      CGO_ENABLED: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - name: AppContainer token, loopback and job boundary
+        shell: pwsh
+        run: |
+          go build -o m3-appcontainer.exe ./experiments/m3-windows-appcontainer
+          ./m3-appcontainer.exe
+
   debian-package:
     strategy:
       fail-fast: false
