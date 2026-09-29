@@ -97,6 +97,8 @@ Prova Linux successiva: [filtro seccomp del helper Qt](it/M3-BROWSER-LINUX-NETWO
 
 La [fattibilità multipiattaforma](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) registra i limiti osservati di App Sandbox/WebKit su macOS, Qt WebEngine con MinGW su Windows e dello stack Qt/Unix su Ubuntu 24.04. L'autore ha confermato nell'[ADR-015](it/ADR-015-BROWSER-PLATFORM-BOUNDARY.md) l'isolamento OS: il criterio resta aperto finché non esiste un confine ripetibile per ogni piattaforma in cui il browser sarà abilitato.
 
+La [prova macOS versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) riproduce il divieto TCP in un bundle App Sandbox senza rete, ma Google Chrome termina prima di rispondere via CDP. È un esito negativo di fattibilità, non un runtime confinato; il primo criterio resta aperto su macOS e Windows.
+
 Prova Linux aggiuntiva: la prima versione del [laboratorio Chromium/CDP](it/M3-BROWSER-CDP-LAB.md) conserva l'origine HTTP per documento, script e `fetch` con rete autonoma negata e redirect/subresource esterni bloccati su fixture sintetiche. Usa un container e `--no-sandbox`; inizialmente mancava il collegamento al gate/broker.
 
 Revisione CDP: l'[ADR-017](it/ADR-017-CDP-BROKER-BOUNDARY.md) collega la fixture al gate e al broker tramite socket Unix già connessi. Quattro richieste raggiungono il target loopback; risorsa fuori scope e redirect esterno sono negati. HTTPS, sandbox per pagine ostili, quote fuori dal container, desktop e altri OS restano aperti.
@@ -279,6 +281,8 @@ Next browser trial: [Unix-socket proxy and Qt scheme](en/M3-BROWSER-UNIX-SCHEME.
 Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.md) with direct TCP denied, working Unix IPC and inheritance by descendants. The revision passes parent-connected broker descriptors and denies new Unix connections. The first M3 item still needs HTTP(S) semantics, aggregate quotas, runtimes on other platforms and desktop integration.
 
 [Cross-platform feasibility](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) records observed App Sandbox/WebKit limits on macOS, Qt WebEngine with MinGW on Windows and the Qt/Unix stack on Ubuntu 24.04. The author confirmed OS isolation in [ADR-015](en/ADR-015-BROWSER-PLATFORM-BOUNDARY.md): the item remains open until a repeatable boundary exists on every platform where the browser will be enabled.
+
+The [versioned macOS trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) reproduces TCP denial in a network-disabled App Sandbox bundle, but Google Chrome exits before responding over CDP. This is a negative feasibility result, not a confined runtime; the first criterion remains open on macOS and Windows.
 
 Additional Linux trial: the first version of the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserved HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration was initially absent.
 
