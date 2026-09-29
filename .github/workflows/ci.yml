@@ -249,10 +249,6 @@ jobs:
       - run: go test ./internal/desktop
       - run: ./bin/webfence.exe --self-test
       - run: ./bin/webfence.exe --soak-test=10s
-      - name: Windows AppContainer network boundary lab
-        run: |
-          go build -o bin/wf-m3-appcontainer.exe ./experiments/m3-windows-appcontainer
-          ./bin/wf-m3-appcontainer.exe
       - name: Windows development ZIP
         run: >-
           python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")"
@@ -273,6 +269,22 @@ jobs:
       - name: Windows package without the toolchain on PATH
         shell: pwsh
         run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources
+
+  m3-windows-appcontainer-lab:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    env:
+      CGO_ENABLED: '0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - name: AppContainer token, loopback and job boundary
+        shell: pwsh
+        run: |
+          go build -o m3-appcontainer.exe ./experiments/m3-windows-appcontainer
+          ./m3-appcontainer.exe
 
   debian-package:
     strategy:

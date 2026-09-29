@@ -26,6 +26,7 @@ const (
 	allowedExit                   = 18
 	notSandboxedExit              = 19
 	otherNetworkExit              = 20
+	timedOutExit                  = 21
 )
 
 var (
@@ -67,6 +68,10 @@ func child(address string) {
 	if errors.Is(err, windows.WSAEACCES) {
 		os.Exit(deniedExit)
 	}
+	var networkError net.Error
+	if errors.As(err, &networkError) && networkError.Timeout() {
+		os.Exit(timedOutExit)
+	}
 	var errno syscall.Errno
 	if errors.As(err, &errno) && errno != 0 {
 		os.Exit(int(errno))
@@ -95,6 +100,11 @@ func parent() error {
 		return fmt.Errorf("synthetic listener: %w", err)
 	}
 	defer listener.Close()
+	control, err := net.DialTimeout("tcp4", listener.Addr().String(), time.Second)
+	if err != nil {
+		return fmt.Errorf("unsandboxed loopback control: %w", err)
+	}
+	_ = control.Close()
 	var nonce [8]byte
 	if _, err := rand.Read(nonce[:]); err != nil {
 		return fmt.Errorf("profile nonce: %w", err)
@@ -185,9 +195,13 @@ func parent() error {
 	if err := windows.GetExitCodeProcess(process.Process, &exitCode); err != nil {
 		return fmt.Errorf("child exit code: %w", err)
 	}
-	if exitCode != deniedExit {
-		return fmt.Errorf("sandboxed child returned %d instead of network denial", exitCode)
+	if exitCode != deniedExit && exitCode != timedOutExit {
+		return fmt.Errorf("sandboxed child returned %d instead of unreachable loopback", exitCode)
 	}
-	fmt.Println("PASS M3 Windows AppContainer: token confirmed, loopback TCP denied, process job limited")
+	if exitCode == timedOutExit {
+		fmt.Println("PASS M3 Windows AppContainer: token confirmed, unsandboxed loopback reachable, sandboxed loopback timed out, process job limited")
+	} else {
+		fmt.Println("PASS M3 Windows AppContainer: token confirmed, unsandboxed loopback reachable, sandboxed loopback denied, process job limited")
+	}
 	return nil
 }
