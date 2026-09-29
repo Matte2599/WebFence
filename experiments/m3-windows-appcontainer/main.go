@@ -12,6 +12,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"syscall"
 	"time"
 	"unsafe"
 
@@ -23,7 +24,8 @@ const (
 	tokenIsAppContainer           = 29
 	deniedExit                    = 17
 	allowedExit                   = 18
-	otherExit                     = 19
+	notSandboxedExit              = 19
+	otherNetworkExit              = 20
 )
 
 var (
@@ -55,7 +57,7 @@ func main() {
 
 func child(address string) {
 	if !strings.HasPrefix(address, "127.0.0.1:") || !inAppContainer() {
-		os.Exit(otherExit)
+		os.Exit(notSandboxedExit)
 	}
 	conn, err := net.DialTimeout("tcp4", address, time.Second)
 	if conn != nil {
@@ -65,7 +67,11 @@ func child(address string) {
 	if errors.Is(err, windows.WSAEACCES) {
 		os.Exit(deniedExit)
 	}
-	os.Exit(otherExit)
+	var errno syscall.Errno
+	if errors.As(err, &errno) && errno != 0 {
+		os.Exit(int(errno))
+	}
+	os.Exit(otherNetworkExit)
 }
 
 func inAppContainer() bool {
