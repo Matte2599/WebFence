@@ -270,6 +270,21 @@ jobs:
         shell: pwsh
         run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources
 
+  m3-macos-appsandbox-startup:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Pinned headless runtime inside App Sandbox
+        run: |
+          archive="$RUNNER_TEMP/webfence-headless-mac.zip"
+          curl --fail --location --max-time 120 'https://storage.googleapis.com/chrome-for-testing-public/154.0.8037.57/mac-arm64/chrome-headless-shell-mac-arm64.zip' --output "$archive"
+          python3 experiments/m3-macos-sandbox/headless_probe.py --runtime-archive "$archive"
+
   m3-windows-appcontainer-lab:
     strategy:
       fail-fast: false

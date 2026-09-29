@@ -10,7 +10,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 	"unsafe"
@@ -18,8 +17,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// browserTrial keeps the browser's own sandbox enabled. The control establishes
-// that this browser accepts the inherited CDP handles before testing AppContainer.
+// browserTrial keeps Chromium sandboxing for ordinary browser probes. The
+// explicit headless lab mode uses the outer AppContainer instead (ADR-022).
 func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bool) error {
 	if !filepath.IsAbs(executable) {
 		return errors.New("absolute browser path required")
@@ -45,8 +44,6 @@ func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bo
 }
 
 func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) error {
-	runtime.LockOSThread()
-	defer runtime.UnlockOSThread()
 	profile, err := os.MkdirTemp("", "wf-m3-browser-")
 	if err != nil {
 		return err
@@ -143,12 +140,8 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) e
 	startup.Cb = uint32(unsafe.Sizeof(startup))
 	startup.Flags = windows.STARTF_USESTDHANDLES
 	startup.StdInput, startup.StdOutput, startup.StdErr = handles[0], handles[2], handles[2]
-	debugFlags := uint32(0)
-	if confined {
-		debugFlags = 2
-	}
 	var process windows.ProcessInformation
-	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|debugFlags, nil, nil, &startup.StartupInfo, &process); err != nil {
+	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW, nil, nil, &startup.StartupInfo, &process); err != nil {
 		return fmt.Errorf("CreateProcess: %w", err)
 	}
 	defer windows.CloseHandle(process.Thread)
@@ -193,17 +186,21 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) e
 		_, _ = io.Copy(io.Discard, logRead)
 	}()
 	done := make(chan error, 1)
-	go func() { done <- checkBrowserCDP(parentRead, parentWrite) }()
-	if confined {
-		err = debugBrowser(process.Process, done)
-		windows.NewLazySystemDLL("kernel32.dll").NewProc("DebugActiveProcessStop").Call(uintptr(process.ProcessId))
-	} else {
-		select {
-		case err = <-done:
-		case <-time.After(20 * time.Second):
-			err = errors.New("CDP deadline exceeded")
+	go func() {
+		var extra func(cdpCall, string) error
+		if outerOnly {
+			extra = func(call cdpCall, session string) error {
+				return checkOuterBoundary(call, session, confined, job, sid, profile)
+			}
 		}
+		done <- browserCDP(parentRead, parentWrite, extra)
+	}()
+	select {
+	case err = <-done:
+	case <-time.After(20 * time.Second):
+		err = errors.New("CDP deadline exceeded")
 	}
+
 	var exitCode uint32
 	windows.GetExitCodeProcess(process.Process, &exitCode)
 	// Stop all descendants before inspecting logs and deleting the profile.
@@ -224,7 +221,11 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) e
 	return nil
 }
 
-func checkBrowserCDP(input io.Reader, output io.Writer) error {
+type cdpCall func(string, any, string, any) error
+
+func checkBrowserCDP(input io.Reader, output io.Writer) error { return browserCDP(input, output, nil) }
+
+func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) error) error {
 	reader := bufio.NewReaderSize(input, 64<<10)
 	var nextID int
 	call := func(method string, params any, session string, result any) error {
@@ -302,6 +303,9 @@ func checkBrowserCDP(input io.Reader, output io.Writer) error {
 	}
 	if result.Result.Type != "string" || result.Result.Value != "local fixture" {
 		return errors.New("synthetic DOM evaluation failed")
+	}
+	if extra != nil {
+		return extra(call, session.ID)
 	}
 	return nil
 }
