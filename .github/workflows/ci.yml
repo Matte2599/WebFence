@@ -294,6 +294,20 @@ jobs:
           if ((go env GOARCH) -ne '${{ matrix.arch }}') { throw 'unexpected Go architecture' }
           go build -o m3-appcontainer.exe ./experiments/m3-windows-appcontainer
           ./m3-appcontainer.exe
+          if ($LASTEXITCODE -ne 0) { throw 'AppContainer canary failed' }
+          go test ./experiments/m3-windows-appcontainer
+          if ($LASTEXITCODE -ne 0) { throw 'CDP protocol tests failed' }
+      - name: Browser startup inside AppContainer
+        shell: pwsh
+        run: |
+          $candidates = @(
+            "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe",
+            "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe"
+          )
+          $browser = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (!$browser) { throw 'Edge executable unavailable' }
+          ./m3-appcontainer.exe --browser $browser
+          if ($LASTEXITCODE -ne 0) { throw 'AppContainer browser trial failed' }
 
   debian-package:
     strategy:

@@ -1,7 +1,7 @@
 //go:build windows
 
 // This optional lab checks a network-denied Windows AppContainer with a
-// synthetic listener on a system-assigned loopback port. It has no browser.
+// synthetic listener on a system-assigned loopback port. An explicit --browser path additionally trials Chromium over inherited pipes.
 package main
 
 import (
@@ -46,7 +46,7 @@ func main() {
 	if len(os.Args) == 3 && os.Args[1] == "--sandboxed-child" {
 		child(os.Args[2])
 	}
-	if len(os.Args) != 1 {
+	if len(os.Args) != 1 && !(len(os.Args) == 3 && os.Args[1] == "--browser") {
 		fmt.Fprintln(os.Stderr, "invalid lab invocation")
 		os.Exit(1)
 	}
@@ -202,6 +202,9 @@ func parent() error {
 		fmt.Println("PASS M3 Windows AppContainer: token confirmed, unsandboxed loopback reachable, sandboxed loopback timed out, process job limited")
 	} else {
 		fmt.Println("PASS M3 Windows AppContainer: token confirmed, unsandboxed loopback reachable, sandboxed loopback denied, process job limited")
+	}
+	if len(os.Args) == 3 {
+		return browserTrial(os.Args[2], sid)
 	}
 	return nil
 }
