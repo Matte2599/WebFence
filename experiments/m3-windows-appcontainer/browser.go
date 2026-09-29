@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 	"unsafe"
@@ -44,6 +45,8 @@ func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
 }
 
 func runBrowser(executable string, sid *windows.SID, confined bool) error {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
 	profile, err := os.MkdirTemp("", "wf-m3-browser-")
 	if err != nil {
 		return err
@@ -138,7 +141,7 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	startup.Flags = windows.STARTF_USESTDHANDLES
 	startup.StdInput, startup.StdOutput, startup.StdErr = handles[0], handles[2], handles[2]
 	var process windows.ProcessInformation
-	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW, nil, nil, &startup.StartupInfo, &process); err != nil {
+	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|2, nil, nil, &startup.StartupInfo, &process); err != nil {
 		return fmt.Errorf("CreateProcess: %w", err)
 	}
 	defer windows.CloseHandle(process.Thread)
@@ -184,11 +187,7 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	}()
 	done := make(chan error, 1)
 	go func() { done <- checkBrowserCDP(parentRead, parentWrite) }()
-	select {
-	case err = <-done:
-	case <-time.After(20 * time.Second):
-		err = errors.New("CDP deadline exceeded")
-	}
+	err = debugBrowser(process.Process, done)
 	var exitCode uint32
 	windows.GetExitCodeProcess(process.Process, &exitCode)
 	// Stop all descendants before inspecting logs and deleting the profile.
