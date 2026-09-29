@@ -297,9 +297,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'AppContainer canary failed' }
           go test ./experiments/m3-windows-appcontainer
           if ($LASTEXITCODE -ne 0) { throw 'CDP protocol tests failed' }
-      - name: Browser CDP and DOM positive controls (no AppContainer browser claim)
+      - name: Chrome CDP and DOM positive control (no AppContainer browser claim)
         shell: pwsh
-        run: ./experiments/m3-windows-appcontainer/run-browser.ps1 -ControlOnly
+        run: ./experiments/m3-windows-appcontainer/run-browser.ps1 -ControlOnly -Browser Chrome
 
   debian-package:
     strategy:

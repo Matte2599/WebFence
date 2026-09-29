@@ -1,4 +1,7 @@
-param([switch]$ControlOnly)
+param(
+    [switch]$ControlOnly,
+    [ValidateSet('All', 'Chrome', 'Edge')][string]$Browser = 'All'
+)
 $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '../..')
 $candidates = @(
@@ -7,7 +10,11 @@ $candidates = @(
     "$env:ProgramFiles\Google\Chrome\Application\chrome.exe",
     "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe"
 )
-$browsers = @($candidates | Where-Object { Test-Path $_ })
+$browsers = @($candidates | Where-Object {
+    (Test-Path $_) -and ($Browser -eq 'All' -or
+        ($Browser -eq 'Chrome' -and $_ -like '*\Google\Chrome\*') -or
+        ($Browser -eq 'Edge' -and $_ -like '*\Microsoft\Edge\*'))
+})
 if (!$browsers.Count) { throw 'Browser executable unavailable' }
 $mode = '--browser'
 if ($ControlOnly) { $mode = '--browser-control' }
