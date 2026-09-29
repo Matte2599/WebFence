@@ -302,12 +302,26 @@ jobs:
         run: |
           $candidates = @(
             "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe",
-            "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe"
+            "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe",
+            "$env:ProgramFiles\Google\Chrome\Application\chrome.exe",
+            "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe"
           )
-          $browser = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (!$browser) { throw 'Edge executable unavailable' }
-          ./m3-appcontainer.exe --browser $browser
-          if ($LASTEXITCODE -ne 0) { throw 'AppContainer browser trial failed' }
+          $browsers = @($candidates | Where-Object { Test-Path $_ })
+          if (!$browsers.Count) { throw 'Browser executable unavailable' }
+          $failed = $false
+          foreach ($browser in $browsers) {
+            Write-Output "Browser trial: $browser"
+            ./m3-appcontainer.exe --browser $browser
+            if ($LASTEXITCODE -ne 0) { $failed = $true }
+          }
+          if ($failed) { throw 'AppContainer browser trial failed' }
+      - name: Browser failure diagnostics
+        if: failure()
+        shell: pwsh
+        run: |
+          $events = Get-WinEvent -FilterHashtable @{LogName='Application'; Id=1000; StartTime=(Get-Date).AddMinutes(-10)} -ErrorAction SilentlyContinue
+          $events | Where-Object { $_.Message -match 'msedge.exe|chrome.exe' } | Select-Object -First 4 -ExpandProperty Message
+          exit 0
 
   debian-package:
     strategy:
