@@ -124,7 +124,7 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) e
 			return err
 		}
 	}
-	args := []string{executable, "--headless=new", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-component-update", "--disable-sync", "--disable-extensions", "--disable-breakpad", "--disable-crash-reporter", "--host-resolver-rules=MAP * ~NOTFOUND", "--remote-debugging-pipe", fmt.Sprintf("--remote-debugging-io-pipes=%d,%d", handles[0], handles[1]), "--user-data-dir=" + profile, "--enable-logging=stderr", "about:blank"}
+	args := []string{executable, "--headless=new", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-component-update", "--disable-sync", "--disable-extensions", "--disable-breakpad", "--disable-crash-reporter", "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1", "--remote-debugging-pipe", fmt.Sprintf("--remote-debugging-io-pipes=%d,%d", handles[0], handles[1]), "--user-data-dir=" + profile, "--enable-logging=stderr", "about:blank"}
 	if confined && outerOnly {
 		args = append(args[:len(args)-1], "--no-sandbox", "about:blank")
 	}
@@ -247,9 +247,10 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 				return fmt.Errorf("%s: %w", method, err)
 			}
 			var reply struct {
-				ID     int             `json:"id"`
-				Result json.RawMessage `json:"result"`
-				Error  json.RawMessage `json:"error"`
+				ID      int             `json:"id"`
+				Session string          `json:"sessionId"`
+				Result  json.RawMessage `json:"result"`
+				Error   json.RawMessage `json:"error"`
 			}
 			if err := json.Unmarshal(frame[:len(frame)-1], &reply); err != nil {
 				return err
@@ -259,6 +260,9 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 			}
 			if len(reply.Error) != 0 {
 				return fmt.Errorf("%s: protocol error", method)
+			}
+			if session != "" && reply.Session != session {
+				return errors.New("CDP session mismatch")
 			}
 			return json.Unmarshal(reply.Result, result)
 		}
@@ -293,7 +297,8 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 		return errors.New("missing CDP session")
 	}
 	var result struct {
-		Result struct {
+		Exception any `json:"exceptionDetails"`
+		Result    struct {
 			Type  string `json:"type"`
 			Value string `json:"value"`
 		} `json:"result"`
@@ -301,7 +306,7 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 	if err := call("Runtime.evaluate", map[string]any{"expression": "document.body.innerHTML='<button id=probe>local fixture</button>'; document.querySelector('#probe').textContent", "returnByValue": true}, session.ID, &result); err != nil {
 		return err
 	}
-	if result.Result.Type != "string" || result.Result.Value != "local fixture" {
+	if result.Exception != nil || result.Result.Type != "string" || result.Result.Value != "local fixture" {
 		return errors.New("synthetic DOM evaluation failed")
 	}
 	if extra != nil {

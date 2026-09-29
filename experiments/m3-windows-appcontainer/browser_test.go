@@ -12,7 +12,7 @@ func TestCDPBoundary(t *testing.T) {
 	valid := `{"id":1,"result":{"product":"fixture/1"}}` + "\x00" +
 		`{"id":2,"result":{"targetId":"target"}}` + "\x00" +
 		`{"id":3,"result":{"sessionId":"session"}}` + "\x00" +
-		`{"id":4,"result":{"result":{"type":"string","value":"local fixture"}}}` + "\x00"
+		`{"id":4,"sessionId":"session","result":{"result":{"type":"string","value":"local fixture"}}}` + "\x00"
 	tests := []struct {
 		name, data string
 		valid      bool
@@ -20,6 +20,8 @@ func TestCDPBoundary(t *testing.T) {
 		{"synthetic DOM", valid, true},
 		{"event before response", `{"method":"Target.targetCreated"}` + "\x00" + valid, true},
 		{"closed pipe", "", false},
+		{"wrong response session", strings.Replace(valid, `"id":4,"sessionId":"session"`, `"id":4,"sessionId":"other"`, 1), false},
+		{"exception with value", strings.Replace(valid, `"result":{"type":"string","value":"local fixture"}`, `"exceptionDetails":{"text":"fixture"},"result":{"type":"string","value":"local fixture"}`, 1), false},
 		{"missing target", strings.Replace(valid, `"targetId":"target"`, `"targetId":""`, 1), false},
 		{"missing session", strings.Replace(valid, `"sessionId":"session"`, `"sessionId":""`, 1), false},
 		{"oversized frame", strings.Repeat("x", 64<<10) + "\x00", false},
