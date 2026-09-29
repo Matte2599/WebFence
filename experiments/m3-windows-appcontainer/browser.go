@@ -20,7 +20,7 @@ import (
 
 // browserTrial keeps the browser's own sandbox enabled. The control establishes
 // that this browser accepts the inherited CDP handles before testing AppContainer.
-func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
+func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bool) error {
 	if !filepath.IsAbs(executable) {
 		return errors.New("absolute browser path required")
 	}
@@ -36,7 +36,7 @@ func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
 		if confined {
 			label = "appcontainer"
 		}
-		if err := runBrowser(executable, sid, confined); err != nil {
+		if err := runBrowser(executable, sid, confined, outerOnly); err != nil {
 			return fmt.Errorf("browser %s: %w", label, err)
 		}
 		fmt.Printf("PASS M3 Windows browser %s: CDP version and synthetic DOM script; job limited\n", label)
@@ -44,7 +44,7 @@ func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
 	return nil
 }
 
-func runBrowser(executable string, sid *windows.SID, confined bool) error {
+func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) error {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 	profile, err := os.MkdirTemp("", "wf-m3-browser-")
@@ -128,6 +128,9 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 		}
 	}
 	args := []string{executable, "--headless=new", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-component-update", "--disable-sync", "--disable-extensions", "--disable-breakpad", "--disable-crash-reporter", "--host-resolver-rules=MAP * ~NOTFOUND", "--remote-debugging-pipe", fmt.Sprintf("--remote-debugging-io-pipes=%d,%d", handles[0], handles[1]), "--user-data-dir=" + profile, "--enable-logging=stderr", "about:blank"}
+	if confined && outerOnly {
+		args = append(args[:len(args)-1], "--no-sandbox", "about:blank")
+	}
 	for i := range args {
 		args[i] = windows.EscapeArg(args[i])
 	}

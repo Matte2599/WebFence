@@ -309,7 +309,7 @@ jobs:
           $runtimeDir = Join-Path $runtimeRoot 'chrome-headless-shell-win64'
           icacls $runtimeDir /grant '*S-1-15-2-1:(OI)(CI)(RX)' /T | Out-Null
           if ($LASTEXITCODE -ne 0) { throw 'Runtime read permission failed' }
-          ./m3-appcontainer.exe --browser (Join-Path $runtimeDir 'chrome-headless-shell.exe')
+          ./m3-appcontainer.exe --headless-appcontainer (Join-Path $runtimeDir 'chrome-headless-shell.exe')
           if ($LASTEXITCODE -ne 0) { throw 'Confined startup failed' }
       - name: Chrome CDP and DOM positive control (no AppContainer browser claim)
         shell: pwsh
