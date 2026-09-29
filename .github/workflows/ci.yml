@@ -249,6 +249,10 @@ jobs:
       - run: go test ./internal/desktop
       - run: ./bin/webfence.exe --self-test
       - run: ./bin/webfence.exe --soak-test=10s
+      - name: Windows AppContainer network boundary lab
+        run: |
+          go build -o bin/wf-m3-appcontainer.exe ./experiments/m3-windows-appcontainer
+          ./bin/wf-m3-appcontainer.exe
       - name: Windows development ZIP
         run: >-
           python3 scripts/package-windows.py "$(cygpath -w /ucrt64)" "$(cygpath -w "$PWD/bin/webfence.exe")"
