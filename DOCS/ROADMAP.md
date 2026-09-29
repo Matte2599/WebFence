@@ -101,6 +101,8 @@ La [prova macOS versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) riproduce il 
 
 La [prova Windows AppContainer versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) passa in CI su Windows Server 2022 amd64 e Windows 11 ARM64: il controllo non confinato raggiunge il listener locale, il figlio senza capacità di rete va in timeout e viene assegnato a un Job Object. Non prova il browser né l'egress generale; il criterio resta aperto.
 
+La successiva prova Edge/Chrome avvia CDP e una pagina sintetica nei controlli, ma fallisce dentro AppContainer su entrambi i runner: pipe Crashpad negata in Chrome, uscita `0xc0000005` in Edge. Il probe completo resta un workflow sperimentale con esito negativo; risolvere l’avvio confinato è il prossimo passo Windows prima del broker HTTPS.
+
 Prova Linux aggiuntiva: la prima versione del [laboratorio Chromium/CDP](it/M3-BROWSER-CDP-LAB.md) conserva l'origine HTTP per documento, script e `fetch` con rete autonoma negata e redirect/subresource esterni bloccati su fixture sintetiche. Usa un container e `--no-sandbox`; inizialmente mancava il collegamento al gate/broker.
 
 Revisione CDP: l'[ADR-017](it/ADR-017-CDP-BROKER-BOUNDARY.md) collega la fixture al gate e al broker tramite socket Unix già connessi. Quattro richieste raggiungono il target loopback; risorsa fuori scope e redirect esterno sono negati. HTTPS, sandbox per pagine ostili, quote fuori dal container, desktop e altri OS restano aperti.
@@ -287,6 +289,8 @@ Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.
 The [versioned macOS trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) reproduces TCP denial in a network-disabled App Sandbox bundle, but Google Chrome exits before responding over CDP. This is a negative feasibility result, not a confined runtime; the first criterion remains open on macOS and Windows.
 
 The [versioned Windows AppContainer trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) passes on Windows Server 2022 amd64 and Windows 11 ARM64 CI: the unrestricted control reaches the local listener, the child without network capabilities times out, and it is assigned to a Job Object. It does not test a browser or general egress; the criterion remains open.
+
+The subsequent Edge/Chrome trial starts CDP and a synthetic page in the controls, but fails inside AppContainer on both runners: denied Crashpad pipe in Chrome, exit `0xc0000005` in Edge. The complete probe remains an experimental workflow with a negative outcome; fixing confined startup is the next Windows step before the HTTPS broker.
 
 Additional Linux trial: the first version of the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserved HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration was initially absent.
 
