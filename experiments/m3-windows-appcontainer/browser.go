@@ -140,8 +140,12 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	startup.Cb = uint32(unsafe.Sizeof(startup))
 	startup.Flags = windows.STARTF_USESTDHANDLES
 	startup.StdInput, startup.StdOutput, startup.StdErr = handles[0], handles[2], handles[2]
+	debugFlags := uint32(0)
+	if confined {
+		debugFlags = 2
+	}
 	var process windows.ProcessInformation
-	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|2, nil, nil, &startup.StartupInfo, &process); err != nil {
+	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|debugFlags, nil, nil, &startup.StartupInfo, &process); err != nil {
 		return fmt.Errorf("CreateProcess: %w", err)
 	}
 	defer windows.CloseHandle(process.Thread)
@@ -187,7 +191,16 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	}()
 	done := make(chan error, 1)
 	go func() { done <- checkBrowserCDP(parentRead, parentWrite) }()
-	err = debugBrowser(process.Process, done)
+	if confined {
+		err = debugBrowser(process.Process, done)
+		windows.NewLazySystemDLL("kernel32.dll").NewProc("DebugActiveProcessStop").Call(uintptr(process.ProcessId))
+	} else {
+		select {
+		case err = <-done:
+		case <-time.After(20 * time.Second):
+			err = errors.New("CDP deadline exceeded")
+		}
+	}
 	var exitCode uint32
 	windows.GetExitCodeProcess(process.Process, &exitCode)
 	// Stop all descendants before inspecting logs and deleting the profile.

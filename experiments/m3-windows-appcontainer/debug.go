@@ -38,6 +38,8 @@ func debugBrowser(process windows.Handle, done <-chan error) error {
 			exception := binary.LittleEndian.Uint32(event[16:20])
 			if exception == 0x80000003 && firstBreakpoint {
 				firstBreakpoint = false
+			} else if exception == 0x406d1388 {
+				status = 0x80010001
 			} else {
 				fmt.Printf("Startup debug exception: code=0x%x address=0x%x first=%d\n", exception, binary.LittleEndian.Uint64(event[32:40]), binary.LittleEndian.Uint32(event[168:172]))
 				status = 0x80010001
