@@ -99,7 +99,7 @@ La [fattibilità multipiattaforma](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) regist
 
 La [prova macOS versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) riproduce il divieto TCP in un bundle App Sandbox senza rete, ma Google Chrome termina prima di rispondere via CDP. È un esito negativo di fattibilità, non un runtime confinato; il primo criterio resta aperto su macOS e Windows.
 
-La [prova Windows AppContainer versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) passa in CI su Windows Server 2022: il controllo non confinato raggiunge il listener locale, il figlio senza capacità di rete va in timeout e viene assegnato a un Job Object. Non prova il browser né l'egress generale; il criterio resta aperto.
+La [prova Windows AppContainer versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) passa in CI su Windows Server 2022 amd64 e Windows 11 ARM64: il controllo non confinato raggiunge il listener locale, il figlio senza capacità di rete va in timeout e viene assegnato a un Job Object. Non prova il browser né l'egress generale; il criterio resta aperto.
 
 Prova Linux aggiuntiva: la prima versione del [laboratorio Chromium/CDP](it/M3-BROWSER-CDP-LAB.md) conserva l'origine HTTP per documento, script e `fetch` con rete autonoma negata e redirect/subresource esterni bloccati su fixture sintetiche. Usa un container e `--no-sandbox`; inizialmente mancava il collegamento al gate/broker.
 
@@ -286,7 +286,7 @@ Next Linux trial: [seccomp filter in the Qt helper](en/M3-BROWSER-LINUX-NETWORK.
 
 The [versioned macOS trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) reproduces TCP denial in a network-disabled App Sandbox bundle, but Google Chrome exits before responding over CDP. This is a negative feasibility result, not a confined runtime; the first criterion remains open on macOS and Windows.
 
-The [versioned Windows AppContainer trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) passes on Windows Server 2022 CI: the unrestricted control reaches the local listener, the child without network capabilities times out, and it is assigned to a Job Object. It does not test a browser or general egress; the criterion remains open.
+The [versioned Windows AppContainer trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) passes on Windows Server 2022 amd64 and Windows 11 ARM64 CI: the unrestricted control reaches the local listener, the child without network capabilities times out, and it is assigned to a Job Object. It does not test a browser or general egress; the criterion remains open.
 
 Additional Linux trial: the first version of the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserved HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration was initially absent.
 
