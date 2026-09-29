@@ -26,6 +26,18 @@ func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bo
 	if info, err := os.Stat(executable); err != nil || !info.Mode().IsRegular() {
 		return errors.New("browser executable unavailable")
 	}
+	outsidePath := ""
+	if outerOnly {
+		directory, err := os.MkdirTemp("", "wf-m3-outside-")
+		if err != nil {
+			return err
+		}
+		defer os.RemoveAll(directory)
+		outsidePath = filepath.Join(directory, "fixture.html")
+		if err := os.WriteFile(outsidePath, []byte("<p>outside fixture</p>"), 0600); err != nil {
+			return err
+		}
+	}
 	modes := []bool{false, true}
 	if controlOnly {
 		modes = []bool{false}
@@ -35,7 +47,7 @@ func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bo
 		if confined {
 			label = "appcontainer"
 		}
-		if err := runBrowser(executable, sid, confined, outerOnly); err != nil {
+		if err := runBrowser(executable, sid, confined, outerOnly, outsidePath); err != nil {
 			return fmt.Errorf("browser %s: %w", label, err)
 		}
 		fmt.Printf("PASS M3 Windows browser %s: CDP version and synthetic DOM script; job limited\n", label)
@@ -43,7 +55,7 @@ func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bo
 	return nil
 }
 
-func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) error {
+func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool, outsidePath string) error {
 	profile, err := os.MkdirTemp("", "wf-m3-browser-")
 	if err != nil {
 		return err
@@ -140,8 +152,9 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) e
 	startup.Cb = uint32(unsafe.Sizeof(startup))
 	startup.Flags = windows.STARTF_USESTDHANDLES
 	startup.StdInput, startup.StdOutput, startup.StdErr = handles[0], handles[2], handles[2]
+	environment := browserEnvironment(profile)
 	var process windows.ProcessInformation
-	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW, nil, nil, &startup.StartupInfo, &process); err != nil {
+	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|windows.CREATE_UNICODE_ENVIRONMENT, &environment[0], nil, &startup.StartupInfo, &process); err != nil {
 		return fmt.Errorf("CreateProcess: %w", err)
 	}
 	defer windows.CloseHandle(process.Thread)
@@ -190,7 +203,7 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool) e
 		var extra func(cdpCall, string) error
 		if outerOnly {
 			extra = func(call cdpCall, session string) error {
-				return checkOuterBoundary(call, session, confined, job, sid, profile)
+				return checkOuterBoundary(call, session, confined, job, sid, profile, outsidePath)
 			}
 		}
 		done <- browserCDP(parentRead, parentWrite, extra)
@@ -313,4 +326,16 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 		return extra(call, session.ID)
 	}
 	return nil
+}
+
+// Deliberately exclude the runner/user environment and its credentials. Profile
+// paths refer only to the disposable directory already granted to the container.
+func browserEnvironment(profile string) []uint16 {
+	system := os.Getenv("SystemRoot")
+	entries := []string{"SystemRoot=" + system, "WINDIR=" + system, "SystemDrive=" + filepath.VolumeName(system), "PATH=" + filepath.Join(system, "System32"), "TEMP=" + profile, "TMP=" + profile, "USERPROFILE=" + profile, "LOCALAPPDATA=" + profile, "APPDATA=" + profile}
+	var block []uint16
+	for _, entry := range entries {
+		block = append(block, windows.StringToUTF16(entry)...)
+	}
+	return append(block, 0)
 }

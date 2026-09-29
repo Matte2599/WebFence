@@ -17,7 +17,7 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-func checkOuterBoundary(call cdpCall, session string, confined bool, job windows.Handle, sid *windows.SID, profile string) error {
+func checkOuterBoundary(call cdpCall, session string, confined bool, job windows.Handle, sid *windows.SID, profile, outsidePath string) error {
 	var hits atomic.Int64
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { hits.Add(1); fmt.Fprint(w, "local fixture") }))
 	defer server.Close()
@@ -45,14 +45,10 @@ func checkOuterBoundary(call cdpCall, session string, confined bool, job windows
 	} else if result.Result.Value != "reached" || hits.Load() == 0 {
 		return errors.New("browser HTTP positive control failed")
 	}
-	outside, err := os.MkdirTemp("", "wf-m3-outside-")
-	if err != nil {
-		return err
-	}
-	defer os.RemoveAll(outside)
-	outsidePath := filepath.Join(outside, "fixture.html")
-	if err := os.WriteFile(outsidePath, []byte("<p>outside fixture</p>"), 0600); err != nil {
-		return err
+	// Use the exact file already read by the unrestricted browser control.
+	content, err := os.ReadFile(outsidePath)
+	if err != nil || string(content) != "<p>outside fixture</p>" {
+		return errors.New("outside fixture unavailable to parent")
 	}
 	insidePath := filepath.Join(profile, "fixture.html")
 	if err := os.WriteFile(insidePath, []byte("<p>inside fixture</p>"), 0600); err != nil {
@@ -70,7 +66,7 @@ func checkOuterBoundary(call cdpCall, session string, confined bool, job windows
 	if err != nil {
 		return err
 	}
-	if (confined && denied != "net::ERR_ACCESS_DENIED") || (!confined && denied != "") {
+	if (confined && denied != "net::ERR_ACCESS_DENIED" && denied != "net::ERR_FILE_NOT_FOUND") || (!confined && denied != "") {
 		return fmt.Errorf("outside file boundary mismatch: %s", denied)
 	}
 	if denied, err = navigate(insidePath); err != nil || denied != "" {

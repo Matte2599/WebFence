@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+	"unicode/utf16"
 )
 
 func TestCDPBoundary(t *testing.T) {
@@ -40,5 +41,18 @@ func TestCDPBoundary(t *testing.T) {
 				t.Fatal("evaluation omitted attached session")
 			}
 		})
+	}
+}
+
+func TestBrowserEnvironmentDoesNotInheritSecrets(t *testing.T) {
+	t.Setenv("WF_SYNTHETIC_SECRET", "must-not-reach-browser")
+	t.Setenv("SystemRoot", `C:\Windows`)
+	block := browserEnvironment(`C:\fixture`)
+	decoded := string(utf16.Decode(block))
+	if strings.Contains(decoded, "WF_SYNTHETIC_SECRET") || strings.Contains(decoded, "must-not-reach-browser") {
+		t.Fatal("secret inherited")
+	}
+	if !strings.Contains(decoded, "TEMP=C:\\fixture\x00") || !strings.HasSuffix(decoded, "\x00\x00") {
+		t.Fatal("invalid private Unicode environment")
 	}
 }
