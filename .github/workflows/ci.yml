@@ -271,7 +271,15 @@ jobs:
         run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources
 
   m3-windows-appcontainer-lab:
-    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2022
+            arch: amd64
+          - os: windows-11-arm
+            arch: arm64
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     env:
       CGO_ENABLED: '0'
@@ -283,6 +291,7 @@ jobs:
       - name: AppContainer token, loopback and job boundary
         shell: pwsh
         run: |
+          if ((go env GOARCH) -ne '${{ matrix.arch }}') { throw 'unexpected Go architecture' }
           go build -o m3-appcontainer.exe ./experiments/m3-windows-appcontainer
           ./m3-appcontainer.exe
 
