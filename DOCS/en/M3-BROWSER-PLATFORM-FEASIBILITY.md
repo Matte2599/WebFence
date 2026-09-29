@@ -44,3 +44,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Lab compilation failed' }
 The command discovers already installed browsers at standard paths and returns an error if no browser is found or a trial fails. It installs no software. The temporary profile grants access only to the created AppContainer and receives a low integrity label; installed browser directories remain unchanged. Logs and CDP frames are bounded. Protocol tests cover oversized frames, closed pipes, CDP errors, missing sessions/targets and failed DOM execution.
 
 **Outcome: the Windows runtime remains unavailable.** Engine IPC initialization inside the boundary must be fixed and retested before connecting the HTTPS broker, origin/session behavior and negative tests. General egress, local services, quotas under load and packaging remain unverified. This block neither closes M3 nor constitutes its final comprehensive test.
+
+## Subsequent macOS diagnosis
+
+On September 29, the local crash report and OS events for the 11:02:50 trial (Chrome PID 75546) were inspected. The sandbox denies the lookup of `com.apple.coreservices.launchservicesd`; immediately afterward, `_RegisterApplication` reports that it cannot obtain the ASN identifier and calls `abort`. The report confirms `SIGABRT` in the HIServices / `TransformProcessType` stack. This identifies the recorded reason for that startup: it does not prove that granting service access resolves every obstacle or preserves denial of egress through local services. No entitlement was expanded and no raw system report was committed. The macOS runtime remains open.
