@@ -46,7 +46,7 @@ func main() {
 	if len(os.Args) == 3 && os.Args[1] == "--sandboxed-child" {
 		child(os.Args[2])
 	}
-	if len(os.Args) != 1 && !(len(os.Args) == 3 && (os.Args[1] == "--browser" || os.Args[1] == "--browser-control")) {
+	if len(os.Args) != 1 && !(len(os.Args) == 3 && (os.Args[1] == "--browser" || os.Args[1] == "--browser-control" || os.Args[1] == "--headless-appcontainer")) {
 		fmt.Fprintln(os.Stderr, "invalid lab invocation")
 		os.Exit(1)
 	}
@@ -204,7 +204,7 @@ func parent() error {
 		fmt.Println("PASS M3 Windows AppContainer: token confirmed, unsandboxed loopback reachable, sandboxed loopback denied, process job limited")
 	}
 	if len(os.Args) == 3 {
-		return browserTrial(os.Args[2], sid, os.Args[1] == "--browser-control")
+		return browserTrial(os.Args[2], sid, os.Args[1] == "--browser-control", os.Args[1] == "--headless-appcontainer")
 	}
 	return nil
 }

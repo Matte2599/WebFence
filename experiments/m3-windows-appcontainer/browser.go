@@ -17,14 +17,26 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// browserTrial keeps the browser's own sandbox enabled. The control establishes
-// that this browser accepts the inherited CDP handles before testing AppContainer.
-func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
+// browserTrial keeps Chromium sandboxing for ordinary browser probes. The
+// explicit headless lab mode uses the outer AppContainer instead (ADR-022).
+func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bool) error {
 	if !filepath.IsAbs(executable) {
 		return errors.New("absolute browser path required")
 	}
 	if info, err := os.Stat(executable); err != nil || !info.Mode().IsRegular() {
 		return errors.New("browser executable unavailable")
+	}
+	outsidePath := ""
+	if outerOnly {
+		directory, err := os.MkdirTemp("", "wf-m3-outside-")
+		if err != nil {
+			return err
+		}
+		defer os.RemoveAll(directory)
+		outsidePath = filepath.Join(directory, "fixture.html")
+		if err := os.WriteFile(outsidePath, []byte("<p>outside fixture</p>"), 0600); err != nil {
+			return err
+		}
 	}
 	modes := []bool{false, true}
 	if controlOnly {
@@ -35,7 +47,7 @@ func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
 		if confined {
 			label = "appcontainer"
 		}
-		if err := runBrowser(executable, sid, confined); err != nil {
+		if err := runBrowser(executable, sid, confined, outerOnly, outsidePath); err != nil {
 			return fmt.Errorf("browser %s: %w", label, err)
 		}
 		fmt.Printf("PASS M3 Windows browser %s: CDP version and synthetic DOM script; job limited\n", label)
@@ -43,7 +55,7 @@ func browserTrial(executable string, sid *windows.SID, controlOnly bool) error {
 	return nil
 }
 
-func runBrowser(executable string, sid *windows.SID, confined bool) error {
+func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool, outsidePath string) error {
 	profile, err := os.MkdirTemp("", "wf-m3-browser-")
 	if err != nil {
 		return err
@@ -124,7 +136,10 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 			return err
 		}
 	}
-	args := []string{executable, "--headless=new", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-component-update", "--disable-sync", "--disable-extensions", "--disable-breakpad", "--disable-crash-reporter", "--host-resolver-rules=MAP * ~NOTFOUND", "--remote-debugging-pipe", fmt.Sprintf("--remote-debugging-io-pipes=%d,%d", handles[0], handles[1]), "--user-data-dir=" + profile, "--enable-logging=stderr", "about:blank"}
+	args := []string{executable, "--headless=new", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-component-update", "--disable-sync", "--disable-extensions", "--disable-breakpad", "--disable-crash-reporter", "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1", "--remote-debugging-pipe", fmt.Sprintf("--remote-debugging-io-pipes=%d,%d", handles[0], handles[1]), "--user-data-dir=" + profile, "--enable-logging=stderr", "about:blank"}
+	if confined && outerOnly {
+		args = append(args[:len(args)-1], "--no-sandbox", "about:blank")
+	}
 	for i := range args {
 		args[i] = windows.EscapeArg(args[i])
 	}
@@ -137,8 +152,9 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	startup.Cb = uint32(unsafe.Sizeof(startup))
 	startup.Flags = windows.STARTF_USESTDHANDLES
 	startup.StdInput, startup.StdOutput, startup.StdErr = handles[0], handles[2], handles[2]
+	environment := browserEnvironment(profile, outerOnly)
 	var process windows.ProcessInformation
-	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW, nil, nil, &startup.StartupInfo, &process); err != nil {
+	if err := windows.CreateProcess(executable16, command16, nil, nil, true, windows.EXTENDED_STARTUPINFO_PRESENT|windows.CREATE_SUSPENDED|windows.CREATE_NO_WINDOW|windows.CREATE_UNICODE_ENVIRONMENT, &environment[0], nil, &startup.StartupInfo, &process); err != nil {
 		return fmt.Errorf("CreateProcess: %w", err)
 	}
 	defer windows.CloseHandle(process.Thread)
@@ -183,12 +199,21 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 		_, _ = io.Copy(io.Discard, logRead)
 	}()
 	done := make(chan error, 1)
-	go func() { done <- checkBrowserCDP(parentRead, parentWrite) }()
+	go func() {
+		var extra func(cdpCall, string) error
+		if outerOnly {
+			extra = func(call cdpCall, session string) error {
+				return checkOuterBoundary(call, session, confined, job, sid, profile, outsidePath)
+			}
+		}
+		done <- browserCDP(parentRead, parentWrite, extra)
+	}()
 	select {
 	case err = <-done:
 	case <-time.After(20 * time.Second):
 		err = errors.New("CDP deadline exceeded")
 	}
+
 	var exitCode uint32
 	windows.GetExitCodeProcess(process.Process, &exitCode)
 	// Stop all descendants before inspecting logs and deleting the profile.
@@ -209,7 +234,11 @@ func runBrowser(executable string, sid *windows.SID, confined bool) error {
 	return nil
 }
 
-func checkBrowserCDP(input io.Reader, output io.Writer) error {
+type cdpCall func(string, any, string, any) error
+
+func checkBrowserCDP(input io.Reader, output io.Writer) error { return browserCDP(input, output, nil) }
+
+func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) error) error {
 	reader := bufio.NewReaderSize(input, 64<<10)
 	var nextID int
 	call := func(method string, params any, session string, result any) error {
@@ -231,9 +260,10 @@ func checkBrowserCDP(input io.Reader, output io.Writer) error {
 				return fmt.Errorf("%s: %w", method, err)
 			}
 			var reply struct {
-				ID     int             `json:"id"`
-				Result json.RawMessage `json:"result"`
-				Error  json.RawMessage `json:"error"`
+				ID      int             `json:"id"`
+				Session string          `json:"sessionId"`
+				Result  json.RawMessage `json:"result"`
+				Error   json.RawMessage `json:"error"`
 			}
 			if err := json.Unmarshal(frame[:len(frame)-1], &reply); err != nil {
 				return err
@@ -243,6 +273,9 @@ func checkBrowserCDP(input io.Reader, output io.Writer) error {
 			}
 			if len(reply.Error) != 0 {
 				return fmt.Errorf("%s: protocol error", method)
+			}
+			if session != "" && reply.Session != session {
+				return errors.New("CDP session mismatch")
 			}
 			return json.Unmarshal(reply.Result, result)
 		}
@@ -277,7 +310,8 @@ func checkBrowserCDP(input io.Reader, output io.Writer) error {
 		return errors.New("missing CDP session")
 	}
 	var result struct {
-		Result struct {
+		Exception any `json:"exceptionDetails"`
+		Result    struct {
 			Type  string `json:"type"`
 			Value string `json:"value"`
 		} `json:"result"`
@@ -285,8 +319,33 @@ func checkBrowserCDP(input io.Reader, output io.Writer) error {
 	if err := call("Runtime.evaluate", map[string]any{"expression": "document.body.innerHTML='<button id=probe>local fixture</button>'; document.querySelector('#probe').textContent", "returnByValue": true}, session.ID, &result); err != nil {
 		return err
 	}
-	if result.Result.Type != "string" || result.Result.Value != "local fixture" {
+	if result.Exception != nil || result.Result.Type != "string" || result.Result.Value != "local fixture" {
 		return errors.New("synthetic DOM evaluation failed")
 	}
+	if extra != nil {
+		return extra(call, session.ID)
+	}
 	return nil
+}
+
+// Deliberately exclude the runner/user environment and its credentials. Profile
+// paths refer only to the disposable directory already granted to the container.
+func browserEnvironment(profile string, privateHome bool) []uint16 {
+	system := os.Getenv("SystemRoot")
+	entries := []string{"SystemRoot=" + system, "WINDIR=" + system, "SystemDrive=" + filepath.VolumeName(system), "PATH=" + filepath.Join(system, "System32"), "TEMP=" + profile, "TMP=" + profile, "USERPROFILE=" + profile, "LOCALAPPDATA=" + profile, "APPDATA=" + profile}
+	// Desktop Chrome verifies that --user-data-dir differs from its known
+	// default directory; preserve only these OS path variables for that control.
+	if !privateHome {
+		entries = entries[:6]
+		for _, key := range []string{"USERPROFILE", "LOCALAPPDATA", "APPDATA"} {
+			if value := os.Getenv(key); value != "" {
+				entries = append(entries, key+"="+value)
+			}
+		}
+	}
+	var block []uint16
+	for _, entry := range entries {
+		block = append(block, windows.StringToUTF16(entry)...)
+	}
+	return append(block, 0)
 }

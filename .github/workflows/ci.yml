@@ -270,6 +270,21 @@ jobs:
         shell: pwsh
         run: ./scripts/test-windows-package.ps1 -Archive ./dist/webfence-windows-amd64.zip -RequireSources
 
+  m3-macos-appsandbox-startup:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Pinned headless runtime inside App Sandbox
+        run: |
+          archive="$RUNNER_TEMP/webfence-headless-mac.zip"
+          curl --fail --location --max-time 120 'https://storage.googleapis.com/chrome-for-testing-public/154.0.8037.57/mac-arm64/chrome-headless-shell-mac-arm64.zip' --output "$archive"
+          python3 experiments/m3-macos-sandbox/headless_probe.py --runtime-archive "$archive"
+
   m3-windows-appcontainer-lab:
     strategy:
       fail-fast: false
@@ -297,6 +312,20 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'AppContainer canary failed' }
           go test ./experiments/m3-windows-appcontainer
           if ($LASTEXITCODE -ne 0) { throw 'CDP protocol tests failed' }
+      - name: Confined headless shell startup
+        shell: pwsh
+        run: |
+          $runtimeRoot = Join-Path $env:RUNNER_TEMP 'webfence-headless'
+          New-Item -ItemType Directory -Force $runtimeRoot | Out-Null
+          $archive = Join-Path $runtimeRoot 'runtime.zip'
+          Invoke-WebRequest 'https://storage.googleapis.com/chrome-for-testing-public/154.0.8037.57/win64/chrome-headless-shell-win64.zip' -OutFile $archive
+          if ((Get-FileHash $archive -Algorithm SHA256).Hash -ne 'bcc91b4d0f83a5457fc6ca7941fd65f2349775523d961be88526c6a66560dc75') { throw 'Runtime checksum mismatch' }
+          Expand-Archive $archive -DestinationPath $runtimeRoot
+          $runtimeDir = Join-Path $runtimeRoot 'chrome-headless-shell-win64'
+          icacls $runtimeDir /grant '*S-1-15-2-1:(OI)(CI)(RX)' /T | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw 'Runtime read permission failed' }
+          ./m3-appcontainer.exe --headless-appcontainer (Join-Path $runtimeDir 'chrome-headless-shell.exe')
+          if ($LASTEXITCODE -ne 0) { throw 'Confined startup failed' }
       - name: Chrome CDP and DOM positive control (no AppContainer browser claim)
         shell: pwsh
         run: ./experiments/m3-windows-appcontainer/run-browser.ps1 -ControlOnly -Browser Chrome
