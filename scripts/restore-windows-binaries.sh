@@ -12,6 +12,8 @@ for entry in load_binary_lock(sys.argv[1]).values():
     print(entry['name'], entry['version'], entry['sha256'], sep='\t')
 PY
 )
+# Native Windows Python emits CRLF; the TSV digest must contain no CR.
+plan=${plan//$'\r'/}
 mkdir -p "$cache_root"
 pending=()
 download=''

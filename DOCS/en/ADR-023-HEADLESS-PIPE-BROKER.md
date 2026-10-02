@@ -22,7 +22,7 @@ On macOS the Python controller uses a separate Go broker over stdin/stdout; the 
 
 Startup, direct networking, outside/private file and descendant OS sandbox checks remain required, including after mediated navigation. CI runs the new path on macOS 15/26 ARM64 and Windows Server 2022/Windows 11 ARM64; the Windows engine on the ARM64 runner remains emulated x64. The existing Linux lab retains its boundary and Chromium's internal sandbox.
 
-Local macOS 26.6.2 ARM64 trial: mediated HTTP(S), origin/context, revocation, OS canaries and protocol tests passed. The Go suite, browser/fixture race detector, vet, IT/EN Qt self-test and 95 Python tests (4 skipped) passed. Branch and merge CI must be checked for the current commit; this is not the final M3 validation.
+Local macOS 26.6.2 ARM64 trial: mediated HTTP(S), origin/context, revocation, OS canaries and protocol tests passed. The Go suite, browser/fixture race detector, vet, IT/EN Qt self-test and 96 Python tests (4 skipped) passed. Branch and merge CI must be checked for the current commit; this is not the final M3 validation.
 
 ## Reproduction and limits
 

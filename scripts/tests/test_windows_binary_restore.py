@@ -93,6 +93,17 @@ pathlib.Path(sys.argv[sys.argv.index('--output')+1]).write_bytes(
         self.env['RESTORE_IGNORE_INSTALL'] = '1'
         self.assertNotEqual(self.run_restore().returncode, 0)
 
+    def test_native_windows_python_crlf_is_normalized(self):
+        self.tool('python3', """
+import sys
+code=sys.stdin.read()
+sys.argv=sys.argv[1:]
+sys.stdout.reconfigure(newline='\\r\\n')
+exec(compile(code, '<stdin>', 'exec'))
+""")
+        result = self.run_restore()
+        self.assertEqual(result.returncode, 0, result.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()
