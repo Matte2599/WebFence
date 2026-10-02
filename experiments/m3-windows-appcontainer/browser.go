@@ -3,8 +3,6 @@
 package main
 
 import (
-	"bufio"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +12,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/Matte2599/WebFence/experiments/internal/cdppipe"
 	"golang.org/x/sys/windows"
 )
 
@@ -51,6 +50,9 @@ func browserTrial(executable string, sid *windows.SID, controlOnly, outerOnly bo
 			return fmt.Errorf("browser %s: %w", label, err)
 		}
 		fmt.Printf("PASS M3 Windows browser %s: CDP version and synthetic DOM script; job limited\n", label)
+		if outerOnly {
+			fmt.Printf("PASS M3 Windows browser %s: mediated HTTP(S), exact origin, scope/redirect, cookie redaction and in-flight revocation\n", label)
+		}
 	}
 	return nil
 }
@@ -200,10 +202,28 @@ func runBrowser(executable string, sid *windows.SID, confined, outerOnly bool, o
 	}()
 	done := make(chan error, 1)
 	go func() {
-		var extra func(cdpCall, string) error
+		var extra func(*cdppipe.Client, string) error
 		if outerOnly {
-			extra = func(call cdpCall, session string) error {
-				return checkOuterBoundary(call, session, confined, job, sid, profile, outsidePath)
+			extra = func(pipe *cdppipe.Client, session string) error {
+				var version struct {
+					Product string `json:"product"`
+				}
+				if err := pipe.Call("Browser.getVersion", struct{}{}, "", &version); err != nil {
+					return err
+				}
+				if version.Product != "HeadlessChrome/154.0.8037.57" {
+					return errors.New("unexpected pinned headless runtime version")
+				}
+				if err := checkOuterBoundary(pipe.Call, session, confined, job, sid, profile, outsidePath); err != nil {
+					return err
+				}
+				if err := pipe.Mediated(session); err != nil {
+					return err
+				}
+				if confined {
+					return checkBrowserTokens(pipe.Call, job, sid)
+				}
+				return nil
 			}
 		}
 		done <- browserCDP(parentRead, parentWrite, extra)
@@ -238,49 +258,9 @@ type cdpCall func(string, any, string, any) error
 
 func checkBrowserCDP(input io.Reader, output io.Writer) error { return browserCDP(input, output, nil) }
 
-func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) error) error {
-	reader := bufio.NewReaderSize(input, 64<<10)
-	var nextID int
-	call := func(method string, params any, session string, result any) error {
-		nextID++
-		request := map[string]any{"id": nextID, "method": method, "params": params}
-		if session != "" {
-			request["sessionId"] = session
-		}
-		data, err := json.Marshal(request)
-		if err != nil {
-			return err
-		}
-		if _, err := output.Write(append(data, 0)); err != nil {
-			return err
-		}
-		for range 128 {
-			frame, err := reader.ReadSlice(0)
-			if err != nil {
-				return fmt.Errorf("%s: %w", method, err)
-			}
-			var reply struct {
-				ID      int             `json:"id"`
-				Session string          `json:"sessionId"`
-				Result  json.RawMessage `json:"result"`
-				Error   json.RawMessage `json:"error"`
-			}
-			if err := json.Unmarshal(frame[:len(frame)-1], &reply); err != nil {
-				return err
-			}
-			if reply.ID != nextID {
-				continue
-			}
-			if len(reply.Error) != 0 {
-				return fmt.Errorf("%s: protocol error", method)
-			}
-			if session != "" && reply.Session != session {
-				return errors.New("CDP session mismatch")
-			}
-			return json.Unmarshal(reply.Result, result)
-		}
-		return errors.New("CDP message budget exceeded")
-	}
+func browserCDP(input io.Reader, output io.Writer, extra func(*cdppipe.Client, string) error) error {
+	pipe := cdppipe.New(input, output)
+	call := pipe.Call
 	var version struct {
 		Product string `json:"product"`
 	}
@@ -323,7 +303,7 @@ func browserCDP(input io.Reader, output io.Writer, extra func(cdpCall, string) e
 		return errors.New("synthetic DOM evaluation failed")
 	}
 	if extra != nil {
-		return extra(call, session.ID)
+		return extra(pipe, session.ID)
 	}
 	return nil
 }

@@ -2,7 +2,7 @@
 
 [Indice / Index](README.md) · [Italiano](#italiano) · [English](#english)
 
-Aggiornamento / Updated: 2026-09-28. Responsabile / Owner: Matteo Luigi Feroldi.
+Aggiornamento / Updated: 2026-10-02. Responsabile / Owner: Matteo Luigi Feroldi.
 
 ## Italiano
 
@@ -101,7 +101,7 @@ La [prova macOS versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) riproduce il 
 
 La [prova Windows AppContainer versionata](it/M3-BROWSER-PLATFORM-FEASIBILITY.md) passa in CI su Windows Server 2022 amd64 e Windows 11 ARM64: il controllo non confinato raggiunge il listener locale, il figlio senza capacità di rete va in timeout e viene assegnato a un Job Object. Non prova il browser né l'egress generale; il criterio resta aperto.
 
-La successiva prova Edge/Chrome avvia CDP e una pagina sintetica nei controlli, ma fallisce dentro AppContainer su entrambi i runner: pipe Crashpad negata in Chrome, uscita `0xc0000005` in Edge. Il probe Edge/Chrome completo conserva quel risultato; la successiva [prova headless](it/ADR-022-HEADLESS-OUTER-SANDBOX.md) affronta l’avvio con una sandbox OS esterna, distinta da quella interna Chromium, prima dell’integrazione del broker HTTPS.
+La successiva prova Edge/Chrome avvia CDP e una pagina sintetica nei controlli, ma fallisce dentro AppContainer su entrambi i runner: pipe Crashpad negata in Chrome, uscita `0xc0000005` in Edge. Il probe Edge/Chrome completo conserva quel risultato; la successiva [prova headless](it/ADR-022-HEADLESS-OUTER-SANDBOX.md) affronta l’avvio con una sandbox OS esterna, distinta da quella interna Chromium; il [ponte HTTP(S) via pipe](it/ADR-023-HEADLESS-PIPE-BROKER.md) collega ora le fixture al gate/broker mantenendo l’origine e verificando la revoca.
 
 Prova Linux aggiuntiva: la prima versione del [laboratorio Chromium/CDP](it/M3-BROWSER-CDP-LAB.md) conserva l'origine HTTP per documento, script e `fetch` con rete autonoma negata e redirect/subresource esterni bloccati su fixture sintetiche. Usa un container e `--no-sandbox`; inizialmente mancava il collegamento al gate/broker.
 
@@ -143,6 +143,7 @@ Blocco core route osservate: [ripetizione esplicita di `fetch` GET](it/M3-OBSERV
 
 - [x] [Gate e proxy browser](it/M3-BROWSER-PROXY.md) e laboratori [Qt](it/M3-BROWSER-LAB.md)/[CDP HTTP(S)](it/M3-BROWSER-CDP-LAB.md) su fixture: subresource e redirect fuori scope fermati, revoca in pagina provata nel CDP; [filtro di rete Linux](it/M3-BROWSER-LINUX-NETWORK.md), [Landlock](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) e [renderer Chromium con user namespace](it/ADR-021-CDP-CHROMIUM-SANDBOX.md) nel percorso sperimentale.
 - [x] [Avvio headless in App Sandbox/AppContainer](it/ADR-022-HEADLESS-OUTER-SANDBOX.md) su fixture macOS/Windows: CDP/DOM, processi figli e prove HTTP/file; modello OS esterno sperimentale, senza sandbox interna Chromium. Packaging e integrazione desktop restano aperti.
+- [x] [Ponte anonimo HTTP(S) via pipe](it/ADR-023-HEADLESS-PIPE-BROKER.md) nel core e nei laboratori headless: origine/contesto sicuro, script/fetch, credenziali escluse e revoca in pagina. Navigazione con redirect ammessi e runtime desktop restano aperti.
 - [x] [Login form e sessioni verificate per due identità](it/M3-SESSIONS.md), [run tra ruoli](it/M3-CROSS-ROLE-RUN.md) e [dialogo Qt](it/M3-AUTH-DESKTOP.md) con conferma distinta per il grant pubblico HTTPS.
 - [x] [Import OpenAPI offline](it/M3-OPENAPI-IMPORT.md), [visite GET statiche selezionate](it/M3-API-DESKTOP.md), [ripetizione esplicita di `fetch` GET](it/M3-OBSERVED-CRAWL.md) e [primo controllo tra ruoli](it/M3-CROSS-ROLE.md).
 - [x] Prima regola contestuale M3, [`AUTH-CROSSROLE-001`](it/M3-CROSS-ROLE.md), con fixture sintetiche positive/negative ed esiti nella [matrice M3](it/M3-VALIDATION.md).
@@ -291,7 +292,7 @@ The [versioned macOS trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) reproduces TC
 
 The [versioned Windows AppContainer trial](en/M3-BROWSER-PLATFORM-FEASIBILITY.md) passes on Windows Server 2022 amd64 and Windows 11 ARM64 CI: the unrestricted control reaches the local listener, the child without network capabilities times out, and it is assigned to a Job Object. It does not test a browser or general egress; the criterion remains open.
 
-The subsequent Edge/Chrome trial starts CDP and a synthetic page in the controls, but fails inside AppContainer on both runners: denied Crashpad pipe in Chrome, exit `0xc0000005` in Edge. The complete Edge/Chrome probe preserves that outcome; the subsequent [headless trial](en/ADR-022-HEADLESS-OUTER-SANDBOX.md) addresses startup with an outer OS sandbox, distinct from Chromium’s internal one, before HTTPS broker integration.
+The subsequent Edge/Chrome trial starts CDP and a synthetic page in the controls, but fails inside AppContainer on both runners: denied Crashpad pipe in Chrome, exit `0xc0000005` in Edge. The complete Edge/Chrome probe preserves that outcome; the subsequent [headless trial](en/ADR-022-HEADLESS-OUTER-SANDBOX.md) addresses startup with an outer OS sandbox, distinct from Chromium’s internal one; the [HTTP(S) pipe bridge](en/ADR-023-HEADLESS-PIPE-BROKER.md) now connects the fixtures to the gate/broker while preserving origin and checking revocation.
 
 Additional Linux trial: the first version of the [Chromium/CDP lab](en/M3-BROWSER-CDP-LAB.md) preserved HTTP origin for document, script and `fetch` with autonomous networking denied and outside redirects/subresources blocked on synthetic fixtures. It uses a container and `--no-sandbox`; gate/broker integration was initially absent.
 
@@ -333,6 +334,7 @@ Observed-route core block: [explicit replay of GET `fetch` paths](en/M3-OBSERVED
 
 - [x] [Browser gate and proxy](en/M3-BROWSER-PROXY.md) and [Qt](en/M3-BROWSER-LAB.md)/[HTTP(S) CDP](en/M3-BROWSER-CDP-LAB.md) labs on fixtures: out-of-scope subresources and redirects stopped, in-page revocation tested in CDP; [Linux network filter](en/M3-BROWSER-LINUX-NETWORK.md), [Landlock](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) and a [Chromium renderer in a user namespace](en/ADR-021-CDP-CHROMIUM-SANDBOX.md) on the experimental path.
 - [x] [Headless startup in App Sandbox/AppContainer](en/ADR-022-HEADLESS-OUTER-SANDBOX.md) on macOS/Windows fixtures: CDP/DOM, descendants and HTTP/file checks; experimental outer OS model, without Chromium’s internal sandbox. Packaging and desktop integration remain open.
+- [x] [Anonymous HTTP(S) pipe bridge](en/ADR-023-HEADLESS-PIPE-BROKER.md) in the core and headless labs: origin/secure context, script/fetch, excluded credentials and in-page revocation. Admitted redirect navigation and desktop runtime remain open.
 - [x] [Form login and verified sessions for two identities](en/M3-SESSIONS.md), [cross-role run](en/M3-CROSS-ROLE-RUN.md) and [Qt dialog](en/M3-AUTH-DESKTOP.md) with separate confirmation for a public HTTPS grant.
 - [x] [Offline OpenAPI import](en/M3-OPENAPI-IMPORT.md), [selected static GET visits](en/M3-API-DESKTOP.md), [explicit replay of GET `fetch` paths](en/M3-OBSERVED-CRAWL.md) and a [first cross-role check](en/M3-CROSS-ROLE.md).
 - [x] First M3 contextual rule, [`AUTH-CROSSROLE-001`](en/M3-CROSS-ROLE.md), with positive/negative synthetic fixtures and outcomes in the [M3 matrix](en/M3-VALIDATION.md).

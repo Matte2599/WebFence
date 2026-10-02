@@ -1,6 +1,6 @@
 # Memoria del progetto / Project memory
 
-Aggiornato / Updated: 2026-09-29. Questa memoria conserva decisioni e problemi aperti; prove e stato sono nelle matrici [M0 IT](DOCS/it/M0-VALIDATION.md) / [EN](DOCS/en/M0-VALIDATION.md), [M1 IT](DOCS/it/M1-VALIDATION.md) / [EN](DOCS/en/M1-VALIDATION.md) e [M2 IT](DOCS/it/M2-VALIDATION.md) / [EN](DOCS/en/M2-VALIDATION.md); lo [stato M3 IT](DOCS/it/M3-VALIDATION.md) / [EN](DOCS/en/M3-VALIDATION.md) resta aperto.
+Aggiornato / Updated: 2026-10-02. Questa memoria conserva decisioni e problemi aperti; prove e stato sono nelle matrici [M0 IT](DOCS/it/M0-VALIDATION.md) / [EN](DOCS/en/M0-VALIDATION.md), [M1 IT](DOCS/it/M1-VALIDATION.md) / [EN](DOCS/en/M1-VALIDATION.md) e [M2 IT](DOCS/it/M2-VALIDATION.md) / [EN](DOCS/en/M2-VALIDATION.md); lo [stato M3 IT](DOCS/it/M3-VALIDATION.md) / [EN](DOCS/en/M3-VALIDATION.md) resta aperto.
 
 ## Italiano
 
@@ -65,6 +65,8 @@ Aggiornato / Updated: 2026-09-29. Questa memoria conserva decisioni e problemi a
 - SQLite **v4** salva dichiarazioni/revisioni e solo codici/conteggi di run/visite, senza URL visitati, query, header, body o credenziali ([store IT](DOCS/it/M1-PROJECT-STORE.md)). Lock OS esclusivo sul file, una run crawler persistente per istanza, marcatura `interrupted` al riavvio, limite di 64 MiB sul file principale, 100 run per progetto e 256 visite per run, backup privato in file nuovo, eliminazione logica a cascata. WAL/backup esterni non sono cancellati in modo forense. Il riferimento di autorizzazione e le origini restano metadati in chiaro; non inserirvi segreti.
 - JWS Ed25519 e portachiavi nativi sono collegati al report M2; il packaging di sviluppo contiene il desktop con gestione chiavi, ma non gli ausili CLI né costituisce una release supportata. Il bundle macOS applica la correzione Qt Cocoa ([ADR-006 IT](DOCS/it/ADR-006-QT-COCOA.md)); Windows CI usa il lock dei pacchetti MSYS2 ([guida IT](DOCS/it/DEVELOPMENT.md)).
 - Non commettere segreti, chiavi private, dati clienti, pesi, database CVE o report reali. Non eseguire scansioni esterne senza target e attività esplicitamente autorizzati nella richiesta.
+
+- L’[ADR-023](DOCS/it/ADR-023-HEADLESS-PIPE-BROKER.md) collega i laboratori headless macOS/Windows al gate/broker tramite pipe: richieste anonime GET/HEAD senza header/body browser, TLS e IP fissati nel genitore, risposte/IPC limitati e osservazioni senza query. HTTP/HTTPS locali macOS passati con origine/contesto corretto, cookie esclusi, risorsa/redirect esterni e revoca durante fetch; la CI richiede il percorso su entrambi gli OS. Suite Go, race detector browser/fixture, vet, self-test Qt IT/EN e 92 test Python (4 saltati) passati localmente. Il ponte rifiuta un URL finale cambiato dai redirect: navigazione completa, sessioni browser, quote aggregate, firma/packaging e GUI restano aperti; non chiude M3.
 
 ### Problemi aperti
 
@@ -138,6 +140,8 @@ Aggiornato / Updated: 2026-09-29. Questa memoria conserva decisioni e problemi a
 - SQLite **v4** stores declarations/revisions and only run/visit codes and counts, without visited URLs, queries, headers, bodies or credentials ([store EN](DOCS/en/M1-PROJECT-STORE.md)). Exclusive OS file lock, one persistent crawler run per instance, `interrupted` marking at restart, 64 MiB main-file cap, 100 runs per project and 256 visits per run, private backup to a new file and cascading logical deletion. WAL/separate backups are not forensically erased. Authorization references and origins remain plaintext metadata; do not enter secrets.
 - Ed25519 JWS and native keychains are connected to M2 reports; development packages contain the desktop with key management, but not the CLI helpers, and are not supported releases. The macOS bundle applies the Qt Cocoa correction ([ADR-006 EN](DOCS/en/ADR-006-QT-COCOA.md)); Windows CI uses the MSYS2 package lock ([EN guide](DOCS/en/DEVELOPMENT.md)).
 - Do not commit secrets, private keys, client data, weights, CVE databases or real reports. Do not scan external systems without targets and activities explicitly authorized in the request.
+
+- [ADR-023](DOCS/en/ADR-023-HEADLESS-PIPE-BROKER.md) connects the macOS/Windows headless labs to the gate/broker over pipes: anonymous GET/HEAD without browser headers/bodies, parent-side TLS and pinned IPs, bounded responses/IPC and query-free observations. Local macOS HTTP/HTTPS passed correct origin/context, excluded cookies, outside resource/redirect and revocation during fetch; CI requires the path on both OSes. Local Go suite, browser/fixture race detector, vet, IT/EN Qt self-test and 92 Python tests (4 skipped) passed. The bridge rejects changed final redirect URLs: full navigation, browser sessions, aggregate quotas, signing/packaging and GUI remain open; this does not close M3.
 
 ### Open problems
 

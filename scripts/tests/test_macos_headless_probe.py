@@ -15,13 +15,15 @@ class HeadlessProtocolTests(unittest.TestCase):
         cls.probe = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.probe)
 
-    def response(self, frames, session=None, limit=None):
+    def response(self, frames, session=None, limit=None, handler=None):
         read_fd, writer = os.pipe()
         output = os.open(os.devnull, os.O_WRONLY)
         # Small frames avoid blocking the writer before the reader runs.
         os.write(writer, frames)
         os.close(writer)
         cdp = self.probe.CDP(read_fd, output)
+        if handler:
+            cdp.handler = lambda event: handler(cdp, event)
         if limit:
             cdp.deadline = 0
         try:
@@ -41,6 +43,33 @@ class HeadlessProtocolTests(unittest.TestCase):
     def test_closed_pipe(self):
         with self.assertRaisesRegex(RuntimeError, 'EOF'):
             self.response(b'')
+
+    def test_nested_event_keeps_parent_response(self):
+        frames = self.frame({'method': 'Fetch.requestPaused', 'sessionId': 'fixture'})
+        frames += self.frame({'id': 1, 'sessionId': 'fixture', 'result': {'ready': True}})
+        frames += self.frame({'id': 2, 'sessionId': 'fixture', 'result': {}})
+        def handle(cdp, event):
+            cdp.call('Fetch.fulfillRequest', {}, event['sessionId'])
+        self.assertEqual(self.response(frames, 'fixture', handler=handle), {'ready': True})
+
+    def test_unexpected_response_id(self):
+        for identifier in (2, True, 1.0):
+            with self.assertRaisesRegex(RuntimeError, 'unexpected response id'):
+                self.response(self.frame({'id': identifier, 'result': {}}))
+
+    def test_broker_pipe_frames(self):
+        from types import SimpleNamespace
+        for data, valid in ((b'{"status":200}\n', True), (b'[]\n', False), (b'partial', False)):
+            read_fd, writer = os.pipe()
+            os.write(writer, data)
+            os.close(writer)
+            with os.fdopen(read_fd, 'rb', buffering=0) as pipe:
+                broker = self.probe.BrokerPipe(SimpleNamespace(stdout=pipe))
+                if valid:
+                    self.assertEqual(broker.receive(), {'status': 200})
+                else:
+                    with self.assertRaisesRegex(RuntimeError, 'type|EOF'):
+                        broker.receive()
 
     def test_protocol_error(self):
         with self.assertRaisesRegex(RuntimeError, 'rejected'):

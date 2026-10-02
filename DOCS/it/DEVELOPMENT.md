@@ -46,6 +46,7 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/checks`: [controllo contestuale tra ruoli M3](M3-CROSS-ROLE.md) e [orchestrazione su run gestita](M3-CROSS-ROLE-RUN.md) su fixture sintetiche, senza persistenza; il [flusso desktop](M3-AUTH-DESKTOP.md) richiede una conferma aggiuntiva per l’origine pubblica.
 - `internal/desktop`: [scelta OpenAPI offline M3](M3-OPENAPI-DESKTOP.md) di un seed GET e [visite API statiche selezionate](M3-API-DESKTOP.md), verificate nel self-test Qt su fixture locali.
 
+- `experiments/m3-headless-broker` e `experiments/internal`: [ponte HTTP(S) via pipe](ADR-023-HEADLESS-PIPE-BROKER.md) per fixture headless macOS/Windows; non sono inclusi nei pacchetti desktop.
 - `experiments/m3-browser`: [laboratorio Qt WebEngine](M3-BROWSER-LAB.md) con fixture locali e [helper separato](ADR-011-BROWSER-HELPER.md); richiede Qt WebEngine 6.11.2 e il tag `m3browserlab`, non è incluso nei pacchetti.
 - `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md), [crawler limitato](M1-CONTROLLED-CRAWL.md), [visite API statiche selezionate](M3-API-BATCH.md) e [ripetizione esplicita di GET osservate](M3-OBSERVED-CRAWL.md) con risultati persistenti. I test non aprono rete esterna.
 - `internal/intelligence` e `internal/reporting`: [cache/matching M2](M2-INTELLIGENCE-CACHE.md) e [bundle verificabili](M2-REPORTS.md), separati da Qt. `cmd/webfence-report` e `cmd/webfence-verify` sono ausili tecnici compilabili dal sorgente.

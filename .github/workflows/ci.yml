@@ -279,11 +279,18 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-      - name: Pinned headless runtime inside App Sandbox
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+      - name: Build synthetic pipe broker
+        env:
+          CGO_ENABLED: '0'
+        run: go build -o "$RUNNER_TEMP/m3-headless-broker" ./experiments/m3-headless-broker
+      - name: Pinned headless runtime and mediated HTTP(S) inside App Sandbox
         run: |
           archive="$RUNNER_TEMP/webfence-headless-mac.zip"
           curl --fail --location --max-time 120 'https://storage.googleapis.com/chrome-for-testing-public/154.0.8037.57/mac-arm64/chrome-headless-shell-mac-arm64.zip' --output "$archive"
-          python3 experiments/m3-macos-sandbox/headless_probe.py --runtime-archive "$archive"
+          python3 experiments/m3-macos-sandbox/headless_probe.py --runtime-archive "$archive" --broker-executable "$RUNNER_TEMP/m3-headless-broker"
 
   m3-windows-appcontainer-lab:
     strategy:
@@ -310,9 +317,9 @@ jobs:
           go build -o m3-appcontainer.exe ./experiments/m3-windows-appcontainer
           ./m3-appcontainer.exe
           if ($LASTEXITCODE -ne 0) { throw 'AppContainer canary failed' }
-          go test ./experiments/m3-windows-appcontainer
+          go test ./experiments/m3-windows-appcontainer ./experiments/internal/...
           if ($LASTEXITCODE -ne 0) { throw 'CDP protocol tests failed' }
-      - name: Confined headless shell startup
+      - name: Confined headless startup and mediated HTTP(S)
         shell: pwsh
         run: |
           $runtimeRoot = Join-Path $env:RUNNER_TEMP 'webfence-headless'
