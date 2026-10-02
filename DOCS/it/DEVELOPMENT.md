@@ -31,7 +31,7 @@ Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `
 
 Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-libwinpthread) già revisionato nel registro binario `packaging/windows/msys2-binary-lock.json`: dopo l'aggiornamento MSYS2 ripristina la versione fissata insieme al pacchetto [winpthreads](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-winpthreads) che la richiede, verificando entrambi gli SHA-256 pubblicati. Questo impedisce che una pubblicazione upstream cambi silenziosamente il contenuto dello ZIP; l'aggiornamento della versione richiede revisione esplicita di checksum e firma.
 
-La CI ripristina anche PCRE2 `10.48-3`, già revisionato nello stesso registro, con SHA-256 verificato: il 2 ottobre un aggiornamento automatico a `10.49-1` ha fermato correttamente lo ZIP come archivio non revisionato. Il registro non viene allargato automaticamente; sorgenti e confezionamento restano verificati dai controlli esistenti.
+Dopo l'aggiornamento MSYS2, `scripts/restore-windows-binaries.sh` ripristina tutte le dipendenze runtime al registro revisionato, verifica gli SHA-256 prima della transazione `pacman` e ricontrolla le versioni installate. Il 2 ottobre PCRE2 `10.49-1` e libpng `1.6.59-1` avevano fermato correttamente lo ZIP; restano fissate rispettivamente `10.48-3` e `1.6.58-1`. Il registro non viene allargato automaticamente; sorgenti, firme e confezionamento restano verificati dai controlli esistenti. Fixture senza installazioni reali provano transazione multipla, riuso della cache, hash errato e versione non ripristinata su POSIX; la CI Windows verifica il percorso effettivo.
 
 ## Struttura e dati
 

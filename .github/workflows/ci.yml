@@ -235,15 +235,8 @@ jobs:
           pacman -U --noconfirm "$archive" "$companion"
           test "$(pacman -Q mingw-w64-ucrt-x86_64-libwinpthread | awk '{print $2}')" = '14.0.0.r420.g61d40c4c0-1'
           test "$(pacman -Q mingw-w64-ucrt-x86_64-winpthreads | awk '{print $2}')" = '14.0.0.r420.g61d40c4c0-1'
-      - name: Keep reviewed PCRE2 for Windows provenance
-        run: |
-          archive=/var/cache/pacman/pkg/mingw-w64-ucrt-x86_64-pcre2-10.48-3-any.pkg.tar.zst
-          curl --fail --location --retry 3 \
-            'https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-pcre2-10.48-3-any.pkg.tar.zst' \
-            --output "$archive"
-          printf '%s  %s\n' 'f1aae310be1c65ec0e2265d283ba01fcf322208bc19c96cfa52801fcc1c11746' "$archive" | sha256sum --check -
-          pacman -U --noconfirm "$archive"
-          test "$(pacman -Q mingw-w64-ucrt-x86_64-pcre2 | awk '{print $2}')" = '10.48-3'
+      - name: Restore all reviewed Windows runtime packages
+        run: bash scripts/restore-windows-binaries.sh
       - run: test "$(go env GOARCH)" = amd64
       - name: Source collection and attachment regressions
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
