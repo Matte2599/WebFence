@@ -2,7 +2,9 @@ package scope
 
 import (
 	"errors"
+	"maps"
 	"net/url"
+	"slices"
 	"strings"
 )
 
@@ -56,6 +58,21 @@ func NewRequestPolicy(methods, allowed, excluded []string) (RequestPolicy, error
 }
 
 func (p RequestPolicy) Valid() bool { return len(p.methods) != 0 && len(p.allowed) != 0 }
+
+// SameRules compares valid allowlists without exposing mutable policy data.
+// Ordering and duplicate path prefixes do not change the effective rules.
+func (p RequestPolicy) SameRules(other RequestPolicy) bool {
+	if !p.Valid() || !other.Valid() || !maps.Equal(p.methods, other.methods) {
+		return false
+	}
+	equalPrefixes := func(a, b []string) bool {
+		a, b = slices.Clone(a), slices.Clone(b)
+		slices.Sort(a)
+		slices.Sort(b)
+		return slices.Equal(slices.Compact(a), slices.Compact(b))
+	}
+	return equalPrefixes(p.allowed, other.allowed) && equalPrefixes(p.excluded, other.excluded)
+}
 
 func (p RequestPolicy) Check(method string, u *url.URL) error {
 	if !p.Valid() || u == nil || !u.IsAbs() || u.Host == "" {

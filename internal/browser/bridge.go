@@ -32,7 +32,7 @@ type BridgeReply struct {
 }
 
 func NewRequestBridge(ctx context.Context, gate *Gate, broker *transport.Broker) (*RequestBridge, error) {
-	if ctx == nil || gate == nil || broker == nil {
+	if ctx == nil || gate == nil || broker == nil || !broker.BoundToRun(gate.permit, gate.policy) {
 		return nil, ErrConfig
 	}
 	run, cancel := context.WithCancel(ctx)

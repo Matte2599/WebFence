@@ -31,6 +31,8 @@ On Windows x86-64 use MSYS2 **UCRT64**, Go on PATH and matching tools: `mingw-w6
 
 Windows packaging in CI retains the [libwinpthread](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-libwinpthread) package already reviewed in the binary lock `packaging/windows/msys2-binary-lock.json`: after the MSYS2 update it restores the pinned version along with the [winpthreads](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-winpthreads) package that requires it, verifying both published SHA-256 values. This prevents an upstream release from silently changing ZIP contents; updating the version requires explicit checksum and signature review.
 
+CI also restores PCRE2 `10.48-3`, already reviewed in the same registry, with verified SHA-256: on October 2 an automatic update to `10.49-1` correctly stopped the ZIP as an unreviewed archive. The registry is not broadened automatically; existing checks still verify sources and packaging.
+
 ## Structure and data
 
 - `cmd/webfence`: desktop entry and `--self-test` option.

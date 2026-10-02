@@ -3,6 +3,7 @@ package browser
 import (
 	"context"
 	"crypto/x509"
+	"errors"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -17,6 +18,70 @@ import (
 	"github.com/Matte2599/WebFence/internal/scope"
 	"github.com/Matte2599/WebFence/internal/transport"
 )
+
+func TestBridgeRejectsUnboundDifferentRunAndBroaderPolicy(t *testing.T) {
+	p, _, origin, hits := proxyFixture(t)
+	limits := transport.Limits{MaxRequests: 20, MaxConcurrent: 1, MaxBodyBytes: 1024, RequestTimeout: time.Second, RunTimeout: time.Minute, MinRequestInterval: time.Millisecond}
+	grants := []transport.Grant{{Origin: origin, Addresses: []netip.Addr{netip.MustParseAddr("127.0.0.1")}}}
+	unbound, err := transport.NewLab(context.Background(), grants, limits, net.DefaultResolver)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer unbound.Close()
+	declaration, err := project.New(project.Draft{ID: p.gate.ProjectID(), Name: "Fixture", TargetOwner: "Fixture", AuthorizationReference: "synthetic", AuthorizationConfirmed: true,
+		AuthorizationExpiresAt: p.gate.permit.ExpiresAt(), Origins: []string{origin}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	other, err := declaration.BeginRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	other, err = other.BindLifecycle(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	foreign, err := transport.NewAuthorizedLabWithPolicy(context.Background(), other, grants, limits, net.DefaultResolver, p.gate.policy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer foreign.Close()
+	broadPolicy, err := scope.NewRequestPolicy([]string{"GET", "HEAD"}, []string{"/"}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	broad, err := transport.NewAuthorizedLabWithPolicy(context.Background(), p.gate.permit, grants, limits, net.DefaultResolver, broadPolicy)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer broad.Close()
+	for _, broker := range []*transport.Broker{unbound, foreign, broad} {
+		if bridge, err := NewRequestBridge(context.Background(), p.gate, broker); bridge != nil || !errors.Is(err, ErrConfig) {
+			t.Fatal("mismatched broker accepted")
+		}
+	}
+	if hits.Load() != 0 {
+		t.Fatal("constructor used network")
+	}
+	// Equivalent independent policies may reorder methods/prefixes safely.
+	equivalent, err := scope.NewRequestPolicy([]string{"HEAD", "GET"}, []string{"/app", "/app"}, []string{"/app/logout"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	compatible, err := transport.NewAuthorizedLabWithPolicy(context.Background(), p.gate.permit, grants, limits, net.DefaultResolver, equivalent)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer compatible.Close()
+	bridge, err := NewRequestBridge(context.Background(), p.gate, compatible)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer bridge.Close()
+	if bridge.Forward(context.Background(), "HEAD", origin+"/app/cookie", Document).Status != 200 {
+		t.Fatal("compatible bound broker denied")
+	}
+}
 
 func TestBridgeAdmissionHeadersAndRedaction(t *testing.T) {
 	p, _, origin, hits := proxyFixture(t)

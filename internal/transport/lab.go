@@ -224,6 +224,12 @@ func (b *Broker) bindPermit(permit project.RunScope) {
 	}
 }
 
+// BoundToRun confirms that redirect hops use the exact origin snapshot and
+// method/path rules. An unbound broker or an independently started run never matches.
+func (b *Broker) BoundToRun(permit project.RunScope, policy scope.RequestPolicy) bool {
+	return b != nil && b.authorized && b.permit.SameRun(permit) && b.route.SameRules(policy)
+}
+
 func origin(u *url.URL) string { return u.Scheme + "://" + u.Host }
 func (b *Broker) Close() {
 	b.cancel()
