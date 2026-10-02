@@ -31,6 +31,8 @@ Su Windows x86-64 usare MSYS2 **UCRT64** con Go nel PATH e toolchain coerente: `
 
 Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-libwinpthread) già revisionato nel registro binario `packaging/windows/msys2-binary-lock.json`: dopo l'aggiornamento MSYS2 ripristina la versione fissata insieme al pacchetto [winpthreads](https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-winpthreads) che la richiede, verificando entrambi gli SHA-256 pubblicati. Questo impedisce che una pubblicazione upstream cambi silenziosamente il contenuto dello ZIP; l'aggiornamento della versione richiede revisione esplicita di checksum e firma.
 
+Dopo l'aggiornamento MSYS2, `scripts/restore-windows-binaries.sh` ripristina tutte le dipendenze runtime al registro revisionato, verifica gli SHA-256 prima della transazione `pacman` e ricontrolla le versioni installate. Il 2 ottobre PCRE2 `10.49-1` e libpng `1.6.59-1` avevano fermato correttamente lo ZIP; restano fissate rispettivamente `10.48-3` e `1.6.58-1`. Il registro non viene allargato automaticamente; sorgenti, firme e confezionamento restano verificati dai controlli esistenti. Fixture senza installazioni reali provano transazione multipla, riuso della cache, hash errato e versione non ripristinata su POSIX; la CI Windows verifica il percorso effettivo.
+
 ## Struttura e dati
 
 - `cmd/webfence`: avvio desktop e opzione `--self-test`.
@@ -46,6 +48,7 @@ Il packaging Windows in CI conserva il pacchetto [libwinpthread](https://package
 - `internal/checks`: [controllo contestuale tra ruoli M3](M3-CROSS-ROLE.md) e [orchestrazione su run gestita](M3-CROSS-ROLE-RUN.md) su fixture sintetiche, senza persistenza; il [flusso desktop](M3-AUTH-DESKTOP.md) richiede una conferma aggiuntiva per l’origine pubblica.
 - `internal/desktop`: [scelta OpenAPI offline M3](M3-OPENAPI-DESKTOP.md) di un seed GET e [visite API statiche selezionate](M3-API-DESKTOP.md), verificate nel self-test Qt su fixture locali.
 
+- `experiments/m3-headless-broker` e `experiments/internal`: [ponte HTTP(S) via pipe](ADR-023-HEADLESS-PIPE-BROKER.md) per fixture headless macOS/Windows; non sono inclusi nei pacchetti desktop.
 - `experiments/m3-browser`: [laboratorio Qt WebEngine](M3-BROWSER-LAB.md) con fixture locali e [helper separato](ADR-011-BROWSER-HELPER.md); richiede Qt WebEngine 6.11.2 e il tag `m3browserlab`, non è incluso nei pacchetti.
 - `internal/scanner`: [primo controllo HTTP](M1-HEADER-LAB.md), [discovery HTML](M1-DISCOVERY-LAB.md), [crawler limitato](M1-CONTROLLED-CRAWL.md), [visite API statiche selezionate](M3-API-BATCH.md) e [ripetizione esplicita di GET osservate](M3-OBSERVED-CRAWL.md) con risultati persistenti. I test non aprono rete esterna.
 - `internal/intelligence` e `internal/reporting`: [cache/matching M2](M2-INTELLIGENCE-CACHE.md) e [bundle verificabili](M2-REPORTS.md), separati da Qt. `cmd/webfence-report` e `cmd/webfence-verify` sono ausili tecnici compilabili dal sorgente.

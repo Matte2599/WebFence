@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Synthetic startup trial, not a desktop launcher. See ADR-022 (IT/EN)."""
 import argparse
+import base64
 import contextlib
 import ctypes
 import fcntl
@@ -34,10 +35,24 @@ class CDP:
         self.buffer = b""
         self.sequence = 0
         self.deadline = time.monotonic() + 20
+        self.handler = None
+        self.waiting = {}
+        self.replies = {}
+        self.events = 0
 
     def call(self, method, params=None, session=None):
+        if len(self.waiting) >= 8:
+            raise RuntimeError("CDP nesting limit")
         self.sequence += 1
-        request = {"id": self.sequence, "method": method, "params": params or {}}
+        request_id = self.sequence
+        self.waiting[request_id] = session
+        try:
+            return self._call(request_id, method, params, session)
+        finally:
+            self.waiting.pop(request_id)
+
+    def _call(self, request_id, method, params, session):
+        request = {"id": request_id, "method": method, "params": params or {}}
         if session:
             request["sessionId"] = session
         wire = json.dumps(request).encode() + b"\0"
@@ -46,6 +61,11 @@ class CDP:
         while wire:
             wire = wire[os.write(self.write_fd, wire):]
         for _ in range(128):
+            if request_id in self.replies:
+                response = self.replies.pop(request_id)
+                if response.get("error") or not isinstance(response.get("result"), dict):
+                    raise RuntimeError("CDP command rejected")
+                return response["result"]
             while b"\0" not in self.buffer:
                 remaining = self.deadline - time.monotonic()
                 if remaining <= 0 or not select.select([self.read_fd], [], [], remaining)[0]:
@@ -60,13 +80,118 @@ class CDP:
             response = json.loads(frame)
             if not isinstance(response, dict):
                 raise RuntimeError("CDP invalid response")
-            if response.get("id") == self.sequence:
-                if response.get("error") or not isinstance(response.get("result"), dict):
-                    raise RuntimeError("CDP command rejected")
-                if session and response.get("sessionId") != session:
+            response_id = response.get("id")
+            if response_id is not None:
+                if type(response_id) is not int or response_id not in self.waiting:
+                    raise RuntimeError("CDP unexpected response id")
+                if response.get("sessionId") != self.waiting[response_id]:
                     raise RuntimeError("CDP session mismatch")
-                return response["result"]
+                if response_id in self.replies:
+                    raise RuntimeError("CDP duplicate response")
+                self.replies[response_id] = response
+            else:
+                self.events += 1
+                if self.events > 1024:
+                    raise RuntimeError("CDP global event limit")
+                if self.handler:
+                    self.handler(response)
         raise RuntimeError("CDP event limit")
+
+
+class BrokerPipe:
+    def __init__(self, process):
+        self.process = process
+        self.buffer = b""
+
+    def receive(self):
+        deadline = time.monotonic() + 6
+        while b"\n" not in self.buffer:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0 or not select.select([self.process.stdout], [], [], remaining)[0]:
+                raise RuntimeError("broker pipe deadline")
+            chunk = os.read(self.process.stdout.fileno(), min(4096, MAX_FRAME + 1 - len(self.buffer)))
+            if not chunk:
+                raise RuntimeError("broker pipe EOF")
+            self.buffer += chunk
+            if len(self.buffer.split(b"\n", 1)[0]) > MAX_FRAME:
+                raise RuntimeError("broker pipe frame limit")
+        data, self.buffer = self.buffer.split(b"\n", 1)
+        reply = json.loads(data)
+        if not isinstance(reply, dict):
+            raise RuntimeError("broker pipe reply type")
+        return reply
+
+    def call(self, request):
+        frame = json.dumps(request).encode() + b"\n"
+        if len(frame) > 16384:
+            raise RuntimeError("broker request frame limit")
+        self.process.stdin.write(frame)
+        self.process.stdin.flush()
+        return self.receive()
+
+
+def mediated(cdp, session, executable):
+    for scheme in ("http", "https"):
+        process = subprocess.Popen([str(executable), scheme], stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                   env={"PATH": "/usr/bin:/bin"}, bufsize=0)
+        broker = BrokerPipe(process)
+        try:
+            origin = broker.receive().get("origin", "")
+            if not origin.startswith(scheme + "://site.test:"):
+                raise RuntimeError("invalid synthetic broker origin")
+            requests = 0
+            def paused(event):
+                nonlocal requests
+                if event.get("method") != "Fetch.requestPaused":
+                    return
+                requests += 1
+                if requests > 16 or event.get("sessionId") != session:
+                    raise RuntimeError("CDP intercepted request session/budget")
+                params = event.get("params", {})
+                request_id = params.get("requestId")
+                if not isinstance(request_id, str) or not 0 < len(request_id) <= 1024:
+                    raise RuntimeError("invalid intercepted request id")
+                request = params.get("request", {})
+                if request.get("hasPostData") or request.get("postData"):
+                    cdp.call("Fetch.failRequest", {"requestId": request_id, "errorReason": "BlockedByClient"}, session)
+                    return
+                reply = broker.call({"method": request.get("method", ""), "url": request.get("url", ""),
+                                     "type": params.get("resourceType", "")})
+                status, body, header = reply.get("status"), reply.get("body"), reply.get("header")
+                if not isinstance(status, int) or not 100 <= status <= 599 or not isinstance(body, str) or not isinstance(header, dict):
+                    raise RuntimeError("invalid mediated response")
+                if len(base64.b64decode(body, validate=True)) > 16384:
+                    raise RuntimeError("mediated response body limit")
+                entries = [{"name": name, "value": value} for name, values in header.items() for value in values]
+                cdp.call("Fetch.fulfillRequest", {"requestId": request_id, "responseCode": status,
+                         "responseHeaders": entries, "body": body}, session)
+            cdp.handler = paused
+            cdp.call("Fetch.enable", {"patterns": [{"urlPattern": "*", "requestStage": "Request"}]}, session)
+            if cdp.call("Page.navigate", {"url": origin + "/app/"}, session).get("errorText"):
+                raise RuntimeError("mediated navigation failed")
+            want = origin + "|" + str(scheme == "https").lower() + "||synthetic|502|502|403"
+            for _ in range(100):
+                result = value(cdp.call("Runtime.evaluate", {"expression": "window.wfResult||''", "returnByValue": True}, session))
+                if result == want:
+                    break
+                if result == "failed":
+                    raise RuntimeError("mediated page script failed")
+                time.sleep(0.02)
+            else:
+                raise RuntimeError("mediated page result deadline")
+            cdp.call("Fetch.disable", {}, session)
+            cdp.handler = None
+            if broker.call({"finish": True}) != {"verified": True} or process.wait(timeout=2) != 0:
+                raise RuntimeError("broker fixture invariants failed")
+            print("PASS macOS mediated " + scheme.upper() + ": exact origin, script/fetch, cookie redaction, scope/redirect and in-flight revocation")
+        finally:
+            cdp.handler = None
+            if process.poll() is None:
+                process.kill()
+            process.wait(timeout=5)
+            process.stdin.close()
+            process.stdout.close()
 
 
 def value(result):
@@ -214,7 +339,7 @@ def sandboxed_processes(cdp):
             raise RuntimeError("process is not OS sandboxed: " + entry["type"])
 
 
-def trial(source, root):
+def trial(source, root, broker_executable=None):
     hits = []
     class Handler(http.server.BaseHTTPRequestHandler):
         def do_GET(self):
@@ -249,6 +374,9 @@ def trial(source, root):
             with launch(executable, profile, root, bundle, helper) as cdp:
                 session = page(cdp)
                 sandboxed_processes(cdp)
+                if broker_executable:
+                    mediated(cdp, session, broker_executable)
+                    sandboxed_processes(cdp)
                 for target in (url, outside.as_uri()):
                     if cdp.call("Page.navigate", {"url": target}, session).get("errorText") != "net::ERR_ACCESS_DENIED":
                         raise RuntimeError("direct access not denied")
@@ -277,11 +405,14 @@ def trial(source, root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime-archive", required=True, type=Path)
+    parser.add_argument("--broker-executable", type=Path)
     args = parser.parse_args()
     if sys.platform != "darwin" or platform.machine() != "arm64":
         raise RuntimeError("this pinned trial requires macOS ARM64")
     if hashlib.sha256(args.runtime_archive.read_bytes()).hexdigest() != ARCHIVE_SHA256:
         raise RuntimeError("runtime checksum mismatch")
+    if args.broker_executable and (not args.broker_executable.is_absolute() or not args.broker_executable.is_file()):
+        raise RuntimeError("absolute compiled fixture broker path required")
     with tempfile.TemporaryDirectory(prefix="wf-m3-headless-") as directory:
         root = Path(directory).resolve()
         with zipfile.ZipFile(args.runtime_archive) as archive:
@@ -290,7 +421,7 @@ def main():
         for executable in source.glob("*"):
             if executable.name == "chrome-headless-shell" or executable.suffix == ".dylib":
                 executable.chmod(0o755)
-        trial(source, root)
+        trial(source, root, args.broker_executable)
 
 
 if __name__ == "__main__":

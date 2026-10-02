@@ -233,8 +233,21 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p.observe(r, result, kind)
-	// Never transfer credential material from the target into a browser profile.
-	// These response headers retain basic rendering and target-side restrictions.
+	for name, values := range renderingHeaders(result.Header) {
+		for _, value := range values {
+			w.Header().Add(name, value)
+		}
+	}
+	w.WriteHeader(result.StatusCode)
+	if r.Method != http.MethodHead {
+		_, _ = w.Write(result.Body)
+	}
+}
+
+// Never transfer credential material from the target into a browser profile.
+// Retain only basic rendering and target-side restrictions, for proxy and CDP.
+func renderingHeaders(source http.Header) http.Header {
+	header := make(http.Header)
 	for _, name := range []string{
 		"Content-Type", "Content-Security-Policy", "X-Content-Type-Options",
 		"X-Frame-Options", "Referrer-Policy", "Cross-Origin-Opener-Policy",
@@ -242,50 +255,46 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		"Access-Control-Allow-Origin", "Access-Control-Allow-Methods",
 		"Access-Control-Allow-Headers", "Access-Control-Expose-Headers", "Vary",
 	} {
-		for _, value := range result.Header.Values(name) {
-			w.Header().Add(name, value)
+		for _, value := range source.Values(name) {
+			header.Add(name, value)
 		}
 	}
-	w.Header().Set("Cache-Control", "no-store")
-	w.WriteHeader(result.StatusCode)
-	if r.Method != http.MethodHead {
-		_, _ = w.Write(result.Body)
-	}
+	header.Set("Cache-Control", "no-store")
+	return header
 }
 
 func (p *Proxy) observe(r *http.Request, result transport.Result, kind RequestType) {
 	if p.obsMax == 0 {
 		return
 	}
+	observation, ok := redactedObservation(r, result, kind)
+	p.obsMu.Lock()
+	defer p.obsMu.Unlock()
+	if !ok || len(p.obs) >= p.obsMax {
+		p.obsDrop++
+		return
+	}
+	p.obs = append(p.obs, observation)
+}
+
+func redactedObservation(r *http.Request, result transport.Result, kind RequestType) (Observation, bool) {
 	path := r.URL.EscapedPath()
 	if path == "" {
 		path = "/"
 	}
 	final, err := url.Parse(result.FinalURL)
 	if err != nil || final == nil || !final.IsAbs() || len(path) > 1024 {
-		p.obsMu.Lock()
-		p.obsDrop++
-		p.obsMu.Unlock()
-		return
+		return Observation{}, false
 	}
 	finalPath := final.EscapedPath()
 	if finalPath == "" {
 		finalPath = "/"
 	}
 	if len(finalPath) > 1024 {
-		p.obsMu.Lock()
-		p.obsDrop++
-		p.obsMu.Unlock()
-		return
+		return Observation{}, false
 	}
-	p.obsMu.Lock()
-	defer p.obsMu.Unlock()
-	if len(p.obs) >= p.obsMax {
-		p.obsDrop++
-		return
-	}
-	p.obs = append(p.obs, Observation{Method: r.Method, Path: path,
-		FinalPath: finalPath, Kind: kind, StatusCode: result.StatusCode})
+	return Observation{Method: r.Method, Path: path,
+		FinalPath: finalPath, Kind: kind, StatusCode: result.StatusCode}, true
 }
 
 func writeProxyError(w http.ResponseWriter, status int, code string) {

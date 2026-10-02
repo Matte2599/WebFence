@@ -31,6 +31,8 @@ func proxyFixture(t *testing.T, observationLimit ...int) (*Proxy, *http.Client, 
 		switch r.URL.Path {
 		case "/app/redirect":
 			http.Redirect(w, r, "http://outside.test:8080/app/secret", http.StatusFound)
+		case "/app/allowed-redirect":
+			http.Redirect(w, r, "/app/cookie", http.StatusFound)
 		case "/app/cookie":
 			w.Header().Set("Set-Cookie", "session=synthetic; HttpOnly")
 			w.Header().Set("Content-Security-Policy", "default-src 'self'")

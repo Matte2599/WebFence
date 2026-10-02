@@ -55,6 +55,7 @@
 | HTTPS mediato nel laboratorio CDP M3 / M3 broker-mediated HTTPS in the CDP lab | [ADR-019 IT](it/ADR-019-CDP-HTTPS-BOUNDARY.md) | [ADR-019 EN](en/ADR-019-CDP-HTTPS-BOUNDARY.md) |
 | Confine filesystem Landlock nel laboratorio CDP / Landlock filesystem boundary in the CDP lab | [ADR-020 IT](it/ADR-020-CDP-LANDLOCK-BOUNDARY.md) | [ADR-020 EN](en/ADR-020-CDP-LANDLOCK-BOUNDARY.md) |
 | Avvio headless in sandbox OS esterna / Headless startup in an outer OS sandbox | [ADR-022 IT](it/ADR-022-HEADLESS-OUTER-SANDBOX.md) | [ADR-022 EN](en/ADR-022-HEADLESS-OUTER-SANDBOX.md) |
+| Broker HTTP(S) via pipe per headless / Headless HTTP(S) pipe broker | [ADR-023 IT](it/ADR-023-HEADLESS-PIPE-BROKER.md) | [ADR-023 EN](en/ADR-023-HEADLESS-PIPE-BROKER.md) |
 | Limiti di risorse helper M3 / M3 helper resource limits | [IT](it/M3-BROWSER-RESOURCE-LIMITS.md) | [EN](en/M3-BROWSER-RESOURCE-LIMITS.md) |
 | Login e sessioni M3 / M3 login and sessions | [IT](it/M3-SESSIONS.md) | [EN](en/M3-SESSIONS.md) |
 | Cookie e POST di prova / Test-account cookies and POST | [ADR-012 IT](it/ADR-012-TEST-SESSIONS.md) | [ADR-012 EN](en/ADR-012-TEST-SESSIONS.md) |

@@ -71,6 +71,8 @@ type RunScope struct {
 	expiresAt time.Time
 	policy    scope.Policy
 	lifecycle context.Context // optional managed-run cancellation, never replaceable
+	// A nonzero allocation identifies this BeginRun snapshot across copies.
+	identity *byte
 }
 
 func New(d Draft) (Project, error) { return newAt(d, time.Now()) }
@@ -217,11 +219,17 @@ func (p Project) beginAt(now time.Time) (RunScope, error) {
 	if !now.Before(p.expiresAt) {
 		return RunScope{}, ErrAuthorizationExpired
 	}
-	return RunScope{projectID: p.id, revision: p.revision, expiresAt: p.expiresAt, policy: p.policy}, nil
+	return RunScope{projectID: p.id, revision: p.revision, expiresAt: p.expiresAt, policy: p.policy, identity: new(byte)}, nil
 }
 
 func (r RunScope) ProjectID() string { return r.projectID }
 func (r RunScope) Revision() uint64  { return r.revision }
+
+// SameRun identifies copies of one BeginRun snapshot. Matching project IDs and
+// revisions alone cannot establish that two independently built scopes agree.
+func (r RunScope) SameRun(other RunScope) bool {
+	return r.identity != nil && r.identity == other.identity
+}
 
 // BindLifecycle returns a scope that also denies work when ctx is canceled.
 // A bound lifecycle cannot be replaced or removed from a copied RunScope.
